@@ -1,3 +1,6 @@
+# Sabit proje adı: sunucudaki DİĞER projeyle container/ağ/volume çakışmasını önler.
+name: antalya-bridge
+
 services:
   db:
     image: postgres:16-alpine
@@ -24,7 +27,9 @@ services:
       db:
         condition: service_healthy
     ports:
-      - "3000:3000"
+      # Host portu ayarlanabilir (varsayılan 3010) — sunucudaki 3000 başka projede
+      # olabilir. Yalnızca localhost'a bağla; dışarıdan erişim nginx üzerinden olur.
+      - "127.0.0.1:${WEB_HTTP_PORT:-3010}:3000"
     # İlk açılışta migration uygula + seed çalıştır, sonra sunucuyu başlat.
     command: sh -c "npx prisma migrate deploy && node prisma/seed.js || true; node server.js"
 
