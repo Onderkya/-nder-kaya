@@ -5,6 +5,7 @@
 import assert from "node:assert";
 import { validateSelect } from "../lib/ai/db-readonly";
 import { validateWrite } from "../lib/ai/db-write";
+import { validateUpload, safeFileName, MAX_UPLOAD_BYTES } from "../lib/media";
 
 let pass = 0;
 function ok(name: string, cond: boolean) {
@@ -49,5 +50,17 @@ ok("PaymentMethod yazma reddedilir", !validateWrite('UPDATE "PaymentMethod" SET 
 ok("AuditLog yazma reddedilir", !validateWrite('INSERT INTO "AuditLog" (action) VALUES (\'x\')').ok);
 ok("çoklu statement (yazma) reddedilir", !validateWrite('UPDATE "Lead" SET status=\'DONE\'; DELETE FROM "Lead"').ok);
 ok("gizli DELETE içeren UPDATE reddedilir", !validateWrite('UPDATE "Lead" SET status=\'DONE\' WHERE id IN (DELETE ...)').ok);
+
+// --- Medya yükleme doğrulaması ---
+ok("PNG kabul edilir", validateUpload("image/png", 1000).ok);
+ok("JPEG kabul edilir", validateUpload("image/jpeg", 1000).ok);
+ok("WEBP kabul edilir", validateUpload("image/webp", 1000).ok);
+ok("GIF kabul edilir", validateUpload("image/gif", 1000).ok);
+ok("SVG reddedilir (XSS)", !validateUpload("image/svg+xml", 1000).ok);
+ok("PDF reddedilir", !validateUpload("application/pdf", 1000).ok);
+ok("boş dosya reddedilir", !validateUpload("image/png", 0).ok);
+ok("5MB üstü reddedilir", !validateUpload("image/png", MAX_UPLOAD_BYTES + 1).ok);
+ok("güvenli ad uzantıyı korur", /^[0-9a-f-]+\.png$/.test(safeFileName("png")));
+ok("güvenli ad path traversal içermez", !safeFileName("png").includes("/"));
 
 console.log(`\n✅ ${pass} test geçti.`);

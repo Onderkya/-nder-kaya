@@ -73,6 +73,14 @@ Doldururken:
 
 ## 4) Başlat (migration + seed otomatik)
 
+Medya yüklemeleri kalıcı bir dizine yazılır; container kullanıcısının (uid 1001)
+yazabilmesi için dizini hazırla:
+
+```bash
+mkdir -p docker/data/uploads
+sudo chown -R 1001:1001 docker/data/uploads
+```
+
 ```bash
 docker compose up -d --build
 docker compose logs -f web   # "migrate deploy" + sunucunun ayağa kalkışını izle

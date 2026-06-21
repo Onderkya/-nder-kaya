@@ -23,6 +23,9 @@ services:
       dockerfile: docker/Dockerfile
     restart: unless-stopped
     env_file: .env
+    volumes:
+      # Yüklenen görseller kalıcı olsun (yeniden build/deploy'da silinmesin).
+      - ./docker/data/uploads:/app/public/uploads
     depends_on:
       db:
         condition: service_healthy

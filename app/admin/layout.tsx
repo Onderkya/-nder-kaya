@@ -8,7 +8,10 @@ export const metadata = { title: "Admin · Antalya Bridge", robots: { index: fal
 const navItems = [
   { href: "/admin", label: "Panel" },
   { href: "/admin/content", label: "Site İçeriği" },
+  { href: "/admin/media", label: "Medya" },
   { href: "/admin/leads", label: "Talepler" },
+  { href: "/admin/booking", label: "Rezervasyon" },
+  { href: "/admin/conversations", label: "Sohbetler" },
   { href: "/admin/promos", label: "İndirim Kodları" },
   { href: "/admin/payments", label: "Ödeme Yöntemleri" },
   { href: "/admin/ai", label: "AI Asistan" },

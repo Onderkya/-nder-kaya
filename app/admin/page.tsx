@@ -29,8 +29,9 @@ export default async function AdminDashboard() {
         ))}
       </div>
       <p className="mt-8 text-sm text-slate-500">
-        Hoş geldiniz. Soldaki menüden talepleri, indirim kodlarını ve ödeme
-        yöntemlerini yönetebilirsiniz. İçerik (CMS) yönetimi bir sonraki fazda eklenecek.
+        Hoş geldiniz. Soldaki menüden site içeriğini, medyayı, talepleri,
+        rezervasyonları, indirim kodlarını, ödeme yöntemlerini, bot sohbetlerini ve
+        AI asistanı yönetebilirsiniz.
       </p>
     </div>
   );

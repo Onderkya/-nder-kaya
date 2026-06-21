@@ -71,6 +71,20 @@
     "min60Desc": "Mashq va uy vazifasi bilan to'liq dars.",
     "cta": "Dars vaqtini so'rang"
   },
+  "booking": {
+    "title": "Onlayn darsga yozilish",
+    "intro": "Sizga qulay vaqtni tanlang; so'rovingizni olganimizdan so'ng tasdiqlash uchun bog'lanamiz.",
+    "pickSlot": "Vaqtni tanlang",
+    "noSlots": "Hozircha bo'sh vaqt yo'q. Iltimos, aloqa formasi orqali yozing.",
+    "name": "Ismingiz",
+    "email": "Email",
+    "phone": "Telefon",
+    "note": "Izoh (ixtiyoriy)",
+    "submit": "Band qilish",
+    "success": "So'rovingiz qabul qilindi! Tasdiqlash uchun bog'lanamiz.",
+    "taken": "Bu vaqt hozirgina band qilindi. Boshqa vaqtni tanlang.",
+    "error": "Nimadir xato ketdi. Qayta urinib ko'ring."
+  },
   "education": {
     "title": "Turkiyada o'qish bo'yicha yo'riqnoma",
     "intro": "Turkiyada o'qishni o'ylayapsizmi? Biz buni boshdan kechirganmiz. Biz sizga dasturlarni tanlash, arizalar, grantlar (jumladan Türkiye Bursları) va kelganingizdan keyin nimani kutish bo'yicha yo'l ko'rsatamiz.",

@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
 import { prisma } from "@/lib/db";
-import { notifyOwner } from "@/lib/notify";
+import { notifyOwner, notifyCustomer } from "@/lib/notify";
 import { rateLimit, clientIp } from "@/lib/rate-limit";
 import { routing } from "@/i18n/routing";
 
@@ -69,6 +69,11 @@ export async function POST(req: Request) {
       `Mesaj: ${d.message}`,
     ],
   }).catch(() => {});
+
+  // Müşteriye onay e-postası (e-posta verdiyse; SMTP yoksa sessiz atlar).
+  if (d.email) {
+    await notifyCustomer(d.email, locale, "contact", d.name).catch(() => {});
+  }
 
   return NextResponse.json({ ok: true, id: lead.id });
 }

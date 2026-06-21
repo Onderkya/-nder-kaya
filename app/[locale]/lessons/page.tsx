@@ -4,6 +4,8 @@ import { Link } from "@/i18n/routing";
 import { PageHero } from "@/components/page-hero";
 import { JsonLd } from "@/components/json-ld";
 import { IconClock } from "@/components/icons";
+import { prisma } from "@/lib/db";
+import { BookingWidget } from "./booking-widget";
 
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
   const { locale } = await params;
@@ -15,12 +17,28 @@ export default async function LessonsPage({ params }: { params: Promise<{ locale
   const { locale } = await params;
   setRequestLocale(locale);
   const t = await getTranslations("lessons");
+  const tb = await getTranslations("booking");
 
   const durations = [
     { title: t("min15"), desc: t("min15Desc") },
     { title: t("min30"), desc: t("min30Desc") },
     { title: t("min60"), desc: t("min60Desc") },
   ];
+
+  // Yalnızca gelecekteki ve boş slotları göster.
+  const slotRows = await prisma.availabilitySlot
+    .findMany({
+      where: { booked: false, startsAt: { gt: new Date() } },
+      orderBy: { startsAt: "asc" },
+      take: 24,
+    })
+    .catch(() => []);
+  const slots = slotRows.map((s) => ({ id: s.id, startsAt: s.startsAt.toISOString(), minutes: s.minutes }));
+  const bookingLabels = {
+    pickSlot: tb("pickSlot"), noSlots: tb("noSlots"), name: tb("name"), email: tb("email"),
+    phone: tb("phone"), note: tb("note"), submit: tb("submit"), success: tb("success"),
+    taken: tb("taken"), error: tb("error"),
+  };
 
   return (
     <>
@@ -45,6 +63,12 @@ export default async function LessonsPage({ params }: { params: Promise<{ locale
         <div className="mt-10 text-center">
           <Link href="/contact" className="btn-primary">{t("cta")}</Link>
         </div>
+      </section>
+
+      <section className="container-page pb-16">
+        <h2 className="mb-2 text-2xl font-bold">{tb("title")}</h2>
+        <p className="mb-6 text-sm" style={{ color: "rgb(var(--muted-foreground))" }}>{tb("intro")}</p>
+        <BookingWidget slots={slots} locale={locale} labels={bookingLabels} />
       </section>
     </>
   );

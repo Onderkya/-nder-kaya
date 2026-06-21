@@ -71,6 +71,20 @@
     "min60Desc": "Full lesson with practice and homework.",
     "cta": "Request a lesson time"
   },
+  "booking": {
+    "title": "Book an online lesson",
+    "intro": "Pick a time that works for you; we'll get back to confirm as soon as we receive your request.",
+    "pickSlot": "Choose a time",
+    "noSlots": "No slots available right now. Please reach us via the contact form.",
+    "name": "Your name",
+    "email": "Email",
+    "phone": "Phone",
+    "note": "Note (optional)",
+    "submit": "Request booking",
+    "success": "Your booking request was received! We'll get back to confirm.",
+    "taken": "That slot was just taken. Please pick another time.",
+    "error": "Something went wrong. Please try again."
+  },
   "education": {
     "title": "Study in Turkey Guidance",
     "intro": "Thinking of studying in Turkey? We've been through it. We guide you through choosing programs, applications, scholarships (including Türkiye Bursları) and what to expect once you arrive.",

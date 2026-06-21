@@ -71,6 +71,20 @@
     "min60Desc": "Pratik ve ödevli tam ders.",
     "cta": "Ders saati talep edin"
   },
+  "booking": {
+    "title": "Online randevu al",
+    "intro": "Uygun bir zaman seçin; talebinizi alır almaz onaylamak için size dönelim.",
+    "pickSlot": "Bir zaman seçin",
+    "noSlots": "Şu anda uygun slot yok. Lütfen iletişim formundan yazın.",
+    "name": "Adınız",
+    "email": "E-posta",
+    "phone": "Telefon",
+    "note": "Not (isteğe bağlı)",
+    "submit": "Randevu iste",
+    "success": "Randevu talebiniz alındı! Onaylamak için size döneceğiz.",
+    "taken": "Bu slot az önce doldu. Lütfen başka bir zaman seçin.",
+    "error": "Bir şeyler ters gitti. Lütfen tekrar deneyin."
+  },
   "education": {
     "title": "Türkiye'de Eğitim Rehberliği",
     "intro": "Türkiye'de okumayı mı düşünüyorsunuz? Biz bu yoldan geçtik. Program seçimi, başvurular, burslar (Türkiye Bursları dahil) ve geldikten sonra sizi nelerin beklediği konusunda yol gösteriyoruz.",
