@@ -3,6 +3,7 @@ import { z } from "zod";
 import { prisma } from "@/lib/db";
 import { notifyOwner, notifyCustomer } from "@/lib/notify";
 import { rateLimit, clientIp } from "@/lib/rate-limit";
+import { verifyTurnstile } from "@/lib/turnstile";
 import { routing } from "@/i18n/routing";
 
 export const dynamic = "force-dynamic";
@@ -15,6 +16,7 @@ const schema = z.object({
   message: z.string().max(2000).optional().or(z.literal("")),
   locale: z.string().max(5).default("en"),
   website: z.string().optional(), // honeypot
+  turnstileToken: z.string().optional(), // Cloudflare Turnstile
 });
 
 export async function POST(req: Request) {
@@ -29,6 +31,10 @@ export async function POST(req: Request) {
 
   // Honeypot dolduysa bot: sahte başarı.
   if (d.website && d.website.length > 0) return NextResponse.json({ ok: true });
+  // Captcha doğrulaması (Turnstile anahtarı tanımlı değilse otomatik geçer).
+  if (!(await verifyTurnstile(d.turnstileToken, ip))) {
+    return NextResponse.json({ error: "captcha" }, { status: 400 });
+  }
   // En az bir iletişim yolu olmalı.
   if (!d.email && !d.phone) return NextResponse.json({ error: "validation" }, { status: 400 });
 

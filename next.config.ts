@@ -8,13 +8,15 @@ const isDev = process.env.NODE_ENV !== "production";
 // İçerik Güvenlik Politikası. QR'lar data: URL olarak gömülür (img-src data:),
 // inline stiller kullanıldığı için style-src 'unsafe-inline'. Script için dev'de
 // HMR/eval gerekir; prod'da 'self' + inline (Next hydration) ile sınırlıdır.
+// Cloudflare Turnstile (spam koruması) script/iframe/xhr için izinli kaynak.
 const csp = [
   "default-src 'self'",
-  `script-src 'self' 'unsafe-inline'${isDev ? " 'unsafe-eval'" : ""}`,
+  `script-src 'self' 'unsafe-inline' https://challenges.cloudflare.com${isDev ? " 'unsafe-eval'" : ""}`,
   "style-src 'self' 'unsafe-inline'",
   "img-src 'self' data: blob:",
   "font-src 'self' data:",
-  "connect-src 'self'",
+  "connect-src 'self' https://challenges.cloudflare.com",
+  "frame-src https://challenges.cloudflare.com",
   "frame-ancestors 'none'",
   "object-src 'none'",
   "base-uri 'self'",

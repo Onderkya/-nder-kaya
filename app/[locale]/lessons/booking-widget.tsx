@@ -1,6 +1,8 @@
 "use client";
 
 import { useState } from "react";
+import { Turnstile } from "@/components/turnstile";
+import { siteConfig } from "@/lib/config";
 
 type Slot = { id: string; startsAt: string; minutes: number };
 type Labels = {
@@ -11,6 +13,8 @@ type Labels = {
 export function BookingWidget({ slots, locale, labels }: { slots: Slot[]; locale: string; labels: Labels }) {
   const [selected, setSelected] = useState<string | null>(null);
   const [status, setStatus] = useState<"idle" | "sending" | "ok" | "taken" | "error">("idle");
+  const [captcha, setCaptcha] = useState("");
+  const captchaRequired = !!siteConfig.turnstileSiteKey;
 
   if (slots.length === 0) {
     return <p className="text-sm" style={{ color: "rgb(var(--muted-foreground))" }}>{labels.noSlots}</p>;
@@ -33,19 +37,28 @@ export function BookingWidget({ slots, locale, labels }: { slots: Slot[]; locale
       phone: String(fd.get("phone") || ""),
       message: String(fd.get("message") || ""),
       website: String(fd.get("website") || ""),
+      turnstileToken: captcha,
       locale,
     };
+    let ok = false;
     try {
       const res = await fetch("/api/booking", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),
       });
-      if (res.ok) setStatus("ok");
-      else if (res.status === 409) setStatus("taken");
+      if (res.ok) {
+        ok = true;
+        setStatus("ok");
+      } else if (res.status === 409) setStatus("taken");
       else setStatus("error");
     } catch {
       setStatus("error");
+    }
+    if (!ok) {
+      // Token tek kullanımlık: başarısız denemede taze token alınsın.
+      window.turnstile?.reset();
+      setCaptcha("");
     }
   }
 
@@ -83,7 +96,11 @@ export function BookingWidget({ slots, locale, labels }: { slots: Slot[]; locale
           <textarea name="message" rows={3} placeholder={labels.note} className={field} style={fieldStyle} />
           {status === "taken" && <p className="text-sm text-amber-600">{labels.taken}</p>}
           {status === "error" && <p className="text-sm text-red-600">{labels.error}</p>}
-          <button disabled={status === "sending"} className="btn-primary disabled:opacity-60">
+          <Turnstile onToken={setCaptcha} locale={locale} />
+          <button
+            disabled={status === "sending" || (captchaRequired && !captcha)}
+            className="btn-primary disabled:opacity-60"
+          >
             {labels.submit}
           </button>
         </form>

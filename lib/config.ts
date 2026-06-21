@@ -13,6 +13,9 @@ export const siteConfig = {
     youtube: process.env.NEXT_PUBLIC_YOUTUBE ?? "",
   },
   url: process.env.NEXT_PUBLIC_SITE_URL ?? "https://antalyabridge.com",
+  // Cloudflare Turnstile public site key. Boşsa captcha devre dışıdır
+  // (formlar honeypot + rate-limit ile korunmaya devam eder).
+  turnstileSiteKey: process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY ?? "",
 };
 
 export function whatsappLink(text?: string) {

@@ -2,6 +2,8 @@
 
 import { useState } from "react";
 import { useLocale } from "next-intl";
+import { Turnstile } from "@/components/turnstile";
+import { siteConfig } from "@/lib/config";
 
 type Labels = {
   name: string; email: string; phone: string; service: string;
@@ -12,6 +14,8 @@ type Labels = {
 export function ContactForm({ labels }: { labels: Labels }) {
   const locale = useLocale();
   const [status, setStatus] = useState<"idle" | "sending" | "ok" | "error">("idle");
+  const [captcha, setCaptcha] = useState("");
+  const captchaRequired = !!siteConfig.turnstileSiteKey;
 
   const inputClass =
     "w-full rounded-xl border px-4 py-2.5 text-sm outline-none transition focus:ring-2";
@@ -30,13 +34,16 @@ export function ContactForm({ labels }: { labels: Labels }) {
       const res = await fetch("/api/contact", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ ...data, locale }),
+        body: JSON.stringify({ ...data, locale, turnstileToken: captcha }),
       });
       if (!res.ok) throw new Error("failed");
       setStatus("ok");
       form.reset();
     } catch {
       setStatus("error");
+      // Token tek kullanımlık: yeniden denemede taze token alınsın.
+      window.turnstile?.reset();
+      setCaptcha("");
     }
   }
 
@@ -82,7 +89,12 @@ export function ContactForm({ labels }: { labels: Labels }) {
       {status === "error" && (
         <p className="text-sm font-medium text-red-500">{labels.error}</p>
       )}
-      <button type="submit" disabled={status === "sending"} className="btn-primary w-full disabled:opacity-60">
+      <Turnstile onToken={setCaptcha} locale={locale} />
+      <button
+        type="submit"
+        disabled={status === "sending" || (captchaRequired && !captcha)}
+        className="btn-primary w-full disabled:opacity-60"
+      >
         {labels.submit}
       </button>
     </form>

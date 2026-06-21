@@ -6,6 +6,10 @@ COPY package.json package-lock.json* ./
 RUN npm ci
 COPY . .
 RUN npx prisma generate
+# NEXT_PUBLIC_* değişkenleri build zamanında client paketine gömülür. Turnstile
+# site key'i (public) burada arg olarak alınır; boşsa captcha widget'ı çıkmaz.
+ARG NEXT_PUBLIC_TURNSTILE_SITE_KEY=""
+ENV NEXT_PUBLIC_TURNSTILE_SITE_KEY=$NEXT_PUBLIC_TURNSTILE_SITE_KEY
 RUN npm run build
 # Seed'i çalıştırılabilir JS'e derle (prod imajında tsx yok; compose seed.js çağırır).
 RUN npx tsc prisma/seed.ts --outDir prisma --module commonjs --target es2020 --esModuleInterop --skipLibCheck

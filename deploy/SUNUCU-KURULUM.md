@@ -151,11 +151,38 @@ Artık `/admin/ai` sayfasında asistan etkin olur.
 
 ---
 
+## 6.5) (Opsiyonel) Cloudflare Turnstile — form spam koruması
+
+İletişim ve rezervasyon formları zaten honeypot + IP rate-limit ile korunur.
+Görünür bir captcha (Cloudflare Turnstile, ücretsiz) eklemek istersen:
+
+1. **Cloudflare** → **Turnstile** → **Add site**: domain'ini gir (`antalyabridge.com`).
+   "Site Key" (public) ve "Secret Key" (gizli) üretilir.
+2. `.env`'e yaz:
+   ```
+   NEXT_PUBLIC_TURNSTILE_SITE_KEY="0x4AAAA..."   # public
+   TURNSTILE_SECRET_KEY="0x4AAAA..."             # gizli
+   ```
+3. **Site key build zamanında client paketine gömülür** — bu yüzden değiştirince
+   mutlaka yeniden derle:
+   ```bash
+   docker compose up -d --build
+   ```
+
+> Boş bırakırsan captcha devre dışı kalır; formlar honeypot + rate-limit ile
+> korunmaya devam eder. **Önemli:** Yalnızca secret'ı doldurup site key'i boş
+> bırakma — bu durumda widget çıkmaz ama sunucu doğrulaması beklediği için
+> gönderimler reddedilir. İkisini birlikte doldur ya da ikisini de boş bırak.
+
+---
+
 ## 7) Doğrulama
 
 - `https://antalyabridge.com` 5 dilde açılıyor, tema/dil seçici çalışıyor.
 - `https://antalyabridge.com/admin` → giriş → panel.
 - İletişim formu gönder → `/admin/leads`'te görünür + e-posta/Telegram bildirimi.
+- (Turnstile açıksa) iletişim/rezervasyon formunda captcha widget'ı görünür;
+  çözülmeden "Gönder" pasif kalır.
 - (AI açıksa) `/admin/ai`'de "bu ay kaç talep geldi?" → doğru tablo döner;
   "bir kaydı sil" → asistan reddeder, DB de izin vermez.
 - **Diğer proje hâlâ çalışıyor mu?** `docker ps` ile teyit et.

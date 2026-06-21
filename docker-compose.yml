@@ -21,6 +21,10 @@ services:
     build:
       context: .
       dockerfile: docker/Dockerfile
+      args:
+        # NEXT_PUBLIC_* build zamanında gömülür; .env'den okunur. Turnstile
+        # site key'ini değiştirince `docker compose up -d --build` ile yeniden derle.
+        NEXT_PUBLIC_TURNSTILE_SITE_KEY: ${NEXT_PUBLIC_TURNSTILE_SITE_KEY:-}
     restart: unless-stopped
     env_file: .env
     volumes:
