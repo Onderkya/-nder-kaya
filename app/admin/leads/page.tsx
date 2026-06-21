@@ -2,6 +2,7 @@ import { prisma } from "@/lib/db";
 import { revalidatePath } from "next/cache";
 import type { LeadStatus } from "@prisma/client";
 import { requireAdmin } from "@/lib/auth";
+import { decryptPII } from "@/lib/pii";
 
 export const dynamic = "force-dynamic";
 
@@ -45,8 +46,8 @@ export default async function LeadsPage() {
                   <td className="whitespace-nowrap p-3 text-slate-500">{l.createdAt.toLocaleDateString("tr-TR")}</td>
                   <td className="p-3 font-medium">{l.name}</td>
                   <td className="p-3 text-slate-600">
-                    <div>{l.email || "-"}</div>
-                    <div>{l.phone || ""}</div>
+                    <div>{decryptPII(l.email) || "-"}</div>
+                    <div>{decryptPII(l.phone) || ""}</div>
                   </td>
                   <td className="p-3">{l.service || "-"}</td>
                   <td className="max-w-xs p-3 text-slate-600">{l.message}</td>

@@ -7,6 +7,7 @@ import { paymentsEnabled } from "@/lib/payments";
 import { createInvoice } from "@/lib/invoice";
 import { parseAmountToMinor, formatAmount } from "@/lib/money";
 import { validatePromo } from "@/lib/promo";
+import { decryptPII } from "@/lib/pii";
 import { CopyButton } from "@/components/copy-button";
 import { routing } from "@/i18n/routing";
 
@@ -222,7 +223,7 @@ export default async function InvoicesPage({
               <tr key={inv.id} className="border-b border-slate-100">
                 <td className="p-3 font-mono font-semibold">{inv.ref}</td>
                 <td className="p-3">{formatAmount(inv.amount, inv.currency)}</td>
-                <td className="p-3">{inv.customerName || inv.customerEmail || "-"}</td>
+                <td className="p-3">{inv.customerName || decryptPII(inv.customerEmail) || "-"}</td>
                 <td className="p-3">
                   <span className={`rounded-full px-2 py-0.5 text-xs font-semibold ${STATUS_CLASS[inv.status]}`}>
                     {STATUS_LABEL[inv.status] ?? inv.status}

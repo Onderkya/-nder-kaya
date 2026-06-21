@@ -4,6 +4,7 @@ import { prisma } from "@/lib/db";
 import { notifyOwner, notifyCustomer } from "@/lib/notify";
 import { rateLimit, clientIp } from "@/lib/rate-limit";
 import { verifyTurnstile } from "@/lib/turnstile";
+import { encryptPII } from "@/lib/pii";
 import { routing } from "@/i18n/routing";
 
 export const dynamic = "force-dynamic";
@@ -56,8 +57,8 @@ export async function POST(req: Request) {
   const lead = await prisma.lead.create({
     data: {
       name: d.name,
-      email: d.email || null,
-      phone: d.phone || null,
+      email: encryptPII(d.email || null),
+      phone: encryptPII(d.phone || null),
       service: "lessons",
       message: `Randevu talebi: ${when} (${mins} dk).${d.message ? `\nNot: ${d.message}` : ""}`,
       locale,

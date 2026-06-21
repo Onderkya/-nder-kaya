@@ -5,6 +5,7 @@ import { getProvider } from "./payments";
 import { minorToDecimal, formatAmount } from "./money";
 import { notifyOwner, notifyCustomer } from "./notify";
 import { consumePromo } from "./promo";
+import { encryptPII, decryptPII } from "./pii";
 import type { NormalizedStatus } from "./payments/types";
 
 /** Karışması zor, insan-okur kısa referans: AB-XXXXXX (Crockford base32, 0/O/1/I yok). */
@@ -56,8 +57,8 @@ export async function createInvoice(input: CreateInvoiceInput): Promise<Invoice>
       promoCode: input.promoCode || null,
       discountAmount: input.discountAmount ?? 0,
       customerName: input.customerName || null,
-      customerEmail: input.customerEmail || null,
-      customerPhone: input.customerPhone || null,
+      customerEmail: encryptPII(input.customerEmail || null),
+      customerPhone: encryptPII(input.customerPhone || null),
       locale,
       service: input.service || null,
       lessonTypeId: input.lessonTypeId || null,
@@ -157,6 +158,8 @@ async function markPaid(invoice: Invoice, status: NormalizedStatus): Promise<Inv
 
   const updated = await prisma.invoice.findUnique({ where: { id: invoice.id } });
   if (claimed.count > 0) {
+    // PII çöz (DB'de şifreli olabilir) — yalnızca bildirim için.
+    const customerEmail = decryptPII(invoice.customerEmail);
     // İlk kez ödendi → bildirim + promo sayacı (akışı bozmadan).
     await notifyOwner({
       title: "💰 Ödeme alındı",
@@ -165,14 +168,14 @@ async function markPaid(invoice: Invoice, status: NormalizedStatus): Promise<Inv
         `Tutar: ${formatAmount(invoice.amount, invoice.currency)}`,
         `Ödenen: ${status.paidAmount ?? "?"} ${status.payCurrency ?? ""} (${status.payNetwork ?? "?"})`,
         `Müşteri: ${invoice.customerName || "-"}`,
-        `E-posta: ${invoice.customerEmail || "-"}`,
+        `E-posta: ${customerEmail || "-"}`,
         `Açıklama: ${invoice.description}`,
         status.txid ? `TXID: ${status.txid}` : "",
       ].filter(Boolean),
     }).catch(() => {});
 
-    if (invoice.customerEmail) {
-      await notifyCustomer(invoice.customerEmail, invoice.locale, "payment", invoice.customerName || "").catch(() => {});
+    if (customerEmail) {
+      await notifyCustomer(customerEmail, invoice.locale, "payment", invoice.customerName || "").catch(() => {});
     }
     if (invoice.promoCode) await consumePromo(invoice.promoCode);
   }
