@@ -1,78 +1,109 @@
-import Anthropic from "@anthropic-ai/sdk";
 import { SCHEMA_CONTEXT } from "./schema-context";
 import { runSelect, readonlyDbAvailable } from "./db-readonly";
+import { validateWrite, readwriteDbAvailable, WRITABLE_TABLES } from "./db-write";
+import {
+  chat,
+  openrouterAvailable,
+  defaultModel,
+  smartModel,
+  type ChatMessage,
+  type ToolDef,
+} from "./llm";
 
 /**
- * Admin paneli için doğal dille veritabanı sorgulama asistanı.
+ * Admin paneli için doğal dille veritabanı asistanı (OpenRouter üzerinden).
  *
- * Yetki: SALT-OKUMA. Asistana serbest yazma verilmez; yalnızca `run_select_query`
- * aracını çağırabilir, o da salt-okunur DB rolüyle çalışır (bkz. db-readonly.ts).
+ * Yetki: OKUMA + GÜVENLİ YAZMA.
+ *  - Okuma: `run_select_query` aracını serbestçe çağırır (salt-okunur rol).
+ *  - Yazma: `propose_write` ile INSERT/UPDATE ÖNERİR; HEMEN UYGULANMAZ. Admin
+ *    UI'da onaylayınca /api/admin/ai/apply çalıştırır. SİLME hiçbir koşulda yok.
  *
- * Model (düşük maliyet + yeterli kalite) — HİBRİT:
- *  - Haiku 4.5:  basit/tek-tablo sorular (hızlı/ucuz)
- *  - Sonnet 4.6: karmaşık çok-tablolu analiz / SQL üretimi
+ * Model `.env`'den serbest seçilir (OPENROUTER_MODEL / OPENROUTER_MODEL_SMART).
  */
 
-const MODEL_FAST = "claude-haiku-4-5";
-const MODEL_SMART = "claude-sonnet-4-6";
 const MAX_TURNS = 6;
 
-let client: Anthropic | null = null;
-function getClient() {
-  if (!process.env.ANTHROPIC_API_KEY) return null;
-  client ??= new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
-  return client;
-}
-
 export function assistantAvailable(): boolean {
-  return !!process.env.ANTHROPIC_API_KEY && readonlyDbAvailable();
+  return openrouterAvailable() && readonlyDbAvailable();
+}
+export function writeEnabled(): boolean {
+  return readwriteDbAvailable();
 }
 
-const SYSTEM_PROMPT = `Sen "Antalya Bridge" danışmanlık platformunun admin paneline gömülü,
-veriye dayalı bir analiz asistanısın. Görevin: yöneticinin doğal dildeki sorularını
-veritabanını SALT-OKUYARAK yanıtlamak (talepler, indirim kodları, ödeme yöntemleri,
-içerik, bot konuşmaları vb.).
+function systemPrompt(): string {
+  const writeNote = writeEnabled()
+    ? `\n\nYAZMA (sadece öneri, onayla uygulanır):
+- Veri ekleme/güncelleme gerekiyorsa \`propose_write\` aracını kullan; tek bir
+  INSERT veya UPDATE öner. Bu HEMEN uygulanmaz — yönetici panelde onaylayınca
+  uygulanır. Asla "ekledim/güncelledim" deme; "şu değişikliği öneriyorum, onayını
+  bekliyorum" de.
+- SİLME yapamazsın (ne araç var ne de yetki). Kullanıcı silme isterse yapamayacağını söyle.
+- Yazılabilir tablolar: ${[...WRITABLE_TABLES].join(", ")}. Hassas tablolar
+  ("User", "AuditLog", "PaymentMethod") yazıma KAPALI.`
+    : `\n\nSadece OKUMA modundasın; veri ekleme/güncelleme/silme yapamazsın.`;
 
-Kurallar:
-- Veriye ihtiyaç duyan her soruda \`run_select_query\` aracını kullan. Aklından
-  rakam uydurma; cevabı sorgu sonucuna dayandır.
-- YALNIZCA okuma yapabilirsin. Veri ekleme/güncelleme/silme YETKİN YOK ve teknik
-  olarak imkânsız. Kullanıcı silme/değiştirme isterse kibarca bunu yapamayacağını,
-  yalnızca raporlama/sorgulama yapabildiğini söyle.
-- PostgreSQL kullanılıyor. Tablo/kolon adları büyük/küçük harf duyarlı; SQL'de
-  daima çift tırnak kullan (FROM "Lead", "createdAt"). Sadece tek bir SELECT
-  (veya WITH ... SELECT) yaz; noktalı virgülle birden fazla ifade yazma.
-- Tarihlerde \`now()\`, \`date_trunc\`, \`interval\` gibi Postgres fonksiyonlarını
-  kullanabilirsin. Sonuçları kısa ve net özetle; gerektiğinde tabloya işaret et.
-- Yöneticiyle Türkçe konuş (soru başka dildeyse o dilde yanıtla).
+  return `Sen "Antalya Bridge" danışmanlık platformunun admin paneline gömülü, veriye
+dayalı bir asistansın. Talepler, indirim kodları, ödeme yöntemleri, içerik ve bot
+konuşmaları gibi verileri sorgular ve gerektiğinde değişiklik ÖNERİRSİN.
+
+OKUMA:
+- Veriye ihtiyaç duyan her soruda \`run_select_query\` aracını kullan; cevabı
+  sorgu sonucuna dayandır, rakam uydurma.
+- PostgreSQL. Tablo/kolon adları büyük/küçük harf duyarlı; SQL'de daima çift tırnak
+  kullan (FROM "Lead", "createdAt"). Tek bir SELECT (veya WITH ... SELECT) yaz;
+  noktalı virgülle birden fazla ifade yazma; yorum kullanma.${writeNote}
+
+GENEL:
+- Yöneticiyle Türkçe konuş (soru başka dildeyse o dilde yanıtla). Kısa ve net ol.
 
 Veritabanı şeması:
 ${SCHEMA_CONTEXT}`;
+}
 
-const TOOLS: Anthropic.Tool[] = [
-  {
-    name: "run_select_query",
-    description:
-      "Veritabanında salt-okunur tek bir PostgreSQL SELECT (veya WITH ... SELECT) " +
-      "sorgusu çalıştırır ve satırları döndürür. Yazma/değiştirme yapamaz.",
-    input_schema: {
-      type: "object",
-      properties: {
-        query: { type: "string", description: "Çalıştırılacak tek SELECT sorgusu." },
+function tools(): ToolDef[] {
+  const t: ToolDef[] = [
+    {
+      type: "function",
+      function: {
+        name: "run_select_query",
+        description:
+          "Salt-okunur tek bir PostgreSQL SELECT (veya WITH ... SELECT) çalıştırır ve satırları döndürür.",
+        parameters: {
+          type: "object",
+          properties: { query: { type: "string", description: "Tek SELECT sorgusu." } },
+          required: ["query"],
+        },
       },
-      required: ["query"],
     },
-  },
-];
+  ];
+  if (writeEnabled()) {
+    t.push({
+      type: "function",
+      function: {
+        name: "propose_write",
+        description:
+          "Tek bir INSERT veya UPDATE ÖNERİR (hemen uygulanmaz; yönetici onayına sunulur). Silme yapılamaz.",
+        parameters: {
+          type: "object",
+          properties: {
+            sql: { type: "string", description: "Tek INSERT veya UPDATE ifadesi." },
+            reason: { type: "string", description: "Bu değişikliğin kısa gerekçesi." },
+          },
+          required: ["sql"],
+        },
+      },
+    });
+  }
+  return t;
+}
 
-/** Basit sezgi: karmaşık/analitik sorular akıllı modele gider. */
 function pickModel(text: string) {
   const complex =
     text.length > 120 ||
-    /\b(kaç|toplam|ortalama|dağılım|analiz|trend|karşılaştır|rapor|grup|group|son\s+\d|geçen|aylık|haftalık|günlük|between|join|en çok|en az)\b/i.test(
+    /\b(kaç|toplam|ortalama|dağılım|analiz|trend|karşılaştır|rapor|grup|group|son\s+\d|geçen|aylık|haftalık|günlük|between|join|en çok|en az|ekle|güncelle|değiştir)\b/i.test(
       text
     );
-  return complex ? MODEL_SMART : MODEL_FAST;
+  return complex ? smartModel() : defaultModel();
 }
 
 export type ExecutedQuery = {
@@ -83,87 +114,103 @@ export type ExecutedQuery = {
   error?: string;
 };
 
+export type ProposedWrite = {
+  sql: string;
+  table?: string;
+  reason?: string;
+  valid: boolean;
+  error?: string;
+};
+
 export type AssistantReply = {
   answer: string;
   model: string;
   queries: ExecutedQuery[];
+  proposedWrites: ProposedWrite[];
 };
 
 export async function askAssistant(
   userText: string,
   history: { role: "user" | "assistant"; content: string }[] = []
 ): Promise<AssistantReply> {
-  const anthropic = getClient();
   const model = pickModel(userText);
   const queries: ExecutedQuery[] = [];
+  const proposedWrites: ProposedWrite[] = [];
 
-  if (!anthropic || !readonlyDbAvailable()) {
+  if (!assistantAvailable()) {
     return {
       answer:
-        "AI asistanı şu anda yapılandırılmamış. `ANTHROPIC_API_KEY` ve " +
-        "`AI_READONLY_DATABASE_URL` ayarlandığında etkinleşir.",
+        "AI asistanı yapılandırılmamış. `OPENROUTER_API_KEY` ve `AI_READONLY_DATABASE_URL` ayarlandığında etkinleşir.",
       model,
       queries,
+      proposedWrites,
     };
   }
 
-  const messages: Anthropic.MessageParam[] = [
-    ...history.map((h) => ({ role: h.role, content: h.content })),
+  const messages: ChatMessage[] = [
+    { role: "system", content: systemPrompt() },
+    ...history.map((h) => ({ role: h.role, content: h.content }) as ChatMessage),
     { role: "user", content: userText },
   ];
 
   for (let turn = 0; turn < MAX_TURNS; turn++) {
-    const res = await anthropic.messages.create({
-      model,
-      max_tokens: 1500,
-      system: SYSTEM_PROMPT,
-      tools: TOOLS,
-      messages,
-    });
+    const res = await chat({ model, messages, tools: tools() });
 
-    if (res.stop_reason !== "tool_use") {
-      const text = res.content.find((c) => c.type === "text");
-      return {
-        answer: text && text.type === "text" ? text.text : "(boş yanıt)",
-        model,
-        queries,
-      };
+    if (!res.toolCalls.length) {
+      return { answer: res.content || "(boş yanıt)", model, queries, proposedWrites };
     }
 
-    // Asistanın tool çağrılarını çalıştır.
-    messages.push({ role: "assistant", content: res.content });
-    const toolResults: Anthropic.ToolResultBlockParam[] = [];
+    // Asistanın araç çağrılarını işleme al.
+    messages.push({ role: "assistant", content: res.content, tool_calls: res.toolCalls });
 
-    for (const block of res.content) {
-      if (block.type !== "tool_use" || block.name !== "run_select_query") continue;
-      const query = String((block.input as { query?: string })?.query ?? "");
-      const result = await runSelect(query);
+    for (const call of res.toolCalls) {
+      let args: { query?: string; sql?: string; reason?: string } = {};
+      try {
+        args = JSON.parse(call.function.arguments || "{}");
+      } catch {
+        /* boş bırak */
+      }
 
-      if (result.ok) {
-        queries.push({ sql: result.sql, ok: true, rowCount: result.rowCount, rows: result.rows });
-        toolResults.push({
-          type: "tool_result",
-          tool_use_id: block.id,
-          content: JSON.stringify({ rowCount: result.rowCount, rows: result.rows }),
+      if (call.function.name === "run_select_query") {
+        const result = await runSelect(String(args.query ?? ""));
+        if (result.ok) {
+          queries.push({ sql: result.sql, ok: true, rowCount: result.rowCount, rows: result.rows });
+          messages.push({
+            role: "tool",
+            tool_call_id: call.id,
+            content: JSON.stringify({ rowCount: result.rowCount, rows: result.rows }),
+          });
+        } else {
+          queries.push({ sql: String(args.query ?? ""), ok: false, error: result.error });
+          messages.push({ role: "tool", tool_call_id: call.id, content: `HATA: ${result.error}` });
+        }
+      } else if (call.function.name === "propose_write" && writeEnabled()) {
+        const sql = String(args.sql ?? "");
+        const v = validateWrite(sql);
+        proposedWrites.push({
+          sql,
+          reason: args.reason,
+          valid: v.ok,
+          table: v.ok ? v.table : undefined,
+          error: v.ok ? undefined : v.error,
+        });
+        messages.push({
+          role: "tool",
+          tool_call_id: call.id,
+          content: v.ok
+            ? "Öneri kaydedildi; UYGULANMADI. Yönetici onayı bekleniyor. Uygulandığını varsayma."
+            : `Öneri geçersiz: ${v.error}`,
         });
       } else {
-        queries.push({ sql: query, ok: false, error: result.error });
-        toolResults.push({
-          type: "tool_result",
-          tool_use_id: block.id,
-          is_error: true,
-          content: result.error,
-        });
+        messages.push({ role: "tool", tool_call_id: call.id, content: "Bilinmeyen araç." });
       }
     }
-
-    messages.push({ role: "user", content: toolResults });
   }
 
   return {
-    answer:
-      "Sorgu adımları sınırına ulaşıldı. Soruyu biraz daha belirgin hale getirir misin?",
+    answer: "Adım sınırına ulaşıldı. Soruyu biraz daha belirginleştirir misin?",
     model,
     queries,
+    proposedWrites,
   };
 }

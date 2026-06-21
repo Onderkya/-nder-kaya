@@ -110,23 +110,34 @@ satırını da güncelle.
 
 ---
 
-## 6) (Opsiyonel) AI admin asistanı — salt-okunur rol
+## 6) (Opsiyonel) AI admin asistanı — OpenRouter + DB rolleri
 
-Admin panelindeki AI asistanının veritabanını **yalnızca okuyabilmesi** için ayrı
-bir Postgres rolü oluştur (silme/yazma DB tarafından engellenir):
+Asistan **OpenRouter** üzerinden çalışır (model `.env`'den serbest seçilir) ve
+veritabanına ayrı Postgres rolleriyle bağlanır. Yetki: **okuma + güvenli yazma**
+(ekle/güncelle, yöneticinin onayıyla). **Silme hiçbir koşulda yapılamaz** — ne
+araç var ne de DB yetkisi.
 
 ```bash
-# 1) Rol script'inde <GUCLU_SIFRE> yerine güçlü bir parola yaz:
-nano prisma/sql/ai_readonly_role.sql
+# 1) Rol script'inde <RO_SIFRE> ve <RW_SIFRE> yerine güçlü parolalar yaz:
+nano prisma/sql/ai_roles.sql
 
-# 2) Script'i uygula:
-docker compose exec -T db psql -U antalya -d antalya -f - < prisma/sql/ai_readonly_role.sql
+# 2) Rolleri oluştur:
+docker compose exec -T db psql -U antalya -d antalya -f - < prisma/sql/ai_roles.sql
 
-# 3) .env'e salt-okunur URL'i ekle (aynı parolayla) ve yeniden başlat:
-#    AI_READONLY_DATABASE_URL="postgresql://ai_readonly:<GUCLU_SIFRE>@db:5432/antalya?schema=public"
+# 3) .env'i doldur (parolalar script'tekiyle aynı), sonra yeniden başlat:
+#    OPENROUTER_API_KEY="sk-or-..."
+#    OPENROUTER_MODEL="openai/gpt-4o-mini"   # istediğin OpenRouter modeli
+#    AI_READONLY_DATABASE_URL="postgresql://ai_readonly:<RO_SIFRE>@db:5432/antalya?schema=public"
+#    AI_READWRITE_DATABASE_URL="postgresql://ai_readwrite:<RW_SIFRE>@db:5432/antalya?schema=public"
 nano .env
 docker compose up -d
 ```
+
+Notlar:
+- **Yalnızca okuma** istiyorsan `ai_readwrite` rolünü oluşturma ve
+  `AI_READWRITE_DATABASE_URL`'i boş bırak — asistan yazma önermez.
+- Hassas tablolar (`User`, `AuditLog`, `PaymentMethod`) AI yazımına kapalıdır
+  (kripto cüzdan/ödeme bütünlüğü korunur).
 
 Artık `/admin/ai` sayfasında asistan etkin olur.
 
