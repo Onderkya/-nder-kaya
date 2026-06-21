@@ -29,3 +29,6 @@ yarn-error.log*
 
 # docker volumes
 /docker/data
+
+# typescript build info
+*.tsbuildinfo

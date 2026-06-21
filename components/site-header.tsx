@@ -5,10 +5,10 @@ import { useTranslations } from "next-intl";
 import { Link, usePathname } from "@/i18n/routing";
 import { ThemeToggle } from "./theme-toggle";
 import { LanguageSwitcher } from "./language-switcher";
+import { Logo } from "./logo";
 
 export function SiteHeader() {
   const t = useTranslations("nav");
-  const tMeta = useTranslations("meta");
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
 
@@ -23,11 +23,10 @@ export function SiteHeader() {
   ];
 
   return (
-    <header className="sticky top-0 z-40 border-b backdrop-blur" style={{ borderColor: "rgb(var(--border))", backgroundColor: "rgb(var(--background) / 0.85)" }}>
+    <header className="glass sticky top-0 z-40 border-b" style={{ borderColor: "rgb(var(--border))", backgroundColor: "rgb(var(--background) / 0.75)" }}>
       <div className="container-page flex h-16 items-center justify-between gap-4">
-        <Link href="/" className="flex items-center gap-2 font-bold">
-          <span className="text-xl">🌊</span>
-          <span className="text-lg">{tMeta("siteName")}</span>
+        <Link href="/" aria-label="Antalya Bridge" className="transition hover:opacity-90">
+          <Logo />
         </Link>
 
         <nav className="hidden items-center gap-1 lg:flex">

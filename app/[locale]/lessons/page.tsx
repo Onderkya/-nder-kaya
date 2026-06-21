@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 import { Link } from "@/i18n/routing";
 import { PageHero } from "@/components/page-hero";
 import { JsonLd } from "@/components/json-ld";
+import { IconClock } from "@/components/icons";
 
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
   const { locale } = await params;
@@ -29,9 +30,14 @@ export default async function LessonsPage({ params }: { params: Promise<{ locale
         <h2 className="mb-8 text-2xl font-bold">{t("durationsTitle")}</h2>
         <div className="grid gap-6 md:grid-cols-3">
           {durations.map((d) => (
-            <div key={d.title} className="card text-center">
-              <div className="text-3xl">⏱️</div>
-              <h3 className="mt-3 text-xl font-semibold">{d.title}</h3>
+            <div key={d.title} className="card text-center transition hover:-translate-y-1 hover:shadow-lg">
+              <div
+                className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl"
+                style={{ backgroundColor: "rgb(var(--primary) / 0.12)", color: "rgb(var(--primary))" }}
+              >
+                <IconClock className="h-7 w-7" />
+              </div>
+              <h3 className="mt-4 text-xl font-semibold">{d.title}</h3>
               <p className="mt-2 text-sm" style={{ color: "rgb(var(--muted-foreground))" }}>{d.desc}</p>
             </div>
           ))}

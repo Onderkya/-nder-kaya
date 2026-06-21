@@ -1,6 +1,7 @@
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/routing";
 import { siteConfig, whatsappLink, telegramLink } from "@/lib/config";
+import { Logo } from "./logo";
 
 export function SiteFooter() {
   const t = useTranslations("footer");
@@ -19,10 +20,7 @@ export function SiteFooter() {
     <footer className="mt-20 border-t" style={{ borderColor: "rgb(var(--border))" }}>
       <div className="container-page grid gap-10 py-12 sm:grid-cols-2 lg:grid-cols-4">
         <div>
-          <div className="flex items-center gap-2 font-bold">
-            <span className="text-xl">🌊</span>
-            <span>{meta("siteName")}</span>
-          </div>
+          <Logo />
           <p className="mt-3 text-sm" style={{ color: "rgb(var(--muted-foreground))" }}>
             {meta("tagline")}
           </p>

@@ -83,10 +83,72 @@
 }
 
 .hero-gradient {
-  background-image: linear-gradient(
-    135deg,
-    rgb(var(--primary)) 0%,
-    rgb(8 145 178) 45%,
-    rgb(var(--accent)) 120%
-  );
+  position: relative;
+  background-color: #083344;
+  background-image:
+    radial-gradient(60% 80% at 85% 10%, rgba(251, 146, 60, 0.55) 0%, transparent 60%),
+    radial-gradient(50% 70% at 10% 20%, rgba(34, 211, 238, 0.35) 0%, transparent 55%),
+    linear-gradient(135deg, #0e7490 0%, #083344 55%, #0c4a5c 100%);
+  overflow: hidden;
+}
+
+/* İnce ışık/grain dokusu — düz degradeye derinlik katar */
+.hero-gradient::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(rgba(255, 255, 255, 0.06) 1px, transparent 1px);
+  background-size: 22px 22px;
+  pointer-events: none;
+}
+
+/* Bölümler arası dalga ayırıcı */
+.wave-divider {
+  display: block;
+  width: 100%;
+  height: 48px;
+  line-height: 0;
+}
+
+@media (min-width: 640px) {
+  .wave-divider {
+    height: 70px;
+  }
+}
+
+/* Giriş animasyonları */
+@keyframes fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-up {
+  animation: fade-up 0.6s ease both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-fade-up {
+    animation: none;
+  }
+}
+
+.glass {
+  backdrop-filter: saturate(180%) blur(12px);
+}
+
+.link-underline {
+  background-image: linear-gradient(currentColor, currentColor);
+  background-size: 0% 2px;
+  background-position: 0 100%;
+  background-repeat: no-repeat;
+  transition: background-size 0.25s ease;
+}
+.link-underline:hover {
+  background-size: 100% 2px;
 }
