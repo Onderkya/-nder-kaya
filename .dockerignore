@@ -1,0 +1,27 @@
+# Build bağlamından dışla: imaj küçük kalsın, host'a özgü dosyalar sızmasın.
+node_modules
+.next
+.git
+.gitignore
+npm-debug.log*
+
+# Sırlar — ASLA imaja girmesin
+.env
+.env.*
+!.env.example
+!.env.production.example
+
+# Yerel veriler / çıktılar
+docker/data
+*.local
+
+# IDE / OS
+.vscode
+.idea
+.DS_Store
+
+# Doküman/plan (runtime'da gereksiz)
+PLAN.md
+README.md
+SECURITY.md
+tsconfig.tsbuildinfo

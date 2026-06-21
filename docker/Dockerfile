@@ -7,6 +7,8 @@ RUN npm ci
 COPY . .
 RUN npx prisma generate
 RUN npm run build
+# Seed'i çalıştırılabilir JS'e derle (prod imajında tsx yok; compose seed.js çağırır).
+RUN npx tsc prisma/seed.ts --outDir prisma --module commonjs --target es2020 --esModuleInterop --skipLibCheck
 
 # --- Çalışma (standalone) ---
 FROM node:22-alpine AS runner
@@ -18,10 +20,12 @@ RUN addgroup -g 1001 -S nodejs && adduser -S nextjs -u 1001
 COPY --from=builder /app/public ./public
 COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
 COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
-# Prisma şeması + üretilmiş client + migration'lar (deploy için)
+# Prisma şeması + migration'lar + seed.js (deploy/seed için)
 COPY --from=builder /app/prisma ./prisma
 COPY --from=builder /app/node_modules/.prisma ./node_modules/.prisma
 COPY --from=builder /app/node_modules/@prisma ./node_modules/@prisma
+# Prisma CLI (migrate deploy için — ağdan indirme gerekmesin diye imaja gömülür)
+COPY --from=builder /app/node_modules/prisma ./node_modules/prisma
 
 USER nextjs
 EXPOSE 3000
