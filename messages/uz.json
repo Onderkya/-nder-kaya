@@ -133,9 +133,9 @@
     "cryptoTitle": "Boshqa mamlakatlar — Kriptovalyuta",
     "cryptoText": "Biz bir nechta kriptovalyutalarni, jumladan USDT va BTC ni qabul qilamiz.",
     "note": "Har bir to'lov biz tomonidan shaxsan tasdiqlanadi. Chegirma kodlari to'lovdan oldin qo'llaniladi.",
-    "verifyWarning": "Yuborishdan oldin manzil va tarmoqni har doim ikki marta tekshiring. Kripto o‘tkazmalar qaytarib bo‘lmaydi. Manzilni qo‘lda yozmang, nusxa oling.",
+    "verifyWarning": "Yuborishdan oldin manzil va tarmoqni har doim ikki marta tekshiring. Kripto o'tkazmalar qaytarib bo'lmaydi. Manzilni qo'lda yozmang, nusxa oling.",
     "networkLabel": "Tarmoq",
-    "empty": "To‘lov ma’lumotlari aloqa vaqtida beriladi."
+    "empty": "To'lov ma'lumotlari aloqa vaqtida beriladi."
   },
   "footer": {
     "rights": "Barcha huquqlar himoyalangan.",
