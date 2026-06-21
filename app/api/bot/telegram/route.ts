@@ -8,17 +8,24 @@ import { notifyOwner } from "@/lib/notify";
  * Kurulum: setWebhook ile bu URL'yi Telegram'a tanıt; güvenlik için
  * TELEGRAM_WEBHOOK_SECRET kullanılır (X-Telegram-Bot-Api-Secret-Token).
  */
+const MAX_TEXT = 2000; // aşırı uzun mesajlarla DB/Claude maliyet/şişme önlenir
+
 export async function POST(req: Request) {
   const secret = process.env.TELEGRAM_WEBHOOK_SECRET;
-  if (secret && req.headers.get("x-telegram-bot-api-secret-token") !== secret) {
+  // Fail-closed: secret tanımlı değilse endpoint kapalıdır (sahte mesaj enjeksiyonu önlenir).
+  if (!secret) {
+    return NextResponse.json({ error: "not_configured" }, { status: 503 });
+  }
+  if (req.headers.get("x-telegram-bot-api-secret-token") !== secret) {
     return NextResponse.json({ error: "forbidden" }, { status: 403 });
   }
 
   const update = await req.json().catch(() => null);
   const msg = update?.message;
   const chatId = msg?.chat?.id;
-  const text: string | undefined = msg?.text;
+  let text: string | undefined = typeof msg?.text === "string" ? msg.text : undefined;
   if (!chatId || !text) return NextResponse.json({ ok: true });
+  if (text.length > MAX_TEXT) text = text.slice(0, MAX_TEXT);
 
   // Konuşma geçmişini sakla/oku.
   const externalId = String(chatId);

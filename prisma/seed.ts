@@ -3,11 +3,24 @@ import bcrypt from "bcryptjs";
 
 const prisma = new PrismaClient();
 
+const WEAK = new Set(["changeme123", "password", "admin", "12345678", "changeme"]);
+
 async function main() {
-  // Yönetici kullanıcı
-  const email = process.env.ADMIN_EMAIL ?? "onderkya35@gmail.com";
-  const password = process.env.ADMIN_PASSWORD ?? "changeme123";
-  const hash = await bcrypt.hash(password, 10);
+  // Yönetici kullanıcı — güçlü şifre ZORUNLU (varsayılan/zayıf şifre reddedilir).
+  const email = process.env.ADMIN_EMAIL;
+  const password = process.env.ADMIN_PASSWORD;
+  if (!email || !password) {
+    throw new Error("ADMIN_EMAIL ve ADMIN_PASSWORD ortam değişkenleri gereklidir.");
+  }
+  if (password.length < 12 || WEAK.has(password.toLowerCase())) {
+    throw new Error(
+      "ADMIN_PASSWORD en az 12 karakter ve tahmin edilemez olmalı (zayıf/varsayılan şifre reddedildi)."
+    );
+  }
+  if (!process.env.AUTH_SECRET || process.env.AUTH_SECRET.length < 24) {
+    throw new Error("AUTH_SECRET ayarlanmalı (öneri: openssl rand -base64 32).");
+  }
+  const hash = await bcrypt.hash(password, 12);
 
   await prisma.user.upsert({
     where: { email },

@@ -26,7 +26,7 @@ export async function createSession(user: { id: string; email: string; role: str
   store.set(COOKIE, token, {
     httpOnly: true,
     secure: process.env.NODE_ENV === "production",
-    sameSite: "lax",
+    sameSite: "strict",
     path: "/admin",
     maxAge: 60 * 60 * 24 * 7,
   });
@@ -47,6 +47,17 @@ export async function getSession(): Promise<Session | null> {
   } catch {
     return null;
   }
+}
+
+/**
+ * Server action / route guard. Geçerli admin oturumu yoksa hata fırlatır.
+ * TÜM yönetim mutasyonlarının (özellikle ödeme/cüzdan) başında çağrılmalı —
+ * middleware yalnızca sayfa render'ını korur, server action'ları korumaz.
+ */
+export async function requireAdmin(): Promise<Session> {
+  const session = await getSession();
+  if (!session) throw new Error("UNAUTHORIZED");
+  return session;
 }
 
 export async function verifyCredentials(email: string, password: string) {

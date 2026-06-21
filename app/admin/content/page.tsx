@@ -2,6 +2,8 @@ import { revalidatePath } from "next/cache";
 import { prisma } from "@/lib/db";
 import { getEditableTexts, loadBaseFlat } from "@/lib/messages";
 import { routing, localeNames, localeFlags, type Locale } from "@/i18n/routing";
+import { requireAdmin } from "@/lib/auth";
+import { audit } from "@/lib/audit";
 
 export const dynamic = "force-dynamic";
 
@@ -9,6 +11,7 @@ const SEP = "|||";
 
 async function saveTexts(formData: FormData) {
   "use server";
+  const session = await requireAdmin();
   // Tüm locale'lerin varsayılanlarını yükle (karşılaştırma için).
   const bases: Record<string, Record<string, string>> = {};
   for (const l of routing.locales) bases[l] = await loadBaseFlat(l);
@@ -30,11 +33,13 @@ async function saveTexts(formData: FormData) {
       });
     }
   }
+  await audit(session.email, "update", "SiteText", null, "Site metinleri güncellendi");
   revalidatePath("/admin/content");
   revalidatePath("/", "layout");
 }
 
 export default async function ContentPage() {
+  await requireAdmin();
   const texts = await getEditableTexts();
 
   // Namespace'e (ilk segment) göre grupla.

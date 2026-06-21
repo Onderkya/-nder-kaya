@@ -39,14 +39,15 @@ async function sendTelegram({ title, lines }: Notification) {
   const { TELEGRAM_BOT_TOKEN, TELEGRAM_OWNER_CHAT_ID } = process.env;
   if (!TELEGRAM_BOT_TOKEN || !TELEGRAM_OWNER_CHAT_ID) return;
 
-  const text = `*${title}*\n\n${lines.join("\n")}`;
+  // parse_mode KULLANILMAZ: kullanıcıdan gelen metin markdown/HTML olarak
+  // yorumlanmaz (enjeksiyon önlenir). Düz metin gönderilir.
+  const text = `${title}\n\n${lines.join("\n")}`;
   await fetch(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
       chat_id: TELEGRAM_OWNER_CHAT_ID,
       text,
-      parse_mode: "Markdown",
     }),
   });
 }

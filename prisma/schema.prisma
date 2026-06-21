@@ -152,6 +152,8 @@ model Lead {
   channel   Channel    @default(WEB)
   status    LeadStatus @default(NEW)
   createdAt DateTime   @default(now())
+
+  @@index([createdAt])
 }
 
 // --- İndirim / Promosyon (içerikten bağımsız) ---
@@ -179,6 +181,21 @@ model PaymentMethod {
   qrUrl     String?
   active    Boolean     @default(true)
   order     Int         @default(0)
+  createdAt DateTime    @default(now())
+  updatedAt DateTime    @updatedAt
+}
+
+// --- Denetim kaydı: hassas değişiklikler (özellikle ödeme/cüzdan) izlenir ---
+model AuditLog {
+  id         String   @id @default(cuid())
+  actorEmail String // işlemi yapan admin
+  action     String // create | update | toggle | delete
+  entity     String // PaymentMethod | PromoCode | SiteText ...
+  entityId   String?
+  details    String?  @db.Text // okunabilir özet (örn. eski/yeni adres)
+  createdAt  DateTime @default(now())
+
+  @@index([entity, createdAt])
 }
 
 // --- Bot konuşmaları ---

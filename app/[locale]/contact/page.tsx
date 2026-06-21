@@ -2,6 +2,7 @@ import { getTranslations, setRequestLocale } from "next-intl/server";
 import type { Metadata } from "next";
 import { PageHero } from "@/components/page-hero";
 import { ContactForm } from "@/components/contact-form";
+import { PaymentMethods } from "@/components/payment-methods";
 import { siteConfig, whatsappLink, telegramLink } from "@/lib/config";
 
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
@@ -63,6 +64,16 @@ export default async function ContactPage({ params }: { params: Promise<{ locale
               <p className="text-xs" style={{ color: "rgb(var(--muted-foreground))" }}>{p("note")}</p>
             </div>
           </div>
+
+          {/* Canlı, admin panelden yönetilen ve doğrulanan ödeme adresleri */}
+          <PaymentMethods
+            labels={{
+              title: p("title"),
+              verifyWarning: p("verifyWarning"),
+              networkLabel: p("networkLabel"),
+              empty: p("empty"),
+            }}
+          />
         </div>
       </section>
     </>

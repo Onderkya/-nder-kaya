@@ -118,7 +118,10 @@
     "kaspiText": "Guests in Kazakhstan can pay easily via Kaspi.",
     "cryptoTitle": "Other countries — Cryptocurrency",
     "cryptoText": "We accept multiple cryptocurrencies including USDT and BTC.",
-    "note": "Every payment is confirmed personally by us. Discount codes are applied before payment."
+    "note": "Every payment is confirmed personally by us. Discount codes are applied before payment.",
+    "verifyWarning": "Always double-check the address and network before sending. Crypto transfers are irreversible. Prefer copying the address; never type it by hand.",
+    "networkLabel": "Network",
+    "empty": "Payment details will be shared during contact."
   },
   "footer": {
     "rights": "All rights reserved.",

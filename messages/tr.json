@@ -118,7 +118,10 @@
     "kaspiText": "Kazakistan'daki misafirler kolayca Kaspi ile ödeyebilir.",
     "cryptoTitle": "Diğer ülkeler — Kripto Para",
     "cryptoText": "USDT ve BTC dahil birden fazla kripto parayı kabul ediyoruz.",
-    "note": "Her ödeme tarafımızdan kişisel olarak onaylanır. İndirim kodları ödemeden önce uygulanır."
+    "note": "Her ödeme tarafımızdan kişisel olarak onaylanır. İndirim kodları ödemeden önce uygulanır.",
+    "verifyWarning": "Göndermeden önce adresi ve ağı mutlaka iki kez kontrol edin. Kripto transferleri geri alınamaz. Adresi elle yazmayın; kopyalayın.",
+    "networkLabel": "Ağ",
+    "empty": "Ödeme bilgileri iletişim sırasında paylaşılır."
   },
   "footer": {
     "rights": "Tüm hakları saklıdır.",

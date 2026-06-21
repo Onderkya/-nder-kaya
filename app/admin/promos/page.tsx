@@ -1,36 +1,47 @@
 import { prisma } from "@/lib/db";
 import { revalidatePath } from "next/cache";
 import type { PromoType } from "@prisma/client";
+import { requireAdmin } from "@/lib/auth";
+import { audit } from "@/lib/audit";
 
 export const dynamic = "force-dynamic";
 
 async function createPromo(formData: FormData) {
   "use server";
+  const session = await requireAdmin();
   const code = String(formData.get("code")).trim().toUpperCase();
   const type = String(formData.get("type")) as PromoType;
   const value = Number(formData.get("value"));
   const usageLimit = formData.get("usageLimit") ? Number(formData.get("usageLimit")) : null;
   const targetSlug = String(formData.get("targetSlug") || "") || null;
-  if (!code || !value) return;
-  await prisma.promoCode.create({ data: { code, type, value, usageLimit, targetSlug } });
+  if (!code || !Number.isFinite(value) || value <= 0) return;
+  if (type === "PERCENT" && value > 100) return;
+  const created = await prisma.promoCode.create({ data: { code, type, value, usageLimit, targetSlug } });
+  await audit(session.email, "create", "PromoCode", created.id, `${code} ${type} ${value}`);
   revalidatePath("/admin/promos");
 }
 
 async function togglePromo(formData: FormData) {
   "use server";
+  const session = await requireAdmin();
   const id = String(formData.get("id"));
   const active = formData.get("active") === "true";
   await prisma.promoCode.update({ where: { id }, data: { active: !active } });
+  await audit(session.email, "toggle", "PromoCode", id, `active=${!active}`);
   revalidatePath("/admin/promos");
 }
 
 async function deletePromo(formData: FormData) {
   "use server";
-  await prisma.promoCode.delete({ where: { id: String(formData.get("id")) } });
+  const session = await requireAdmin();
+  const id = String(formData.get("id"));
+  await prisma.promoCode.delete({ where: { id } });
+  await audit(session.email, "delete", "PromoCode", id);
   revalidatePath("/admin/promos");
 }
 
 export default async function PromosPage() {
+  await requireAdmin();
   const promos = await prisma.promoCode.findMany({ orderBy: { createdAt: "desc" } }).catch(() => []);
 
   const field = "rounded-lg border border-slate-300 px-3 py-2 text-sm";

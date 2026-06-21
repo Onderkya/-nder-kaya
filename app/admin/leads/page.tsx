@@ -1,6 +1,7 @@
 import { prisma } from "@/lib/db";
 import { revalidatePath } from "next/cache";
 import type { LeadStatus } from "@prisma/client";
+import { requireAdmin } from "@/lib/auth";
 
 export const dynamic = "force-dynamic";
 
@@ -8,13 +9,16 @@ const statuses: LeadStatus[] = ["NEW", "CONTACTED", "CONFIRMED", "DONE", "ARCHIV
 
 async function updateStatus(formData: FormData) {
   "use server";
+  await requireAdmin();
   const id = String(formData.get("id"));
   const status = String(formData.get("status")) as LeadStatus;
+  if (!statuses.includes(status)) return;
   await prisma.lead.update({ where: { id }, data: { status } });
   revalidatePath("/admin/leads");
 }
 
 export default async function LeadsPage() {
+  await requireAdmin();
   const leads = await prisma.lead.findMany({ orderBy: { createdAt: "desc" }, take: 200 }).catch(() => []);
 
   return (
