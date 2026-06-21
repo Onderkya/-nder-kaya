@@ -16,7 +16,7 @@ export function BookingWidget({ slots, locale, labels }: { slots: Slot[]; locale
     return <p className="text-sm" style={{ color: "rgb(var(--muted-foreground))" }}>{labels.noSlots}</p>;
   }
   if (status === "ok") {
-    return <p className="rounded-xl bg-green-50 p-4 text-sm text-green-700">{labels.success}</p>;
+    return <p className="rounded-xl bg-green-50 p-4 text-sm text-green-700 dark:bg-green-500/10 dark:text-green-300">{labels.success}</p>;
   }
 
   const fmt = (iso: string) => new Date(iso).toLocaleString(locale, { dateStyle: "medium", timeStyle: "short" });
@@ -61,7 +61,7 @@ export function BookingWidget({ slots, locale, labels }: { slots: Slot[]; locale
             key={s.id}
             type="button"
             onClick={() => setSelected(s.id)}
-            className="rounded-xl border px-3 py-2 text-sm transition"
+            className="rounded-xl border px-3 py-2 text-sm transition hover:-translate-y-0.5 hover:shadow-sm"
             style={
               selected === s.id
                 ? { backgroundColor: "rgb(var(--primary))", color: "#fff", borderColor: "rgb(var(--primary))" }

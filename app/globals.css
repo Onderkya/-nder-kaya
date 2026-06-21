@@ -38,6 +38,9 @@
 }
 
 @layer base {
+  html {
+    scroll-behavior: smooth;
+  }
   body {
     background-color: rgb(var(--background));
     color: rgb(var(--foreground));
@@ -49,26 +52,53 @@
   .container-page {
     @apply mx-auto w-full max-w-6xl px-4 sm:px-6 lg:px-8;
   }
+  /* Tutarlı başlık ölçeği — tüm sayfalarda aynı h1/h2 ritmi */
+  .h-hero {
+    @apply text-4xl font-bold leading-[1.1] tracking-tight sm:text-5xl lg:text-6xl;
+  }
+  .h-section {
+    @apply text-3xl font-bold tracking-tight sm:text-4xl;
+  }
   .btn-primary {
-    @apply inline-flex items-center justify-center gap-2 rounded-full px-6 py-3 text-sm font-semibold transition;
+    @apply inline-flex items-center justify-center gap-2 rounded-full px-6 py-3 text-sm font-semibold;
     background-color: rgb(var(--primary));
     color: rgb(var(--primary-foreground));
+    transition: transform 0.2s ease, box-shadow 0.2s ease, filter 0.2s ease;
   }
   .btn-primary:hover {
     filter: brightness(1.08);
+    transform: translateY(-1px);
+    box-shadow: 0 10px 24px -8px rgb(var(--primary) / 0.5);
+  }
+  .btn-primary:active {
+    transform: translateY(0);
   }
   .btn-accent {
-    @apply inline-flex items-center justify-center gap-2 rounded-full px-6 py-3 text-sm font-semibold transition;
+    @apply inline-flex items-center justify-center gap-2 rounded-full px-6 py-3 text-sm font-semibold;
     background-color: rgb(var(--accent));
     color: rgb(var(--accent-foreground));
+    transition: transform 0.2s ease, box-shadow 0.2s ease, filter 0.2s ease;
+  }
+  .btn-accent:hover {
+    filter: brightness(1.06);
+    transform: translateY(-1px);
+    box-shadow: 0 10px 24px -8px rgb(var(--accent) / 0.5);
+  }
+  .btn-accent:active {
+    transform: translateY(0);
   }
   .btn-outline {
-    @apply inline-flex items-center justify-center gap-2 rounded-full border px-6 py-3 text-sm font-semibold transition;
+    @apply inline-flex items-center justify-center gap-2 rounded-full border px-6 py-3 text-sm font-semibold;
     border-color: rgb(var(--border));
     color: rgb(var(--foreground));
+    transition: transform 0.2s ease, background-color 0.2s ease, box-shadow 0.2s ease;
   }
   .btn-outline:hover {
     background-color: rgb(var(--muted));
+    transform: translateY(-1px);
+  }
+  .btn-outline:active {
+    transform: translateY(0);
   }
   .card {
     @apply rounded-2xl border p-6 shadow-sm transition;
@@ -132,9 +162,32 @@
   animation: fade-up 0.6s ease both;
 }
 
+/* Scroll ile beliren bölümler — IntersectionObserver "is-visible" ekler.
+ * Stagger için satır içi transition-delay (Reveal bileşeni) kullanılır. */
+.reveal {
+  opacity: 0;
+  transform: translateY(22px);
+  transition:
+    opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1),
+    transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: opacity, transform;
+}
+.reveal.is-visible {
+  opacity: 1;
+  transform: none;
+}
+
 @media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
   .animate-fade-up {
     animation: none;
+  }
+  .reveal {
+    opacity: 1;
+    transform: none;
+    transition: none;
   }
 }
 

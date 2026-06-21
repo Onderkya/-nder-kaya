@@ -23,7 +23,10 @@
     "lightMode": "Light",
     "darkMode": "Dark",
     "language": "Language",
-    "from": "from"
+    "from": "from",
+    "errorTitle": "Something went wrong",
+    "errorText": "An unexpected error occurred. Please try again.",
+    "errorRetry": "Try again"
   },
   "home": {
     "heroTitle": "Discover Antalya, learn Turkish, study in Turkey — with a guide who has lived it",

@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 import { PageHero } from "@/components/page-hero";
 import { ContactForm } from "@/components/contact-form";
 import { PaymentMethods } from "@/components/payment-methods";
+import { Reveal } from "@/components/reveal";
 import { siteConfig, whatsappLink, telegramLink } from "@/lib/config";
 
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
@@ -21,7 +22,7 @@ export default async function ContactPage({ params }: { params: Promise<{ locale
     <>
       <PageHero title={t("title")} intro={t("subtitle")} />
       <section className="container-page grid gap-10 py-14 lg:grid-cols-2">
-        <div>
+        <Reveal>
           <ContactForm
             labels={{
               name: t("name"),
@@ -38,9 +39,9 @@ export default async function ContactPage({ params }: { params: Promise<{ locale
               error: t("error"),
             }}
           />
-        </div>
+        </Reveal>
 
-        <div className="space-y-6">
+        <Reveal delay={120} className="space-y-6">
           <div className="card">
             <h2 className="text-lg font-semibold">{t("orReach")}</h2>
             <ul className="mt-4 space-y-3 text-sm">
@@ -75,7 +76,7 @@ export default async function ContactPage({ params }: { params: Promise<{ locale
               txidNote: p("txidNote"),
             }}
           />
-        </div>
+        </Reveal>
       </section>
     </>
   );

@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import Image from "next/image";
 
 type Item = { id: string; url: string; alt: string | null; inUse: number };
 
@@ -40,8 +41,15 @@ export function MediaGrid({ items }: { items: Item[] }) {
       <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
         {items.map((m) => (
           <div key={m.id} className="overflow-hidden rounded-2xl bg-white shadow-sm">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src={m.url} alt={m.alt ?? ""} className="h-36 w-full bg-slate-50 object-contain" />
+            <div className="relative h-36 w-full bg-slate-50">
+              <Image
+                src={m.url}
+                alt={m.alt ?? ""}
+                fill
+                sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
+                className="object-contain"
+              />
+            </div>
             <div className="space-y-2 p-3">
               <p className="truncate text-xs text-slate-500" title={m.alt ?? ""}>{m.alt || "—"}</p>
               <div className="flex items-center justify-between gap-2">

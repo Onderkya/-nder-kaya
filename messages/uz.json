@@ -23,7 +23,10 @@
     "lightMode": "Yorug'",
     "darkMode": "Qorong'i",
     "language": "Til",
-    "from": "dan"
+    "from": "dan",
+    "errorTitle": "Nimadir xato ketdi",
+    "errorText": "Kutilmagan xatolik yuz berdi. Iltimos, qayta urinib ko'ring.",
+    "errorRetry": "Qayta urinish"
   },
   "home": {
     "heroTitle": "Antalyani kashf eting, turk tilini o'rganing, Turkiyada o'qing — buni o'zi boshidan kechirgan yo'lboshchi bilan",

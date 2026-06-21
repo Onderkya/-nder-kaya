@@ -23,7 +23,10 @@
     "lightMode": "Açık",
     "darkMode": "Koyu",
     "language": "Dil",
-    "from": "başlangıç"
+    "from": "başlangıç",
+    "errorTitle": "Bir şeyler ters gitti",
+    "errorText": "Beklenmeyen bir hata oluştu. Lütfen tekrar deneyin.",
+    "errorRetry": "Tekrar dene"
   },
   "home": {
     "heroTitle": "Antalya'yı keşfedin, Türkçe öğrenin, Türkiye'de okuyun — bunu yaşamış bir rehberle",

@@ -64,7 +64,7 @@ export async function PaymentMethods({
                 <p className="text-sm font-semibold">
                   {m.coin}
                   {m.network ? (
-                    <span className="ml-2 rounded-full bg-amber-100 px-2 py-0.5 text-[11px] font-semibold text-amber-700">
+                    <span className="ml-2 rounded-full bg-amber-100 px-2 py-0.5 text-[11px] font-semibold text-amber-700 dark:bg-amber-400/15 dark:text-amber-200">
                       {labels.networkLabel}: {m.network}
                     </span>
                   ) : null}
@@ -96,12 +96,12 @@ export async function PaymentMethods({
       )}
 
       {crypto.length > 0 && (
-        <p className="mt-3 rounded-lg bg-cyan-50 px-3 py-2 text-xs text-cyan-800">
+        <p className="mt-3 rounded-lg bg-cyan-50 px-3 py-2 text-xs text-cyan-800 dark:bg-cyan-400/10 dark:text-cyan-200">
           🧾 {labels.txidNote}
         </p>
       )}
 
-      <p className="mt-4 rounded-lg bg-amber-50 px-3 py-2 text-xs text-amber-800">
+      <p className="mt-4 rounded-lg bg-amber-50 px-3 py-2 text-xs text-amber-800 dark:bg-amber-400/10 dark:text-amber-200">
         ⚠️ {labels.verifyWarning}
       </p>
     </div>

@@ -3,6 +3,8 @@ import { Link } from "@/i18n/routing";
 import { JsonLd } from "@/components/json-ld";
 import { WaveDivider } from "@/components/wave";
 import { LogoMark } from "@/components/logo";
+import { AntalyaScene } from "@/components/antalya-scene";
+import { Reveal } from "@/components/reveal";
 import { IconBeach, IconBook, IconCap, IconPin, IconTarget, IconChat, IconArrow } from "@/components/icons";
 import { siteConfig } from "@/lib/config";
 
@@ -46,12 +48,13 @@ export default async function HomePage({
 
       {/* Hero */}
       <section className="hero-gradient text-white">
+        <AntalyaScene className="pointer-events-none absolute inset-0 h-full w-full opacity-50 sm:opacity-70" />
         <div className="container-page relative z-10 py-20 sm:py-28">
           <div className="max-w-3xl animate-fade-up">
             <span className="mb-5 inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/10 px-4 py-1.5 text-xs font-medium tracking-wide">
               <LogoMark className="h-4 w-4" /> Antalya · Türkçe · Eğitim
             </span>
-            <h1 className="text-4xl font-bold leading-[1.1] tracking-tight sm:text-5xl lg:text-6xl">
+            <h1 className="h-hero">
               {t("heroTitle")}
             </h1>
             <p className="mt-6 max-w-2xl text-lg text-white/85">{t("heroSubtitle")}</p>
@@ -80,34 +83,35 @@ export default async function HomePage({
 
       {/* Services */}
       <section className="container-page py-16 sm:py-20">
-        <div className="mx-auto max-w-2xl text-center">
-          <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">{t("servicesTitle")}</h2>
+        <Reveal className="mx-auto max-w-2xl text-center">
+          <h2 className="h-section">{t("servicesTitle")}</h2>
           <p className="mt-3 text-lg" style={{ color: "rgb(var(--muted-foreground))" }}>
             {t("servicesSubtitle")}
           </p>
-        </div>
+        </Reveal>
         <div className="mt-12 grid gap-6 md:grid-cols-3">
-          {services.map((srv) => (
-            <Link
-              key={srv.href}
-              href={srv.href}
-              className="card group relative overflow-hidden transition duration-300 hover:-translate-y-1.5 hover:shadow-xl"
-            >
-              <div
-                className="flex h-14 w-14 items-center justify-center rounded-2xl transition group-hover:scale-110"
-                style={{ backgroundColor: "rgb(var(--primary) / 0.12)", color: "rgb(var(--primary))" }}
+          {services.map((srv, i) => (
+            <Reveal key={srv.href} delay={i * 90}>
+              <Link
+                href={srv.href}
+                className="card group relative flex h-full flex-col overflow-hidden transition duration-300 hover:-translate-y-1.5 hover:shadow-xl"
               >
-                <srv.Icon className="h-7 w-7" />
-              </div>
-              <h3 className="mt-5 text-xl font-semibold">{srv.title}</h3>
-              <p className="mt-2 text-sm leading-relaxed" style={{ color: "rgb(var(--muted-foreground))" }}>
-                {srv.desc}
-              </p>
-              <span className="mt-5 inline-flex items-center gap-1.5 text-sm font-semibold" style={{ color: "rgb(var(--primary))" }}>
-                {c("learnMore")}
-                <span className="transition group-hover:translate-x-1"><IconArrow /></span>
-              </span>
-            </Link>
+                <div
+                  className="flex h-14 w-14 items-center justify-center rounded-2xl transition group-hover:scale-110"
+                  style={{ backgroundColor: "rgb(var(--primary) / 0.12)", color: "rgb(var(--primary))" }}
+                >
+                  <srv.Icon className="h-7 w-7" />
+                </div>
+                <h3 className="mt-5 text-xl font-semibold">{srv.title}</h3>
+                <p className="mt-2 text-sm leading-relaxed" style={{ color: "rgb(var(--muted-foreground))" }}>
+                  {srv.desc}
+                </p>
+                <span className="mt-5 inline-flex items-center gap-1.5 text-sm font-semibold" style={{ color: "rgb(var(--primary))" }}>
+                  {c("learnMore")}
+                  <span className="transition group-hover:translate-x-1"><IconArrow /></span>
+                </span>
+              </Link>
+            </Reveal>
           ))}
         </div>
       </section>
@@ -116,14 +120,14 @@ export default async function HomePage({
       <section className="surface-muted relative">
         <WaveDivider fill="rgb(var(--muted))" flip />
         <div className="container-page py-16 sm:py-20">
-          <h2 className="text-center text-3xl font-bold tracking-tight sm:text-4xl" style={{ color: "rgb(var(--foreground))" }}>
-            {t("whyTitle")}
-          </h2>
+          <Reveal as="h2" className="h-section text-center" >
+            <span style={{ color: "rgb(var(--foreground))" }}>{t("whyTitle")}</span>
+          </Reveal>
           <div className="mt-12 grid gap-10 md:grid-cols-3">
-            {reasons.map((r) => (
-              <div key={r.title} className="text-center">
+            {reasons.map((r, i) => (
+              <Reveal key={r.title} delay={i * 90} className="text-center">
                 <div
-                  className="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl shadow-sm"
+                  className="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl shadow-sm transition hover:-translate-y-1 hover:shadow-md"
                   style={{ backgroundColor: "rgb(var(--card))", color: "rgb(var(--accent))" }}
                 >
                   <r.Icon className="h-8 w-8" />
@@ -134,7 +138,7 @@ export default async function HomePage({
                 <p className="mt-2 text-sm leading-relaxed" style={{ color: "rgb(var(--muted-foreground))" }}>
                   {r.text}
                 </p>
-              </div>
+              </Reveal>
             ))}
           </div>
         </div>
@@ -143,7 +147,8 @@ export default async function HomePage({
 
       {/* CTA */}
       <section className="container-page py-16 sm:py-20">
-        <div className="hero-gradient relative overflow-hidden rounded-3xl px-8 py-14 text-center text-white">
+        <Reveal className="hero-gradient relative overflow-hidden rounded-3xl px-8 py-14 text-center text-white">
+          <AntalyaScene className="pointer-events-none absolute inset-0 h-full w-full opacity-40" />
           <div className="relative z-10 mx-auto max-w-xl">
             <h2 className="text-3xl font-bold tracking-tight">{t("ctaTitle")}</h2>
             <p className="mt-3 text-white/85">{t("ctaText")}</p>
@@ -151,7 +156,7 @@ export default async function HomePage({
               {t("heroCtaPrimary")} <IconArrow />
             </Link>
           </div>
-        </div>
+        </Reveal>
       </section>
     </>
   );

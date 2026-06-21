@@ -2,6 +2,7 @@ import { getTranslations, setRequestLocale } from "next-intl/server";
 import type { Metadata } from "next";
 import { PageHero } from "@/components/page-hero";
 import { JsonLd } from "@/components/json-ld";
+import { Reveal } from "@/components/reveal";
 
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
   const { locale } = await params;
@@ -37,11 +38,13 @@ export default async function FaqPage({ params }: { params: Promise<{ locale: st
       <PageHero title={t("title")} intro="" />
       <section className="container-page py-14">
         <div className="mx-auto max-w-3xl space-y-4">
-          {items.map((i) => (
-            <details key={i.q} className="card">
-              <summary className="cursor-pointer text-lg font-semibold">{i.q}</summary>
-              <p className="mt-3" style={{ color: "rgb(var(--muted-foreground))" }}>{i.a}</p>
-            </details>
+          {items.map((item, i) => (
+            <Reveal key={item.q} delay={i * 70}>
+              <details className="card">
+                <summary className="cursor-pointer text-lg font-semibold">{item.q}</summary>
+                <p className="mt-3" style={{ color: "rgb(var(--muted-foreground))" }}>{item.a}</p>
+              </details>
+            </Reveal>
           ))}
         </div>
       </section>

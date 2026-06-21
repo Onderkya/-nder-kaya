@@ -39,6 +39,8 @@ const nextConfig: NextConfig = {
     // Görseller kendi sunucuda (yerel) servis edilir; harici joker kaldırıldı.
     // İleride bir CDN eklenirse burada beyaz listeye alınır.
     remotePatterns: [],
+    // Yerel optimizasyon: modern formatlar (otomatik AVIF/WebP dönüşümü).
+    formats: ["image/avif", "image/webp"],
   },
   async headers() {
     return [{ source: "/:path*", headers: securityHeaders }];

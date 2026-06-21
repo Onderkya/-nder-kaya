@@ -1,6 +1,7 @@
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import type { Metadata } from "next";
 import { PageHero } from "@/components/page-hero";
+import { Reveal } from "@/components/reveal";
 
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
   const { locale } = await params;
@@ -17,7 +18,9 @@ export default async function AboutPage({ params }: { params: Promise<{ locale: 
     <>
       <PageHero title={t("title")} intro="" />
       <section className="container-page py-14">
-        <p className="mx-auto max-w-3xl text-lg leading-relaxed">{t("body")}</p>
+        <Reveal as="p" className="mx-auto max-w-3xl text-lg leading-relaxed">
+          {t("body")}
+        </Reveal>
       </section>
     </>
   );
