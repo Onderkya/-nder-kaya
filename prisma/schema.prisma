@@ -93,6 +93,18 @@ model Translation {
   @@unique([blockId, field, locale])
 }
 
+// Site metni override'ları: JSON çeviri dosyalarındaki herhangi bir anahtarı
+// (örn. "home.heroTitle") locale bazında admin panelden ezer. Boşsa dosyadaki
+// varsayılan kullanılır. Böylece tüm site metinleri panelden düzenlenebilir.
+model SiteText {
+  id     String @id @default(cuid())
+  key    String // noktalı yol: home.heroTitle
+  locale String // tr, en, ru, kk, uz
+  value  String @db.Text
+
+  @@unique([key, locale])
+}
+
 model Media {
   id        String         @id @default(cuid())
   url       String

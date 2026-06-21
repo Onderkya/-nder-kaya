@@ -13,9 +13,9 @@ import { siteConfig } from "@/lib/config";
 
 const inter = Inter({ subsets: ["latin", "cyrillic"], variable: "--font-sans" });
 
-export function generateStaticParams() {
-  return routing.locales.map((locale) => ({ locale }));
-}
+// İçerik admin panelden DB üzerinden düzenlenebildiği için public sayfalar
+// dinamik render edilir (override'lar yeniden derleme gerektirmeden yansır).
+export const dynamic = "force-dynamic";
 
 export async function generateMetadata({
   params,
