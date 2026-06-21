@@ -1,0 +1,130 @@
+{
+  "meta": {
+    "siteName": "Antalya Bridge",
+    "tagline": "Antalyaga ishonchli ko'prigingiz: sayohat maslahati, turk tili darslari va ta'lim yo'riqnomasi",
+    "description": "Antalyaga tashrif buyurish bo'yicha shaxsiy maslahat, onlayn turk tili darslari va Turkiyada o'qish bo'yicha yo'riqnoma — Qozog'iston, Rossiya, O'zbekiston va undan tashqari mehmonlar uchun."
+  },
+  "nav": {
+    "home": "Bosh sahifa",
+    "antalya": "Antalya maslahati",
+    "lessons": "Turk tili darslari",
+    "education": "Turkiyada o'qish",
+    "about": "Biz haqimizda",
+    "contact": "Aloqa",
+    "faq": "Savol-javob"
+  },
+  "common": {
+    "learnMore": "Batafsil",
+    "getStarted": "Boshlash",
+    "contactUs": "Biz bilan bog'laning",
+    "bookNow": "Hozir band qiling",
+    "send": "Yuborish",
+    "loading": "Yuklanmoqda…",
+    "lightMode": "Yorug'",
+    "darkMode": "Qorong'i",
+    "language": "Til",
+    "from": "dan"
+  },
+  "home": {
+    "heroTitle": "Antalyani kashf eting, turk tilini o'rganing, Turkiyada o'qing — buni o'zi boshidan kechirgan yo'lboshchi bilan",
+    "heroSubtitle": "Biz xalqaro mehmonlarga Antalya sayohatini rejalashtirishga, turk tilini onlayn o'rganishga va Turkiyada o'qish jarayonida yo'l topishga yordam beramiz. Mahalliy tajriba, shaxsiy yo'riqnoma, agentlik ovorachiligisiz.",
+    "heroCtaPrimary": "Biz bilan gaplashing",
+    "heroCtaSecondary": "Xizmatlarimizni ko'ring",
+    "servicesTitle": "Biz qanday yordam beramiz",
+    "servicesSubtitle": "Uchta xizmat, bitta ishonchli aloqa nuqtasi.",
+    "whyTitle": "Nega biz bilan ishlash kerak",
+    "why1Title": "Haqiqiy mahalliy tajriba",
+    "why1Text": "Biz Antalyada yashaymiz va mehmonxona hamda turizm sohasida ishlaymiz — yuzsiz agentlik emas.",
+    "why2Title": "Biz o'zimiz Turkiyada o'qiganmiz",
+    "why2Text": "Ariza topshirish va ta'lim jarayonini ichdan biladigan sobiq grant talabasi.",
+    "why3Title": "Sizning tilingizda, sizga qulay tarzda",
+    "why3Text": "Turk, ingliz, rus, qozoq va o'zbek tillarida xizmat — bizga WhatsApp yoki Telegram orqali yozing.",
+    "ctaTitle": "Boshlashga tayyormisiz?",
+    "ctaText": "Bizga nimaga muhtojligingizni ayting, biz sizga shaxsan javob beramiz."
+  },
+  "services": {
+    "antalyaTitle": "Antalya sayohat maslahati",
+    "antalyaDesc": "Mehmonxonalar, transferlar va mahalliy provayderlar bilan muvofiqlashtirish — sizga moslab rejalashtiriladi.",
+    "lessonsTitle": "Onlayn turk tili darslari",
+    "lessonsDesc": "Oldindan kelishilgan shaxsiy darslar, 15 / 30 / 60 daqiqa, Zoom orqali yoki yuzma-yuz.",
+    "educationTitle": "Turkiyada o'qish bo'yicha yo'riqnoma",
+    "educationDesc": "Arizalar, grantlar va ta'lim jarayoni bo'yicha bosqichma-bosqich yordam."
+  },
+  "antalya": {
+    "title": "Antalya sayohat maslahati",
+    "intro": "Antalyaga kelyapsizmi? Biz sizga to'g'ri rejalashtirishga yordam beramiz — mos mehmonxona topish, transfer va avtomobil ijarasini tashkil qilish hamda ishonchli mahalliy provayderlar bilan muvofiqlashtirish. Biz paketlarni majburlamaymiz; sayohatingizni aynan siz xohlagan tarzda quramiz.",
+    "feature1": "Byudjet va uslubingizga mos mehmonxona tanlash",
+    "feature2": "Aeroport transferlari va avtomobil ijarasini muvofiqlashtirish",
+    "feature3": "Mahalliy agentliklar va xizmat ko'rsatuvchilar bilan aloqa",
+    "feature4": "Mehmonxona sohasidan halol, ichki maslahat",
+    "cta": "Sanalaringizni ayting, biz reja tayyorlaymiz"
+  },
+  "lessons": {
+    "title": "Onlayn turk tili darslari",
+    "intro": "Ona tili turk bo'lgan o'qituvchi bilan, oldindan kelishilgan holda, sizga qulay sur'atda turk tilini o'rganing. Mashg'ulotlar Zoom orqali yoki Antalyada yuzma-yuz.",
+    "durationsTitle": "Dars davomiyligi",
+    "min15": "15 daqiqa",
+    "min15Desc": "Tezkor mashq yoki suhbatga tayyorgarlik.",
+    "min30": "30 daqiqa",
+    "min30Desc": "Bitta mavzuga yo'naltirilgan dars.",
+    "min60": "60 daqiqa",
+    "min60Desc": "Mashq va uy vazifasi bilan to'liq dars.",
+    "cta": "Dars vaqtini so'rang"
+  },
+  "education": {
+    "title": "Turkiyada o'qish bo'yicha yo'riqnoma",
+    "intro": "Turkiyada o'qishni o'ylayapsizmi? Biz buni boshdan kechirganmiz. Biz sizga dasturlarni tanlash, arizalar, grantlar (jumladan Türkiye Bursları) va kelganingizdan keyin nimani kutish bo'yicha yo'l ko'rsatamiz.",
+    "feature1": "Universitet va dasturni tanlash",
+    "feature2": "Grant va ariza bo'yicha yordam",
+    "feature3": "Hujjatlarni tayyorlash bo'yicha yo'riqnoma",
+    "feature4": "Nimani kutish kerak: kelish, yashash, talabalik hayoti",
+    "cta": "Vaziyatingiz haqida so'rang"
+  },
+  "about": {
+    "title": "Biz haqimizda",
+    "body": "Biz Antalyada joylashgan kichik jamoamiz. Birimiz mehmonxona savdosida ishlaymiz va turizm sohasini ichdan bilamiz; ikkinchimiz Turkiyaga grant talabasi sifatida kelgan va hozir turk tilidan dars beradi. Biz buni xalqaro mehmonlarga agentliklar kamdan-kam taklif qiladigan narsani berish uchun boshladik: halol, shaxsiy, ko'p tilli yordam — siz qilmoqchi bo'lgan ishni haqiqatan boshidan kechirgan kishidan."
+  },
+  "contact": {
+    "title": "Bog'lanish",
+    "subtitle": "Bizga yozing, biz shaxsan javob beramiz. Biz turk, ingliz, rus, qozoq va o'zbek tillarida gaplashamiz.",
+    "name": "Ismingiz",
+    "email": "Elektron pochta",
+    "phone": "Telefon (ixtiyoriy)",
+    "service": "Nimaga yordam bera olamiz?",
+    "serviceAntalya": "Antalya sayohat maslahati",
+    "serviceLessons": "Turk tili darslari",
+    "serviceEducation": "Turkiyada o'qish",
+    "serviceOther": "Boshqa narsa",
+    "message": "Xabaringiz",
+    "submit": "Xabar yuborish",
+    "success": "Rahmat! Xabaringizni oldik va tez orada javob beramiz.",
+    "error": "Nimadir xato ketdi. Iltimos, qaytadan urinib ko'ring yoki bizga WhatsApp orqali yozing.",
+    "orReach": "Yoki biz bilan to'g'ridan-to'g'ri bog'laning:"
+  },
+  "faq": {
+    "title": "Ko'p beriladigan savollar",
+    "q1": "Qaysi tillarda xizmat ko'rsatasiz?",
+    "a1": "Turk, ingliz, rus, qozoq va o'zbek tillarida.",
+    "q2": "Qanday to'layman?",
+    "a2": "Qozog'istondagi mehmonlar Kaspi orqali to'lashlari mumkin. Boshqa barcha mamlakatlar uchun biz kriptovalyutani (USDT, BTC va boshqalar) qabul qilamiz. Har bir to'lovni shaxsan tasdiqlaymiz.",
+    "q3": "Darslar qanday o'tkaziladi?",
+    "a3": "Oldindan kelishilgan holda, Zoom orqali yoki Antalyada yuzma-yuz, 15, 30 yoki 60 daqiqalik mashg'ulotlarda.",
+    "q4": "Bandlarni o'zingiz hal qilasizmi?",
+    "a4": "Botimiz savollaringizga zudlik bilan javob beradi, lekin har bir band va to'lovni haqiqiy odam bajaradi. Siz hech qachon avtomatlashtirilgan tizim bilan yolg'iz qolmaysiz."
+  },
+  "payment": {
+    "title": "To'lov variantlari",
+    "kaspiTitle": "Qozog'iston — Kaspi",
+    "kaspiText": "Qozog'istondagi mehmonlar Kaspi orqali oson to'lashlari mumkin.",
+    "cryptoTitle": "Boshqa mamlakatlar — Kriptovalyuta",
+    "cryptoText": "Biz bir nechta kriptovalyutalarni, jumladan USDT va BTC ni qabul qilamiz.",
+    "note": "Har bir to'lov biz tomonidan shaxsan tasdiqlanadi. Chegirma kodlari to'lovdan oldin qo'llaniladi."
+  },
+  "footer": {
+    "rights": "Barcha huquqlar himoyalangan.",
+    "follow": "Bizni kuzatib boring",
+    "quickLinks": "Tezkor havolalar",
+    "services": "Xizmatlar",
+    "contact": "Aloqa"
+  }
+}

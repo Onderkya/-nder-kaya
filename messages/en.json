@@ -1,0 +1,130 @@
+{
+  "meta": {
+    "siteName": "Antalya Bridge",
+    "tagline": "Your trusted bridge to Antalya: travel consulting, Turkish lessons & education guidance",
+    "description": "Personal consulting for visiting Antalya, online Turkish lessons, and guidance for studying in Turkey — for guests from Kazakhstan, Russia, Uzbekistan and beyond."
+  },
+  "nav": {
+    "home": "Home",
+    "antalya": "Antalya Consulting",
+    "lessons": "Turkish Lessons",
+    "education": "Study in Turkey",
+    "about": "About",
+    "contact": "Contact",
+    "faq": "FAQ"
+  },
+  "common": {
+    "learnMore": "Learn more",
+    "getStarted": "Get started",
+    "contactUs": "Contact us",
+    "bookNow": "Book now",
+    "send": "Send",
+    "loading": "Loading…",
+    "lightMode": "Light",
+    "darkMode": "Dark",
+    "language": "Language",
+    "from": "from"
+  },
+  "home": {
+    "heroTitle": "Discover Antalya, learn Turkish, study in Turkey — with a guide who has lived it",
+    "heroSubtitle": "We help international guests plan their Antalya trip, learn Turkish online, and navigate studying in Turkey. Local expertise, personal guidance, no agency runaround.",
+    "heroCtaPrimary": "Talk to us",
+    "heroCtaSecondary": "See our services",
+    "servicesTitle": "How we help",
+    "servicesSubtitle": "Three services, one trusted point of contact.",
+    "whyTitle": "Why work with us",
+    "why1Title": "Real local expertise",
+    "why1Text": "We live in Antalya and work inside the hotel and tourism industry — not a faceless agency.",
+    "why2Title": "We studied in Turkey ourselves",
+    "why2Text": "A former scholarship student who knows the application and education process from the inside.",
+    "why3Title": "Your language, your way",
+    "why3Text": "Service in Turkish, English, Russian, Kazakh and Uzbek — message us on WhatsApp or Telegram.",
+    "ctaTitle": "Ready to start?",
+    "ctaText": "Tell us what you need and we will get back to you personally."
+  },
+  "services": {
+    "antalyaTitle": "Antalya Travel Consulting",
+    "antalyaDesc": "Hotels, transfers, and coordination with local providers — planned around you.",
+    "lessonsTitle": "Online Turkish Lessons",
+    "lessonsDesc": "Private lessons by appointment, 15 / 30 / 60 minutes, on Zoom or in person.",
+    "educationTitle": "Study in Turkey Guidance",
+    "educationDesc": "Step-by-step help with applications, scholarships and the education process."
+  },
+  "antalya": {
+    "title": "Antalya Travel Consulting",
+    "intro": "Coming to Antalya? We help you plan it the right way — finding the right hotel, arranging transfers and car rentals, and coordinating with trusted local providers. We don't push packages; we build your trip around what you actually want.",
+    "feature1": "Hotel selection that fits your budget and style",
+    "feature2": "Airport transfers and car rental coordination",
+    "feature3": "Liaison with local agencies and service providers",
+    "feature4": "Honest, insider advice from the hotel industry",
+    "cta": "Tell us your dates and we'll prepare a plan"
+  },
+  "lessons": {
+    "title": "Online Turkish Lessons",
+    "intro": "Learn Turkish with a native teacher, by appointment, at a pace that suits you. Sessions on Zoom or in person in Antalya.",
+    "durationsTitle": "Lesson lengths",
+    "min15": "15 minutes",
+    "min15Desc": "Quick practice or conversation warm-up.",
+    "min30": "30 minutes",
+    "min30Desc": "Focused lesson on a single topic.",
+    "min60": "60 minutes",
+    "min60Desc": "Full lesson with practice and homework.",
+    "cta": "Request a lesson time"
+  },
+  "education": {
+    "title": "Study in Turkey Guidance",
+    "intro": "Thinking of studying in Turkey? We've been through it. We guide you through choosing programs, applications, scholarships (including Türkiye Bursları) and what to expect once you arrive.",
+    "feature1": "University and program selection",
+    "feature2": "Scholarship and application support",
+    "feature3": "Document preparation guidance",
+    "feature4": "What to expect: arrival, residence, student life",
+    "cta": "Ask about your situation"
+  },
+  "about": {
+    "title": "About us",
+    "body": "We're a small team based in Antalya. One of us works in hotel sales and knows the tourism industry from the inside; the other came to Turkey as a scholarship student and now teaches Turkish. We started this to give international guests something agencies rarely offer: honest, personal, multilingual help — from someone who has actually lived what you're about to do."
+  },
+  "contact": {
+    "title": "Get in touch",
+    "subtitle": "Message us and we'll reply personally. We speak Turkish, English, Russian, Kazakh and Uzbek.",
+    "name": "Your name",
+    "email": "Email",
+    "phone": "Phone (optional)",
+    "service": "What can we help with?",
+    "serviceAntalya": "Antalya travel consulting",
+    "serviceLessons": "Turkish lessons",
+    "serviceEducation": "Study in Turkey",
+    "serviceOther": "Something else",
+    "message": "Your message",
+    "submit": "Send message",
+    "success": "Thank you! We received your message and will reply soon.",
+    "error": "Something went wrong. Please try again or message us on WhatsApp.",
+    "orReach": "Or reach us directly:"
+  },
+  "faq": {
+    "title": "Frequently asked questions",
+    "q1": "What languages do you offer service in?",
+    "a1": "Turkish, English, Russian, Kazakh and Uzbek.",
+    "q2": "How do I pay?",
+    "a2": "Guests in Kazakhstan can pay via Kaspi. For all other countries we accept cryptocurrency (USDT, BTC and others). We confirm every payment personally.",
+    "q3": "How are lessons held?",
+    "a3": "By appointment, on Zoom or in person in Antalya, in 15, 30 or 60 minute sessions.",
+    "q4": "Do you handle bookings yourselves?",
+    "a4": "Our bot answers your questions instantly, but a real person handles every booking and payment. You're never left with an automated system."
+  },
+  "payment": {
+    "title": "Payment options",
+    "kaspiTitle": "Kazakhstan — Kaspi",
+    "kaspiText": "Guests in Kazakhstan can pay easily via Kaspi.",
+    "cryptoTitle": "Other countries — Cryptocurrency",
+    "cryptoText": "We accept multiple cryptocurrencies including USDT and BTC.",
+    "note": "Every payment is confirmed personally by us. Discount codes are applied before payment."
+  },
+  "footer": {
+    "rights": "All rights reserved.",
+    "follow": "Follow us",
+    "quickLinks": "Quick links",
+    "services": "Services",
+    "contact": "Contact"
+  }
+}

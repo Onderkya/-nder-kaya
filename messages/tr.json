@@ -1,0 +1,130 @@
+{
+  "meta": {
+    "siteName": "Antalya Bridge",
+    "tagline": "Antalya'ya güvenilir köprünüz: seyahat danışmanlığı, Türkçe ders ve eğitim rehberliği",
+    "description": "Antalya'yı ziyaret için kişisel danışmanlık, online Türkçe dersleri ve Türkiye'de eğitim rehberliği — Kazakistan, Rusya, Özbekistan ve diğer ülkelerden misafirler için."
+  },
+  "nav": {
+    "home": "Ana Sayfa",
+    "antalya": "Antalya Danışmanlık",
+    "lessons": "Türkçe Ders",
+    "education": "Türkiye'de Eğitim",
+    "about": "Hakkımızda",
+    "contact": "İletişim",
+    "faq": "S.S.S."
+  },
+  "common": {
+    "learnMore": "Daha fazla",
+    "getStarted": "Başlayalım",
+    "contactUs": "Bize ulaşın",
+    "bookNow": "Randevu al",
+    "send": "Gönder",
+    "loading": "Yükleniyor…",
+    "lightMode": "Açık",
+    "darkMode": "Koyu",
+    "language": "Dil",
+    "from": "başlangıç"
+  },
+  "home": {
+    "heroTitle": "Antalya'yı keşfedin, Türkçe öğrenin, Türkiye'de okuyun — bunu yaşamış bir rehberle",
+    "heroSubtitle": "Yurtdışından gelen misafirlere Antalya gezisini planlamada, online Türkçe öğrenmede ve Türkiye'de eğitim sürecinde yardımcı oluyoruz. Yerel uzmanlık, kişisel rehberlik, acente karmaşası yok.",
+    "heroCtaPrimary": "Bizimle konuşun",
+    "heroCtaSecondary": "Hizmetlerimiz",
+    "servicesTitle": "Nasıl yardımcı oluyoruz",
+    "servicesSubtitle": "Üç hizmet, tek güvenilir muhatap.",
+    "whyTitle": "Neden biz",
+    "why1Title": "Gerçek yerel uzmanlık",
+    "why1Text": "Antalya'da yaşıyor ve otel & turizm sektörünün içinde çalışıyoruz — yüzü olmayan bir acente değiliz.",
+    "why2Title": "Türkiye'de biz de okuduk",
+    "why2Text": "Başvuru ve eğitim sürecini içeriden bilen eski bir burslu öğrenci.",
+    "why3Title": "Sizin dilinizde",
+    "why3Text": "Türkçe, İngilizce, Rusça, Kazakça ve Özbekçe hizmet — WhatsApp veya Telegram'dan yazın.",
+    "ctaTitle": "Başlamaya hazır mısınız?",
+    "ctaText": "İhtiyacınızı yazın, size kişisel olarak dönelim."
+  },
+  "services": {
+    "antalyaTitle": "Antalya Seyahat Danışmanlığı",
+    "antalyaDesc": "Otel, transfer ve yerel sağlayıcılarla koordinasyon — size göre planlanır.",
+    "lessonsTitle": "Online Türkçe Dersleri",
+    "lessonsDesc": "Randevulu özel dersler, 15 / 30 / 60 dakika, Zoom veya yüz yüze.",
+    "educationTitle": "Türkiye'de Eğitim Rehberliği",
+    "educationDesc": "Başvuru, burs ve eğitim sürecinde adım adım destek."
+  },
+  "antalya": {
+    "title": "Antalya Seyahat Danışmanlığı",
+    "intro": "Antalya'ya mı geliyorsunuz? Doğru oteli bulmaktan transfer ve araç kiralama ayarlamaya, güvenilir yerel sağlayıcılarla koordinasyona kadar gezinizi doğru planlamanıza yardımcı oluyoruz. Paket dayatmıyoruz; gezinizi gerçekten istediğiniz şeye göre kuruyoruz.",
+    "feature1": "Bütçenize ve tarzınıza uygun otel seçimi",
+    "feature2": "Havalimanı transferi ve araç kiralama koordinasyonu",
+    "feature3": "Yerel acente ve hizmet sağlayıcılarla irtibat",
+    "feature4": "Otel sektöründen dürüst, içeriden tavsiye",
+    "cta": "Tarihlerinizi yazın, size bir plan hazırlayalım"
+  },
+  "lessons": {
+    "title": "Online Türkçe Dersleri",
+    "intro": "Anadili Türkçe bir öğretmenle, randevulu ve size uygun bir hızda Türkçe öğrenin. Zoom üzerinden veya Antalya'da yüz yüze.",
+    "durationsTitle": "Ders süreleri",
+    "min15": "15 dakika",
+    "min15Desc": "Hızlı pratik veya konuşma ısınması.",
+    "min30": "30 dakika",
+    "min30Desc": "Tek konuya odaklı ders.",
+    "min60": "60 dakika",
+    "min60Desc": "Pratik ve ödevli tam ders.",
+    "cta": "Ders saati talep edin"
+  },
+  "education": {
+    "title": "Türkiye'de Eğitim Rehberliği",
+    "intro": "Türkiye'de okumayı mı düşünüyorsunuz? Biz bu yoldan geçtik. Program seçimi, başvurular, burslar (Türkiye Bursları dahil) ve geldikten sonra sizi nelerin beklediği konusunda yol gösteriyoruz.",
+    "feature1": "Üniversite ve program seçimi",
+    "feature2": "Burs ve başvuru desteği",
+    "feature3": "Belge hazırlığı rehberliği",
+    "feature4": "Sonrası: geliş, ikamet, öğrenci hayatı",
+    "cta": "Durumunuzu sorun"
+  },
+  "about": {
+    "title": "Hakkımızda",
+    "body": "Antalya merkezli küçük bir ekibiz. Birimiz otel satışında çalışıyor ve turizm sektörünü içeriden biliyor; diğeri Türkiye'ye burslu öğrenci olarak geldi ve şimdi Türkçe öğretiyor. Bunu, acentelerin nadiren sunduğu bir şeyi misafirlere vermek için kurduk: dürüst, kişisel, çok dilli yardım — yapmak üzere olduğunuz şeyi gerçekten yaşamış birinden."
+  },
+  "contact": {
+    "title": "İletişime geçin",
+    "subtitle": "Bize yazın, kişisel olarak dönelim. Türkçe, İngilizce, Rusça, Kazakça ve Özbekçe konuşuyoruz.",
+    "name": "Adınız",
+    "email": "E-posta",
+    "phone": "Telefon (isteğe bağlı)",
+    "service": "Hangi konuda yardımcı olabiliriz?",
+    "serviceAntalya": "Antalya seyahat danışmanlığı",
+    "serviceLessons": "Türkçe ders",
+    "serviceEducation": "Türkiye'de eğitim",
+    "serviceOther": "Başka bir konu",
+    "message": "Mesajınız",
+    "submit": "Mesaj gönder",
+    "success": "Teşekkürler! Mesajınızı aldık, en kısa sürede döneceğiz.",
+    "error": "Bir şeyler ters gitti. Lütfen tekrar deneyin veya WhatsApp'tan yazın.",
+    "orReach": "Veya doğrudan ulaşın:"
+  },
+  "faq": {
+    "title": "Sıkça sorulan sorular",
+    "q1": "Hangi dillerde hizmet veriyorsunuz?",
+    "a1": "Türkçe, İngilizce, Rusça, Kazakça ve Özbekçe.",
+    "q2": "Nasıl ödeme yapabilirim?",
+    "a2": "Kazakistan'daki misafirler Kaspi ile ödeyebilir. Diğer tüm ülkeler için kripto para (USDT, BTC ve diğerleri) kabul ediyoruz. Her ödemeyi kişisel olarak onaylıyoruz.",
+    "q3": "Dersler nasıl yapılıyor?",
+    "a3": "Randevulu olarak, Zoom üzerinden veya Antalya'da yüz yüze; 15, 30 veya 60 dakikalık seanslarla.",
+    "q4": "Rezervasyonları kendiniz mi yapıyorsunuz?",
+    "a4": "Botumuz sorularınızı anında yanıtlar, ancak her rezervasyon ve ödemeyi gerçek bir kişi yürütür. Asla otomatik bir sistemle baş başa kalmazsınız."
+  },
+  "payment": {
+    "title": "Ödeme seçenekleri",
+    "kaspiTitle": "Kazakistan — Kaspi",
+    "kaspiText": "Kazakistan'daki misafirler kolayca Kaspi ile ödeyebilir.",
+    "cryptoTitle": "Diğer ülkeler — Kripto Para",
+    "cryptoText": "USDT ve BTC dahil birden fazla kripto parayı kabul ediyoruz.",
+    "note": "Her ödeme tarafımızdan kişisel olarak onaylanır. İndirim kodları ödemeden önce uygulanır."
+  },
+  "footer": {
+    "rights": "Tüm hakları saklıdır.",
+    "follow": "Bizi takip edin",
+    "quickLinks": "Hızlı bağlantılar",
+    "services": "Hizmetler",
+    "contact": "İletişim"
+  }
+}

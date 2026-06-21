@@ -1,0 +1,191 @@
+// Antalya Bridge — veritabanı şeması
+// PostgreSQL + Prisma. Çok dilli içerik, talep/lead, indirim ve ödeme yöntemleri.
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  ADMIN
+  EDITOR
+}
+
+enum LeadStatus {
+  NEW
+  CONTACTED
+  CONFIRMED
+  DONE
+  ARCHIVED
+}
+
+enum Channel {
+  WEB
+  WHATSAPP
+  TELEGRAM
+}
+
+enum PromoType {
+  PERCENT
+  AMOUNT
+}
+
+enum PaymentType {
+  KASPI
+  CRYPTO
+}
+
+// --- Yönetim ---
+model User {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  name      String?
+  password  String // bcrypt hash
+  role      Role     @default(ADMIN)
+  createdAt DateTime @default(now())
+}
+
+// --- İçerik (CMS): sayfa -> bölüm -> blok, çok dilli çeviriler ---
+model Page {
+  id        String    @id @default(cuid())
+  slug      String    @unique // home, antalya, lessons, education, about, faq, contact
+  order     Int       @default(0)
+  published Boolean   @default(true)
+  sections  Section[]
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+}
+
+model Section {
+  id        String         @id @default(cuid())
+  page      Page           @relation(fields: [pageId], references: [id], onDelete: Cascade)
+  pageId    String
+  key       String // hero, features, cta...
+  type      String         @default("text")
+  order     Int            @default(0)
+  blocks    ContentBlock[]
+}
+
+model ContentBlock {
+  id        String        @id @default(cuid())
+  section   Section       @relation(fields: [sectionId], references: [id], onDelete: Cascade)
+  sectionId String
+  type      String // text, image, card, faq
+  order     Int           @default(0)
+  mediaId   String?
+  media     Media?        @relation(fields: [mediaId], references: [id])
+  texts     Translation[]
+}
+
+// Çok dilli metin: blok bazlı, alan adı + locale.
+model Translation {
+  id      String       @id @default(cuid())
+  block   ContentBlock @relation(fields: [blockId], references: [id], onDelete: Cascade)
+  blockId String
+  field   String // title, body, alt...
+  locale  String // tr, en, ru, kk, uz
+  value   String       @db.Text
+
+  @@unique([blockId, field, locale])
+}
+
+model Media {
+  id        String         @id @default(cuid())
+  url       String
+  alt       String?
+  width     Int?
+  height    Int?
+  createdAt DateTime       @default(now())
+  blocks    ContentBlock[]
+}
+
+// --- Hizmetler & dersler ---
+model Service {
+  id        String   @id @default(cuid())
+  slug      String   @unique // antalya, lessons, education
+  active    Boolean  @default(true)
+  order     Int      @default(0)
+}
+
+model LessonType {
+  id          String  @id @default(cuid())
+  minutes     Int // 15, 30, 60
+  price       Int? // admin tarafından girilir (en küçük para birimi cinsinden)
+  currency    String  @default("USD")
+  active      Boolean @default(true)
+  order       Int     @default(0)
+}
+
+model AvailabilitySlot {
+  id        String   @id @default(cuid())
+  startsAt  DateTime
+  minutes   Int      @default(30)
+  booked    Boolean  @default(false)
+  createdAt DateTime @default(now())
+}
+
+// --- Talep / Lead (iletişim formu + bot) ---
+model Lead {
+  id        String     @id @default(cuid())
+  name      String
+  email     String?
+  phone     String?
+  service   String? // antalya, lessons, education, other
+  message   String     @db.Text
+  locale    String     @default("en")
+  channel   Channel    @default(WEB)
+  status    LeadStatus @default(NEW)
+  createdAt DateTime   @default(now())
+}
+
+// --- İndirim / Promosyon (içerikten bağımsız) ---
+model PromoCode {
+  id          String    @id @default(cuid())
+  code        String    @unique
+  type        PromoType @default(PERCENT)
+  value       Int // yüzde (0-100) veya tutar
+  active      Boolean   @default(true)
+  validFrom   DateTime?
+  validUntil  DateTime?
+  usageLimit  Int? // null = sınırsız
+  usedCount   Int       @default(0)
+  targetSlug  String? // belirli bir hizmete özel (null = tümü)
+  createdAt   DateTime  @default(now())
+}
+
+// --- Ödeme yöntemleri (admin yönetir) ---
+model PaymentMethod {
+  id        String      @id @default(cuid())
+  type      PaymentType // KASPI | CRYPTO
+  coin      String? // USDT, BTC... (crypto için)
+  network   String? // TRC20, ERC20, BTC...
+  address   String? // cüzdan adresi veya Kaspi bilgisi
+  qrUrl     String?
+  active    Boolean     @default(true)
+  order     Int         @default(0)
+}
+
+// --- Bot konuşmaları ---
+model Conversation {
+  id        String    @id @default(cuid())
+  channel   Channel
+  externalId String // whatsapp/telegram kullanıcı kimliği
+  locale    String    @default("en")
+  createdAt DateTime  @default(now())
+  messages  Message[]
+
+  @@unique([channel, externalId])
+}
+
+model Message {
+  id             String       @id @default(cuid())
+  conversation   Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+  conversationId String
+  role           String // user | assistant
+  content        String       @db.Text
+  createdAt      DateTime     @default(now())
+}
