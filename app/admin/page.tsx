@@ -3,18 +3,22 @@ import { prisma } from "@/lib/db";
 export const dynamic = "force-dynamic";
 
 export default async function AdminDashboard() {
-  const [leads, newLeads, promos, payments] = await Promise.all([
+  const [leads, newLeads, promos, payments, paidInvoices, pendingInvoices] = await Promise.all([
     prisma.lead.count(),
     prisma.lead.count({ where: { status: "NEW" } }),
     prisma.promoCode.count({ where: { active: true } }),
     prisma.paymentMethod.count({ where: { active: true } }),
-  ]).catch(() => [0, 0, 0, 0]);
+    prisma.invoice.count({ where: { status: "PAID" } }),
+    prisma.invoice.count({ where: { status: "PENDING" } }),
+  ]).catch(() => [0, 0, 0, 0, 0, 0]);
 
   const cards = [
     { label: "Toplam talep", value: leads },
     { label: "Yeni talep", value: newLeads },
     { label: "Aktif indirim kodu", value: promos },
     { label: "Aktif ödeme yöntemi", value: payments },
+    { label: "Ödenen fatura", value: paidInvoices },
+    { label: "Bekleyen fatura", value: pendingInvoices },
   ];
 
   return (

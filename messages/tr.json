@@ -135,7 +135,29 @@
     "note": "Her ödeme tarafımızdan kişisel olarak onaylanır. İndirim kodları ödemeden önce uygulanır.",
     "verifyWarning": "Göndermeden önce adresi ve ağı mutlaka iki kez kontrol edin. Kripto transferleri geri alınamaz. Adresi elle yazmayın; kopyalayın.",
     "networkLabel": "Ağ",
-    "empty": "Ödeme bilgileri iletişim sırasında paylaşılır."
+    "empty": "Ödeme bilgileri iletişim sırasında paylaşılır.",
+    "txidNote": "Ödedikten sonra işlem numarasını (TXID) bize gönderin; ödemenizi hızla doğrularız."
+  },
+  "checkout": {
+    "title": "Ödeme",
+    "ref": "Referans",
+    "amount": "Tutar",
+    "discount": "İndirim",
+    "toPay": "Ödenecek",
+    "payButton": "Kripto ile öde",
+    "networks": "TRC20, SOL, ARB, ETH, BTC ve daha fazlası — ödeme sayfasında seçersin",
+    "waiting": "Ödeme bekleniyor…",
+    "paidTitle": "Ödeme alındı",
+    "paidBody": "Teşekkürler! Ödemeniz onaylandı. En kısa sürede sizinle iletişime geçeceğiz.",
+    "expiredTitle": "Süresi doldu",
+    "expiredBody": "Bu ödeme bağlantısının süresi doldu. Lütfen bizimle iletişime geçin.",
+    "cancelledTitle": "İptal edildi",
+    "failedTitle": "Ödeme başarısız",
+    "failedBody": "Ödeme tamamlanamadı. Tekrar deneyin veya bizimle iletişime geçin.",
+    "underpaidTitle": "Eksik ödeme",
+    "underpaidBody": "Beklenenden az tutar alındı. Lütfen bizimle iletişime geçin; farkı çözelim.",
+    "notFound": "Fatura bulunamadı.",
+    "secured": "Ödeme Cryptomus altyapısıyla güvenle alınır."
   },
   "footer": {
     "rights": "Tüm hakları saklıdır.",

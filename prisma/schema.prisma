@@ -39,6 +39,16 @@ enum PaymentType {
   CRYPTO
 }
 
+// Fatura/sipariş durumu (kripto ağ geçidi akışı)
+enum InvoiceStatus {
+  PENDING // oluşturuldu, ödeme bekleniyor
+  PAID // tam ödendi (paid / paid_over)
+  UNDERPAID // eksik ödendi (wrong_amount) — elle kontrol
+  EXPIRED // süresi doldu
+  CANCELLED // admin iptal etti
+  FAILED // sağlayıcı başarısız bildirdi
+}
+
 // --- Yönetim ---
 model User {
   id        String   @id @default(cuid())
@@ -183,6 +193,52 @@ model PaymentMethod {
   order     Int         @default(0)
   createdAt DateTime    @default(now())
   updatedAt DateTime    @updatedAt
+}
+
+// --- Fatura / sipariş (kripto ağ geçidi: Cryptomus vb.) ---
+// Admin bir fatura oluşturur → sağlayıcıda barındırılan ödeme sayfası açılır →
+// müşteri istediği ağdan (TRC20/SOL/ARB/ETH/BTC...) öder → webhook/senkron ile
+// otomatik "PAID" olur → sahibe bildirim gider. Para doğrudan sahibin cüzdanına.
+model Invoice {
+  id          String        @id @default(cuid())
+  ref         String        @unique // insan-okur kısa referans: AB-XXXXXX (order_id)
+  amount      Int // ödenecek tutar (indirim SONRASI), en küçük birim (kuruş/cent)
+  currency    String        @default("USD") // fiat: USD, EUR, RUB, KZT...
+  description String        @db.Text
+
+  // İndirim (uygulandıysa)
+  promoCode      String?
+  discountAmount Int     @default(0) // en küçük birim
+
+  // Müşteri (opsiyonel)
+  customerName  String?
+  customerEmail String?
+  customerPhone String?
+  locale        String  @default("en")
+
+  // İlişki / bağlam
+  service      String? // antalya | lessons | education | other
+  lessonTypeId String?
+  leadId       String?
+
+  // Sağlayıcı
+  provider   String  @default("cryptomus")
+  providerId String? // Cryptomus payment uuid
+  payUrl     String? // barındırılan ödeme sayfası (müşteriye gönderilen link)
+
+  // Durum / sonuç
+  status     InvoiceStatus @default(PENDING)
+  paidAt     DateTime?
+  paidAmount String? // gerçekte ödenen (sağlayıcı raporu; raporlama)
+  payCurrency String? // ödenen coin (USDT, BTC...)
+  payNetwork String? // tron, eth, bsc, sol, btc...
+  txid       String?
+  expiresAt  DateTime?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([status, createdAt])
 }
 
 // --- Denetim kaydı: hassas değişiklikler (özellikle ödeme/cüzdan) izlenir ---

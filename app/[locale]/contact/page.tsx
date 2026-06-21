@@ -72,6 +72,7 @@ export default async function ContactPage({ params }: { params: Promise<{ locale
               verifyWarning: p("verifyWarning"),
               networkLabel: p("networkLabel"),
               empty: p("empty"),
+              txidNote: p("txidNote"),
             }}
           />
         </div>

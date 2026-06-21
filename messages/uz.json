@@ -135,7 +135,29 @@
     "note": "Har bir to'lov biz tomonidan shaxsan tasdiqlanadi. Chegirma kodlari to'lovdan oldin qo'llaniladi.",
     "verifyWarning": "Yuborishdan oldin manzil va tarmoqni har doim ikki marta tekshiring. Kripto o'tkazmalar qaytarib bo'lmaydi. Manzilni qo'lda yozmang, nusxa oling.",
     "networkLabel": "Tarmoq",
-    "empty": "To'lov ma'lumotlari aloqa vaqtida beriladi."
+    "empty": "To'lov ma'lumotlari aloqa vaqtida beriladi.",
+    "txidNote": "To'lagandan so'ng tranzaksiya raqamini (TXID) bizga yuboring; to'lovingizni tez tasdiqlaymiz."
+  },
+  "checkout": {
+    "title": "To'lov",
+    "ref": "Havola",
+    "amount": "Summa",
+    "discount": "Chegirma",
+    "toPay": "To'lanadi",
+    "payButton": "Kripto bilan to'lash",
+    "networks": "TRC20, SOL, ARB, ETH, BTC va boshqalar — to'lov sahifasida tanlaysiz",
+    "waiting": "To'lov kutilmoqda…",
+    "paidTitle": "To'lov qabul qilindi",
+    "paidBody": "Rahmat! To'lovingiz tasdiqlandi. Tez orada siz bilan bog'lanamiz.",
+    "expiredTitle": "Muddati tugadi",
+    "expiredBody": "Bu to'lov havolasining muddati tugadi. Iltimos, biz bilan bog'laning.",
+    "cancelledTitle": "Bekor qilindi",
+    "failedTitle": "To'lov amalga oshmadi",
+    "failedBody": "To'lovni yakunlab bo'lmadi. Qayta urinib ko'ring yoki biz bilan bog'laning.",
+    "underpaidTitle": "Kam to'langan",
+    "underpaidBody": "Kutilganidan kam summa keldi. Farqni hal qilish uchun biz bilan bog'laning.",
+    "notFound": "Hisob topilmadi.",
+    "secured": "To'lovlar Cryptomus orqali xavfsiz qabul qilinadi."
   },
   "footer": {
     "rights": "Barcha huquqlar himoyalangan.",

@@ -11,7 +11,7 @@ import { CopyButton } from "./copy-button";
 export async function PaymentMethods({
   labels,
 }: {
-  labels: { title: string; verifyWarning: string; networkLabel: string; empty: string };
+  labels: { title: string; verifyWarning: string; networkLabel: string; empty: string; txidNote: string };
 }) {
   const methods = await prisma.paymentMethod
     .findMany({ where: { active: true }, orderBy: { order: "asc" } })
@@ -93,6 +93,12 @@ export async function PaymentMethods({
             </div>
           ))}
         </div>
+      )}
+
+      {crypto.length > 0 && (
+        <p className="mt-3 rounded-lg bg-cyan-50 px-3 py-2 text-xs text-cyan-800">
+          🧾 {labels.txidNote}
+        </p>
       )}
 
       <p className="mt-4 rounded-lg bg-amber-50 px-3 py-2 text-xs text-amber-800">

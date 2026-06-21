@@ -135,7 +135,29 @@
     "note": "Every payment is confirmed personally by us. Discount codes are applied before payment.",
     "verifyWarning": "Always double-check the address and network before sending. Crypto transfers are irreversible. Prefer copying the address; never type it by hand.",
     "networkLabel": "Network",
-    "empty": "Payment details will be shared during contact."
+    "empty": "Payment details will be shared during contact.",
+    "txidNote": "After paying, send us the transaction ID (TXID) so we can verify your payment quickly."
+  },
+  "checkout": {
+    "title": "Payment",
+    "ref": "Reference",
+    "amount": "Amount",
+    "discount": "Discount",
+    "toPay": "To pay",
+    "payButton": "Pay with crypto",
+    "networks": "TRC20, SOL, ARB, ETH, BTC and more — choose on the payment page",
+    "waiting": "Waiting for payment…",
+    "paidTitle": "Payment received",
+    "paidBody": "Thank you! Your payment is confirmed. We'll be in touch shortly.",
+    "expiredTitle": "Link expired",
+    "expiredBody": "This payment link has expired. Please contact us.",
+    "cancelledTitle": "Cancelled",
+    "failedTitle": "Payment failed",
+    "failedBody": "The payment could not be completed. Please try again or contact us.",
+    "underpaidTitle": "Underpaid",
+    "underpaidBody": "Less than the expected amount was received. Please contact us to resolve the difference.",
+    "notFound": "Invoice not found.",
+    "secured": "Payments are processed securely via Cryptomus."
   },
   "footer": {
     "rights": "All rights reserved.",
