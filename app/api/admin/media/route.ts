@@ -21,7 +21,7 @@ export async function POST(req: Request) {
   }
 
   const ip = clientIp(req);
-  const limit = rateLimit(`media-upload:${session.uid}:${ip}`, 30, 60_000);
+  const limit = await rateLimit(`media-upload:${session.uid}:${ip}`, 30, 60_000);
   if (!limit.ok) {
     return NextResponse.json({ error: "rate_limited", retryAfter: limit.retryAfter }, { status: 429 });
   }

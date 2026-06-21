@@ -32,7 +32,7 @@ export async function POST(req: Request) {
 
   // Maliyet/suistimal koruması: admin başına dakikada 20 soru.
   const ip = clientIp(req);
-  const limit = rateLimit(`ai:${session.uid}:${ip}`, 20, 60_000);
+  const limit = await rateLimit(`ai:${session.uid}:${ip}`, 20, 60_000);
   if (!limit.ok) {
     return NextResponse.json(
       { error: "rate_limited", retryAfter: limit.retryAfter },

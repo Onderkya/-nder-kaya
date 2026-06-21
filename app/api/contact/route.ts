@@ -22,7 +22,7 @@ const schema = z.object({
 export async function POST(req: Request) {
   // Spam/DoS koruması: IP başına dakikada 5 talep.
   const ip = clientIp(req);
-  const limit = rateLimit(`contact:${ip}`, 5, 60_000);
+  const limit = await rateLimit(`contact:${ip}`, 5, 60_000);
   if (!limit.ok) {
     return NextResponse.json({ error: "rate_limited" }, { status: 429 });
   }

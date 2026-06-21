@@ -21,7 +21,7 @@ const schema = z.object({
 
 export async function POST(req: Request) {
   const ip = clientIp(req);
-  const limit = rateLimit(`booking:${ip}`, 5, 60_000);
+  const limit = await rateLimit(`booking:${ip}`, 5, 60_000);
   if (!limit.ok) return NextResponse.json({ error: "rate_limited" }, { status: 429 });
 
   const body = await req.json().catch(() => null);

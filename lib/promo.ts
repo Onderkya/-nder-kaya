@@ -43,15 +43,19 @@ export async function validatePromo(
 }
 
 /**
- * Ödeme onaylandığında kullanım sayacını artırır. Limit, fatura oluşturulurken
- * zaten kontrol edilir; burada yalnızca sayacı ilerletiriz. Sessizce geçer.
+ * Ödeme onaylandığında kullanım sayacını artırır. Sayaç, limiti ATOMİK biçimde
+ * aşmamalıdır: koşullu UPDATE (usedCount < usageLimit) ile tek sorguda artırılır,
+ * böylece eşzamanlı ödemelerde "check-then-act" yarışı sayacı limitin üstüne
+ * çıkaramaz. Limitsiz (usageLimit NULL) kodlarda koşulsuz artar. Sessizce geçer.
  */
 export async function consumePromo(code: string): Promise<void> {
   try {
-    await prisma.promoCode.updateMany({
-      where: { code: code.trim().toUpperCase() },
-      data: { usedCount: { increment: 1 } },
-    });
+    await prisma.$executeRaw`
+      UPDATE "PromoCode"
+      SET "usedCount" = "usedCount" + 1
+      WHERE "code" = ${code.trim().toUpperCase()}
+        AND ("usageLimit" IS NULL OR "usedCount" < "usageLimit")
+    `;
   } catch {
     /* sayaç güncellenemezse ödeme akışını bozma */
   }

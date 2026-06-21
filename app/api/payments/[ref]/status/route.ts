@@ -12,7 +12,7 @@ export const dynamic = "force-dynamic";
 export async function GET(req: Request, { params }: { params: Promise<{ ref: string }> }) {
   const { ref } = await params;
   const ip = clientIp(req);
-  const limit = rateLimit(`paystatus:${ip}`, 60, 60_000);
+  const limit = await rateLimit(`paystatus:${ip}`, 60, 60_000);
   if (!limit.ok) return NextResponse.json({ error: "rate_limited" }, { status: 429 });
 
   const invoice = await syncInvoiceStatus(ref).catch(() => null);

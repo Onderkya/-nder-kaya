@@ -8,7 +8,7 @@ const schema = z.object({ email: z.string().email(), password: z.string().min(1)
 export async function POST(req: Request) {
   // Brute-force koruması: IP başına 15 dakikada 8 deneme.
   const ip = clientIp(req);
-  const limit = rateLimit(`login:${ip}`, 8, 15 * 60_000);
+  const limit = await rateLimit(`login:${ip}`, 8, 15 * 60_000);
   if (!limit.ok) {
     return NextResponse.json({ error: "rate_limited", retryAfter: limit.retryAfter }, { status: 429 });
   }
