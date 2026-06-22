@@ -2,8 +2,6 @@
 
 import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
-import { gsap } from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { Link } from "@/i18n/routing";
 import { IconArrow } from "@/components/icons";
 
@@ -18,7 +16,6 @@ type Props = {
   soundLabel: string;
 };
 
-// Hydration güvenli (deterministik) baloncuklar.
 const BUBBLES = Array.from({ length: 14 }, (_, i) => {
   const rnd = (seed: number) => {
     const x = Math.sin((i + 1) * seed) * 10000;
@@ -32,52 +29,96 @@ const BUBBLES = Array.from({ length: 14 }, (_, i) => {
   };
 });
 
+const seg = (p: number, a: number, b: number) => Math.min(1, Math.max(0, (p - a) / (b - a)));
+
 export function DiveHero({ title, subtitle, ctaPrimary, ctaSecondary, deepLine, scrollCue, brand, soundLabel }: Props) {
-  const root = useRef<HTMLDivElement>(null);
+  const rootRef = useRef<HTMLElement>(null);
   const audioRef = useRef<HTMLAudioElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
   const [sound, setSound] = useState(false);
 
   useEffect(() => {
     if (typeof window === "undefined") return;
-    gsap.registerPlugin(ScrollTrigger);
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    const root = rootRef.current;
+    if (!root) return;
+    const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-    const ctx = gsap.context(() => {
-      const tl = gsap.timeline({
-        scrollTrigger: {
-          trigger: root.current,
-          start: "top top",
-          end: "+=2600",
-          scrub: 1,
-          pin: ".dive-stage",
-          anticipatePin: 1,
-        },
-      });
-      // 1) İNİŞ — havadan turkuaz su büyür, ilk metin süzülür, ipucu kaybolur.
-      tl.to(".dive-aerial img", { scale: 2.05, ease: "none" }, 0)
-        .to(".dive-grade-blue", { opacity: 0.5, ease: "none" }, 0)
-        .to(".dive-cue", { opacity: 0, ease: "none" }, 0)
-        .to(".dive-phase1", { yPercent: -26, opacity: 0, ease: "none" }, 0)
-        // 2) YÜZEYİ KIR — beyaz flaş + sualtı videosu belirir, havadan kaybolur.
-        .to(".dive-flash", { opacity: 0.85, ease: "none" }, 0.34)
-        .fromTo(".dive-depth", { opacity: 0 }, { opacity: 1, ease: "none" }, 0.36)
-        .to(".dive-flash", { opacity: 0, ease: "none" }, 0.52)
-        .to(".dive-aerial", { opacity: 0, ease: "none" }, 0.5)
-        // 3) DERİNE DAL — mesaj belirir, renk derinleşir.
-        .fromTo(".dive-phase2", { opacity: 0, yPercent: 16 }, { opacity: 1, yPercent: 0, ease: "none" }, 0.56)
-        .to(".dive-deepen", { opacity: 0.9, ease: "none" }, 0.6)
-        .to(".dive-vignette-bottom", { opacity: 1, ease: "none" }, 0.84);
-    }, root);
+    const q = (s: string) => root.querySelector<HTMLElement>(s);
+    const aerial = q(".dive-aerial");
+    const aerialImg = aerial?.querySelector("img") as HTMLElement | null;
+    const grade = q(".dive-grade-blue");
+    const depth = q(".dive-depth");
+    const flash = q(".dive-flash");
+    const phase1 = q(".dive-phase1");
+    const phase2 = q(".dive-phase2");
+    const deepen = q(".dive-deepen");
+    const vignette = q(".dive-vignette-bottom");
+    const cue = q(".dive-cue");
 
-    // Video belirince oynat (autoplay muted zaten denenir; garanti için)
     const v = videoRef.current;
     if (v) v.play().catch(() => {});
 
-    const t = window.setTimeout(() => ScrollTrigger.refresh(), 400);
+    if (reduce) return;
+
+    let cur = 0;
+    let raf = 0;
+    let running = true;
+
+    const apply = (p: number) => {
+      if (aerialImg) aerialImg.style.transform = `scale(${(1.05 + p * 1.0).toFixed(3)})`;
+      if (aerial) aerial.style.opacity = String(1 - seg(p, 0.46, 0.6));
+      if (grade) grade.style.opacity = String(seg(p, 0, 0.5) * 0.5);
+      if (cue) cue.style.opacity = String(1 - seg(p, 0, 0.12));
+      if (phase1) {
+        phase1.style.opacity = String(1 - seg(p, 0.05, 0.34));
+        phase1.style.transform = `translate3d(0, ${(-seg(p, 0, 0.34) * 60).toFixed(1)}px, 0)`;
+      }
+      if (flash) {
+        const f = p < 0.42 ? seg(p, 0.3, 0.42) : 1 - seg(p, 0.42, 0.55);
+        flash.style.opacity = String(Math.max(0, f) * 0.85);
+      }
+      if (depth) depth.style.opacity = String(seg(p, 0.34, 0.56));
+      if (phase2) {
+        phase2.style.opacity = String(seg(p, 0.54, 0.72));
+        phase2.style.transform = `translate3d(-50%, calc(-50% + ${((1 - seg(p, 0.54, 0.72)) * 18).toFixed(1)}px), 0)`;
+      }
+      if (deepen) deepen.style.opacity = String(seg(p, 0.58, 0.86) * 0.9);
+      if (vignette) vignette.style.opacity = String(seg(p, 0.82, 1));
+    };
+
+    const frame = () => {
+      const vh = window.innerHeight;
+      const total = root.offsetHeight - vh;
+      const top = root.getBoundingClientRect().top;
+      const target = total > 0 ? Math.min(1, Math.max(0, -top / total)) : 0;
+      cur += (target - cur) * 0.14;
+      if (Math.abs(target - cur) < 0.0005) cur = target;
+      apply(cur);
+      if (running) raf = requestAnimationFrame(frame);
+    };
+
+    // Yalnızca sahne görünürken rAF çalışsın (performans).
+    const io = new IntersectionObserver(
+      (entries) => {
+        for (const e of entries) {
+          if (e.isIntersecting && !running) {
+            running = true;
+            raf = requestAnimationFrame(frame);
+          } else if (!e.isIntersecting && running) {
+            running = false;
+            cancelAnimationFrame(raf);
+          }
+        }
+      },
+      { threshold: 0 },
+    );
+    io.observe(root);
+    raf = requestAnimationFrame(frame);
+
     return () => {
-      window.clearTimeout(t);
-      ctx.revert();
+      running = false;
+      cancelAnimationFrame(raf);
+      io.disconnect();
     };
   }, []);
 
@@ -94,8 +135,8 @@ export function DiveHero({ title, subtitle, ctaPrimary, ctaSecondary, deepLine, 
   };
 
   return (
-    <section ref={root} className="relative" style={{ backgroundColor: "#02212f" }}>
-      <div className="dive-stage relative h-[100svh] w-full overflow-hidden">
+    <section ref={rootRef} className="relative" style={{ height: "360vh", backgroundColor: "#02212f" }}>
+      <div className="dive-stage sticky top-0 h-[100svh] w-full overflow-hidden">
         {/* HAVADAN — turkuaz Kaputaş */}
         <div className="dive-aerial absolute inset-0">
           <Image
@@ -166,7 +207,10 @@ export function DiveHero({ title, subtitle, ctaPrimary, ctaSecondary, deepLine, 
             </div>
           </div>
 
-          <div className="dive-phase2 pointer-events-none absolute left-1/2 top-1/2 w-full max-w-3xl -translate-x-1/2 -translate-y-1/2 px-6 text-center text-white opacity-0">
+          <div
+            className="dive-phase2 pointer-events-none absolute left-1/2 top-1/2 w-full max-w-3xl px-6 text-center text-white opacity-0"
+            style={{ transform: "translate3d(-50%, -50%, 0)" }}
+          >
             <p className="eyebrow justify-center" style={{ color: "rgb(175 240 255)" }}>{brand}</p>
             <p className="mt-5 font-display text-3xl font-medium leading-snug sm:text-5xl">{deepLine}</p>
           </div>
@@ -179,7 +223,7 @@ export function DiveHero({ title, subtitle, ctaPrimary, ctaSecondary, deepLine, 
         </div>
       </div>
 
-      {/* Dalga sesi toggle (kullanıcı etkileşimiyle) */}
+      {/* Dalga sesi toggle */}
       <button
         type="button"
         onClick={toggleSound}
@@ -188,12 +232,10 @@ export function DiveHero({ title, subtitle, ctaPrimary, ctaSecondary, deepLine, 
         className="glass fixed bottom-5 left-5 z-50 inline-flex items-center gap-2 rounded-full border px-4 py-2.5 text-xs font-semibold text-white"
         style={{ borderColor: "rgb(255 255 255 / 0.25)", backgroundColor: "rgb(4 28 40 / 0.55)" }}
       >
-        <span className="relative flex h-3.5 w-3.5 items-center justify-center">
-          <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-            <path d="M11 5 6 9H2v6h4l5 4z" />
-            {sound ? <><path d="M15.5 8.5a5 5 0 0 1 0 7" /><path d="M18.5 5.5a9 9 0 0 1 0 13" /></> : <path d="m17 9 5 6m0-6-5 6" />}
-          </svg>
-        </span>
+        <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <path d="M11 5 6 9H2v6h4l5 4z" />
+          {sound ? <><path d="M15.5 8.5a5 5 0 0 1 0 7" /><path d="M18.5 5.5a9 9 0 0 1 0 13" /></> : <path d="m17 9 5 6m0-6-5 6" />}
+        </svg>
         {soundLabel}
         {sound && <span className="sound-pulse h-1.5 w-1.5 rounded-full" style={{ backgroundColor: "rgb(120 230 255)" }} />}
       </button>
