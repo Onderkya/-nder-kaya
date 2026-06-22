@@ -56,7 +56,10 @@ kremlin.jpg       — "WOW Kremlin Palace" — Сашка Денисов — CC 
 # İç sayfa gerçek görselleri (Wikimedia, eklenme: geri bildirim revizyonu)
 lara.jpg        — "Antalya Lara Cliff view" — My-view2U — CC BY-SA 4.0
 konyaalti.jpg   — "Antalya Konyaaltı Beach 88" — Roy Egloff — CC BY-SA 4.0
-campus.jpg      — "Akdeniz Üniversitesi Stadyumu" — AntalyasporFC — CC BY-SA 3.0
+campus.jpg      — "Ege Üniversitesi kampüs içinde" — Ayratayrat — CC BY-SA 4.0
 dorm.jpg        — "KYK Yenişehir Öğrenci Yurdu, Mersin" — Cobija — CC0
+
+# Ana sayfa hero videosu (public/media) — Mixkit License (ticari serbest, atıf gerekmez)
+kaputas-drone.mp4 — "Turquoise blue water bay from above" (drone) — Mixkit (#5008, 720p)
 
 # Gömülü video (telifsiz gömme): Rixos World The Land of Legends tanıtımı — YouTube (jB0xnYf4GrM)

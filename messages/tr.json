@@ -94,7 +94,14 @@
     "pl_f6": "5 farklı oyun türü",
     "pl_cta": "PetLingo'yu dene",
     "pl_soon": "Yakında App Store & Google Play",
-    "pl_combo": "Uygulama + canlı ders = en hızlı yol"
+    "pl_combo": "Uygulama + canlı ders = en hızlı yol",
+    "sell_eyebrow": "Paket değil, sana özel",
+    "sell_title": "Her misafire aynı şeyi satmıyoruz",
+    "sell_text": "Sen yaz, biz dinleyelim. Tarihlerine, bütçene, hayalindeki tatile ya da eğitim hedefine göre planı sıfırdan, sana özel kuruyoruz — kopyala-yapıştır paket yok. Antalya'da yaşayan, Türkiye'de okumuş gerçek insanlarla, kendi dilinde.",
+    "sell_b1": "Sana özel hazırlanan plan — kopyala-yapıştır değil",
+    "sell_b2": "Tek muhatap: baştan sona aynı kişi",
+    "sell_b3": "Kendi dilinde: TR · EN · RU · KK · UZ",
+    "sell_cta": "Sana özel planı başlat"
   },
   "meta": {
     "siteName": "Antalya Bridge",

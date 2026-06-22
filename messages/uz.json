@@ -94,7 +94,14 @@
     "pl_f6": "5 xil o'yin turi",
     "pl_cta": "PetLingo'ni sinab ko'ring",
     "pl_soon": "Tez orada App Store va Google Play'da",
-    "pl_combo": "Ilova + jonli dars = eng tez yo'l"
+    "pl_combo": "Ilova + jonli dars = eng tez yo'l",
+    "sell_eyebrow": "Paket emas — sizga maxsus",
+    "sell_title": "Hammaga bir xil narsa sotmaymiz",
+    "sell_text": "Siz yozing — biz tinglaymiz. Rejani sanalaringiz, byudjetingiz, orzuingizdagi dam olish yoki ta'lim maqsadingizga qarab noldan, sizga maxsus tuzamiz — nusxa-ko'chirma paket yo'q. Antalyada yashaydigan, Turkiyada o'qigan haqiqiy odamlar bilan, o'z tilingizda.",
+    "sell_b1": "Sizga maxsus tayyorlangan reja — nusxa emas",
+    "sell_b2": "Yagona aloqa: boshidan oxirigacha bitta odam",
+    "sell_b3": "O'z tilingizda: TR · EN · RU · KK · UZ",
+    "sell_cta": "Shaxsiy rejani boshlash"
   },
   "meta": {
     "siteName": "Antalya Bridge",

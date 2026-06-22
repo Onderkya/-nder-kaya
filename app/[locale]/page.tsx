@@ -60,6 +60,7 @@ export default async function HomePage({
         deepLine={t("diveDeep")}
         scrollCue={t("scrollCue")}
         soundLabel={t("soundWave")}
+        aerialVideo="/media/kaputas-drone.mp4"
       />
 
       {/* ============ AKTİVİTELER — sualtından tatile iniş ============ */}
@@ -130,6 +131,39 @@ export default async function HomePage({
           <p className="mt-7 text-center text-xs" style={{ color: "rgb(var(--muted-foreground))" }}>
             Görseller: Wikimedia Commons (CC). Rezervasyon ve güncel bilgi için bizimle iletişime geçin.
           </p>
+        </div>
+      </section>
+
+      {/* ============ SANA ÖZEL (satış bandı) ============ */}
+      <section className="relative overflow-hidden py-24 text-white sm:py-32" style={{ background: "linear-gradient(135deg, #0d94a8 0%, #0e7490 45%, #f45e23 140%)" }}>
+        <div className="absolute inset-0 opacity-25" style={{ backgroundImage: "radial-gradient(rgba(255,255,255,0.5) 1px, transparent 1px)", backgroundSize: "26px 26px" }} />
+        <div className="container-wide relative grid items-center gap-12 lg:grid-cols-2 lg:gap-16">
+          <div>
+            <Reveal>
+              <p className="eyebrow text-white/85">{x("sell_eyebrow")}</p>
+            </Reveal>
+            <Reveal delay={80}>
+              <h2 className="h-section mt-5 text-balance">{x("sell_title")}</h2>
+            </Reveal>
+            <Reveal delay={150}>
+              <p className="mt-6 max-w-lg text-lg leading-relaxed text-white/90">{x("sell_text")}</p>
+            </Reveal>
+          </div>
+          <Reveal delay={120}>
+            <ul className="space-y-4">
+              {[x("sell_b1"), x("sell_b2"), x("sell_b3")].map((b) => (
+                <li key={b} className="flex items-start gap-4 rounded-2xl border p-5 text-lg font-medium" style={{ borderColor: "rgb(255 255 255 / 0.25)", backgroundColor: "rgb(255 255 255 / 0.08)" }}>
+                  <span className="mt-0.5 flex h-7 w-7 shrink-0 items-center justify-center rounded-full" style={{ backgroundColor: "rgb(255 255 255 / 0.22)" }}>
+                    <IconCheck className="h-4 w-4" />
+                  </span>
+                  {b}
+                </li>
+              ))}
+            </ul>
+            <Link href="/contact" className="btn-accent mt-8 shadow-xl shadow-black/25">
+              {x("sell_cta")} <IconArrow />
+            </Link>
+          </Reveal>
         </div>
       </section>
 
