@@ -104,6 +104,24 @@ export function DiveHero({ title, subtitle, ctaPrimary, ctaSecondary, deepLine, 
     };
   }, []);
 
+  // Sualtı videosu yalnızca hero görünürken oynar (aktivitelere inince durur).
+  useEffect(() => {
+    const root = rootRef.current;
+    const v = videoRef.current;
+    if (!root || !v) return;
+    const io = new IntersectionObserver(
+      (es) => {
+        for (const e of es) {
+          if (e.isIntersecting) v.play().catch(() => {});
+          else v.pause();
+        }
+      },
+      { threshold: 0.01 },
+    );
+    io.observe(root);
+    return () => io.disconnect();
+  }, []);
+
   // İlk kullanıcı jestinde (tıklama/dokunma/tuş) dalga sesini otomatik başlat.
   useEffect(() => {
     const a = audioRef.current;

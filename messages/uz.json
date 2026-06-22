@@ -46,7 +46,12 @@
     "ctaText": "Bizga nimaga muhtojligingizni ayting, biz sizga shaxsan javob beramiz.",
     "diveDeep": "Yuza ostida — haqiqiy Antalya.",
     "scrollCue": "sho'ng'ish uchun suring",
-    "soundWave": "dengiz tovushi"
+    "soundWave": "dengiz tovushi",
+    "actTitle": "Antalyada sizni nima kutadi?",
+    "actScuba": "Skuba diving",
+    "actBoat": "Qayiq sayohatlari",
+    "actSports": "Suv sport turlari",
+    "actHotels": "Mehmonxonalar"
   },
   "services": {
     "antalyaTitle": "Antalya sayohat maslahati",

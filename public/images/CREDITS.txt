@@ -37,3 +37,7 @@ waves.mp3           — "Ocean waves" — Mixkit
 # Güncelleme 2: üstten 4K Kaputaş + balıklı sualtı
 kaputas.jpg     — "Kaputaş Plajı ve Deniz" (üstten drone) — Wape1989 — CC BY-SA 4.0
 dive-fish.mp4   — "Diving through a reef" — Mixkit (atıf gerekmez)
+
+# Aktivite videoları (public/media) — Mixkit License (atıf gerekmez)
+act-scuba.mp4   — "Scuba diver with instructor" — Mixkit
+act-jetski.mp4  — "Jet ski in calm tropical waters" — Mixkit

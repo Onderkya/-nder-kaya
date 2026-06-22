@@ -46,7 +46,12 @@
     "ctaText": "İhtiyacınızı yazın, size kişisel olarak dönelim.",
     "diveDeep": "Yüzeyin altında, gerçek Antalya.",
     "scrollCue": "keşfetmek için kaydır",
-    "soundWave": "dalga sesi"
+    "soundWave": "dalga sesi",
+    "actTitle": "Antalya'da seni neler bekliyor?",
+    "actScuba": "Tüplü Dalış",
+    "actBoat": "Tekne Turları",
+    "actSports": "Su Sporları",
+    "actHotels": "Oteller & Tatil"
   },
   "services": {
     "antalyaTitle": "Antalya Seyahat Danışmanlığı",

@@ -4,6 +4,7 @@ import { Link } from "@/i18n/routing";
 import { JsonLd } from "@/components/json-ld";
 import { Reveal } from "@/components/reveal";
 import { DiveHero } from "@/components/dive-hero";
+import { ActivitiesDive } from "@/components/activities-dive";
 import { TurkishAlphabet } from "@/components/turkish-alphabet";
 import { IconArrow, IconCheck } from "@/components/icons";
 import { siteConfig } from "@/lib/config";
@@ -67,6 +68,17 @@ export default async function HomePage({
         deepLine={t("diveDeep")}
         scrollCue={t("scrollCue")}
         soundLabel={t("soundWave")}
+      />
+
+      {/* ============ AKTİVİTELER — sualtından tatile iniş ============ */}
+      <ActivitiesDive
+        eyebrow={t("actTitle")}
+        scenes={[
+          { kind: "video", src: "/media/act-scuba.mp4", title: t("actScuba"), place: "Akdeniz" },
+          { kind: "image", src: "/images/harbor.jpg", title: t("actBoat"), place: "Kaleiçi" },
+          { kind: "video", src: "/media/act-jetski.mp4", title: t("actSports"), place: "Sahil" },
+          { kind: "image", src: "/images/pool.jpg", title: t("actHotels"), place: "Resort" },
+        ]}
       />
 
       {/* ============ MANİFESTO ============ */}

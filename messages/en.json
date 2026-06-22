@@ -46,7 +46,12 @@
     "ctaText": "Tell us what you need and we will get back to you personally.",
     "diveDeep": "Beneath the surface, the real Antalya.",
     "scrollCue": "scroll to dive in",
-    "soundWave": "ocean sound"
+    "soundWave": "ocean sound",
+    "actTitle": "What awaits you in Antalya?",
+    "actScuba": "Scuba Diving",
+    "actBoat": "Boat Tours",
+    "actSports": "Water Sports",
+    "actHotels": "Hotels & Resorts"
   },
   "services": {
     "antalyaTitle": "Antalya Travel Consulting",
