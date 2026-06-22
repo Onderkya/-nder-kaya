@@ -21,7 +21,7 @@ export default async function HomePage({
 
   const services = [
     { href: "/antalya", n: "01", title: s("antalyaTitle"), desc: s("antalyaDesc"), img: "/images/harbor-night.jpg", place: "Yat Limanı" },
-    { href: "/lessons", n: "02", title: s("lessonsTitle"), desc: s("lessonsDesc"), img: "/images/tea.jpg", place: "Türk Çayı" },
+    { href: "/lessons", n: "02", title: s("lessonsTitle"), desc: s("lessonsDesc"), img: "/images/coffee.jpg", place: "Türk Kahvesi" },
     { href: "/education", n: "03", title: s("educationTitle"), desc: s("educationDesc"), img: "/images/aspendos.jpg", place: "Aspendos" },
   ];
 
