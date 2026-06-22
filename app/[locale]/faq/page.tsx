@@ -35,7 +35,7 @@ export default async function FaqPage({ params }: { params: Promise<{ locale: st
           })),
         }}
       />
-      <PageHero title={t("title")} intro="" />
+      <PageHero title={t("title")} intro="" image="/images/yivli.jpg" />
       <section className="container-page py-14">
         <div className="mx-auto max-w-3xl space-y-4">
           {items.map((item, i) => (

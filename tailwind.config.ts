@@ -50,10 +50,15 @@ const config: Config = {
       },
       fontFamily: {
         sans: ["var(--font-sans)", "system-ui", "sans-serif"],
+        display: ["var(--font-display)", "Georgia", "serif"],
       },
       borderRadius: {
         xl: "1rem",
         "2xl": "1.5rem",
+        "3xl": "2rem",
+      },
+      letterSpacing: {
+        widest2: "0.25em",
       },
     },
   },

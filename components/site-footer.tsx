@@ -71,8 +71,15 @@ export function SiteFooter() {
           )}
         </div>
       </div>
-      <div className="border-t py-4 text-center text-xs" style={{ borderColor: "rgb(var(--border))", color: "rgb(var(--muted-foreground))" }}>
-        © {year} {meta("siteName")}. {t("rights")}
+      <div className="flex flex-col items-center justify-between gap-2 border-t py-4 text-center text-xs sm:flex-row" style={{ borderColor: "rgb(var(--border))", color: "rgb(var(--muted-foreground))" }}>
+        <span>© {year} {meta("siteName")}. {t("rights")}</span>
+        <span>
+          Görseller / Photos:{" "}
+          <a href="https://commons.wikimedia.org/wiki/Category:Antalya" target="_blank" rel="noopener" className="link-underline">
+            Wikimedia Commons
+          </a>{" "}
+          · CC BY-SA
+        </span>
       </div>
     </footer>
   );

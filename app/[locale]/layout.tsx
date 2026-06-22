@@ -1,6 +1,6 @@
 import type { ReactNode } from "react";
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
+import { Cormorant_Garamond, Onest } from "next/font/google";
 import { notFound } from "next/navigation";
 import { NextIntlClientProvider } from "next-intl";
 import { getTranslations, setRequestLocale } from "next-intl/server";
@@ -11,7 +11,22 @@ import { SiteFooter } from "@/components/site-footer";
 import { FloatingContact } from "@/components/floating-contact";
 import { siteConfig } from "@/lib/config";
 
-const inter = Inter({ subsets: ["latin", "cyrillic"], variable: "--font-sans" });
+// Editoryal Akdeniz tipografisi: yüksek kontrastlı zarif serif (başlıklar) +
+// karakterli modern grotesk (gövde). İkisi de latin-ext (Türkçe) + Kiril (ru/kk)
+// destekler — beş dilde tutarlı görünür.
+const display = Cormorant_Garamond({
+  subsets: ["latin", "latin-ext", "cyrillic"],
+  weight: ["500", "600", "700"],
+  style: ["normal", "italic"],
+  variable: "--font-display",
+  display: "swap",
+});
+const sans = Onest({
+  subsets: ["latin", "latin-ext", "cyrillic"],
+  weight: ["400", "500", "600", "700"],
+  variable: "--font-sans",
+  display: "swap",
+});
 
 // İçerik admin panelden DB üzerinden düzenlenebildiği için public sayfalar
 // dinamik render edilir (override'lar yeniden derleme gerektirmeden yansır).
@@ -52,11 +67,11 @@ export default async function LocaleLayout({
   setRequestLocale(locale);
 
   return (
-    <html lang={locale} suppressHydrationWarning className={inter.variable}>
+    <html lang={locale} suppressHydrationWarning className={`${sans.variable} ${display.variable}`}>
       <head>
         <ThemeScript />
       </head>
-      <body className="min-h-screen font-sans">
+      <body className="grain min-h-screen font-sans antialiased">
         <NextIntlClientProvider>
           <ThemeProvider>
             <SiteHeader />

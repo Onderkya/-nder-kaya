@@ -26,12 +26,21 @@ export function LogoMark({ className = "h-8 w-8" }: { className?: string }) {
   );
 }
 
-export function Logo({ withText = true }: { withText?: boolean }) {
+export function Logo({
+  withText = true,
+  on = "surface",
+}: {
+  withText?: boolean;
+  on?: "hero" | "surface";
+}) {
   return (
-    <span className="flex items-center gap-2 font-bold">
+    <span className="flex items-center gap-2.5">
       <LogoMark className="h-9 w-9" />
       {withText && (
-        <span className="text-lg tracking-tight">
+        <span
+          className="font-display text-[1.55rem] font-semibold leading-none tracking-[-0.01em]"
+          style={on === "hero" ? { color: "#fff" } : { color: "rgb(var(--foreground))" }}
+        >
           Antalya<span style={{ color: "rgb(var(--accent))" }}> Bridge</span>
         </span>
       )}

@@ -3,38 +3,40 @@
 @tailwind utilities;
 
 /*
- * Akdeniz / sıcak tema değişkenleri.
- * Açık (light) ve koyu (dark) için ayrı renk setleri.
- * Tema seçimi <html class="dark"> ile yönetilir (ThemeProvider).
+ * Antalya Bridge — "Akdeniz Editoryal" tasarım sistemi.
+ * Sıcak kum/krem zemin + derin deniz mürekkebi + güneş terakota + ince altın aksanlar.
+ * Açık/koyu tema CSS değişkenleriyle; <html class="dark"> ile toggle.
  */
 :root {
-  --background: 250 250 249; /* warm white / sand */
-  --foreground: 12 42 51; /* deep sea */
-  --card: 255 255 255;
-  --card-foreground: 12 42 51;
-  --muted: 247 243 238; /* sand-100 */
-  --muted-foreground: 90 110 116;
-  --primary: 8 145 178; /* sea-600 */
+  --background: 250 246 239; /* warm sand / cream */
+  --foreground: 14 38 45; /* deep sea ink */
+  --card: 255 253 250;
+  --card-foreground: 14 38 45;
+  --muted: 243 236 226; /* sand-100 */
+  --muted-foreground: 92 108 112;
+  --primary: 14 116 144; /* sea-700 */
   --primary-foreground: 255 255 255;
-  --accent: 249 115 22; /* sun-500 */
+  --accent: 234 88 12; /* terracotta / sun-600 */
   --accent-foreground: 255 255 255;
-  --border: 236 227 216; /* sand-200 */
-  --ring: 6 182 212;
+  --gold: 178 124 58; /* refined ochre — editoryal ince çizgiler */
+  --border: 229 219 205; /* sand-200 */
+  --ring: 14 116 144;
 }
 
 .dark {
-  --background: 8 30 38; /* very deep sea */
-  --foreground: 226 240 243;
-  --card: 14 46 56;
-  --card-foreground: 226 240 243;
-  --muted: 18 56 67;
-  --muted-foreground: 148 178 186;
-  --primary: 34 211 238; /* sea-400 */
-  --primary-foreground: 8 30 38;
+  --background: 7 26 33; /* very deep sea */
+  --foreground: 233 240 240;
+  --card: 13 41 50;
+  --card-foreground: 233 240 240;
+  --muted: 17 52 62;
+  --muted-foreground: 152 178 184;
+  --primary: 45 212 222; /* sea-400 */
+  --primary-foreground: 7 26 33;
   --accent: 251 146 60; /* sun-400 */
-  --accent-foreground: 30 16 4;
-  --border: 25 70 82;
-  --ring: 34 211 238;
+  --accent-foreground: 28 14 4;
+  --gold: 214 173 110;
+  --border: 28 70 80;
+  --ring: 45 212 222;
 }
 
 @layer base {
@@ -44,164 +46,206 @@
   body {
     background-color: rgb(var(--background));
     color: rgb(var(--foreground));
+    font-feature-settings: "ss01", "cv01";
     -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+  ::selection {
+    background-color: rgb(var(--accent) / 0.85);
+    color: rgb(var(--accent-foreground));
   }
 }
 
 @layer components {
   .container-page {
-    @apply mx-auto w-full max-w-6xl px-4 sm:px-6 lg:px-8;
+    @apply mx-auto w-full max-w-6xl px-5 sm:px-6 lg:px-8;
   }
-  /* Tutarlı başlık ölçeği — tüm sayfalarda aynı h1/h2 ritmi */
+  .container-wide {
+    @apply mx-auto w-full max-w-7xl px-5 sm:px-6 lg:px-10;
+  }
+
+  /* --- Tipografi --- */
   .h-hero {
-    @apply text-4xl font-bold leading-[1.1] tracking-tight sm:text-5xl lg:text-6xl;
+    @apply font-display font-semibold leading-[0.95] tracking-[-0.02em];
+    font-size: clamp(2.75rem, 7vw, 6rem);
   }
   .h-section {
-    @apply text-3xl font-bold tracking-tight sm:text-4xl;
+    @apply font-display font-semibold leading-[1.02] tracking-[-0.015em];
+    font-size: clamp(2rem, 4.2vw, 3.5rem);
   }
+  .display-xl {
+    @apply font-display font-semibold leading-[0.92] tracking-[-0.02em];
+    font-size: clamp(3rem, 9vw, 8rem);
+  }
+  .serif-italic {
+    @apply font-display italic font-medium;
+  }
+  .eyebrow {
+    @apply inline-flex items-center gap-2.5 text-xs font-semibold uppercase;
+    letter-spacing: 0.22em;
+  }
+  .eyebrow::before {
+    content: "";
+    width: 1.75rem;
+    height: 1px;
+    background-color: rgb(var(--gold));
+    display: inline-block;
+  }
+  .text-balance { text-wrap: balance; }
+
+  /* --- Butonlar --- */
   .btn-primary {
-    @apply inline-flex items-center justify-center gap-2 rounded-full px-6 py-3 text-sm font-semibold;
+    @apply inline-flex items-center justify-center gap-2 rounded-full px-7 py-3.5 text-sm font-semibold;
     background-color: rgb(var(--primary));
     color: rgb(var(--primary-foreground));
-    transition: transform 0.2s ease, box-shadow 0.2s ease, filter 0.2s ease;
+    transition: transform 0.25s cubic-bezier(0.16,1,0.3,1), box-shadow 0.25s ease, filter 0.25s ease;
   }
-  .btn-primary:hover {
-    filter: brightness(1.08);
-    transform: translateY(-1px);
-    box-shadow: 0 10px 24px -8px rgb(var(--primary) / 0.5);
-  }
-  .btn-primary:active {
-    transform: translateY(0);
-  }
+  .btn-primary:hover { filter: brightness(1.08); transform: translateY(-2px); box-shadow: 0 14px 30px -10px rgb(var(--primary) / 0.55); }
+  .btn-primary:active { transform: translateY(0); }
+
   .btn-accent {
-    @apply inline-flex items-center justify-center gap-2 rounded-full px-6 py-3 text-sm font-semibold;
+    @apply inline-flex items-center justify-center gap-2 rounded-full px-7 py-3.5 text-sm font-semibold;
     background-color: rgb(var(--accent));
     color: rgb(var(--accent-foreground));
-    transition: transform 0.2s ease, box-shadow 0.2s ease, filter 0.2s ease;
+    transition: transform 0.25s cubic-bezier(0.16,1,0.3,1), box-shadow 0.25s ease, filter 0.25s ease;
   }
-  .btn-accent:hover {
-    filter: brightness(1.06);
-    transform: translateY(-1px);
-    box-shadow: 0 10px 24px -8px rgb(var(--accent) / 0.5);
-  }
-  .btn-accent:active {
-    transform: translateY(0);
-  }
+  .btn-accent:hover { filter: brightness(1.06); transform: translateY(-2px); box-shadow: 0 16px 34px -10px rgb(var(--accent) / 0.6); }
+  .btn-accent:active { transform: translateY(0); }
+
   .btn-outline {
-    @apply inline-flex items-center justify-center gap-2 rounded-full border px-6 py-3 text-sm font-semibold;
+    @apply inline-flex items-center justify-center gap-2 rounded-full border px-7 py-3.5 text-sm font-semibold;
     border-color: rgb(var(--border));
     color: rgb(var(--foreground));
-    transition: transform 0.2s ease, background-color 0.2s ease, box-shadow 0.2s ease;
+    transition: transform 0.25s ease, background-color 0.25s ease;
   }
-  .btn-outline:hover {
-    background-color: rgb(var(--muted));
-    transform: translateY(-1px);
+  .btn-outline:hover { background-color: rgb(var(--muted)); transform: translateY(-2px); }
+
+  .btn-ghost-light {
+    @apply inline-flex items-center justify-center gap-2 rounded-full border px-7 py-3.5 text-sm font-semibold text-white;
+    border-color: rgb(255 255 255 / 0.4);
+    transition: background-color 0.25s ease, transform 0.25s ease;
   }
-  .btn-outline:active {
-    transform: translateY(0);
-  }
+  .btn-ghost-light:hover { background-color: rgb(255 255 255 / 0.14); transform: translateY(-2px); }
+
   .card {
-    @apply rounded-2xl border p-6 shadow-sm transition;
+    @apply rounded-3xl border p-6 shadow-sm transition;
     background-color: rgb(var(--card));
     color: rgb(var(--card-foreground));
     border-color: rgb(var(--border));
   }
-  .surface-muted {
-    background-color: rgb(var(--muted));
-    color: rgb(var(--muted-foreground));
-  }
+  .surface-muted { background-color: rgb(var(--muted)); color: rgb(var(--muted-foreground)); }
 }
 
+/* --- Hero degrade (eski sayfalar için korunur) --- */
 .hero-gradient {
   position: relative;
-  background-color: #083344;
+  background-color: #07212b;
   background-image:
     radial-gradient(60% 80% at 85% 10%, rgba(251, 146, 60, 0.55) 0%, transparent 60%),
-    radial-gradient(50% 70% at 10% 20%, rgba(34, 211, 238, 0.35) 0%, transparent 55%),
-    linear-gradient(135deg, #0e7490 0%, #083344 55%, #0c4a5c 100%);
+    radial-gradient(50% 70% at 10% 20%, rgba(34, 211, 238, 0.32) 0%, transparent 55%),
+    linear-gradient(135deg, #0e7490 0%, #07212b 55%, #0c4a5c 100%);
   overflow: hidden;
 }
-
-/* İnce ışık/grain dokusu — düz degradeye derinlik katar */
 .hero-gradient::before {
   content: "";
-  position: absolute;
-  inset: 0;
+  position: absolute; inset: 0;
   background-image: radial-gradient(rgba(255, 255, 255, 0.06) 1px, transparent 1px);
-  background-size: 22px 22px;
-  pointer-events: none;
+  background-size: 22px 22px; pointer-events: none;
 }
 
-/* Bölümler arası dalga ayırıcı */
-.wave-divider {
-  display: block;
-  width: 100%;
-  height: 48px;
-  line-height: 0;
+/* --- Foto kaplama degradeleri --- */
+.img-scrim {
+  background: linear-gradient(to top, rgb(4 18 24 / 0.85) 0%, rgb(4 18 24 / 0.35) 38%, rgb(4 18 24 / 0.1) 64%, rgb(4 18 24 / 0.45) 100%);
+}
+.img-scrim-soft {
+  background: linear-gradient(to top, rgb(4 18 24 / 0.78) 0%, rgb(4 18 24 / 0.18) 55%, transparent 100%);
 }
 
-@media (min-width: 640px) {
-  .wave-divider {
-    height: 70px;
-  }
-}
+/* --- Görsel kartı: hover zoom --- */
+.img-zoom { overflow: hidden; }
+.img-zoom img { transition: transform 0.9s cubic-bezier(0.16,1,0.3,1); will-change: transform; }
+.img-zoom:hover img { transform: scale(1.06); }
 
-/* Giriş animasyonları */
+/* --- Ken Burns yavaş zoom (hero) --- */
+@keyframes ken-burns {
+  0% { transform: scale(1.08) translate(0, 0); }
+  100% { transform: scale(1.18) translate(-1.5%, -2%); }
+}
+.ken-burns { animation: ken-burns 22s ease-out both alternate infinite; }
+
+/* --- Yatay galeri marquee --- */
+@keyframes marquee {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+.marquee-track { display: flex; width: max-content; animation: marquee 45s linear infinite; }
+.marquee-mask:hover .marquee-track { animation-play-state: paused; }
+
+/* --- İnce yüzme animasyonu --- */
+@keyframes float-soft {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+.float-soft { animation: float-soft 6s ease-in-out infinite; }
+
+/* --- Scroll ipucu --- */
+@keyframes scroll-cue {
+  0% { transform: translateY(0); opacity: 0; }
+  40% { opacity: 1; }
+  80% { transform: translateY(12px); opacity: 0; }
+  100% { opacity: 0; }
+}
+.scroll-cue span { animation: scroll-cue 1.9s ease-in-out infinite; }
+
+/* --- Giriş animasyonları --- */
 @keyframes fade-up {
-  from {
-    opacity: 0;
-    transform: translateY(16px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
 }
+.animate-fade-up { animation: fade-up 0.8s cubic-bezier(0.16,1,0.3,1) both; }
 
-.animate-fade-up {
-  animation: fade-up 0.6s ease both;
-}
+/* Kademeli giriş gecikmeleri (hero) */
+.delay-1 { animation-delay: 0.1s; }
+.delay-2 { animation-delay: 0.25s; }
+.delay-3 { animation-delay: 0.4s; }
+.delay-4 { animation-delay: 0.55s; }
+.delay-5 { animation-delay: 0.7s; }
 
-/* Scroll ile beliren bölümler — IntersectionObserver "is-visible" ekler.
- * Stagger için satır içi transition-delay (Reveal bileşeni) kullanılır. */
+/* Scroll reveal (IntersectionObserver "is-visible") */
 .reveal {
-  opacity: 0;
-  transform: translateY(22px);
-  transition:
-    opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1),
-    transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+  opacity: 0; transform: translateY(26px);
+  transition: opacity 0.8s cubic-bezier(0.16,1,0.3,1), transform 0.8s cubic-bezier(0.16,1,0.3,1);
   will-change: opacity, transform;
 }
-.reveal.is-visible {
-  opacity: 1;
-  transform: none;
-}
+.reveal.is-visible { opacity: 1; transform: none; }
+
+/* Görsel clip reveal */
+.reveal-clip { clip-path: inset(0 0 100% 0); transition: clip-path 1s cubic-bezier(0.16,1,0.3,1); }
+.reveal-clip.is-visible { clip-path: inset(0 0 0 0); }
 
 @media (prefers-reduced-motion: reduce) {
-  html {
-    scroll-behavior: auto;
-  }
-  .animate-fade-up {
-    animation: none;
-  }
-  .reveal {
-    opacity: 1;
-    transform: none;
-    transition: none;
-  }
+  html { scroll-behavior: auto; }
+  .animate-fade-up, .ken-burns, .marquee-track, .float-soft, .scroll-cue span { animation: none; }
+  .reveal, .reveal-clip { opacity: 1; transform: none; clip-path: none; transition: none; }
 }
 
-.glass {
-  backdrop-filter: saturate(180%) blur(12px);
-}
+/* --- Cam efekti --- */
+.glass { backdrop-filter: saturate(180%) blur(14px); }
 
+/* --- Altın alt çizgi (linkler) --- */
 .link-underline {
   background-image: linear-gradient(currentColor, currentColor);
-  background-size: 0% 2px;
-  background-position: 0 100%;
-  background-repeat: no-repeat;
-  transition: background-size 0.25s ease;
+  background-size: 0% 1.5px; background-position: 0 100%; background-repeat: no-repeat;
+  transition: background-size 0.3s ease;
 }
-.link-underline:hover {
-  background-size: 100% 2px;
+.link-underline:hover { background-size: 100% 1.5px; }
+
+/* --- İnce film grain (tüm site, çok hafif) --- */
+.grain::after {
+  content: ""; position: fixed; inset: 0; z-index: 9999; pointer-events: none; opacity: 0.04;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
 }
+
+/* --- Dalga ayırıcı (eski sayfalar) --- */
+.wave-divider { display: block; width: 100%; height: 48px; line-height: 0; }
+@media (min-width: 640px) { .wave-divider { height: 70px; } }

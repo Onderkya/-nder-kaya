@@ -44,7 +44,7 @@ export default async function LessonsPage({ params }: { params: Promise<{ locale
   return (
     <>
       <JsonLd data={{ "@context": "https://schema.org", "@type": "Course", name: t("title"), description: t("intro"), provider: { "@type": "Organization", name: "Antalya Bridge" } }} />
-      <PageHero title={t("title")} intro={t("intro")} />
+      <PageHero title={t("title")} intro={t("intro")} image="/images/street.jpg" />
       <section className="container-page py-14">
         <h2 className="mb-8 text-2xl font-bold">{t("durationsTitle")}</h2>
         <div className="grid gap-6 md:grid-cols-3">

@@ -16,7 +16,7 @@ export default async function AboutPage({ params }: { params: Promise<{ locale: 
 
   return (
     <>
-      <PageHero title={t("title")} intro="" />
+      <PageHero title={t("title")} intro="" image="/images/kaleici.jpg" />
       <section className="container-page py-14">
         <Reveal as="p" className="mx-auto max-w-3xl text-lg leading-relaxed">
           {t("body")}
