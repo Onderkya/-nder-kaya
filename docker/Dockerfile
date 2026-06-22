@@ -10,6 +10,10 @@ RUN npx prisma generate
 # site key'i (public) burada arg olarak alınır; boşsa captcha widget'ı çıkmaz.
 ARG NEXT_PUBLIC_TURNSTILE_SITE_KEY=""
 ENV NEXT_PUBLIC_TURNSTILE_SITE_KEY=$NEXT_PUBLIC_TURNSTILE_SITE_KEY
+# Site URL'i build zamanında okunur (canonical/sitemap + güvenlik başlıkları:
+# https ise HSTS + upgrade-insecure-requests eklenir, düz http'de eklenmez).
+ARG NEXT_PUBLIC_SITE_URL=""
+ENV NEXT_PUBLIC_SITE_URL=$NEXT_PUBLIC_SITE_URL
 RUN npm run build
 # Seed'i çalıştırılabilir JS'e derle (prod imajında tsx yok; compose seed.js çağırır).
 RUN npx tsc prisma/seed.ts --outDir prisma --module commonjs --target es2020 --esModuleInterop --skipLibCheck

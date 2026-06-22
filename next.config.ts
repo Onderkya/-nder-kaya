@@ -5,6 +5,13 @@ const withNextIntl = createNextIntlPlugin("./i18n/request.ts");
 
 const isDev = process.env.NODE_ENV !== "production";
 
+// Site HTTPS üzerinden mi sunuluyor? (domain + SSL). Düz HTTP dağıtımında
+// (örn. henüz domain yokken http://IP:PORT) `upgrade-insecure-requests` ve HSTS
+// EKLENMEZ — aksi halde tarayıcı tüm alt kaynakları https'e yükseltmeye çalışıp
+// (TLS olmadığından) sayfayı bozar. Domain + SSL eklenip NEXT_PUBLIC_SITE_URL
+// https'e çevrilince bu başlıklar otomatik geri gelir (build arg ile okunur).
+const isHttps = (process.env.NEXT_PUBLIC_SITE_URL ?? "").startsWith("https://");
+
 // İçerik Güvenlik Politikası. QR'lar data: URL olarak gömülür (img-src data:),
 // inline stiller kullanıldığı için style-src 'unsafe-inline'. Script için dev'de
 // HMR/eval gerekir; prod'da 'self' + inline (Next hydration) ile sınırlıdır.
@@ -21,7 +28,7 @@ const csp = [
   "object-src 'none'",
   "base-uri 'self'",
   "form-action 'self'",
-  "upgrade-insecure-requests",
+  ...(isHttps ? ["upgrade-insecure-requests"] : []),
 ].join("; ");
 
 const securityHeaders = [
@@ -30,7 +37,9 @@ const securityHeaders = [
   { key: "X-Content-Type-Options", value: "nosniff" },
   { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
   { key: "Permissions-Policy", value: "camera=(), microphone=(), geolocation=(), payment=()" },
-  { key: "Strict-Transport-Security", value: "max-age=63072000; includeSubDomains; preload" },
+  ...(isHttps
+    ? [{ key: "Strict-Transport-Security", value: "max-age=63072000; includeSubDomains; preload" }]
+    : []),
   { key: "X-DNS-Prefetch-Control", value: "off" },
 ];
 

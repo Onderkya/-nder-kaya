@@ -23,8 +23,10 @@ services:
       dockerfile: docker/Dockerfile
       args:
         # NEXT_PUBLIC_* build zamanında gömülür; .env'den okunur. Turnstile
-        # site key'ini değiştirince `docker compose up -d --build` ile yeniden derle.
+        # site key'ini veya site URL'ini değiştirince `docker compose up -d --build`
+        # ile yeniden derle.
         NEXT_PUBLIC_TURNSTILE_SITE_KEY: ${NEXT_PUBLIC_TURNSTILE_SITE_KEY:-}
+        NEXT_PUBLIC_SITE_URL: ${NEXT_PUBLIC_SITE_URL:-}
     restart: unless-stopped
     env_file: .env
     volumes:
@@ -35,8 +37,10 @@ services:
         condition: service_healthy
     ports:
       # Host portu ayarlanabilir (varsayılan 3010) — sunucudaki 3000 başka projede
-      # olabilir. Yalnızca localhost'a bağla; dışarıdan erişim nginx üzerinden olur.
-      - "127.0.0.1:${WEB_HTTP_PORT:-3010}:3000"
+      # olabilir. Bind adresi de ayarlanabilir: varsayılan 127.0.0.1 (dışarıdan
+      # erişim nginx üzerinden olur). Domain/SSL henüz yokken doğrudan IP:PORT
+      # erişimi için .env'de WEB_BIND=0.0.0.0 yapılır (firewall'dan portu aç).
+      - "${WEB_BIND:-127.0.0.1}:${WEB_HTTP_PORT:-3010}:3000"
     # İlk açılışta: migration'ları uygula → seed (idempotent) → sunucuyu başlat.
     # Prisma CLI imaja gömülü olduğundan ağ indirmesi gerekmez.
     command: sh -c "node node_modules/prisma/build/index.js migrate deploy && (node prisma/seed.js || true) && node server.js"
