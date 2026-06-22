@@ -41,3 +41,7 @@ dive-fish.mp4   — "Diving through a reef" — Mixkit (atıf gerekmez)
 # Aktivite videoları (public/media) — Mixkit License (atıf gerekmez)
 act-scuba.mp4   — "Scuba diver with instructor" — Mixkit
 act-jetski.mp4  — "Jet ski in calm tropical waters" — Mixkit
+
+# Gezilecek yerler (yatay galeri)
+side.jpg        — "Side Apollo temple" — Dosseman — CC BY-SA 4.0
+phaselis.jpg    — "Phaselis August 2019" — Лобачев Владимир — CC BY-SA 4.0

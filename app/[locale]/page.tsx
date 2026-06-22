@@ -5,6 +5,7 @@ import { JsonLd } from "@/components/json-ld";
 import { Reveal } from "@/components/reveal";
 import { DiveHero } from "@/components/dive-hero";
 import { ActivitiesDive } from "@/components/activities-dive";
+import { HorizontalPlaces } from "@/components/horizontal-places";
 import { TurkishAlphabet } from "@/components/turkish-alphabet";
 import { IconArrow, IconCheck } from "@/components/icons";
 import { siteConfig } from "@/lib/config";
@@ -31,17 +32,6 @@ export default async function HomePage({
     { n: "I", title: t("why1Title"), text: t("why1Text") },
     { n: "II", title: t("why2Title"), text: t("why2Text") },
     { n: "III", title: t("why3Title"), text: t("why3Text") },
-  ];
-
-  const gallery = [
-    { img: "/images/lagoon.jpg", place: "Mavi Lagün", sub: "Ölüdeniz" },
-    { img: "/images/olympos.jpg", place: "Olympos", sub: "Sahil" },
-    { img: "/images/sunset.jpg", place: "Kaş", sub: "Gün batımı" },
-    { img: "/images/duden.jpg", place: "Düden", sub: "Şelale" },
-    { img: "/images/harbor-night.jpg", place: "Yat Limanı", sub: "Kaleiçi" },
-    { img: "/images/beach.jpg", place: "Konyaaltı", sub: "Akdeniz" },
-    { img: "/images/kaleici.jpg", place: "Kaleiçi", sub: "Antalya" },
-    { img: "/images/pool.jpg", place: "Tatil", sub: "Resort" },
   ];
 
   return (
@@ -131,46 +121,38 @@ export default async function HomePage({
         </div>
       </section>
 
-      {/* ============ HİZMETLER ============ */}
-      <section className="border-y py-20 sm:py-24" style={{ borderColor: "rgb(var(--border))", backgroundColor: "rgb(var(--muted) / 0.5)" }}>
+      {/* ============ HİZMETLER (premium editoryal) ============ */}
+      <section className="py-24 sm:py-32" style={{ backgroundColor: "rgb(var(--background))" }}>
         <div className="container-wide">
-          <div className="flex flex-col items-start justify-between gap-6 sm:flex-row sm:items-end">
-            <Reveal>
-              <p className="eyebrow" style={{ color: "rgb(var(--accent))" }}>{t("servicesSubtitle")}</p>
-              <h2 className="h-section mt-5 max-w-xl text-balance" style={{ color: "rgb(var(--foreground))" }}>
-                {t("servicesTitle")}
-              </h2>
-            </Reveal>
-          </div>
+          <Reveal className="mx-auto max-w-2xl text-center">
+            <p className="eyebrow justify-center" style={{ color: "rgb(var(--accent))" }}>{t("servicesSubtitle")}</p>
+            <h2 className="h-section mt-5 text-balance" style={{ color: "rgb(var(--foreground))" }}>
+              {t("servicesTitle")}
+            </h2>
+          </Reveal>
 
-          <div className="mt-12 grid gap-5 md:grid-cols-3">
+          <div className="mt-16 space-y-20 sm:space-y-28">
             {services.map((srv, i) => (
-              <Reveal key={srv.href} delay={i * 110}>
-                <Link
-                  href={srv.href}
-                  className="img-zoom group relative block aspect-[4/5] overflow-hidden rounded-3xl shadow-md transition-shadow duration-300 hover:shadow-2xl"
-                >
-                  <Image
-                    src={srv.img}
-                    alt={srv.title}
-                    fill
-                    sizes="(max-width: 768px) 100vw, 33vw"
-                    className="object-cover"
-                  />
-                  <div className="img-scrim absolute inset-0" />
-                  <div className="absolute inset-0 flex flex-col justify-between p-7 text-white">
-                    <div className="flex items-center justify-between">
-                      <span className="font-display text-4xl leading-none text-white/90">{srv.n}</span>
-                      <span className="tracking-widest2 text-[10px] uppercase text-white/60">{srv.place}</span>
-                    </div>
-                    <div>
-                      <h3 className="font-display text-[1.7rem] font-semibold leading-tight">{srv.title}</h3>
-                      <p className="mt-2.5 text-sm leading-relaxed text-white/80">{srv.desc}</p>
-                      <span className="mt-5 inline-flex items-center gap-1.5 text-sm font-semibold text-white">
-                        {c("learnMore")}
-                        <span className="transition-transform duration-300 group-hover:translate-x-1"><IconArrow /></span>
-                      </span>
-                    </div>
+              <Reveal key={srv.href}>
+                <Link href={srv.href} className="group grid items-center gap-8 lg:grid-cols-2 lg:gap-16">
+                  <div className={`img-zoom relative aspect-[16/11] overflow-hidden rounded-[2rem] shadow-xl ${i % 2 ? "lg:order-2" : ""}`}>
+                    <Image src={srv.img} alt={srv.title} fill sizes="(max-width: 1024px) 100vw, 50vw" className="object-cover" />
+                    <div className="img-scrim-soft absolute inset-0" />
+                    <span className="absolute left-7 top-6 font-display text-5xl text-white/85">{srv.n}</span>
+                    <span className="tracking-widest2 absolute bottom-6 left-7 text-[10px] uppercase text-white/70">{srv.place}</span>
+                  </div>
+                  <div className={i % 2 ? "lg:order-1" : ""}>
+                    <span className="serif-italic text-2xl" style={{ color: "rgb(var(--gold))" }}>{srv.n}</span>
+                    <h3 className="font-display mt-3 font-semibold leading-tight" style={{ color: "rgb(var(--foreground))", fontSize: "clamp(1.9rem, 3vw, 2.7rem)" }}>
+                      {srv.title}
+                    </h3>
+                    <p className="mt-5 max-w-md text-lg leading-relaxed" style={{ color: "rgb(var(--muted-foreground))" }}>
+                      {srv.desc}
+                    </p>
+                    <span className="mt-7 inline-flex items-center gap-2 text-sm font-semibold" style={{ color: "rgb(var(--primary))" }}>
+                      {c("learnMore")}
+                      <span className="transition-transform duration-300 group-hover:translate-x-1"><IconArrow /></span>
+                    </span>
                   </div>
                 </Link>
               </Reveal>
@@ -225,42 +207,23 @@ export default async function HomePage({
         </div>
       </section>
 
-      {/* ============ GALERİ ŞERİDİ ============ */}
-      <section className="overflow-hidden py-20 sm:py-24">
-        <div className="container-wide mb-10">
-          <Reveal>
-            <p className="eyebrow" style={{ color: "rgb(var(--accent))" }}>Antalya</p>
-            <h2 className="h-section mt-5" style={{ color: "rgb(var(--foreground))" }}>
-              <span className="serif-italic">{meta("siteName")}</span>
-            </h2>
-          </Reveal>
-        </div>
-        <div className="marquee-mask relative">
-          <div className="marquee-track gap-4 px-2">
-            {[...gallery, ...gallery].map((g, i) => (
-              <figure
-                key={i}
-                className="img-zoom relative aspect-[3/4] w-[260px] shrink-0 overflow-hidden rounded-2xl sm:w-[320px]"
-              >
-                <Image
-                  src={g.img}
-                  alt={`${g.place}, Antalya`}
-                  fill
-                  sizes="320px"
-                  className="object-cover"
-                />
-                <figcaption className="img-scrim-soft absolute inset-x-0 bottom-0 flex items-end justify-between p-4 text-white">
-                  <span className="font-display text-xl leading-none">{g.place}</span>
-                  <span className="tracking-widest2 text-[9px] uppercase text-white/70">{g.sub}</span>
-                </figcaption>
-              </figure>
-            ))}
-          </div>
-          {/* kenar yumuşatma */}
-          <div className="pointer-events-none absolute inset-y-0 left-0 w-16 sm:w-28" style={{ background: "linear-gradient(90deg, rgb(var(--background)), transparent)" }} />
-          <div className="pointer-events-none absolute inset-y-0 right-0 w-16 sm:w-28" style={{ background: "linear-gradient(270deg, rgb(var(--background)), transparent)" }} />
-        </div>
-      </section>
+      {/* ============ GEZİLECEK YERLER (sağa-sola yatay) ============ */}
+      <HorizontalPlaces
+        eyebrow="Antalya"
+        title={t("placesTitle")}
+        places={[
+          { img: "/images/kaputas.jpg", name: "Kaputaş", sub: "Kaş" },
+          { img: "/images/lagoon.jpg", name: "Mavi Lagün", sub: "Ölüdeniz" },
+          { img: "/images/sunset.jpg", name: "Kaş", sub: "Gün batımı" },
+          { img: "/images/olympos.jpg", name: "Olympos", sub: "Çıralı" },
+          { img: "/images/phaselis.jpg", name: "Phaselis", sub: "Kemer" },
+          { img: "/images/side.jpg", name: "Side", sub: "Antik kent" },
+          { img: "/images/beach.jpg", name: "Konyaaltı", sub: "Akdeniz" },
+          { img: "/images/kaleici.jpg", name: "Kaleiçi", sub: "Antalya" },
+          { img: "/images/duden.jpg", name: "Düden", sub: "Şelale" },
+          { img: "/images/harbor-night.jpg", name: "Yat Limanı", sub: "Kaleiçi" },
+        ]}
+      />
 
       {/* ============ CTA (şelale) ============ */}
       <section className="container-wide pb-24">
