@@ -41,11 +41,15 @@ export function DiveHero({ title, subtitle, ctaPrimary, ctaSecondary, deepLine, 
     if (typeof window === "undefined") return;
     const root = rootRef.current;
     if (!root) return;
-    const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+    const v = videoRef.current;
+    if (v) v.play().catch(() => {});
+
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
 
     const q = (s: string) => root.querySelector<HTMLElement>(s);
+    const aerialWrap = q(".dive-aerial-wrap");
     const aerial = q(".dive-aerial");
-    const aerialImg = aerial?.querySelector("img") as HTMLElement | null;
     const grade = q(".dive-grade-blue");
     const depth = q(".dive-depth");
     const flash = q(".dive-flash");
@@ -55,70 +59,48 @@ export function DiveHero({ title, subtitle, ctaPrimary, ctaSecondary, deepLine, 
     const vignette = q(".dive-vignette-bottom");
     const cue = q(".dive-cue");
 
-    const v = videoRef.current;
-    if (v) v.play().catch(() => {});
-
-    if (reduce) return;
-
-    let cur = 0;
-    let raf = 0;
-    let running = true;
+    const set = (el: HTMLElement | null, prop: "opacity" | "transform", val: string) => {
+      if (el) el.style[prop] = val;
+    };
 
     const apply = (p: number) => {
-      if (aerialImg) aerialImg.style.transform = `scale(${(1.05 + p * 1.0).toFixed(3)})`;
-      if (aerial) aerial.style.opacity = String(1 - seg(p, 0.46, 0.6));
-      if (grade) grade.style.opacity = String(seg(p, 0, 0.5) * 0.5);
-      if (cue) cue.style.opacity = String(1 - seg(p, 0, 0.12));
-      if (phase1) {
-        phase1.style.opacity = String(1 - seg(p, 0.05, 0.34));
-        phase1.style.transform = `translate3d(0, ${(-seg(p, 0, 0.34) * 60).toFixed(1)}px, 0)`;
-      }
-      if (flash) {
-        const f = p < 0.42 ? seg(p, 0.3, 0.42) : 1 - seg(p, 0.42, 0.55);
-        flash.style.opacity = String(Math.max(0, f) * 0.85);
-      }
-      if (depth) depth.style.opacity = String(seg(p, 0.34, 0.56));
-      if (phase2) {
-        phase2.style.opacity = String(seg(p, 0.54, 0.72));
-        phase2.style.transform = `translate3d(-50%, calc(-50% + ${((1 - seg(p, 0.54, 0.72)) * 18).toFixed(1)}px), 0)`;
-      }
-      if (deepen) deepen.style.opacity = String(seg(p, 0.58, 0.86) * 0.9);
-      if (vignette) vignette.style.opacity = String(seg(p, 0.82, 1));
+      set(aerialWrap, "transform", `scale(${(1.05 + p * 1.05).toFixed(3)})`);
+      set(aerial, "opacity", String(1 - seg(p, 0.46, 0.6)));
+      set(grade, "opacity", String(seg(p, 0, 0.5) * 0.5));
+      set(cue, "opacity", String(1 - seg(p, 0, 0.12)));
+      set(phase1, "opacity", String(1 - seg(p, 0.05, 0.34)));
+      set(phase1, "transform", `translate3d(0, ${(-seg(p, 0, 0.34) * 60).toFixed(1)}px, 0)`);
+      const f = p < 0.42 ? seg(p, 0.3, 0.42) : 1 - seg(p, 0.42, 0.55);
+      set(flash, "opacity", String(Math.max(0, f) * 0.85));
+      set(depth, "opacity", String(seg(p, 0.34, 0.56)));
+      set(phase2, "opacity", String(seg(p, 0.54, 0.72)));
+      set(phase2, "transform", `translate3d(-50%, calc(-50% + ${((1 - seg(p, 0.54, 0.72)) * 18).toFixed(1)}px), 0)`);
+      set(deepen, "opacity", String(seg(p, 0.58, 0.86) * 0.9));
+      set(vignette, "opacity", String(seg(p, 0.82, 1)));
     };
 
-    const frame = () => {
-      const vh = window.innerHeight;
-      const total = root.offsetHeight - vh;
+    const compute = () => {
+      const total = root.offsetHeight - window.innerHeight;
       const top = root.getBoundingClientRect().top;
-      const target = total > 0 ? Math.min(1, Math.max(0, -top / total)) : 0;
-      cur += (target - cur) * 0.14;
-      if (Math.abs(target - cur) < 0.0005) cur = target;
-      apply(cur);
-      if (running) raf = requestAnimationFrame(frame);
+      return total > 0 ? Math.min(1, Math.max(0, -top / total)) : 0;
     };
 
-    // Yalnızca sahne görünürken rAF çalışsın (performans).
-    const io = new IntersectionObserver(
-      (entries) => {
-        for (const e of entries) {
-          if (e.isIntersecting && !running) {
-            running = true;
-            raf = requestAnimationFrame(frame);
-          } else if (!e.isIntersecting && running) {
-            running = false;
-            cancelAnimationFrame(raf);
-          }
-        }
-      },
-      { threshold: 0 },
-    );
-    io.observe(root);
-    raf = requestAnimationFrame(frame);
+    let ticking = false;
+    const onScroll = () => {
+      if (ticking) return;
+      ticking = true;
+      requestAnimationFrame(() => {
+        apply(compute());
+        ticking = false;
+      });
+    };
 
+    apply(compute()); // ilk durum
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", onScroll);
     return () => {
-      running = false;
-      cancelAnimationFrame(raf);
-      io.disconnect();
+      window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("resize", onScroll);
     };
   }, []);
 
@@ -137,16 +119,18 @@ export function DiveHero({ title, subtitle, ctaPrimary, ctaSecondary, deepLine, 
   return (
     <section ref={rootRef} className="relative" style={{ height: "360vh", backgroundColor: "#02212f" }}>
       <div className="dive-stage sticky top-0 h-[100svh] w-full overflow-hidden">
-        {/* HAVADAN — turkuaz Kaputaş */}
+        {/* HAVADAN — turkuaz Kaputaş (wrapper transform edilir) */}
         <div className="dive-aerial absolute inset-0">
-          <Image
-            src="/images/kaputas.jpg"
-            alt="Kaputaş Plajı — turkuaz Akdeniz, Antalya"
-            fill
-            priority
-            sizes="100vw"
-            className="scale-105 object-cover"
-          />
+          <div className="dive-aerial-wrap absolute inset-0 will-change-transform" style={{ transform: "scale(1.05)" }}>
+            <Image
+              src="/images/kaputas.jpg"
+              alt="Kaputaş Plajı — turkuaz Akdeniz, Antalya"
+              fill
+              priority
+              sizes="100vw"
+              className="object-cover"
+            />
+          </div>
           <div
             className="dive-grade-blue absolute inset-0 opacity-0"
             style={{ background: "linear-gradient(180deg, rgba(10,120,150,0.25), rgba(2,45,65,0.6))" }}
@@ -155,7 +139,7 @@ export function DiveHero({ title, subtitle, ctaPrimary, ctaSecondary, deepLine, 
         </div>
 
         {/* SUALTI — gerçek video */}
-        <div className="dive-depth absolute inset-0 opacity-0">
+        <div className="dive-depth absolute inset-0" style={{ opacity: 0 }}>
           <video
             ref={videoRef}
             className="absolute inset-0 h-full w-full object-cover"
@@ -176,19 +160,19 @@ export function DiveHero({ title, subtitle, ctaPrimary, ctaSecondary, deepLine, 
             />
           ))}
           <div
-            className="dive-deepen absolute inset-0 opacity-0"
-            style={{ background: "radial-gradient(120% 120% at 50% 40%, transparent 30%, rgba(2,16,26,0.85) 100%)" }}
+            className="dive-deepen absolute inset-0"
+            style={{ opacity: 0, background: "radial-gradient(120% 120% at 50% 40%, transparent 30%, rgba(2,16,26,0.85) 100%)" }}
           />
           <div
-            className="dive-vignette-bottom absolute inset-x-0 bottom-0 h-44 opacity-0"
-            style={{ background: "linear-gradient(180deg, transparent, rgb(var(--background)))" }}
+            className="dive-vignette-bottom absolute inset-x-0 bottom-0 h-44"
+            style={{ opacity: 0, background: "linear-gradient(180deg, transparent, rgb(var(--background)))" }}
           />
         </div>
 
         {/* Yüzey kırılma flaşı */}
         <div
-          className="dive-flash pointer-events-none absolute inset-0 opacity-0"
-          style={{ background: "radial-gradient(circle at 50% 42%, rgba(220,250,255,0.9), rgba(170,235,250,0.25) 45%, transparent 72%)" }}
+          className="dive-flash pointer-events-none absolute inset-0"
+          style={{ opacity: 0, background: "radial-gradient(circle at 50% 42%, rgba(220,250,255,0.9), rgba(170,235,250,0.25) 45%, transparent 72%)" }}
         />
 
         {/* İÇERİK */}
@@ -208,8 +192,8 @@ export function DiveHero({ title, subtitle, ctaPrimary, ctaSecondary, deepLine, 
           </div>
 
           <div
-            className="dive-phase2 pointer-events-none absolute left-1/2 top-1/2 w-full max-w-3xl px-6 text-center text-white opacity-0"
-            style={{ transform: "translate3d(-50%, -50%, 0)" }}
+            className="dive-phase2 pointer-events-none absolute left-1/2 top-1/2 w-full max-w-3xl px-6 text-center text-white"
+            style={{ opacity: 0, transform: "translate3d(-50%, -50%, 0)" }}
           >
             <p className="eyebrow justify-center" style={{ color: "rgb(175 240 255)" }}>{brand}</p>
             <p className="mt-5 font-display text-3xl font-medium leading-snug sm:text-5xl">{deepLine}</p>
