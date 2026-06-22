@@ -71,6 +71,59 @@ export default async function HomePage({
         ]}
       />
 
+      {/* ============ LAND OF LEGENDS — scuba'dan sonra bambaşka ============ */}
+      <section className="relative overflow-hidden py-24 sm:py-32" style={{ background: "radial-gradient(120% 110% at 50% 0%, #3a1d52 0%, #1a1136 50%, #0a0a1e 100%)" }}>
+        <div className="container-wide grid items-center gap-12 lg:grid-cols-2">
+          <Reveal>
+            <p className="eyebrow" style={{ color: "rgb(251 191 80)" }}>Belek · Tema Parkı</p>
+            <h2 className="font-display mt-5 font-semibold leading-[0.95] tracking-[-0.02em] text-white" style={{ fontSize: "clamp(2.6rem, 6vw, 5rem)" }}>
+              The Land of <span className="serif-italic" style={{ color: "rgb(251 191 80)" }}>Legends</span>
+            </h2>
+            <p className="mt-6 max-w-md text-lg leading-relaxed text-white/75">{t("lolDesc")}</p>
+            <Link href="/antalya" className="btn-accent mt-8">
+              {c("learnMore")} <IconArrow />
+            </Link>
+          </Reveal>
+          <Reveal delay={120} className="flex justify-center">
+            <figure className="float-soft relative w-[72%] max-w-xs overflow-hidden rounded-[1.75rem] shadow-2xl sm:max-w-sm" style={{ aspectRatio: "9 / 15" }}>
+              <Image src="/images/landoflegends.jpg" alt="The Land of Legends — masal kalesi, Belek Antalya" fill sizes="380px" className="object-cover" />
+            </figure>
+          </Reveal>
+        </div>
+      </section>
+
+      {/* ============ OTELLER (telifsiz / CC) ============ */}
+      <section className="py-24 sm:py-28" style={{ backgroundColor: "rgb(var(--muted) / 0.5)" }}>
+        <div className="container-wide">
+          <Reveal className="mx-auto max-w-2xl text-center">
+            <p className="eyebrow justify-center" style={{ color: "rgb(var(--accent))" }}>{t("hotelsEyebrow")}</p>
+            <h2 className="h-section mt-5" style={{ color: "rgb(var(--foreground))" }}>{t("hotelsTitle")}</h2>
+          </Reveal>
+          <div className="mt-14 grid gap-5 sm:grid-cols-2">
+            {[
+              { name: "Maxx Royal", place: "Belek", img: "/images/maxxroyal.jpg" },
+              { name: "Rixos Premium", place: "Belek", img: "/images/rixos.jpg" },
+              { name: "Kremlin Palace", place: "Lara", img: "/images/kremlin.jpg" },
+              { name: "Miracle Resort", place: "Lara", img: "/images/pool.jpg" },
+            ].map((h, i) => (
+              <Reveal key={h.name} delay={i * 70}>
+                <figure className="img-zoom relative aspect-[16/10] overflow-hidden rounded-3xl shadow-lg">
+                  <Image src={h.img} alt={`${h.name}, Antalya`} fill sizes="(max-width: 1024px) 100vw, 50vw" className="object-cover" />
+                  <div className="img-scrim absolute inset-0" />
+                  <figcaption className="absolute inset-x-0 bottom-0 flex items-end justify-between p-6 text-white">
+                    <span className="font-display text-2xl leading-none">{h.name}</span>
+                    <span className="tracking-widest2 text-[10px] uppercase text-white/65">{h.place}</span>
+                  </figcaption>
+                </figure>
+              </Reveal>
+            ))}
+          </div>
+          <p className="mt-7 text-center text-xs" style={{ color: "rgb(var(--muted-foreground))" }}>
+            Görseller: Wikimedia Commons (CC). Rezervasyon ve güncel bilgi için bizimle iletişime geçin.
+          </p>
+        </div>
+      </section>
+
       {/* ============ MANİFESTO ============ */}
       <section className="container-wide py-20 sm:py-28 lg:py-32">
         <div className="grid items-center gap-12 lg:grid-cols-12 lg:gap-16">

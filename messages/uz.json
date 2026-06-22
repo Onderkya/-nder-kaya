@@ -52,7 +52,10 @@
     "actBoat": "Qayiq sayohatlari",
     "actSports": "Suv sport turlari",
     "actHotels": "Mehmonxonalar",
-    "placesTitle": "Antalya durdonalari"
+    "placesTitle": "Antalya durdonalari",
+    "lolDesc": "Ertaklar qasri, jahon darajasidagi suv parki, shou va attraksionlar — Antalyaning oilaviy afsonaviy maskani.",
+    "hotelsTitle": "Antalyaning eng yaxshi mehmonxonalari",
+    "hotelsEyebrow": "Joylashuv"
   },
   "services": {
     "antalyaTitle": "Antalya sayohat maslahati",

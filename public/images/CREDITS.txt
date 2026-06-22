@@ -45,3 +45,10 @@ act-jetski.mp4  — "Jet ski in calm tropical waters" — Mixkit
 # Gezilecek yerler (yatay galeri)
 side.jpg        — "Side Apollo temple" — Dosseman — CC BY-SA 4.0
 phaselis.jpg    — "Phaselis August 2019" — Лобачев Владимир — CC BY-SA 4.0
+
+# Land of Legends + Oteller (CC)
+landoflegends.jpg — "The Land Of Legends" — Masamaraqa — CC0
+coaster.jpg       — "Hyper Coaster, Land of Legends" — Philippe-Minh Nguyen — CC BY-SA 4.0
+maxxroyal.jpg     — "Maxx Royal Belek" — edykbo — CC BY 3.0
+rixos.jpg         — "Rixos Premium Belek" — edykbo — CC BY 3.0
+kremlin.jpg       — "WOW Kremlin Palace" — Сашка Денисов — CC BY 3.0

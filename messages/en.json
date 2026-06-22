@@ -52,7 +52,10 @@
     "actBoat": "Boat Tours",
     "actSports": "Water Sports",
     "actHotels": "Hotels & Resorts",
-    "placesTitle": "Treasures of Antalya"
+    "placesTitle": "Treasures of Antalya",
+    "lolDesc": "A fairytale castle, world-class water park, shows and thrilling rides — Antalya's legendary stop for families.",
+    "hotelsTitle": "Antalya's finest hotels",
+    "hotelsEyebrow": "Stay"
   },
   "services": {
     "antalyaTitle": "Antalya Travel Consulting",
