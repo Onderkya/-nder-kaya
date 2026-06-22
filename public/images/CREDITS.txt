@@ -26,3 +26,10 @@ coffee.jpg       — "Turkish coffee in Istanbul" — Tema — CC BY-SA 3.0
 kaputas.jpg      — "Kaputaş Plajı (X100S)" — Alexander van Loon — CC BY-SA 2.0
 kaputas-deep.jpg — "Türkiye Antalya Kaputaş Plajı" — Tbakky — CC BY-SA 4.0
 caustics.jpg     — "Ripples and sunlight pattern, Brofjorden" — W.carter — CC BY-SA 4.0
+
+# Güncelleme: hero Kaputaş
+kaputas.jpg      — "ANTALYA KAPUTAJ PLAJI" (turkuaz) — BoraBora704 — CC BY-SA 4.0
+
+# Medya (public/media) — Mixkit License (ticari kullanım serbest, atıf gerekmez)
+dive-underwater.mp4 — "Undersea background, light through water" — Mixkit
+waves.mp3           — "Ocean waves" — Mixkit

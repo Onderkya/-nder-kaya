@@ -264,7 +264,11 @@
 @media (min-width: 640px) { .wave-divider { height: 70px; } }
 
 /* ===== Kaputaş "denize dalış" sinematik sahnesi ===== */
-.dive-aerial img { transform-origin: 50% 64%; }
+/* Zoom merkezi turkuaz suya yönelir (suya iniyormuş hissi) */
+.dive-aerial img { transform-origin: 50% 26%; }
+
+@keyframes sound-pulse { 0%,100% { transform: scale(1); opacity: 1; } 50% { transform: scale(1.9); opacity: 0.4; } }
+.sound-pulse { animation: sound-pulse 1.1s ease-in-out infinite; }
 
 /* Sualtı derinlik zemini (yüzeye yakın açık turkuaz → dipte koyu lacivert) */
 .dive-depth {

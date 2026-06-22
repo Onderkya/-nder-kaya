@@ -65,6 +65,7 @@ export default async function HomePage({
         ctaSecondary={t("heroCtaSecondary")}
         deepLine={t("diveDeep")}
         scrollCue={t("scrollCue")}
+        soundLabel={t("soundWave")}
       />
 
       {/* ============ MANİFESTO ============ */}
