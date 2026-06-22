@@ -18,7 +18,7 @@ export default async function AntalyaPage({ params }: { params: Promise<{ locale
   return (
     <>
       <JsonLd data={{ "@context": "https://schema.org", "@type": "Service", serviceType: "Travel consulting", name: t("title"), description: t("intro"), areaServed: "Antalya, Türkiye" }} />
-      <PageHero title={t("title")} intro={t("intro")} image="/images/harbor.jpg" />
+      <PageHero title={t("title")} intro={t("intro")} image="/images/olympos.jpg" />
       <section className="container-page py-14">
         <FeatureList items={[t("feature1"), t("feature2"), t("feature3"), t("feature4")]} />
         <div className="mt-10 text-center">

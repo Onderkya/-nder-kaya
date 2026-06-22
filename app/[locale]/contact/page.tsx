@@ -20,7 +20,7 @@ export default async function ContactPage({ params }: { params: Promise<{ locale
 
   return (
     <>
-      <PageHero title={t("title")} intro={t("subtitle")} image="/images/beach.jpg" />
+      <PageHero title={t("title")} intro={t("subtitle")} image="/images/sunset.jpg" />
       <section className="container-page grid gap-10 py-14 lg:grid-cols-2">
         <Reveal>
           <ContactForm

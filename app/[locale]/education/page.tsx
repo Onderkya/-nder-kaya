@@ -18,7 +18,7 @@ export default async function EducationPage({ params }: { params: Promise<{ loca
   return (
     <>
       <JsonLd data={{ "@context": "https://schema.org", "@type": "Service", serviceType: "Education consulting", name: t("title"), description: t("intro"), areaServed: "Türkiye" }} />
-      <PageHero title={t("title")} intro={t("intro")} image="/images/hadrian.jpg" />
+      <PageHero title={t("title")} intro={t("intro")} image="/images/aspendos.jpg" />
       <section className="container-page py-14">
         <FeatureList items={[t("feature1"), t("feature2"), t("feature3"), t("feature4")]} />
         <div className="mt-10 text-center">

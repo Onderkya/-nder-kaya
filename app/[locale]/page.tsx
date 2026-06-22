@@ -3,6 +3,7 @@ import { getTranslations, setRequestLocale } from "next-intl/server";
 import { Link } from "@/i18n/routing";
 import { JsonLd } from "@/components/json-ld";
 import { Reveal } from "@/components/reveal";
+import { Parallax } from "@/components/parallax";
 import { IconArrow, IconCheck } from "@/components/icons";
 import { siteConfig } from "@/lib/config";
 
@@ -19,9 +20,9 @@ export default async function HomePage({
   const meta = await getTranslations("meta");
 
   const services = [
-    { href: "/antalya", n: "01", title: s("antalyaTitle"), desc: s("antalyaDesc"), img: "/images/harbor.jpg", place: "Yat Limanı" },
-    { href: "/lessons", n: "02", title: s("lessonsTitle"), desc: s("lessonsDesc"), img: "/images/street.jpg", place: "Kaleiçi" },
-    { href: "/education", n: "03", title: s("educationTitle"), desc: s("educationDesc"), img: "/images/hadrian.jpg", place: "Hadrianus Kapısı" },
+    { href: "/antalya", n: "01", title: s("antalyaTitle"), desc: s("antalyaDesc"), img: "/images/harbor-night.jpg", place: "Yat Limanı" },
+    { href: "/lessons", n: "02", title: s("lessonsTitle"), desc: s("lessonsDesc"), img: "/images/tea.jpg", place: "Türk Çayı" },
+    { href: "/education", n: "03", title: s("educationTitle"), desc: s("educationDesc"), img: "/images/aspendos.jpg", place: "Aspendos" },
   ];
 
   const reasons = [
@@ -31,12 +32,14 @@ export default async function HomePage({
   ];
 
   const gallery = [
-    { img: "/images/kaleici.jpg", place: "Kaleiçi", sub: "Antalya" },
-    { img: "/images/beach.jpg", place: "Konyaaltı", sub: "Akdeniz" },
+    { img: "/images/lagoon.jpg", place: "Mavi Lagün", sub: "Ölüdeniz" },
+    { img: "/images/olympos.jpg", place: "Olympos", sub: "Sahil" },
+    { img: "/images/sunset.jpg", place: "Kaş", sub: "Gün batımı" },
     { img: "/images/duden.jpg", place: "Düden", sub: "Şelale" },
-    { img: "/images/yivli.jpg", place: "Yivli Minare", sub: "Selçuklu" },
-    { img: "/images/hero-coast.jpg", place: "Falezler", sub: "Antalya" },
-    { img: "/images/harbor.jpg", place: "Yat Limanı", sub: "Marina" },
+    { img: "/images/harbor-night.jpg", place: "Yat Limanı", sub: "Kaleiçi" },
+    { img: "/images/beach.jpg", place: "Konyaaltı", sub: "Akdeniz" },
+    { img: "/images/kaleici.jpg", place: "Kaleiçi", sub: "Antalya" },
+    { img: "/images/pool.jpg", place: "Tatil", sub: "Resort" },
   ];
 
   return (
@@ -56,16 +59,16 @@ export default async function HomePage({
       {/* ============ HERO ============ */}
       <section className="relative -mt-16 flex h-[100svh] min-h-[620px] w-full items-end overflow-hidden" style={{ backgroundColor: "#07212b" }}>
         <div className="absolute inset-0">
-          <div className="ken-burns absolute inset-0">
+          <Parallax speed={0.12} className="absolute inset-0">
             <Image
               src="/images/hero-coast.jpg"
               alt="Antalya — falezlerden Konyaaltı sahili ve Akdeniz"
               fill
               priority
               sizes="100vw"
-              className="object-cover"
+              className="scale-[1.4] object-cover"
             />
-          </div>
+          </Parallax>
           <div className="img-scrim absolute inset-0" />
         </div>
 
@@ -203,8 +206,8 @@ export default async function HomePage({
         <div className="grid lg:grid-cols-2">
           <div className="relative min-h-[340px] lg:min-h-full">
             <Image
-              src="/images/duden.jpg"
-              alt="Düden Şelalesi'nin Akdeniz'e dökülüşü, Antalya"
+              src="/images/sunset.jpg"
+              alt="Kaş'ta Akdeniz gün batımı, Antalya"
               fill
               sizes="(max-width: 1024px) 100vw, 50vw"
               className="object-cover"
@@ -214,10 +217,10 @@ export default async function HomePage({
 
           <div className="px-6 py-20 sm:px-12 lg:px-16 lg:py-28">
             <Reveal>
-              <p className="eyebrow text-white/80">{t("whyTitle")}</p>
+              <p className="eyebrow text-white/80">{meta("siteName")}</p>
             </Reveal>
             <Reveal delay={80}>
-              <h2 className="h-section mt-6 max-w-md text-balance">{meta("siteName")}</h2>
+              <h2 className="h-section mt-6 max-w-md text-balance">{t("whyTitle")}</h2>
             </Reveal>
             <div className="mt-12 space-y-9">
               {reasons.map((r, i) => (
@@ -277,8 +280,8 @@ export default async function HomePage({
       <section className="container-wide pb-24">
         <Reveal className="relative flex min-h-[420px] items-center justify-center overflow-hidden rounded-[2rem] px-6 py-20 text-center text-white sm:min-h-[480px]">
           <Image
-            src="/images/beach.jpg"
-            alt="Antalya sahili ve turkuaz Akdeniz"
+            src="/images/lagoon.jpg"
+            alt="Ölüdeniz Mavi Lagün — turkuaz deniz ve yamaç paraşütü"
             fill
             sizes="(max-width: 1280px) 100vw, 1200px"
             className="object-cover"
