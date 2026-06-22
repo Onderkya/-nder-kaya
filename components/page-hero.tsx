@@ -18,7 +18,7 @@ export function PageHero({
   eyebrow?: string;
 }) {
   return (
-    <section className="relative -mt-16 flex min-h-[58svh] items-end overflow-hidden" style={{ backgroundColor: "#07212b" }}>
+    <section className="relative flex min-h-[64svh] items-end overflow-hidden" style={{ backgroundColor: "#07212b" }}>
       <div className="ken-burns absolute inset-0">
         <Image src={image} alt={title} fill priority sizes="100vw" className="object-cover" />
       </div>

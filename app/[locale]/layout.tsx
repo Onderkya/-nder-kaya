@@ -9,6 +9,7 @@ import { ThemeProvider, ThemeScript } from "@/components/theme-provider";
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
 import { FloatingContact } from "@/components/floating-contact";
+import { SmoothScroll } from "@/components/smooth-scroll";
 import { siteConfig } from "@/lib/config";
 
 // Editoryal Akdeniz tipografisi: yüksek kontrastlı zarif serif (başlıklar) +
@@ -74,6 +75,7 @@ export default async function LocaleLayout({
       <body className="grain min-h-screen font-sans antialiased">
         <NextIntlClientProvider>
           <ThemeProvider>
+            <SmoothScroll />
             <SiteHeader />
             <main>{children}</main>
             <SiteFooter />

@@ -3,7 +3,7 @@ import { getTranslations, setRequestLocale } from "next-intl/server";
 import { Link } from "@/i18n/routing";
 import { JsonLd } from "@/components/json-ld";
 import { Reveal } from "@/components/reveal";
-import { Parallax } from "@/components/parallax";
+import { DiveHero } from "@/components/dive-hero";
 import { IconArrow, IconCheck } from "@/components/icons";
 import { siteConfig } from "@/lib/config";
 
@@ -56,52 +56,16 @@ export default async function HomePage({
         }}
       />
 
-      {/* ============ HERO ============ */}
-      <section className="relative -mt-16 flex h-[100svh] min-h-[620px] w-full items-end overflow-hidden" style={{ backgroundColor: "#07212b" }}>
-        <div className="absolute inset-0">
-          <Parallax speed={0.12} className="absolute inset-0">
-            <Image
-              src="/images/hero-coast.jpg"
-              alt="Antalya — falezlerden Konyaaltı sahili ve Akdeniz"
-              fill
-              priority
-              sizes="100vw"
-              className="scale-[1.4] object-cover"
-            />
-          </Parallax>
-          <div className="img-scrim absolute inset-0" />
-        </div>
-
-        <div className="container-wide relative z-10 w-full pb-16 pt-28 sm:pb-24">
-          <div className="max-w-4xl text-white">
-            <p className="eyebrow animate-fade-up text-white/85">
-              {meta("siteName")} — Antalya · Türkiye
-            </p>
-            <h1 className="h-hero animate-fade-up delay-1 mt-6 text-balance">
-              {t("heroTitle")}
-            </h1>
-            <p className="animate-fade-up delay-2 mt-7 max-w-2xl text-lg leading-relaxed text-white/85 sm:text-xl">
-              {t("heroSubtitle")}
-            </p>
-            <div className="animate-fade-up delay-3 mt-9 flex flex-wrap items-center gap-3">
-              <Link href="/contact" className="btn-accent shadow-xl shadow-black/20">
-                {t("heroCtaPrimary")} <IconArrow />
-              </Link>
-              <Link href="/antalya" className="btn-ghost-light glass">
-                {t("heroCtaSecondary")}
-              </Link>
-            </div>
-            <div className="animate-fade-up delay-4 mt-12 flex flex-wrap items-center gap-x-6 gap-y-3 text-sm text-white/75">
-              <span className="text-lg tracking-wide" aria-hidden>🇹🇷 🇬🇧 🇷🇺 🇰🇿 🇺🇿</span>
-              <span className="font-medium tracking-widest2 uppercase text-[11px] text-white/60">TR · EN · RU · KK · UZ</span>
-            </div>
-          </div>
-        </div>
-
-        <div className="scroll-cue absolute bottom-6 left-1/2 z-10 hidden -translate-x-1/2 sm:block">
-          <span className="block h-9 w-[1.5px] bg-white/50" />
-        </div>
-      </section>
+      {/* ============ HERO — Kaputaş "denize dalış" ============ */}
+      <DiveHero
+        brand={meta("siteName")}
+        title={t("heroTitle")}
+        subtitle={t("heroSubtitle")}
+        ctaPrimary={t("heroCtaPrimary")}
+        ctaSecondary={t("heroCtaSecondary")}
+        deepLine={t("diveDeep")}
+        scrollCue={t("scrollCue")}
+      />
 
       {/* ============ MANİFESTO ============ */}
       <section className="container-wide py-20 sm:py-28 lg:py-32">

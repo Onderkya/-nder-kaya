@@ -21,3 +21,8 @@ harbor.jpg       — "Antalya Yat Limanı Marina" — Ata Alp Arslan — CC BY-S
 hadrian.jpg      — "Hadrian's Gate, Antalya 06" — Bernard Gagnon — CC BY-SA 3.0
 street.jpg       — "Antalya Kaleici museum 5843" — Dosseman — CC BY-SA 4.0
 coffee.jpg       — "Turkish coffee in Istanbul" — Tema — CC BY-SA 3.0
+
+# Dalış sahnesi
+kaputas.jpg      — "Kaputaş Plajı (X100S)" — Alexander van Loon — CC BY-SA 2.0
+kaputas-deep.jpg — "Türkiye Antalya Kaputaş Plajı" — Tbakky — CC BY-SA 4.0
+caustics.jpg     — "Ripples and sunlight pattern, Brofjorden" — W.carter — CC BY-SA 4.0

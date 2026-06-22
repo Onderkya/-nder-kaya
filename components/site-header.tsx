@@ -35,7 +35,7 @@ export function SiteHeader() {
 
   return (
     <header
-      className={`sticky top-0 z-40 w-full transition-all duration-300 ${
+      className={`fixed top-0 z-40 w-full transition-all duration-300 ${
         solid ? "glass border-b shadow-sm" : "border-b border-transparent"
       }`}
       style={solid ? { borderColor: "rgb(var(--border))", backgroundColor: "rgb(var(--background) / 0.82)" } : undefined}

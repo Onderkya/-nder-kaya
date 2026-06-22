@@ -262,3 +262,55 @@
 /* --- Dalga ayırıcı (eski sayfalar) --- */
 .wave-divider { display: block; width: 100%; height: 48px; line-height: 0; }
 @media (min-width: 640px) { .wave-divider { height: 70px; } }
+
+/* ===== Kaputaş "denize dalış" sinematik sahnesi ===== */
+.dive-aerial img { transform-origin: 50% 64%; }
+
+/* Sualtı derinlik zemini (yüzeye yakın açık turkuaz → dipte koyu lacivert) */
+.dive-depth {
+  background:
+    radial-gradient(135% 100% at 50% -15%,
+      #2bbfd9 0%, #12a0bd 18%, #0a7e9c 36%, #065f7d 56%, #053f59 76%, #02212f 100%);
+}
+
+/* Gerçek caustic ışık deseni (sualtı ışık titreşimi) */
+.dive-caustics {
+  mix-blend-mode: screen;
+  animation: caustic-shift 16s ease-in-out infinite alternate;
+}
+@keyframes caustic-shift {
+  0% { transform: scale(1.12) translate(0, 0); opacity: 0.30; }
+  100% { transform: scale(1.32) translate(-2.5%, -3.5%); opacity: 0.58; }
+}
+
+/* God-ray ışık huzmeleri */
+.god-rays {
+  position: absolute; inset: -25% -12% auto -12%; height: 145%; pointer-events: none;
+  background: linear-gradient(176deg, rgba(190,245,255,0.42) 0%, rgba(120,220,240,0.10) 45%, transparent 70%);
+  -webkit-mask-image: repeating-linear-gradient(94deg, #000 0 1.6%, transparent 1.6% 8.5%);
+  mask-image: repeating-linear-gradient(94deg, #000 0 1.6%, transparent 1.6% 8.5%);
+  transform-origin: top center;
+  animation: ray-sway 9s ease-in-out infinite alternate;
+}
+@keyframes ray-sway {
+  0% { transform: skewX(-5deg) translateX(-2%); opacity: 0.55; }
+  100% { transform: skewX(5deg) translateX(2%); opacity: 0.85; }
+}
+
+/* Yükselen baloncuklar */
+.bubble {
+  position: absolute; bottom: -6vh; border-radius: 9999px;
+  background: radial-gradient(circle at 34% 30%, rgba(255,255,255,0.9), rgba(255,255,255,0.18) 58%, transparent 70%);
+  box-shadow: inset 0 0 5px rgba(255,255,255,0.45);
+  animation: bubble-rise linear infinite;
+}
+@keyframes bubble-rise {
+  0% { transform: translateY(0) translateX(0) scale(0.7); opacity: 0; }
+  12% { opacity: 0.85; }
+  88% { opacity: 0.6; }
+  100% { transform: translateY(-118vh) translateX(26px) scale(1); opacity: 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dive-caustics, .god-rays, .bubble { animation: none; }
+}
