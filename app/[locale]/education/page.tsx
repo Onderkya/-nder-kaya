@@ -1,8 +1,13 @@
+import Image from "next/image";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import type { Metadata } from "next";
 import { Link } from "@/i18n/routing";
-import { PageHero, FeatureList } from "@/components/page-hero";
 import { JsonLd } from "@/components/json-ld";
+import { Reveal } from "@/components/reveal";
+import { CinematicHero } from "@/components/cinematic-hero";
+import { StudyJourney } from "@/components/study-journey";
+import { StreetWalk } from "@/components/street-walk";
+import { IconArrow } from "@/components/icons";
 
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
   const { locale } = await params;
@@ -14,16 +19,58 @@ export default async function EducationPage({ params }: { params: Promise<{ loca
   const { locale } = await params;
   setRequestLocale(locale);
   const t = await getTranslations("education");
+  const x = await getTranslations("imm");
 
   return (
     <>
       <JsonLd data={{ "@context": "https://schema.org", "@type": "Service", serviceType: "Education consulting", name: t("title"), description: t("intro"), areaServed: "Türkiye" }} />
-      <PageHero title={t("title")} intro={t("intro")} image="/images/aspendos.jpg" />
-      <section className="container-page py-14">
-        <FeatureList items={[t("feature1"), t("feature2"), t("feature3"), t("feature4")]} />
-        <div className="mt-10 text-center">
-          <Link href="/contact" className="btn-primary">{t("cta")}</Link>
+
+      <CinematicHero eyebrow={x("edu_journeyEyebrow")} title={t("title")} intro={t("intro")} image="/images/aspendos.jpg" />
+
+      {/* Immersive iniş: 4 adım */}
+      <StudyJourney
+        eyebrow={x("edu_journeyEyebrow")}
+        steps={[
+          { n: "01", title: x("edu_s1Title"), place: x("edu_s1Place"), text: x("edu_s1Text"), img: "/images/aspendos.jpg", points: [x("edu_s1a"), x("edu_s1b")] },
+          { n: "02", title: x("edu_s2Title"), place: x("edu_s2Place"), text: x("edu_s2Text"), img: "/images/kaleici.jpg", points: [x("edu_s2a"), x("edu_s2b")] },
+          { n: "03", title: x("edu_s3Title"), place: x("edu_s3Place"), text: x("edu_s3Text"), img: "/images/harbor-night.jpg", points: [x("edu_s3a"), x("edu_s3b")] },
+          { n: "04", title: x("edu_s4Title"), place: x("edu_s4Place"), text: x("edu_s4Text"), img: "/images/beach.jpg", points: [x("edu_s4a"), x("edu_s4b")] },
+        ]}
+      />
+
+      {/* Street View — kampüste ve şehirde yürü */}
+      <section className="py-24 sm:py-28" style={{ backgroundColor: "rgb(var(--background))" }}>
+        <div className="container-wide">
+          <Reveal className="mx-auto max-w-2xl text-center">
+            <p className="eyebrow justify-center" style={{ color: "rgb(var(--accent))" }}>{x("edu_streetEyebrow")}</p>
+            <h2 className="h-section mt-5 text-balance" style={{ color: "rgb(var(--foreground))" }}>{x("edu_streetTitle")}</h2>
+            <p className="mt-5 text-lg leading-relaxed" style={{ color: "rgb(var(--muted-foreground))" }}>{x("edu_streetIntro")}</p>
+          </Reveal>
+          <Reveal delay={120} className="mt-12">
+            <StreetWalk
+              hint={x("ant_streetHint")}
+              spots={[
+                { id: "campus", label: "Akdeniz Üniversitesi", sub: "Kampüs", lat: 36.89690, lng: 30.65950, heading: 60 },
+                { id: "konyaalti", label: "Konyaaltı", sub: "Sahil", lat: 36.86252, lng: 30.63601, heading: 250 },
+                { id: "lara", label: "Lara", sub: "Antalya", lat: 36.85249, lng: 30.79900, heading: 120 },
+                { id: "kaleici", label: "Kaleiçi", sub: "Eski şehir", lat: 36.88454, lng: 30.70565, heading: 120 },
+              ]}
+            />
+          </Reveal>
         </div>
+      </section>
+
+      {/* CTA */}
+      <section className="container-wide pb-24">
+        <Reveal className="relative flex min-h-[360px] items-center justify-center overflow-hidden rounded-[2rem] px-6 py-20 text-center text-white">
+          <Image src="/images/aspendos.jpg" alt="Aspendos Antik Tiyatrosu" fill sizes="(max-width:1280px) 100vw, 1200px" className="object-cover" />
+          <div className="absolute inset-0" style={{ background: "linear-gradient(180deg, rgb(4 18 24 / 0.55), rgb(4 18 24 / 0.82))" }} />
+          <div className="relative z-10 mx-auto max-w-2xl">
+            <h2 className="h-section text-balance">{t("title")}</h2>
+            <p className="mx-auto mt-5 max-w-lg text-lg text-white/85">{t("intro")}</p>
+            <Link href="/contact" className="btn-accent mt-9 shadow-xl shadow-black/30">{t("cta")} <IconArrow /></Link>
+          </div>
+        </Reveal>
       </section>
     </>
   );

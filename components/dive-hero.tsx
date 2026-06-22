@@ -14,6 +14,8 @@ type Props = {
   scrollCue: string;
   brand: string;
   soundLabel: string;
+  /** Varsa havadan Kaputaş dron VİDEOSU (poster = kaputas.jpg fallback). */
+  aerialVideo?: string;
 };
 
 const BUBBLES = Array.from({ length: 14 }, (_, i) => {
@@ -31,7 +33,7 @@ const BUBBLES = Array.from({ length: 14 }, (_, i) => {
 
 const seg = (p: number, a: number, b: number) => Math.min(1, Math.max(0, (p - a) / (b - a)));
 
-export function DiveHero({ title, subtitle, ctaPrimary, ctaSecondary, deepLine, scrollCue, brand, soundLabel }: Props) {
+export function DiveHero({ title, subtitle, ctaPrimary, ctaSecondary, deepLine, scrollCue, brand, soundLabel, aerialVideo }: Props) {
   const rootRef = useRef<HTMLElement>(null);
   const audioRef = useRef<HTMLAudioElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
@@ -163,14 +165,28 @@ export function DiveHero({ title, subtitle, ctaPrimary, ctaSecondary, deepLine, 
         {/* HAVADAN — turkuaz Kaputaş (wrapper transform edilir) */}
         <div className="dive-aerial absolute inset-0">
           <div className="dive-aerial-wrap absolute inset-0 will-change-transform" style={{ transform: "scale(1.05)" }}>
-            <Image
-              src="/images/kaputas.jpg"
-              alt="Kaputaş Plajı — turkuaz Akdeniz, Antalya"
-              fill
-              priority
-              sizes="100vw"
-              className="object-cover"
-            />
+            {aerialVideo ? (
+              <video
+                className="absolute inset-0 h-full w-full object-cover"
+                src={aerialVideo}
+                poster="/images/kaputas.jpg"
+                autoPlay
+                muted
+                loop
+                playsInline
+                preload="metadata"
+                aria-hidden
+              />
+            ) : (
+              <Image
+                src="/images/kaputas.jpg"
+                alt="Kaputaş Plajı — turkuaz Akdeniz, Antalya"
+                fill
+                priority
+                sizes="100vw"
+                className="object-cover"
+              />
+            )}
           </div>
           <div
             className="dive-grade-blue absolute inset-0 opacity-0"

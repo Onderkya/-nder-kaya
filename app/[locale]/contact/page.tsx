@@ -1,6 +1,6 @@
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import type { Metadata } from "next";
-import { PageHero } from "@/components/page-hero";
+import { CinematicHero } from "@/components/cinematic-hero";
 import { ContactForm } from "@/components/contact-form";
 import { PaymentMethods } from "@/components/payment-methods";
 import { Reveal } from "@/components/reveal";
@@ -17,11 +17,13 @@ export default async function ContactPage({ params }: { params: Promise<{ locale
   setRequestLocale(locale);
   const t = await getTranslations("contact");
   const p = await getTranslations("payment");
+  const x = await getTranslations("imm");
 
   return (
     <>
-      <PageHero title={t("title")} intro={t("subtitle")} image="/images/sunset.jpg" />
-      <section className="container-page grid gap-10 py-14 lg:grid-cols-2">
+      <CinematicHero eyebrow={t("orReach")} title={t("title")} intro={t("subtitle")} image="/images/sunset.jpg" />
+
+      <section className="container-page grid gap-10 py-20 lg:grid-cols-2">
         <Reveal>
           <ContactForm
             labels={{
@@ -77,6 +79,27 @@ export default async function ContactPage({ params }: { params: Promise<{ locale
             }}
           />
         </Reveal>
+      </section>
+
+      {/* Harita — bizi Antalya'da bul */}
+      <section className="pb-24">
+        <div className="container-wide">
+          <Reveal className="mx-auto max-w-2xl text-center">
+            <p className="eyebrow justify-center" style={{ color: "rgb(var(--accent))" }}>Antalya</p>
+            <h2 className="h-section mt-5 text-balance" style={{ color: "rgb(var(--foreground))" }}>{x("con_findTitle")}</h2>
+            <p className="mt-5 text-lg leading-relaxed" style={{ color: "rgb(var(--muted-foreground))" }}>{x("con_findText")}</p>
+          </Reveal>
+          <Reveal delay={120} className="street-frame mt-12 aspect-[16/10] sm:aspect-[5/2]">
+            <iframe
+              title="Antalya — Kaleiçi haritası"
+              src="https://maps.google.com/maps?q=Kale%C4%B1%C3%A7i%2C%20Antalya&z=14&hl=tr&output=embed"
+              loading="lazy"
+              referrerPolicy="no-referrer-when-downgrade"
+              allowFullScreen
+              style={{ width: "100%", height: "100%", border: 0 }}
+            />
+          </Reveal>
+        </div>
       </section>
     </>
   );

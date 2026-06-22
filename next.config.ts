@@ -23,7 +23,10 @@ const csp = [
   "img-src 'self' data: blob:",
   "font-src 'self' data:",
   "connect-src 'self' https://challenges.cloudflare.com",
-  "frame-src https://challenges.cloudflare.com",
+  // Cloudflare Turnstile + Google Maps/Street View gömme (anahtarsız svembed).
+  // Yalnız BU site Google'ı gömer; frame-ancestors 'none' korunduğu için
+  // siteyi başkası iframe'leyemez.
+  "frame-src https://challenges.cloudflare.com https://www.google.com https://maps.google.com",
   "frame-ancestors 'none'",
   "object-src 'none'",
   "base-uri 'self'",
