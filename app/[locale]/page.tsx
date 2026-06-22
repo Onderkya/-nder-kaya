@@ -54,7 +54,7 @@ export default async function HomePage({
       />
 
       {/* ============ HERO ============ */}
-      <section className="relative -mt-16 flex h-[100svh] min-h-[620px] w-full items-end overflow-hidden">
+      <section className="relative -mt-16 flex h-[100svh] min-h-[620px] w-full items-end overflow-hidden" style={{ backgroundColor: "#07212b" }}>
         <div className="absolute inset-0">
           <div className="ken-burns absolute inset-0">
             <Image
