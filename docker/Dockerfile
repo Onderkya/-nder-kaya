@@ -30,10 +30,12 @@ COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
 COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
 # Prisma şeması + migration'lar + seed.js (deploy/seed için)
 COPY --from=builder /app/prisma ./prisma
-COPY --from=builder /app/node_modules/.prisma ./node_modules/.prisma
-COPY --from=builder /app/node_modules/@prisma ./node_modules/@prisma
-# Prisma CLI (migrate deploy için — ağdan indirme gerekmesin diye imaja gömülür)
-COPY --from=builder /app/node_modules/prisma ./node_modules/prisma
+# Prisma CLI (`migrate deploy`) + generated client'in TAM bağımlılık kapanışı.
+# Yalnız .prisma/@prisma/prisma kopyalamak YETMİYOR: Prisma 6 CLI çalışırken
+# @prisma/config → effect, c12, deepmerge-ts, empathic gibi transitif paketleri
+# require ediyor (aksi halde "Cannot find module 'effect'" ile çöker). Bu yüzden
+# builder'daki node_modules tümüyle alınır; standalone server.js üst kümeyle çalışır.
+COPY --from=builder /app/node_modules ./node_modules
 
 USER nextjs
 EXPOSE 3000
