@@ -33,3 +33,7 @@ kaputas.jpg      — "ANTALYA KAPUTAJ PLAJI" (turkuaz) — BoraBora704 — CC BY
 # Medya (public/media) — Mixkit License (ticari kullanım serbest, atıf gerekmez)
 dive-underwater.mp4 — "Undersea background, light through water" — Mixkit
 waves.mp3           — "Ocean waves" — Mixkit
+
+# Güncelleme 2: üstten 4K Kaputaş + balıklı sualtı
+kaputas.jpg     — "Kaputaş Plajı ve Deniz" (üstten drone) — Wape1989 — CC BY-SA 4.0
+dive-fish.mp4   — "Diving through a reef" — Mixkit (atıf gerekmez)

@@ -4,6 +4,7 @@ import { Link } from "@/i18n/routing";
 import { JsonLd } from "@/components/json-ld";
 import { Reveal } from "@/components/reveal";
 import { DiveHero } from "@/components/dive-hero";
+import { TurkishAlphabet } from "@/components/turkish-alphabet";
 import { IconArrow, IconCheck } from "@/components/icons";
 import { siteConfig } from "@/lib/config";
 
@@ -165,6 +166,14 @@ export default async function HomePage({
           </div>
         </div>
       </section>
+
+      {/* ============ TÜRKÇE ALFABE ============ */}
+      <TurkishAlphabet
+        eyebrow="A — Z"
+        title={s("lessonsTitle")}
+        desc={s("lessonsDesc")}
+        cta={c("learnMore")}
+      />
 
       {/* ============ NEDEN BİZ (koyu deniz bandı) ============ */}
       <section className="relative overflow-hidden text-white" style={{ backgroundColor: "#07212b" }}>

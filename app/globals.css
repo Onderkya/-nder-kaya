@@ -270,6 +270,16 @@
 @keyframes sound-pulse { 0%,100% { transform: scale(1); opacity: 1; } 50% { transform: scale(1.9); opacity: 0.4; } }
 .sound-pulse { animation: sound-pulse 1.1s ease-in-out infinite; }
 
+/* ===== Türkçe alfabe — harfler kenarlardan ortaya uçar ===== */
+.tletter {
+  display: inline-block;
+  transition: transform 1.15s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.9s ease;
+  will-change: transform, opacity;
+}
+@media (prefers-reduced-motion: reduce) {
+  .tletter { transition: none !important; transform: none !important; opacity: 1 !important; }
+}
+
 /* Sualtı derinlik zemini (yüzeye yakın açık turkuaz → dipte koyu lacivert) */
 .dive-depth {
   background:

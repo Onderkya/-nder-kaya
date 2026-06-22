@@ -104,6 +104,29 @@ export function DiveHero({ title, subtitle, ctaPrimary, ctaSecondary, deepLine, 
     };
   }, []);
 
+  // İlk kullanıcı jestinde (tıklama/dokunma/tuş) dalga sesini otomatik başlat.
+  useEffect(() => {
+    const a = audioRef.current;
+    if (!a) return;
+    let done = false;
+    const start = () => {
+      if (done) return;
+      done = true;
+      a.volume = 0.4;
+      a.play().then(() => setSound(true)).catch(() => {});
+      cleanup();
+    };
+    const cleanup = () => {
+      window.removeEventListener("pointerdown", start);
+      window.removeEventListener("keydown", start);
+      window.removeEventListener("touchstart", start);
+    };
+    window.addEventListener("pointerdown", start, { passive: true });
+    window.addEventListener("keydown", start);
+    window.addEventListener("touchstart", start, { passive: true });
+    return cleanup;
+  }, []);
+
   const toggleSound = () => {
     const a = audioRef.current;
     if (!a) return;
@@ -143,7 +166,7 @@ export function DiveHero({ title, subtitle, ctaPrimary, ctaSecondary, deepLine, 
           <video
             ref={videoRef}
             className="absolute inset-0 h-full w-full object-cover"
-            src="/media/dive-underwater.mp4"
+            src="/media/dive-fish.mp4"
             autoPlay
             muted
             loop
