@@ -77,7 +77,7 @@ export function DiveHero({ title, subtitle, ctaPrimary, ctaSecondary, deepLine, 
       set(depth, "opacity", String(seg(p, 0.34, 0.56)));
       set(phase2, "opacity", String(seg(p, 0.54, 0.72)));
       set(phase2, "transform", `translate3d(-50%, calc(-50% + ${((1 - seg(p, 0.54, 0.72)) * 18).toFixed(1)}px), 0)`);
-      set(deepen, "opacity", String(seg(p, 0.58, 0.86) * 0.9));
+      set(deepen, "opacity", String(seg(p, 0.66, 0.92) * 0.55));
       set(vignette, "opacity", String(seg(p, 0.82, 1)));
     };
 
@@ -205,10 +205,10 @@ export function DiveHero({ title, subtitle, ctaPrimary, ctaSecondary, deepLine, 
             muted
             loop
             playsInline
-            preload="auto"
+            preload="metadata"
             aria-hidden
           />
-          <div className="absolute inset-0" style={{ background: "linear-gradient(180deg, rgba(3,60,85,0.25), rgba(2,28,42,0.55))" }} />
+          <div className="absolute inset-0" style={{ background: "linear-gradient(180deg, rgba(3,60,85,0.08), rgba(2,28,42,0.28))" }} />
           {BUBBLES.map((b, i) => (
             <span
               key={i}

@@ -20,13 +20,13 @@ const csp = [
   "default-src 'self'",
   `script-src 'self' 'unsafe-inline' https://challenges.cloudflare.com${isDev ? " 'unsafe-eval'" : ""}`,
   "style-src 'self' 'unsafe-inline'",
-  "img-src 'self' data: blob:",
+  "img-src 'self' data: blob: https://i.ytimg.com",
   "font-src 'self' data:",
   "connect-src 'self' https://challenges.cloudflare.com",
-  // Cloudflare Turnstile + Google Maps/Street View gömme (anahtarsız svembed).
-  // Yalnız BU site Google'ı gömer; frame-ancestors 'none' korunduğu için
-  // siteyi başkası iframe'leyemez.
-  "frame-src https://challenges.cloudflare.com https://www.google.com https://maps.google.com",
+  // Cloudflare Turnstile + Google Maps/Street View gömme (anahtarsız svembed) +
+  // YouTube (Land of Legends tanıtım videosu, nocookie). Yalnız BU site bunları
+  // gömer; frame-ancestors 'none' korunduğu için siteyi başkası iframe'leyemez.
+  "frame-src https://challenges.cloudflare.com https://www.google.com https://maps.google.com https://www.youtube-nocookie.com https://www.youtube.com",
   "frame-ancestors 'none'",
   "object-src 'none'",
   "base-uri 'self'",

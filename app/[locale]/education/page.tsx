@@ -31,10 +31,10 @@ export default async function EducationPage({ params }: { params: Promise<{ loca
       <StudyJourney
         eyebrow={x("edu_journeyEyebrow")}
         steps={[
-          { n: "01", title: x("edu_s1Title"), place: x("edu_s1Place"), text: x("edu_s1Text"), img: "/images/aspendos.jpg", points: [x("edu_s1a"), x("edu_s1b")] },
-          { n: "02", title: x("edu_s2Title"), place: x("edu_s2Place"), text: x("edu_s2Text"), img: "/images/kaleici.jpg", points: [x("edu_s2a"), x("edu_s2b")] },
-          { n: "03", title: x("edu_s3Title"), place: x("edu_s3Place"), text: x("edu_s3Text"), img: "/images/harbor-night.jpg", points: [x("edu_s3a"), x("edu_s3b")] },
-          { n: "04", title: x("edu_s4Title"), place: x("edu_s4Place"), text: x("edu_s4Text"), img: "/images/beach.jpg", points: [x("edu_s4a"), x("edu_s4b")] },
+          { n: "01", title: x("edu_s1Title"), place: x("edu_s1Place"), text: x("edu_s1Text"), img: "/images/campus.jpg", points: [x("edu_s1a"), x("edu_s1b")] },
+          { n: "02", title: x("edu_s2Title"), place: x("edu_s2Place"), text: x("edu_s2Text"), img: "/images/aspendos.jpg", points: [x("edu_s2a"), x("edu_s2b")] },
+          { n: "03", title: x("edu_s3Title"), place: x("edu_s3Place"), text: x("edu_s3Text"), img: "/images/lara.jpg", points: [x("edu_s3a"), x("edu_s3b")] },
+          { n: "04", title: x("edu_s4Title"), place: x("edu_s4Place"), text: x("edu_s4Text"), img: "/images/dorm.jpg", points: [x("edu_s4a"), x("edu_s4b")] },
         ]}
       />
 
@@ -50,9 +50,9 @@ export default async function EducationPage({ params }: { params: Promise<{ loca
             <StreetWalk
               hint={x("ant_streetHint")}
               spots={[
-                { id: "campus", label: "Akdeniz Üniversitesi", sub: "Kampüs", lat: 36.89690, lng: 30.65950, heading: 60 },
-                { id: "konyaalti", label: "Konyaaltı", sub: "Sahil", lat: 36.86252, lng: 30.63601, heading: 250 },
-                { id: "lara", label: "Lara", sub: "Antalya", lat: 36.85249, lng: 30.79900, heading: 120 },
+                { id: "campus", label: "Akdeniz Üniversitesi", sub: "Dumlupınar Blv", lat: 36.89610, lng: 30.65380, heading: 75 },
+                { id: "konyaalti", label: "Konyaaltı", sub: "Sahil", lat: 36.86430, lng: 30.62830, heading: 240 },
+                { id: "lara", label: "Lara", sub: "Sahil yolu", lat: 36.85700, lng: 30.80930, heading: 60 },
                 { id: "kaleici", label: "Kaleiçi", sub: "Eski şehir", lat: 36.88454, lng: 30.70565, heading: 120 },
               ]}
             />

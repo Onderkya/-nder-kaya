@@ -7,6 +7,7 @@ import { DiveHero } from "@/components/dive-hero";
 import { ActivitiesDive } from "@/components/activities-dive";
 import { HorizontalPlaces } from "@/components/horizontal-places";
 import { TurkishAlphabet } from "@/components/turkish-alphabet";
+import { YouTubeEmbed } from "@/components/youtube-embed";
 import { IconArrow, IconCheck } from "@/components/icons";
 import { siteConfig } from "@/lib/config";
 
@@ -21,6 +22,7 @@ export default async function HomePage({
   const s = await getTranslations("services");
   const c = await getTranslations("common");
   const meta = await getTranslations("meta");
+  const x = await getTranslations("imm");
 
   const services = [
     { href: "/antalya", n: "01", title: s("antalyaTitle"), desc: s("antalyaDesc"), img: "/images/harbor-night.jpg", place: "Yat Limanı" },
@@ -71,23 +73,30 @@ export default async function HomePage({
         ]}
       />
 
-      {/* ============ LAND OF LEGENDS — scuba'dan sonra bambaşka ============ */}
+      {/* ============ LAND OF LEGENDS — tanıtım videolu ============ */}
       <section className="relative overflow-hidden py-24 sm:py-32" style={{ background: "radial-gradient(120% 110% at 50% 0%, #3a1d52 0%, #1a1136 50%, #0a0a1e 100%)" }}>
-        <div className="container-wide grid items-center gap-12 lg:grid-cols-2">
+        <div className="container-wide grid items-center gap-12 lg:grid-cols-2 lg:gap-16">
           <Reveal>
-            <p className="eyebrow" style={{ color: "rgb(251 191 80)" }}>Belek · Tema Parkı</p>
+            <p className="eyebrow" style={{ color: "rgb(251 191 80)" }}>{x("lol_eyebrow")}</p>
             <h2 className="font-display mt-5 font-semibold leading-[0.95] tracking-[-0.02em] text-white" style={{ fontSize: "clamp(2.6rem, 6vw, 5rem)" }}>
               The Land of <span className="serif-italic" style={{ color: "rgb(251 191 80)" }}>Legends</span>
             </h2>
             <p className="mt-6 max-w-md text-lg leading-relaxed text-white/75">{t("lolDesc")}</p>
+            <div className="mt-8 grid max-w-md grid-cols-2 gap-3">
+              {[x("lol_h1"), x("lol_h2"), x("lol_h3"), x("lol_h4")].map((h) => (
+                <div key={h} className="flex items-center gap-2.5 rounded-2xl border px-4 py-3 text-sm font-medium text-white/85" style={{ borderColor: "rgb(255 255 255 / 0.14)", backgroundColor: "rgb(255 255 255 / 0.04)" }}>
+                  <span className="h-1.5 w-1.5 shrink-0 rounded-full" style={{ backgroundColor: "rgb(251 191 80)" }} />
+                  {h}
+                </div>
+              ))}
+            </div>
             <Link href="/antalya" className="btn-accent mt-8">
               {c("learnMore")} <IconArrow />
             </Link>
           </Reveal>
-          <Reveal delay={120} className="flex justify-center">
-            <figure className="float-soft relative w-[72%] max-w-xs overflow-hidden rounded-[1.75rem] shadow-2xl sm:max-w-sm" style={{ aspectRatio: "9 / 15" }}>
-              <Image src="/images/landoflegends.jpg" alt="The Land of Legends — masal kalesi, Belek Antalya" fill sizes="380px" className="object-cover" />
-            </figure>
+          <Reveal delay={120}>
+            <YouTubeEmbed id="jB0xnYf4GrM" title="Rixos World The Land of Legends — tanıtım" />
+            <p className="mt-3 text-center text-xs text-white/45">{x("lol_watch")} · Rixos World</p>
           </Reveal>
         </div>
       </section>
@@ -271,7 +280,7 @@ export default async function HomePage({
           { img: "/images/olympos.jpg", name: "Olympos", sub: "Çıralı" },
           { img: "/images/phaselis.jpg", name: "Phaselis", sub: "Kemer" },
           { img: "/images/side.jpg", name: "Side", sub: "Antik kent" },
-          { img: "/images/beach.jpg", name: "Konyaaltı", sub: "Akdeniz" },
+          { img: "/images/konyaalti.jpg", name: "Konyaaltı", sub: "Akdeniz" },
           { img: "/images/kaleici.jpg", name: "Kaleiçi", sub: "Antalya" },
           { img: "/images/duden.jpg", name: "Düden", sub: "Şelale" },
           { img: "/images/harbor-night.jpg", name: "Yat Limanı", sub: "Kaleiçi" },

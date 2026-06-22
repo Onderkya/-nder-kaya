@@ -2,7 +2,7 @@ import { getTranslations, setRequestLocale } from "next-intl/server";
 import type { Metadata } from "next";
 import { Link } from "@/i18n/routing";
 import { CinematicHero } from "@/components/cinematic-hero";
-import { AlphabetPuzzle } from "@/components/alphabet-puzzle";
+import { PetLingoShowcase } from "@/components/petlingo-showcase";
 import { JsonLd } from "@/components/json-ld";
 import { IconClock } from "@/components/icons";
 import { Reveal } from "@/components/reveal";
@@ -21,6 +21,13 @@ export default async function LessonsPage({ params }: { params: Promise<{ locale
   const t = await getTranslations("lessons");
   const tb = await getTranslations("booking");
   const x = await getTranslations("imm");
+
+  const steps = [
+    { n: "01", title: x("les_p1Title"), text: x("les_p1Text") },
+    { n: "02", title: x("les_p2Title"), text: x("les_p2Text") },
+    { n: "03", title: x("les_p3Title"), text: x("les_p3Text") },
+    { n: "04", title: x("les_p4Title"), text: x("les_p4Text") },
+  ];
 
   const durations = [
     { title: t("min15"), desc: t("min15Desc") },
@@ -43,37 +50,46 @@ export default async function LessonsPage({ params }: { params: Promise<{ locale
     taken: tb("taken"), error: tb("error"),
   };
 
-  const puzzleItems = [
-    { word: "DENİZ", meaning: x("les_m_deniz"), img: "/images/beach.jpg" },
-    { word: "GÜNEŞ", meaning: x("les_m_gunes"), img: "/images/sunset.jpg" },
-    { word: "ÇAY", meaning: x("les_m_cay"), img: "/images/tea.jpg" },
-    { word: "KAHVE", meaning: x("les_m_kahve"), img: "/images/coffee.jpg" },
-    { word: "KALE", meaning: x("les_m_kale"), img: "/images/kaleici.jpg" },
-    { word: "LİMAN", meaning: x("les_m_liman"), img: "/images/harbor.jpg" },
-  ];
-
-  const puzzleLabels = {
-    eyebrow: x("les_puzzleEyebrow"), title: x("les_puzzleTitle"), desc: x("les_puzzleDesc"),
-    prompt: x("les_puzzleDesc"), meaning: x("les_puzzleMeaning"), next: x("les_puzzleNext"),
-    shuffle: x("les_puzzleShuffle"), done: x("les_puzzleDone"), allDone: x("les_puzzleAllDone"),
-    restart: x("les_puzzleRestart"), progress: x("les_puzzleProgress"),
-  };
-
   return (
     <>
       <JsonLd data={{ "@context": "https://schema.org", "@type": "Course", name: t("title"), description: t("intro"), provider: { "@type": "Organization", name: "Antalya Bridge" } }} />
 
-      <CinematicHero eyebrow="A · B · C · Ç" title={t("title")} intro={t("intro")} image="/images/coffee.jpg" />
+      <CinematicHero eyebrow={x("les_processEyebrow")} title={t("title")} intro={t("intro")} image="/images/coffee.jpg" />
 
-      {/* Türkçe kelime yapbozu — oyunla öğren */}
-      <section className="py-24 sm:py-32" style={{ backgroundColor: "rgb(var(--muted) / 0.45)" }}>
-        <div className="container-wide">
-          <AlphabetPuzzle items={puzzleItems} labels={puzzleLabels} />
+      {/* Süreç — nasıl öğreniyorsunuz */}
+      <section className="container-wide py-24 sm:py-32">
+        <Reveal className="mx-auto max-w-2xl text-center">
+          <p className="eyebrow justify-center" style={{ color: "rgb(var(--accent))" }}>{x("les_processEyebrow")}</p>
+          <h2 className="h-section mt-5 text-balance" style={{ color: "rgb(var(--foreground))" }}>{x("les_processTitle")}</h2>
+          <p className="mt-5 text-lg leading-relaxed" style={{ color: "rgb(var(--muted-foreground))" }}>{x("les_processDesc")}</p>
+        </Reveal>
+
+        <div className="mt-16 grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
+          {steps.map((st, i) => (
+            <Reveal key={st.n} delay={i * 90} className="process-step">
+              <div className="process-num">{st.n}</div>
+              <h3 className="font-display mt-5 text-xl font-semibold leading-snug" style={{ color: "rgb(var(--foreground))" }}>{st.title}</h3>
+              <p className="mt-2.5 text-[15px] leading-relaxed" style={{ color: "rgb(var(--muted-foreground))" }}>{st.text}</p>
+            </Reveal>
+          ))}
         </div>
       </section>
 
+      {/* PetLingo — her gün pratik aracı */}
+      <PetLingoShowcase
+        labels={{
+          eyebrow: x("pl_eyebrow"),
+          title: x("pl_title"),
+          desc: x("pl_desc"),
+          features: [x("pl_f1"), x("pl_f2"), x("pl_f3"), x("pl_f4"), x("pl_f5"), x("pl_f6")],
+          cta: x("pl_cta"),
+          soon: x("pl_soon"),
+          combo: x("pl_combo"),
+        }}
+      />
+
       {/* Ders süreleri */}
-      <section className="container-wide py-20 sm:py-24">
+      <section className="container-wide py-24 sm:py-28">
         <Reveal className="mx-auto max-w-2xl text-center">
           <h2 className="h-section" style={{ color: "rgb(var(--foreground))" }}>{t("durationsTitle")}</h2>
         </Reveal>

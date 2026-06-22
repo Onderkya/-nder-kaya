@@ -67,7 +67,8 @@ export default async function AntalyaPage({ params }: { params: Promise<{ locale
           { img: "/images/phaselis.jpg", name: "Phaselis", sub: "Kemer" },
           { img: "/images/side.jpg", name: "Side", sub: "Antik kent" },
           { img: "/images/duden.jpg", name: "Düden", sub: "Şelale" },
-          { img: "/images/beach.jpg", name: "Konyaaltı", sub: "Akdeniz" },
+          { img: "/images/konyaalti.jpg", name: "Konyaaltı", sub: "Akdeniz" },
+          { img: "/images/lara.jpg", name: "Lara", sub: "Falezler" },
           { img: "/images/kaleici.jpg", name: "Kaleiçi", sub: "Antalya" },
         ]}
       />

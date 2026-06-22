@@ -455,3 +455,29 @@
 @media (prefers-reduced-motion: reduce) {
   .cine-rise, .puzzle-slot, .puzzle-tile, .spark, .street-compass { animation: none !important; }
 }
+
+/* ----- PetLingo telefon mockup ----- */
+.phone-mock {
+  position: relative; width: clamp(260px, 78vw, 300px); aspect-ratio: 300 / 620;
+  border-radius: 2.6rem; padding: 0.7rem;
+  background: linear-gradient(160deg, #0a2e3a, #04161e);
+  box-shadow: 0 40px 80px -30px rgba(0,0,0,0.7), inset 0 0 0 2px rgba(255,255,255,0.06), inset 0 0 0 7px #02121a;
+}
+.phone-notch {
+  position: absolute; top: 1.05rem; left: 50%; transform: translateX(-50%);
+  width: 34%; height: 1.4rem; border-radius: 9999px; background: #02121a; z-index: 2;
+}
+.phone-screen {
+  height: 100%; border-radius: 2rem; padding: 2.3rem 1.1rem 1.3rem;
+  background: linear-gradient(180deg, #eafaff 0%, #d6f2f7 100%);
+  overflow: hidden;
+}
+
+/* ----- Süreç zaman çizelgesi (Türkçe öğrenme) ----- */
+.process-step { position: relative; }
+.process-num {
+  display: grid; place-items: center; width: 3.25rem; height: 3.25rem; border-radius: 1rem;
+  font-family: var(--font-display), serif; font-size: 1.5rem; font-weight: 600; color: #fff;
+  background-image: linear-gradient(135deg, rgb(var(--lagoon)), rgb(var(--primary)));
+  box-shadow: 0 12px 26px -12px rgb(var(--primary) / 0.6);
+}

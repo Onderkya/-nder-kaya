@@ -52,3 +52,11 @@ coaster.jpg       — "Hyper Coaster, Land of Legends" — Philippe-Minh Nguyen 
 maxxroyal.jpg     — "Maxx Royal Belek" — edykbo — CC BY 3.0
 rixos.jpg         — "Rixos Premium Belek" — edykbo — CC BY 3.0
 kremlin.jpg       — "WOW Kremlin Palace" — Сашка Денисов — CC BY 3.0
+
+# İç sayfa gerçek görselleri (Wikimedia, eklenme: geri bildirim revizyonu)
+lara.jpg        — "Antalya Lara Cliff view" — My-view2U — CC BY-SA 4.0
+konyaalti.jpg   — "Antalya Konyaaltı Beach 88" — Roy Egloff — CC BY-SA 4.0
+campus.jpg      — "Akdeniz Üniversitesi Stadyumu" — AntalyasporFC — CC BY-SA 3.0
+dorm.jpg        — "KYK Yenişehir Öğrenci Yurdu, Mersin" — Cobija — CC0
+
+# Gömülü video (telifsiz gömme): Rixos World The Land of Legends tanıtımı — YouTube (jB0xnYf4GrM)
