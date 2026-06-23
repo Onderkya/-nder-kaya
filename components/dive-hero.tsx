@@ -300,8 +300,10 @@ export function DiveHero({ title, subtitle, ctaPrimary, ctaSecondary, deepLine, 
           boxShadow: sound ? "0 8px 26px -10px rgba(56,214,230,0.6)" : undefined,
         }}
       >
-        <span className="eq" data-on={sound} style={{ color: sound ? "rgb(120 230 255)" : "rgb(255 255 255 / 0.75)" }}>
-          <i /><i /><i /><i /><i />
+        <span className="relative inline-block h-3.5 w-8 overflow-hidden" style={{ color: sound ? "rgb(120 230 255)" : "rgb(255 255 255 / 0.7)" }} aria-hidden>
+          <svg className="wave-line" data-on={String(sound)} viewBox="0 0 64 16" preserveAspectRatio="none" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round">
+            <path className="wave-path" d="M0 8 Q4 1 8 8 T16 8 T24 8 T32 8 T40 8 T48 8 T56 8 T64 8" />
+          </svg>
         </span>
         <span className="tracking-wide">{soundLabel}</span>
       </button>

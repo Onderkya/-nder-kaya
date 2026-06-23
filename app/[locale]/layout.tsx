@@ -79,7 +79,7 @@ export default async function LocaleLayout({
             <SiteHeader />
             <main>{children}</main>
             <SiteFooter />
-            <FloatingContact />
+            <FloatingContact locale={locale} />
           </ThemeProvider>
         </NextIntlClientProvider>
       </body>

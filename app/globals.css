@@ -282,6 +282,21 @@
 .flag-wave { animation: flag-wave 4.5s ease-in-out infinite; transform-origin: left center; }
 @media (prefers-reduced-motion: reduce) { .flag-wave { animation: none; } }
 
+/* --- AI sohbet: yazıyor noktaları + asistan butonu nabzı --- */
+@keyframes typing { 0%, 60%, 100% { transform: translateY(0); opacity: 0.4; } 30% { transform: translateY(-5px); opacity: 1; } }
+.typing-dot { width: 7px; height: 7px; border-radius: 9999px; background: rgb(var(--muted-foreground)); display: inline-block; animation: typing 1.2s ease-in-out infinite; }
+.typing-dot:nth-child(2) { animation-delay: 0.18s; }
+.typing-dot:nth-child(3) { animation-delay: 0.36s; }
+@keyframes ai-pulse { 0%, 100% { box-shadow: 0 0 0 0 rgb(255 255 255 / 0.5); } 70% { box-shadow: 0 0 0 8px rgb(255 255 255 / 0); } }
+.ai-pulse { animation: ai-pulse 2.2s ease-out infinite; }
+
+/* --- Ses butonu: gerçek dalga çizgisi (sine) --- */
+@keyframes wave-move { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+.wave-line { width: 200%; height: 100%; }
+.wave-line[data-on="true"] .wave-path { animation: wave-move 1.1s linear infinite; }
+.wave-line[data-on="false"] .wave-path { animation: wave-move 6s linear infinite; opacity: 0.55; }
+@media (prefers-reduced-motion: reduce) { .typing-dot, .ai-pulse, .wave-line .wave-path { animation: none; } }
+
 /* --- Cam efekti --- */
 .glass { backdrop-filter: saturate(180%) blur(14px); }
 

@@ -6,12 +6,10 @@ import { Link } from "@/i18n/routing";
 import { JsonLd } from "@/components/json-ld";
 import { Reveal } from "@/components/reveal";
 import { DiveHero } from "@/components/dive-hero";
-import { ActivitiesDive } from "@/components/activities-dive";
 import { StackedReel } from "@/components/stacked-reel";
 import { HotelAccordion } from "@/components/hotel-accordion";
 import { AutoVideo } from "@/components/auto-video";
 import { TurkishAlphabet } from "@/components/turkish-alphabet";
-import { YouTubeEmbed } from "@/components/youtube-embed";
 import { IconArrow, IconCheck } from "@/components/icons";
 import { siteConfig } from "@/lib/config";
 
@@ -32,10 +30,6 @@ export default async function HomePage({
   const imgOr = (name: string, fallback: string) =>
     existsSync(path.join(process.cwd(), "public", "images", name)) ? `/images/${name}` : fallback;
   const has = (name: string) => existsSync(path.join(process.cwd(), "public", "images", name));
-
-  // Land of Legends resmi tanıtım videoları (poster = fallback kare).
-  const lolInterior = "/media/lol-interior.mp4";
-  const lolAqua = "/media/lol-aqua.mp4";
 
   // Gerçek görseli olan oteller + kullanıcı dosya bırakınca otomatik eklenen üst-segment slotlar.
   const hotels = [
@@ -59,6 +53,7 @@ export default async function HomePage({
     { href: "/antalya", n: "01", title: s("antalyaTitle"), desc: s("antalyaDesc"), img: "/images/suluada.jpg", video: "/media/vid-suluada.mp4", place: "Suluada · Adrasan" },
     { href: "/lessons", n: "02", title: s("lessonsTitle"), desc: s("lessonsDesc"), img: imgOr("lessons-meaning.jpg", "/images/kaleici-inside.jpg"), video: "/media/les-teacher.mp4", place: "Dil öğrenimi" },
     { href: "/education", n: "03", title: s("educationTitle"), desc: s("educationDesc"), img: "/images/akdeniz-campus.jpg", video: "/media/campus-aerial.mp4", place: "Akdeniz Üniversitesi" },
+    { href: "/contact", n: "04", title: s("itTitle"), desc: s("itDesc"), img: "/images/harbor-night.jpg", video: "/media/office-consult.mp4", place: "Web · Mobil · AI" },
   ];
 
   const reasons = [
@@ -96,64 +91,20 @@ export default async function HomePage({
         aerialVideo="/media/kaputas-drone.mp4"
       />
 
-      {/* ============ AKTİVİTELER — sualtından tatile iniş ============ */}
-      <ActivitiesDive
-        eyebrow={t("actTitle")}
-        scenes={[
-          { kind: "video", src: "/media/act-scuba2.mp4", title: t("actScuba"), place: "Akdeniz" },
-          { kind: "video", src: "/media/act-yacht.mp4", title: t("actBoat"), place: "Özel Tekne" },
-          { kind: "video", src: "/media/lol-aqua.mp4", title: "Land of Legends", place: "Belek" },
-          { kind: "video", src: "/media/act-beachclub.mp4", title: t("actHotels"), place: "5★ Resort" },
+      {/* ============ ANTALYA'NIN İNCİLERİ — sinematik sticky-stack reel ============ */}
+      <StackedReel
+        eyebrow="Antalya"
+        title={t("placesTitle")}
+        intro={x("ant_introText")}
+        items={[
+          { video: "/media/vid-kas.mp4", poster: "/images/sunset.jpg", name: "Kaş", sub: "Gün batımı" },
+          { video: "/media/vid-olympos.mp4", poster: "/images/olympos.jpg", name: "Olympos", sub: "Çıralı" },
+          { video: "/media/vid-kemer.mp4", poster: "/images/kemer.jpg", name: "Kemer", sub: "Marina" },
+          { video: "/media/vid-suluada.mp4", poster: "/images/suluada.jpg", name: "Suluada", sub: "Adrasan" },
+          { video: "/media/vid-kaleici.mp4", poster: "/images/kaleici-harbor.jpg", name: "Kaleiçi", sub: "Yat Limanı" },
+          { video: "/media/lol-aqua.mp4", poster: "/images/coaster.jpg", name: "Land of Legends", sub: "Seni buraya da götürürüz" },
         ]}
       />
-
-      {/* ============ LAND OF LEGENDS — tanıtım videolu ============ */}
-      <section className="relative overflow-hidden py-24 sm:py-32" style={{ background: "radial-gradient(120% 110% at 50% 0%, #3a1d52 0%, #1a1136 50%, #0a0a1e 100%)" }}>
-        <div className="container-wide grid items-center gap-12 lg:grid-cols-2 lg:gap-16">
-          <Reveal>
-            <p className="eyebrow" style={{ color: "rgb(251 191 80)" }}>{x("lol_eyebrow")}</p>
-            <h2 className="font-display mt-5 font-semibold leading-[0.95] tracking-[-0.02em] text-white" style={{ fontSize: "clamp(2.6rem, 6vw, 5rem)" }}>
-              The Land of <span className="serif-italic" style={{ color: "rgb(251 191 80)" }}>Legends</span>
-            </h2>
-            <p className="mt-6 max-w-md text-lg leading-relaxed text-white/75">{t("lolDesc")}</p>
-            <p className="mt-4 max-w-md border-l-2 pl-4 text-sm italic leading-relaxed text-white/60" style={{ borderColor: "rgb(251 191 80)" }}>
-              {x("lol_takeYou")}
-            </p>
-            <div className="mt-8 grid max-w-md grid-cols-2 gap-3">
-              {[x("lol_h1"), x("lol_h2"), x("lol_h3"), x("lol_h4")].map((h) => (
-                <div key={h} className="flex items-center gap-2.5 rounded-2xl border px-4 py-3 text-sm font-medium text-white/85" style={{ borderColor: "rgb(255 255 255 / 0.14)", backgroundColor: "rgb(255 255 255 / 0.04)" }}>
-                  <span className="h-1.5 w-1.5 shrink-0 rounded-full" style={{ backgroundColor: "rgb(251 191 80)" }} />
-                  {h}
-                </div>
-              ))}
-            </div>
-            <Link href="/antalya" className="btn-accent mt-8">
-              {c("learnMore")} <IconArrow />
-            </Link>
-          </Reveal>
-          <Reveal delay={120}>
-            <div className="grid grid-cols-2 gap-3">
-              {[
-                { video: lolInterior, poster: "/images/landoflegends.jpg", label: x("lol_h4"), tag: x("lol_h3") },
-                { video: lolAqua, poster: "/images/coaster.jpg", label: x("lol_h2"), tag: x("lol_h1") },
-              ].map((m) => (
-                <figure key={m.label} className="relative aspect-[4/5] overflow-hidden rounded-2xl shadow-xl ring-1 ring-white/10">
-                  <AutoVideo className="absolute inset-0 h-full w-full object-cover" src={m.video} poster={m.poster} />
-                  <div className="img-scrim absolute inset-0" />
-                  <figcaption className="absolute inset-x-0 bottom-0 p-4">
-                    <span className="tracking-widest2 block text-[9px] uppercase" style={{ color: "rgb(251 191 80)" }}>{m.tag}</span>
-                    <span className="font-display mt-1 block text-lg leading-tight text-white">{m.label}</span>
-                  </figcaption>
-                </figure>
-              ))}
-            </div>
-            <div className="mt-3 overflow-hidden rounded-2xl ring-1 ring-white/10">
-              <YouTubeEmbed id="jB0xnYf4GrM" title="Rixos World The Land of Legends — tanıtım" />
-            </div>
-            <p className="mt-3 text-center text-xs text-white/45">{x("lol_watch")} · Rixos World</p>
-          </Reveal>
-        </div>
-      </section>
 
       {/* ============ OTELLER (telifsiz / CC) ============ */}
       <section className="py-24 sm:py-28" style={{ backgroundColor: "rgb(var(--muted) / 0.5)" }}>
@@ -343,23 +294,6 @@ export default async function HomePage({
           </div>
         </div>
       </section>
-
-      {/* ============ ANTALYA'NIN İNCİLERİ — sinematik sticky-stack reel ============ */}
-      <StackedReel
-        eyebrow="Antalya"
-        title={t("placesTitle")}
-        intro={x("ant_introText")}
-        items={[
-          { video: "/media/vid-kas.mp4", poster: "/images/sunset.jpg", name: "Kaş", sub: "Gün batımı" },
-          { video: "/media/vid-suluada.mp4", poster: "/images/suluada.jpg", name: "Suluada", sub: "Adrasan" },
-          { video: "/media/vid-olympos.mp4", poster: "/images/olympos.jpg", name: "Olympos", sub: "Çıralı" },
-          { video: "/media/vid-kemer.mp4", poster: "/images/kemer.jpg", name: "Kemer", sub: "Marina" },
-          { video: "/media/vid-kaleici.mp4", poster: "/images/kaleici-harbor.jpg", name: "Kaleiçi", sub: "Yat Limanı" },
-          { video: "/media/vid-duden.mp4", poster: "/images/duden.jpg", name: "Düden", sub: "Şelale" },
-          { video: "/media/vid-alanya-castle.mp4", poster: imgOr("alanya.jpg", "/images/sunset.jpg"), name: "Alanya Kalesi", sub: "Kızıl Kule" },
-          { video: "/media/vid-alanya-kleopatra.mp4", poster: imgOr("alanya.jpg", "/images/sunset.jpg"), name: "Kleopatra", sub: "Alanya sahili" },
-        ]}
-      />
 
       {/* ============ CTA (şelale) ============ */}
       <section className="container-wide pb-24">

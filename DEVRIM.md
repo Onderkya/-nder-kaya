@@ -3,6 +3,15 @@
 > Canlı: **http://45.67.203.149:3010** (mutlaka `http://`) · dal `claude/consulting-site-plan-6k4lix`
 > Görsel/medya kaynakları: `public/images/CREDITS.txt` (tümü CC / Mixkit / CC0).
 
+## 🔁 Revizyon 8 — AI asistan, LoL kaldırıldı, IT hizmeti, dalga buton, mobil menü
+- **AI sohbet asistanı her sayfada:** yüzen widget (AI Asistan + WhatsApp + Telegram). `/api/chat` (OpenRouter, public + rate-limit) müşterinin dilinde konuşur, hedef/tarih/bütçe sorar, ona özel taslak plan sunar, WhatsApp'a yönlendirir. `components/floating-contact.tsx` (5 dil UI). Fiyat vermez, uydurmaz.
+- **Land of Legends bölümü kaldırıldı** + **Aktiviteler kaldırıldı**; ikisi tek performanslı "Antalya'nın incileri" reel'inde toplandı (8→6 panel, üst üste binme azaldı). Aqua park reel'e "seni buraya da götürürüz" notuyla eklendi.
+- **IT / Yazılım danışmanlığı hizmeti** eklendi (4. kart, 5 dil): "hizmetimizde sınır yok". AI asistan da bunu sunar.
+- **Ses butonu** → ekolayzer değil, **gerçek akan sine dalga çizgisi**.
+- **Mobil menü** → premium **tam-ekran overlay** (büyük tipografi, kademeli giriş, CTA, scroll-lock).
+- **Perf:** ağır 2 sticky-video bölümü tek reel'e indi; AutoVideo (yalnız görünürken oynar) tüm dekoratif videolarda.
+- **Akdeniz:** gerçek Akdeniz Üni binası (Mimarlık Fak.) poster olarak kullanılıyor; bulunan "akdeniz-real.jpg" stadyum olduğu için tercih edilmedi.
+
 ## 🔁 Revizyon 7 — dürüst ekip, geçişli hero'lar, otel akordeonu, perf
 - **Dürüstlük:** "otelde çalışıyoruz" iddiası **5 dilde kaldırıldı**. Gerçek ekip: kıdemli yazılım mühendisi (PetLingo'yu + bu platformu o yaptı) + Kazakistanlı eş (Türkçe öğretmeni, üniversite/burs yolunu bizzat yürüdü). Hakkımızda yeniden yazıldı. PetLingo "**bizim kendi uygulamamız**" rozeti eklendi.
 - **Geçişli (cycling) hero'lar:** Antalya, Türkçe (+Türk bayrağı), Eğitim (ofis→kampüs→öğrenci) hero'ları artık sabit değil, videolar **cross-fade** geçiyor (`CinematicHero` çok-videolu).
