@@ -6,7 +6,7 @@ import { Link } from "@/i18n/routing";
 import { JsonLd } from "@/components/json-ld";
 import { Reveal } from "@/components/reveal";
 import { DiveHero } from "@/components/dive-hero";
-import { ExperienceAccordion } from "@/components/experience-accordion";
+import { ZipperReveal } from "@/components/zipper-reveal";
 import { HotelAccordion } from "@/components/hotel-accordion";
 import { AutoVideo } from "@/components/auto-video";
 import { TurkishAlphabet } from "@/components/turkish-alphabet";
@@ -25,6 +25,7 @@ export default async function HomePage({
   const c = await getTranslations("common");
   const meta = await getTranslations("meta");
   const x = await getTranslations("imm");
+  const r = await getTranslations("routes");
 
   // Otomatik-yüklenen görsel slotu: dosya public/images içine bırakılınca devreye girer.
   const imgOr = (name: string, fallback: string) =>
@@ -62,6 +63,52 @@ export default async function HomePage({
     { n: "III", title: t("why3Title"), text: t("why3Text") },
   ];
 
+  // Hazır rotalar — gün gün, mantıklı; uçak+otel+transfer dahil (kişiye özel).
+  const routes = [
+    {
+      name: r("r1name"), tag: r("r1tag"), days: 5, stars: 5, hotel: "Belek", img: "/images/maxxroyal.jpg",
+      plan: [
+        { place: "Kaleiçi & Yat Limanı", tag: r("t_history") },
+        { place: "Düden & Konyaaltı", tag: r("t_sea") },
+        { place: "Aspendos & Side", tag: r("t_ancient") },
+        { place: "Land of Legends", tag: r("t_park") },
+        { place: "Kaputaş & Kaş", tag: r("t_sea") },
+      ],
+    },
+    {
+      name: r("r2name"), tag: r("r2tag"), days: 7, stars: 5, hotel: "Lara", img: "/images/kremlin.jpg",
+      plan: [
+        { place: "Karşılama & resort", tag: r("t_arrival") },
+        { place: "Land of Legends Aqua", tag: r("t_aqua") },
+        { place: "Kaş'ta tüplü dalış", tag: r("t_dive") },
+        { place: "Özel yat turu", tag: r("t_boat") },
+        { place: "Suluada", tag: r("t_sea") },
+        { place: "Kemer & Olympos", tag: r("t_nature") },
+        { place: "Kaleiçi", tag: r("t_history") },
+      ],
+    },
+    {
+      name: r("r3name"), tag: r("r3tag"), days: 4, stars: 4, hotel: "Kaş", img: "/images/sunset.jpg",
+      plan: [
+        { place: "Kaş kasabası", tag: r("t_sea") },
+        { place: "Kaputaş Plajı", tag: r("t_sea") },
+        { place: "Suluada tekne turu", tag: r("t_boat") },
+        { place: "Kalkan & gün batımı", tag: r("t_sunset") },
+      ],
+    },
+    {
+      name: r("r4name"), tag: r("r4tag"), days: 6, stars: 5, hotel: "Belek", img: "/images/rixos.jpg",
+      plan: [
+        { place: "Karşılama & resort", tag: r("t_arrival") },
+        { place: "Land of Legends", tag: r("t_park") },
+        { place: "Aqua park", tag: r("t_aqua") },
+        { place: "Konyaaltı Beach Park", tag: r("t_sea") },
+        { place: "Düden & doğa", tag: r("t_nature") },
+        { place: "Kaleiçi", tag: r("t_history") },
+      ],
+    },
+  ];
+
   return (
     <>
       <JsonLd
@@ -91,27 +138,22 @@ export default async function HomePage({
         aerialVideo="/media/kaputas-drone.mp4"
       />
 
-      {/* ============ DENEYİM FERMUARI — denizin içinden çıkan aktiviteler ============ */}
-      <section className="py-20 sm:py-28" style={{ backgroundColor: "rgb(var(--background))" }}>
-        <div className="container-wide">
-          <Reveal className="mx-auto max-w-2xl text-center">
-            <p className="eyebrow justify-center" style={{ color: "rgb(var(--accent))" }}>{t("actTitle")}</p>
-            <h2 className="h-section mt-5 text-balance" style={{ color: "rgb(var(--foreground))" }}>{x("ant_introTitle")}</h2>
-          </Reveal>
-          <Reveal className="mt-12">
-            <ExperienceAccordion
-              hint="Üstüne gel veya dokun — fermuar gibi açılsın"
-              items={[
-                { video: "/media/act-scuba2.mp4", img: "/images/kaputas-deep.jpg", name: t("actScuba"), sub: "Akdeniz'in altı" },
-                { video: "/media/act-yacht.mp4", img: "/images/kaleici-harbor.jpg", name: t("actBoat"), sub: "Özel tekne & yat" },
-                { video: "/media/lol-aqua.mp4", img: "/images/coaster.jpg", name: "Land of Legends", sub: "Aqua park · Belek" },
-                { video: "/media/act-beachclub.mp4", img: "/images/beachpark.jpg", name: t("actHotels"), sub: "5★ resort & plaj" },
-                { video: "/media/vid-kas.mp4", img: "/images/sunset.jpg", name: "Kaş & Kalkan", sub: "Gün batımı" },
-              ]}
-            />
-          </Reveal>
-        </div>
-      </section>
+      {/* ============ FERMUAR — sayfa ortadan açılır, scuba + tüm yerler tek tek ============ */}
+      <ZipperReveal
+        eyebrow={t("actTitle")}
+        title={x("ant_introTitle")}
+        items={[
+          { video: "/media/act-scuba2.mp4", img: "/images/kaputas-deep.jpg", name: t("actScuba"), sub: "Akdeniz'in altı" },
+          { video: "/media/kaputas-drone.mp4", img: "/images/kaputas.jpg", name: "Kaputaş Plajı", sub: "Kaş" },
+          { video: "/media/vid-kas.mp4", img: "/images/sunset.jpg", name: "Kaş", sub: "Gün batımı" },
+          { video: "/media/vid-suluada.mp4", img: "/images/suluada.jpg", name: "Suluada", sub: "Adrasan" },
+          { video: "/media/vid-olympos.mp4", img: "/images/olympos.jpg", name: "Olympos", sub: "Çıralı" },
+          { video: "/media/vid-kemer.mp4", img: "/images/kemer.jpg", name: "Kemer", sub: "Marina" },
+          { video: "/media/vid-alanya-castle.mp4", img: "/images/alanya.jpg", name: "Alanya Kalesi", sub: "Kızıl Kule" },
+          { video: "/media/vid-alanya-kleopatra.mp4", img: "/images/alanya.jpg", name: "Kleopatra", sub: "Alanya sahili" },
+          { video: "/media/lol-aqua.mp4", img: "/images/coaster.jpg", name: "Land of Legends", sub: "Aqua park · Belek" },
+        ]}
+      />
 
       {/* ============ OTELLER (telifsiz / CC) ============ */}
       <section className="py-24 sm:py-28" style={{ backgroundColor: "rgb(var(--muted) / 0.5)" }}>
@@ -126,6 +168,60 @@ export default async function HomePage({
           <p className="mt-7 text-center text-xs" style={{ color: "rgb(var(--muted-foreground))" }}>
             5★ resort koordinasyonu — Belek · Lara · Kemer. Üstüne gel, fermuar gibi açılsın. Sana en uygun oteli ve fiyatı birlikte seçelim.
           </p>
+        </div>
+      </section>
+
+      {/* ============ HAZIR ROTALAR — gün gün, uçak+otel+transfer dahil ============ */}
+      <section className="py-24 sm:py-32" style={{ backgroundColor: "rgb(var(--background))" }}>
+        <div className="container-wide">
+          <Reveal className="mx-auto max-w-2xl text-center">
+            <p className="eyebrow justify-center" style={{ color: "rgb(var(--accent))" }}>{r("eyebrow")}</p>
+            <h2 className="h-section mt-5 text-balance" style={{ color: "rgb(var(--foreground))" }}>{r("title")}</h2>
+            <p className="mt-5 text-lg leading-relaxed" style={{ color: "rgb(var(--muted-foreground))" }}>{r("subtitle")}</p>
+          </Reveal>
+
+          <div className="mt-14 grid gap-6 lg:grid-cols-2">
+            {routes.map((rt, i) => (
+              <Reveal key={rt.name} delay={(i % 2) * 90}>
+                <div className="card-lift flex h-full flex-col overflow-hidden rounded-[2rem] border shadow-lg" style={{ borderColor: "rgb(var(--border))", backgroundColor: "rgb(var(--card))" }}>
+                  {/* Üst görsel + başlık */}
+                  <div className="relative aspect-[16/8] overflow-hidden">
+                    <Image src={rt.img} alt={rt.name} fill sizes="(max-width:1024px) 100vw, 50vw" className="object-cover" />
+                    <div className="img-scrim absolute inset-0" />
+                    <div className="absolute inset-x-0 bottom-0 flex items-end justify-between p-5 text-white">
+                      <div>
+                        <h3 className="font-display text-2xl font-semibold leading-none sm:text-3xl">{rt.name}</h3>
+                        <p className="mt-1.5 text-sm text-white/80">{rt.tag}</p>
+                      </div>
+                      <div className="text-right">
+                        <span className="font-display block text-3xl leading-none">{rt.days}<span className="ml-1 text-sm font-normal text-white/80">{r("daysWord")}</span></span>
+                        <span className="mt-1 block text-xs" style={{ color: "rgb(251 191 80)" }}>{"★".repeat(rt.stars)} {rt.hotel}</span>
+                      </div>
+                    </div>
+                  </div>
+                  {/* Gün gün plan */}
+                  <div className="flex flex-1 flex-col p-6">
+                    <span className="inline-flex w-fit items-center gap-1.5 rounded-full px-3 py-1 text-[11px] font-bold uppercase tracking-wide" style={{ backgroundColor: "rgb(var(--primary) / 0.1)", color: "rgb(var(--primary))" }}>
+                      ✈ {r("included")}
+                    </span>
+                    <ol className="mt-5 flex-1 space-y-3">
+                      {rt.plan.map((d, di) => (
+                        <li key={di} className="flex items-center gap-3 text-sm">
+                          <span className="grid h-7 w-7 shrink-0 place-items-center rounded-lg font-display text-xs font-semibold" style={{ backgroundColor: "rgb(var(--muted))", color: "rgb(var(--foreground))" }}>{di + 1}</span>
+                          <span className="flex-1 font-medium" style={{ color: "rgb(var(--foreground))" }}>{d.place}</span>
+                          <span className="rounded-full px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide" style={{ backgroundColor: "rgb(var(--accent) / 0.1)", color: "rgb(var(--accent))" }}>{d.tag}</span>
+                        </li>
+                      ))}
+                    </ol>
+                    <div className="mt-6 flex items-center justify-between gap-3 border-t pt-5" style={{ borderColor: "rgb(var(--border))" }}>
+                      <span className="text-xs" style={{ color: "rgb(var(--muted-foreground))" }}>{r("custom")}</span>
+                      <Link href="/contact" className="btn-primary shrink-0 !px-5 !py-2.5 text-xs">{r("cta")} <IconArrow /></Link>
+                    </div>
+                  </div>
+                </div>
+              </Reveal>
+            ))}
+          </div>
         </div>
       </section>
 

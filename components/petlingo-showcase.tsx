@@ -17,6 +17,7 @@ type Labels = {
   soon: string;
   combo: string;
   own: string;
+  ai: string;
 };
 
 export function PetLingoShowcase({ labels }: { labels: Labels }) {
@@ -24,20 +25,29 @@ export function PetLingoShowcase({ labels }: { labels: Labels }) {
     <section className="relative overflow-hidden py-24 sm:py-32" style={{ background: "radial-gradient(120% 110% at 15% 0%, #0c4a5c 0%, #07303d 45%, #061a22 100%)" }}>
       <div className="container-wide grid items-center gap-14 lg:grid-cols-2 lg:gap-20">
         {/* Telefon mockup */}
-        <div className="order-2 flex justify-center lg:order-1">
-          <div className="phone-mock float-soft">
+        <div className="relative order-2 flex justify-center lg:order-1">
+          <div className="pointer-events-none absolute left-1/2 top-1/2 h-[110%] w-[110%] -translate-x-1/2 -translate-y-1/2 rounded-full blur-3xl" style={{ background: "radial-gradient(circle, rgb(var(--accent2) / 0.28), rgb(var(--lagoon) / 0.12) 45%, transparent 70%)" }} />
+          <div className="phone-mock float-soft relative">
             <div className="phone-notch" />
             <div className="phone-screen">
               <PetLingoLive />
             </div>
+            <span className="ai-pulse absolute -right-2 -top-2 z-10 grid h-11 w-11 place-items-center rounded-full text-white shadow-xl" style={{ backgroundImage: "linear-gradient(135deg, rgb(var(--lagoon)), rgb(var(--primary)))" }}>
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M12 3l1.6 3.6L17 8.2l-3.4 1.6L12 13.4l-1.6-3.6L7 8.2l3.4-1.6z" fill="currentColor" stroke="none" /><circle cx="18" cy="17" r="1.3" fill="currentColor" stroke="none" /><circle cx="6" cy="16" r="1" fill="currentColor" stroke="none" /></svg>
+            </span>
           </div>
         </div>
 
         {/* Metin + özellikler */}
         <div className="order-1 lg:order-2">
-          <span className="mb-4 inline-flex items-center gap-2 rounded-full px-3.5 py-1.5 text-xs font-bold uppercase tracking-[0.16em]" style={{ backgroundColor: "rgb(var(--accent2) / 0.18)", color: "rgb(var(--accent2))" }}>
-            ⚡ {labels.own}
-          </span>
+          <div className="mb-4 flex flex-wrap items-center gap-2">
+            <span className="inline-flex items-center gap-2 rounded-full px-3.5 py-1.5 text-xs font-bold uppercase tracking-[0.16em]" style={{ backgroundColor: "rgb(var(--accent2) / 0.18)", color: "rgb(var(--accent2))" }}>
+              ⚡ {labels.own}
+            </span>
+            <span className="inline-flex items-center gap-2 rounded-full px-3.5 py-1.5 text-xs font-bold uppercase tracking-[0.16em]" style={{ backgroundColor: "rgb(var(--lagoon) / 0.18)", color: "rgb(var(--lagoon))" }}>
+              ✦ {labels.ai}
+            </span>
+          </div>
           <p className="eyebrow" style={{ color: "rgb(var(--accent2))" }}>{labels.eyebrow}</p>
           <h2 className="font-display mt-5 font-semibold leading-[1.0] tracking-[-0.015em] text-white" style={{ fontSize: "clamp(2.2rem, 4.5vw, 3.6rem)" }}>
             {labels.title}

@@ -91,6 +91,30 @@ export default async function LessonsPage({ params }: { params: Promise<{ locale
         </div>
       </section>
 
+      {/* Öğretmenin — kimlik bandı */}
+      <section className="container-wide py-16 sm:py-20">
+        <Reveal>
+        <div className="grid items-center gap-10 rounded-[2rem] border p-8 sm:p-10 lg:grid-cols-[auto,1fr] lg:gap-14" style={{ borderColor: "rgb(var(--border))", backgroundColor: "rgb(var(--card))" }}>
+          <div className="relative mx-auto h-40 w-40 shrink-0 overflow-hidden rounded-3xl shadow-xl sm:h-48 sm:w-48">
+            <video className="absolute inset-0 h-full w-full object-cover" src="/media/les-teacher.mp4" autoPlay muted loop playsInline preload="none" aria-hidden />
+            <div className="absolute inset-0" style={{ background: "linear-gradient(160deg, transparent 55%, rgb(4 18 24 / 0.4))" }} />
+          </div>
+          <div>
+            <p className="eyebrow" style={{ color: "rgb(var(--accent))" }}>{x("les_teacher_eyebrow")}</p>
+            <h2 className="font-display mt-4 font-semibold leading-tight" style={{ color: "rgb(var(--foreground))", fontSize: "clamp(1.5rem, 3vw, 2.2rem)" }}>{x("les_teacher_title")}</h2>
+            <p className="mt-4 max-w-xl text-[15px] leading-relaxed" style={{ color: "rgb(var(--muted-foreground))" }}>{x("les_teacher_text")}</p>
+            <div className="mt-6 flex flex-wrap gap-2.5">
+              {[x("les_cred1"), x("les_cred2"), x("les_cred3"), x("les_cred4")].map((cr) => (
+                <span key={cr} className="inline-flex items-center gap-1.5 rounded-full border px-3.5 py-1.5 text-xs font-semibold" style={{ borderColor: "rgb(var(--border))", color: "rgb(var(--primary))" }}>
+                  <span className="h-1.5 w-1.5 rounded-full" style={{ backgroundColor: "rgb(var(--lagoon))" }} />{cr}
+                </span>
+              ))}
+            </div>
+          </div>
+        </div>
+        </Reveal>
+      </section>
+
       {/* Bunu biz de yaşadık — güven bandı */}
       <section className="relative overflow-hidden py-20 text-white sm:py-24" style={{ background: "linear-gradient(135deg, #0d94a8 0%, #0e7490 50%, #07303d 130%)" }}>
         <span className="sheen" />
@@ -115,6 +139,7 @@ export default async function LessonsPage({ params }: { params: Promise<{ locale
           soon: x("pl_soon"),
           combo: x("pl_combo"),
           own: x("pl_own"),
+          ai: x("pl_ai"),
         }}
       />
 
