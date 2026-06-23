@@ -6,7 +6,7 @@ import { Link } from "@/i18n/routing";
 import { JsonLd } from "@/components/json-ld";
 import { Reveal } from "@/components/reveal";
 import { DiveHero } from "@/components/dive-hero";
-import { StackedReel } from "@/components/stacked-reel";
+import { ExperienceAccordion } from "@/components/experience-accordion";
 import { HotelAccordion } from "@/components/hotel-accordion";
 import { AutoVideo } from "@/components/auto-video";
 import { TurkishAlphabet } from "@/components/turkish-alphabet";
@@ -91,20 +91,27 @@ export default async function HomePage({
         aerialVideo="/media/kaputas-drone.mp4"
       />
 
-      {/* ============ ANTALYA'NIN İNCİLERİ — sinematik sticky-stack reel ============ */}
-      <StackedReel
-        eyebrow="Antalya"
-        title={t("placesTitle")}
-        intro={x("ant_introText")}
-        items={[
-          { video: "/media/vid-kas.mp4", poster: "/images/sunset.jpg", name: "Kaş", sub: "Gün batımı" },
-          { video: "/media/vid-olympos.mp4", poster: "/images/olympos.jpg", name: "Olympos", sub: "Çıralı" },
-          { video: "/media/vid-kemer.mp4", poster: "/images/kemer.jpg", name: "Kemer", sub: "Marina" },
-          { video: "/media/vid-suluada.mp4", poster: "/images/suluada.jpg", name: "Suluada", sub: "Adrasan" },
-          { video: "/media/vid-kaleici.mp4", poster: "/images/kaleici-harbor.jpg", name: "Kaleiçi", sub: "Yat Limanı" },
-          { video: "/media/lol-aqua.mp4", poster: "/images/coaster.jpg", name: "Land of Legends", sub: "Seni buraya da götürürüz" },
-        ]}
-      />
+      {/* ============ DENEYİM FERMUARI — denizin içinden çıkan aktiviteler ============ */}
+      <section className="py-20 sm:py-28" style={{ backgroundColor: "rgb(var(--background))" }}>
+        <div className="container-wide">
+          <Reveal className="mx-auto max-w-2xl text-center">
+            <p className="eyebrow justify-center" style={{ color: "rgb(var(--accent))" }}>{t("actTitle")}</p>
+            <h2 className="h-section mt-5 text-balance" style={{ color: "rgb(var(--foreground))" }}>{x("ant_introTitle")}</h2>
+          </Reveal>
+          <Reveal className="mt-12">
+            <ExperienceAccordion
+              hint="Üstüne gel veya dokun — fermuar gibi açılsın"
+              items={[
+                { video: "/media/act-scuba2.mp4", img: "/images/kaputas-deep.jpg", name: t("actScuba"), sub: "Akdeniz'in altı" },
+                { video: "/media/act-yacht.mp4", img: "/images/kaleici-harbor.jpg", name: t("actBoat"), sub: "Özel tekne & yat" },
+                { video: "/media/lol-aqua.mp4", img: "/images/coaster.jpg", name: "Land of Legends", sub: "Aqua park · Belek" },
+                { video: "/media/act-beachclub.mp4", img: "/images/beachpark.jpg", name: t("actHotels"), sub: "5★ resort & plaj" },
+                { video: "/media/vid-kas.mp4", img: "/images/sunset.jpg", name: "Kaş & Kalkan", sub: "Gün batımı" },
+              ]}
+            />
+          </Reveal>
+        </div>
+      </section>
 
       {/* ============ OTELLER (telifsiz / CC) ============ */}
       <section className="py-24 sm:py-28" style={{ backgroundColor: "rgb(var(--muted) / 0.5)" }}>
@@ -295,14 +302,14 @@ export default async function HomePage({
         </div>
       </section>
 
-      {/* ============ CTA (şelale) ============ */}
-      <section className="container-wide pb-24">
-        <Reveal className="relative flex min-h-[420px] items-center justify-center overflow-hidden rounded-[2rem] px-6 py-20 text-center text-white sm:min-h-[480px]">
+      {/* ============ CTA (tam genişlik bant) ============ */}
+      <section className="relative">
+        <Reveal className="relative flex min-h-[460px] items-center justify-center overflow-hidden px-6 py-24 text-center text-white sm:min-h-[540px]">
           <Image
             src="/images/lagoon.jpg"
             alt="Ölüdeniz Mavi Lagün — turkuaz deniz ve yamaç paraşütü"
             fill
-            sizes="(max-width: 1280px) 100vw, 1200px"
+            sizes="100vw"
             className="object-cover"
           />
           <div className="absolute inset-0" style={{ background: "linear-gradient(180deg, rgb(4 18 24 / 0.55), rgb(4 18 24 / 0.78))" }} />

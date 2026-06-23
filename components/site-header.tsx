@@ -42,11 +42,12 @@ export function SiteHeader() {
   const solid = scrolled || open;
 
   return (
+    <>
     <header
       className={`fixed top-0 z-40 w-full transition-all duration-300 ${
-        solid ? "glass border-b shadow-sm" : "border-b border-transparent"
+        solid && !open ? "glass border-b shadow-sm" : "border-b border-transparent"
       }`}
-      style={solid ? { borderColor: "rgb(var(--border))", backgroundColor: "rgb(var(--background) / 0.82)" } : undefined}
+      style={solid && !open ? { borderColor: "rgb(var(--border))", backgroundColor: "rgb(var(--background) / 0.82)" } : undefined}
     >
       <div className="container-wide flex h-16 items-center justify-between gap-4">
         <Link
@@ -98,43 +99,49 @@ export function SiteHeader() {
         </div>
       </div>
 
-      {/* Mobil tam-ekran menü */}
-      {open && (
-        <div className="fixed inset-0 z-50 flex flex-col lg:hidden" style={{ background: "linear-gradient(165deg, #0a3a4c 0%, #07242e 55%, #04161e 100%)" }}>
-          <div className="absolute inset-0 opacity-[0.06]" style={{ backgroundImage: "radial-gradient(rgba(255,255,255,0.8) 1px, transparent 1px)", backgroundSize: "22px 22px" }} />
-          <div className="container-wide relative flex h-16 items-center justify-between">
-            <Link href="/" onClick={() => setOpen(false)} aria-label="Antalya Bridge"><Logo on="hero" /></Link>
-            <button type="button" onClick={() => setOpen(false)} aria-label="Kapat" className="grid h-10 w-10 place-items-center rounded-full bg-white/10 text-white transition hover:bg-white/20">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><path d="M18 6 6 18M6 6l12 12" /></svg>
-            </button>
-          </div>
-
-          <nav className="container-wide relative flex flex-1 flex-col justify-center gap-1.5 pb-8">
-            {links.map((l, i) => {
-              const active = pathname === l.href;
-              return (
-                <Link
-                  key={l.href}
-                  href={l.href}
-                  onClick={() => setOpen(false)}
-                  className="animate-fade-up group flex items-baseline gap-4 border-b py-3.5"
-                  style={{ animationDelay: `${i * 55}ms`, borderColor: "rgb(255 255 255 / 0.08)" }}
-                >
-                  <span className="font-display text-sm tabular-nums" style={{ color: "rgb(var(--gold))" }}>0{i + 1}</span>
-                  <span className="font-display font-semibold leading-none tracking-[-0.02em] transition-transform group-hover:translate-x-1" style={{ color: active ? "rgb(var(--accent2))" : "#fff", fontSize: "clamp(1.7rem, 7vw, 2.4rem)" }}>
-                    {l.label}
-                  </span>
-                </Link>
-              );
-            })}
-          </nav>
-
-          <div className="container-wide relative flex items-center justify-between gap-3 pb-10">
-            <div className="flex items-center gap-2"><LanguageSwitcher /><ThemeToggle /></div>
-            <Link href="/contact" onClick={() => setOpen(false)} className="btn-accent">{t("contact")}</Link>
-          </div>
-        </div>
-      )}
     </header>
+
+    {/* Mobil tam-ekran menü — header DIŞINDA (backdrop-filter kapsayıcı-blok tuzağı yok) */}
+    {open && (
+      <div className="fixed inset-0 z-[70] flex flex-col overflow-y-auto lg:hidden" style={{ backgroundColor: "#06222c" }}>
+        <div className="pointer-events-none absolute inset-0 opacity-[0.05]" style={{ backgroundImage: "radial-gradient(rgba(255,255,255,0.9) 1px, transparent 1px)", backgroundSize: "24px 24px" }} />
+        <div className="pointer-events-none absolute -right-24 -top-24 h-72 w-72 rounded-full blur-3xl" style={{ background: "rgb(var(--accent) / 0.18)" }} />
+        <div className="pointer-events-none absolute -bottom-24 -left-24 h-72 w-72 rounded-full blur-3xl" style={{ background: "rgb(var(--lagoon) / 0.16)" }} />
+
+        <div className="container-wide relative flex h-16 shrink-0 items-center justify-between">
+          <Link href="/" onClick={() => setOpen(false)} aria-label="Antalya Bridge"><Logo on="hero" /></Link>
+          <button type="button" onClick={() => setOpen(false)} aria-label="Kapat" className="grid h-10 w-10 place-items-center rounded-full bg-white/10 text-white transition hover:bg-white/20">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><path d="M18 6 6 18M6 6l12 12" /></svg>
+          </button>
+        </div>
+
+        <nav className="container-wide relative flex flex-1 flex-col justify-center gap-1 py-8">
+          {links.map((l, i) => {
+            const active = pathname === l.href;
+            return (
+              <Link
+                key={l.href}
+                href={l.href}
+                onClick={() => setOpen(false)}
+                className="animate-fade-up group flex items-center gap-4 border-b py-4"
+                style={{ animationDelay: `${i * 50}ms`, borderColor: "rgb(255 255 255 / 0.09)" }}
+              >
+                <span className="font-display w-7 text-sm tabular-nums" style={{ color: "rgb(var(--gold))" }}>0{i + 1}</span>
+                <span className="font-display flex-1 font-semibold leading-none tracking-[-0.02em] transition-transform group-hover:translate-x-1.5" style={{ color: active ? "rgb(var(--accent2))" : "#fff", fontSize: "clamp(1.85rem, 8vw, 2.4rem)" }}>
+                  {l.label}
+                </span>
+                {active && <span className="h-2 w-2 rounded-full" style={{ backgroundColor: "rgb(var(--accent2))" }} />}
+              </Link>
+            );
+          })}
+        </nav>
+
+        <div className="container-wide relative flex shrink-0 items-center justify-between gap-3 pb-10 pt-2">
+          <div className="flex items-center gap-2"><LanguageSwitcher /><ThemeToggle /></div>
+          <Link href="/contact" onClick={() => setOpen(false)} className="btn-accent">{t("contact")}</Link>
+        </div>
+      </div>
+    )}
+    </>
   );
 }

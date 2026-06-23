@@ -6,17 +6,16 @@ import { whatsappLink, telegramLink } from "@/lib/config";
 type Msg = { role: "user" | "assistant"; content: string };
 
 const UI: Record<string, { title: string; sub: string; ph: string; greet: string; ai: string; wa: string; tg: string; chips: string[]; foot: string }> = {
-  tr: { title: "Antalya Bridge Asistan", sub: "Saniyeler içinde yanıt", ph: "Mesajını yaz…", greet: "Merhaba! 👋 Antalya tatili, Türkçe ders, Türkiye'de eğitim ya da yazılım danışmanlığı — hangisi için buradayız? Sana özel bir plan çıkaralım.", ai: "AI Asistan", wa: "WhatsApp", tg: "Telegram", chips: ["Antalya tatili planla", "Türkçe öğrenmek istiyorum", "Türkiye'de okumak", "Yazılım danışmanlığı"], foot: "Kesinleştirmek için WhatsApp'tan da yazabilirsin" },
-  en: { title: "Antalya Bridge Assistant", sub: "Replies in seconds", ph: "Type your message…", greet: "Hi! 👋 Antalya holiday, Turkish lessons, studying in Turkey, or software consulting — what brings you here? Let's draft a plan just for you.", ai: "AI Assistant", wa: "WhatsApp", tg: "Telegram", chips: ["Plan an Antalya trip", "I want to learn Turkish", "Study in Turkey", "Software consulting"], foot: "You can also message us on WhatsApp" },
-  ru: { title: "Ассистент Antalya Bridge", sub: "Ответ за секунды", ph: "Напишите сообщение…", greet: "Привет! 👋 Отдых в Анталье, турецкий язык, учёба в Турции или IT-консалтинг — что вас привело? Составим план специально для вас.", ai: "AI-ассистент", wa: "WhatsApp", tg: "Telegram", chips: ["Спланировать поездку", "Хочу учить турецкий", "Учёба в Турции", "IT-консалтинг"], foot: "Можно также написать в WhatsApp" },
-  kk: { title: "Antalya Bridge көмекшісі", sub: "Секундта жауап", ph: "Хабарыңды жаз…", greet: "Сәлем! 👋 Анталия демалысы, түрік тілі, Түркияда оқу немесе бағдарламалық қамтым — не үшін келдің? Саған арнайы жоспар құрайық.", ai: "AI көмекші", wa: "WhatsApp", tg: "Telegram", chips: ["Сапар жоспарла", "Түрікше үйренгім келеді", "Түркияда оқу", "Бағдарламалық кеңес"], foot: "WhatsApp арқылы да жаза аласың" },
-  uz: { title: "Antalya Bridge yordamchisi", sub: "Soniyalarda javob", ph: "Xabaringizni yozing…", greet: "Salom! 👋 Antalya dam olishi, turk tili, Turkiyada o'qish yoki dasturiy maslahat — nima uchun keldingiz? Sizga maxsus reja tuzamiz.", ai: "AI yordamchi", wa: "WhatsApp", tg: "Telegram", chips: ["Sayohat rejalashtirish", "Turk tilini o'rganmoqchiman", "Turkiyada o'qish", "Dasturiy maslahat"], foot: "WhatsApp orqali ham yozishingiz mumkin" },
+  tr: { title: "Antalya Bridge Asistan", sub: "Saniyeler içinde yanıt", ph: "Mesajını yaz…", greet: "Merhaba! 👋 Antalya tatili, Türkçe ders, Türkiye'de eğitim ya da yazılım danışmanlığı — hangisi için buradayız? Sana özel bir plan çıkaralım.", ai: "Asistana Sor", wa: "WhatsApp", tg: "Telegram", chips: ["Antalya tatili planla", "Türkçe öğrenmek istiyorum", "Türkiye'de okumak", "Yazılım danışmanlığı"], foot: "Kesinleştirmek için WhatsApp'tan da yazabilirsin" },
+  en: { title: "Antalya Bridge Assistant", sub: "Replies in seconds", ph: "Type your message…", greet: "Hi! 👋 Antalya holiday, Turkish lessons, studying in Turkey, or software consulting — what brings you here? Let's draft a plan just for you.", ai: "Ask our AI", wa: "WhatsApp", tg: "Telegram", chips: ["Plan an Antalya trip", "I want to learn Turkish", "Study in Turkey", "Software consulting"], foot: "You can also message us on WhatsApp" },
+  ru: { title: "Ассистент Antalya Bridge", sub: "Ответ за секунды", ph: "Напишите сообщение…", greet: "Привет! 👋 Отдых в Анталье, турецкий язык, учёба в Турции или IT-консалтинг — что вас привело? Составим план специально для вас.", ai: "Спросить AI", wa: "WhatsApp", tg: "Telegram", chips: ["Спланировать поездку", "Хочу учить турецкий", "Учёба в Турции", "IT-консалтинг"], foot: "Можно также написать в WhatsApp" },
+  kk: { title: "Antalya Bridge көмекшісі", sub: "Секундта жауап", ph: "Хабарыңды жаз…", greet: "Сәлем! 👋 Анталия демалысы, түрік тілі, Түркияда оқу немесе бағдарламалық қамтым — не үшін келдің? Саған арнайы жоспар құрайық.", ai: "Асистанттан сұра", wa: "WhatsApp", tg: "Telegram", chips: ["Сапар жоспарла", "Түрікше үйренгім келеді", "Түркияда оқу", "Бағдарламалық кеңес"], foot: "WhatsApp арқылы да жаза аласың" },
+  uz: { title: "Antalya Bridge yordamchisi", sub: "Soniyalarda javob", ph: "Xabaringizni yozing…", greet: "Salom! 👋 Antalya dam olishi, turk tili, Turkiyada o'qish yoki dasturiy maslahat — nima uchun keldingiz? Sizga maxsus reja tuzamiz.", ai: "Yordamchidan so'rang", wa: "WhatsApp", tg: "Telegram", chips: ["Sayohat rejalashtirish", "Turk tilini o'rganmoqchiman", "Turkiyada o'qish", "Dasturiy maslahat"], foot: "WhatsApp orqali ham yozishingiz mumkin" },
 };
 
 export function FloatingContact({ locale = "tr" }: { locale?: string }) {
   const t = UI[locale] ?? UI.tr;
   const [open, setOpen] = useState(false);
-  const [fanOpen, setFanOpen] = useState(false);
   const [msgs, setMsgs] = useState<Msg[]>([]);
   const [input, setInput] = useState("");
   const [busy, setBusy] = useState(false);
@@ -108,26 +107,26 @@ export function FloatingContact({ locale = "tr" }: { locale?: string }) {
         </div>
       )}
 
-      {/* Yüzen buton kümesi */}
-      <div className="fixed bottom-5 right-4 z-40 flex flex-col items-end gap-3 sm:right-6">
-        <div className={`flex flex-col items-end gap-3 transition-all duration-300 ${fanOpen ? "translate-y-0 opacity-100" : "pointer-events-none translate-y-3 opacity-0"}`}>
-          <a href={whatsappLink()} target="_blank" rel="noopener" aria-label={t.wa} className="flex h-12 w-12 items-center justify-center rounded-full bg-[#25D366] text-white shadow-lg transition hover:scale-105">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M.057 24l1.687-6.163a11.867 11.867 0 0 1-1.587-5.946C.16 5.335 5.495 0 12.05 0a11.817 11.817 0 0 1 8.413 3.488 11.824 11.824 0 0 1 3.48 8.414c-.003 6.557-5.338 11.892-11.893 11.892a11.9 11.9 0 0 1-5.688-1.448L.057 24zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884a9.86 9.86 0 0 0 1.51 5.26l-.999 3.648 3.978-1.607z" /></svg>
+      {/* Yüzen buton kümesi — WA + TG hep görünür, AI butonu ana */}
+      {!open && (
+        <div className="fixed bottom-5 right-4 z-40 flex flex-col items-end gap-2.5 sm:right-6">
+          <a href={whatsappLink()} target="_blank" rel="noopener" aria-label={t.wa} className="flex h-11 w-11 items-center justify-center rounded-full bg-[#25D366] text-white shadow-lg transition hover:scale-105">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M.057 24l1.687-6.163a11.867 11.867 0 0 1-1.587-5.946C.16 5.335 5.495 0 12.05 0a11.817 11.817 0 0 1 8.413 3.488 11.824 11.824 0 0 1 3.48 8.414c-.003 6.557-5.338 11.892-11.893 11.892a11.9 11.9 0 0 1-5.688-1.448L.057 24zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884a9.86 9.86 0 0 0 1.51 5.26l-.999 3.648 3.978-1.607z" /></svg>
           </a>
-          <a href={telegramLink()} target="_blank" rel="noopener" aria-label={t.tg} className="flex h-12 w-12 items-center justify-center rounded-full bg-[#229ED9] text-white shadow-lg transition hover:scale-105">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.479.33-.913.49-1.302.481-.428-.009-1.252-.242-1.865-.44-.752-.244-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z" /></svg>
+          <a href={telegramLink()} target="_blank" rel="noopener" aria-label={t.tg} className="flex h-11 w-11 items-center justify-center rounded-full bg-[#229ED9] text-white shadow-lg transition hover:scale-105">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.479.33-.913.49-1.302.481-.428-.009-1.252-.242-1.865-.44-.752-.244-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z" /></svg>
           </a>
+          <button type="button" onClick={() => setOpen(true)} aria-label={t.ai} className="ai-pulse mt-0.5 flex items-center gap-2 rounded-full py-2.5 pl-3 pr-4 text-sm font-bold text-white shadow-xl transition hover:scale-[1.03]" style={{ backgroundImage: "linear-gradient(135deg, rgb(var(--accent2)), rgb(var(--accent)))" }}>
+            <span className="grid h-7 w-7 place-items-center rounded-full bg-white/25">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M20.5 11.3a8.2 8.2 0 0 1-8.3 8.2 8.4 8.4 0 0 1-3.6-.8L3.5 20l1.3-4.9A8.2 8.2 0 1 1 20.5 11.3z" />
+                <path d="M12 7.4l.9 2 2 .9-2 .9-.9 2-.9-2-2-.9 2-.9z" fill="currentColor" stroke="none" />
+              </svg>
+            </span>
+            {t.ai}
+          </button>
         </div>
-
-        <button type="button" onClick={() => setFanOpen((v) => !v)} aria-label="WhatsApp / Telegram" className="flex h-11 w-11 items-center justify-center rounded-full border text-white shadow-lg transition hover:scale-105" style={{ backgroundColor: "rgb(4 28 40 / 0.85)", borderColor: "rgb(255 255 255 / 0.2)" }}>
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" /></svg>
-        </button>
-
-        <button type="button" onClick={() => setOpen((v) => !v)} aria-label={t.ai} className="flex items-center gap-2 rounded-full py-3 pl-3.5 pr-4 text-sm font-bold text-white shadow-xl transition hover:scale-[1.03]" style={{ backgroundImage: "linear-gradient(135deg, rgb(var(--accent2)), rgb(var(--accent)))", boxShadow: "0 10px 30px -8px rgb(var(--accent) / 0.6)" }}>
-          <span className="ai-pulse grid h-7 w-7 place-items-center rounded-full bg-white/25 text-base">✦</span>
-          {t.ai}
-        </button>
-      </div>
+      )}
     </>
   );
 }
