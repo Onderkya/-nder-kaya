@@ -4,7 +4,7 @@ import { Link } from "@/i18n/routing";
 import { CinematicHero } from "@/components/cinematic-hero";
 import { PetLingoShowcase } from "@/components/petlingo-showcase";
 import { JsonLd } from "@/components/json-ld";
-import { IconClock } from "@/components/icons";
+import { IconClock, IconArrow } from "@/components/icons";
 import { Reveal } from "@/components/reveal";
 import { prisma } from "@/lib/db";
 import { BookingWidget } from "./booking-widget";
@@ -23,10 +23,10 @@ export default async function LessonsPage({ params }: { params: Promise<{ locale
   const x = await getTranslations("imm");
 
   const steps = [
-    { n: "01", title: x("les_p1Title"), text: x("les_p1Text") },
-    { n: "02", title: x("les_p2Title"), text: x("les_p2Text") },
-    { n: "03", title: x("les_p3Title"), text: x("les_p3Text") },
-    { n: "04", title: x("les_p4Title"), text: x("les_p4Text") },
+    { n: "01", title: x("les_p1Title"), text: x("les_p1Text"), video: "/media/les-spell.mp4" },
+    { n: "02", title: x("les_p2Title"), text: x("les_p2Text"), video: "/media/les-teacher.mp4" },
+    { n: "03", title: x("les_p3Title"), text: x("les_p3Text"), video: "/media/les-online.mp4" },
+    { n: "04", title: x("les_p4Title"), text: x("les_p4Text"), video: "/media/les-lara.mp4" },
   ];
 
   const durations = [
@@ -54,7 +54,7 @@ export default async function LessonsPage({ params }: { params: Promise<{ locale
     <>
       <JsonLd data={{ "@context": "https://schema.org", "@type": "Course", name: t("title"), description: t("intro"), provider: { "@type": "Organization", name: "Antalya Bridge" } }} />
 
-      <CinematicHero eyebrow={x("les_processEyebrow")} title={t("title")} intro={t("intro")} image="/images/lessons-meaning.jpg" />
+      <CinematicHero eyebrow={x("les_processEyebrow")} title={t("title")} intro={t("intro")} image="/images/lessons-meaning.jpg" video="/media/les-notebook.mp4" />
 
       {/* Süreç — nasıl öğreniyorsunuz */}
       <section className="container-wide py-24 sm:py-32">
@@ -64,14 +64,35 @@ export default async function LessonsPage({ params }: { params: Promise<{ locale
           <p className="mt-5 text-lg leading-relaxed" style={{ color: "rgb(var(--muted-foreground))" }}>{x("les_processDesc")}</p>
         </Reveal>
 
-        <div className="mt-16 grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="mt-16 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
           {steps.map((st, i) => (
             <Reveal key={st.n} delay={i * 90} className="process-step">
-              <div className="process-num">{st.n}</div>
-              <h3 className="font-display mt-5 text-xl font-semibold leading-snug" style={{ color: "rgb(var(--foreground))" }}>{st.title}</h3>
-              <p className="mt-2.5 text-[15px] leading-relaxed" style={{ color: "rgb(var(--muted-foreground))" }}>{st.text}</p>
+              <div className="card-lift overflow-hidden rounded-3xl border" style={{ borderColor: "rgb(var(--border))", backgroundColor: "rgb(var(--card))" }}>
+                <div className="relative aspect-[16/11] overflow-hidden">
+                  <video className="absolute inset-0 h-full w-full object-cover" src={st.video} autoPlay muted loop playsInline preload="none" aria-hidden />
+                  <div className="absolute inset-0" style={{ background: "linear-gradient(to top, rgba(6,26,34,0.6), transparent 55%)" }} />
+                  <div className="process-num absolute bottom-3 left-3">{st.n}</div>
+                </div>
+                <div className="p-5">
+                  <h3 className="font-display text-lg font-semibold leading-snug" style={{ color: "rgb(var(--foreground))" }}>{st.title}</h3>
+                  <p className="mt-2 text-[14px] leading-relaxed" style={{ color: "rgb(var(--muted-foreground))" }}>{st.text}</p>
+                </div>
+              </div>
             </Reveal>
           ))}
+        </div>
+      </section>
+
+      {/* Bunu biz de yaşadık — güven bandı */}
+      <section className="relative overflow-hidden py-20 text-white sm:py-24" style={{ background: "linear-gradient(135deg, #0d94a8 0%, #0e7490 50%, #07303d 130%)" }}>
+        <span className="sheen" />
+        <div className="container-wide relative">
+          <Reveal className="mx-auto max-w-3xl text-center">
+            <span className="inline-flex items-center gap-2 rounded-full bg-white/15 px-4 py-1.5 text-xs font-bold uppercase tracking-[0.18em]">★ {x("lived_badge")}</span>
+            <h2 className="h-section mt-6 text-balance">{x("lived_title")}</h2>
+            <p className="mx-auto mt-5 max-w-xl text-lg leading-relaxed text-white/85">{x("lived_text")}</p>
+            <Link href="/contact" className="btn-accent mt-8 shadow-xl shadow-black/25">{x("lived_cta")} <IconArrow /></Link>
+          </Reveal>
         </div>
       </section>
 

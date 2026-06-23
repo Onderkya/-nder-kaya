@@ -32,18 +32,31 @@ export default async function EducationPage({ params }: { params: Promise<{ loca
     <>
       <JsonLd data={{ "@context": "https://schema.org", "@type": "Service", serviceType: "Education consulting", name: t("title"), description: t("intro"), areaServed: "Türkiye" }} />
 
-      <CinematicHero eyebrow={x("edu_journeyEyebrow")} title={t("title")} intro={t("intro")} image={campus} />
+      <CinematicHero eyebrow={x("edu_journeyEyebrow")} title={t("title")} intro={t("intro")} image={campus} video="/media/edu-street.mp4" />
 
       {/* Immersive iniş: 4 adım */}
       <StudyJourney
         eyebrow={x("edu_journeyEyebrow")}
         steps={[
           { n: "01", title: x("edu_s1Title"), place: x("edu_s1Place"), text: x("edu_s1Text"), img: campus, points: [x("edu_s1a"), x("edu_s1b")] },
-          { n: "02", title: x("edu_s2Title"), place: x("edu_s2Place"), text: x("edu_s2Text"), img: "/images/campus.jpg", points: [x("edu_s2a"), x("edu_s2b")] },
-          { n: "03", title: x("edu_s3Title"), place: x("edu_s3Place"), text: x("edu_s3Text"), img: "/images/lara.jpg", points: [x("edu_s3a"), x("edu_s3b")] },
-          { n: "04", title: x("edu_s4Title"), place: x("edu_s4Place"), text: x("edu_s4Text"), img: "/images/dorm.jpg", points: [x("edu_s4a"), x("edu_s4b")] },
+          { n: "02", title: x("edu_s2Title"), place: x("edu_s2Place"), text: x("edu_s2Text"), img: "/images/konyaalti.jpg", video: "/media/edu-ocean.mp4", points: [x("edu_s2a"), x("edu_s2b")] },
+          { n: "03", title: x("edu_s3Title"), place: x("edu_s3Place"), text: x("edu_s3Text"), img: "/images/kaleici-inside.jpg", video: "/media/edu-walk.mp4", points: [x("edu_s3a"), x("edu_s3b")] },
+          { n: "04", title: x("edu_s4Title"), place: x("edu_s4Place"), text: x("edu_s4Text"), img: "/images/dorm.jpg", video: "/media/edu-students.mp4", points: [x("edu_s4a"), x("edu_s4b")] },
         ]}
       />
+
+      {/* Bunu biz de yaşadık — güven bandı */}
+      <section className="relative overflow-hidden py-20 text-white sm:py-24" style={{ background: "linear-gradient(135deg, #0d94a8 0%, #0e7490 50%, #07303d 130%)" }}>
+        <span className="sheen" />
+        <div className="container-wide relative">
+          <Reveal className="mx-auto max-w-3xl text-center">
+            <span className="inline-flex items-center gap-2 rounded-full bg-white/15 px-4 py-1.5 text-xs font-bold uppercase tracking-[0.18em]">★ {x("lived_badge")}</span>
+            <h2 className="h-section mt-6 text-balance">{x("lived_title")}</h2>
+            <p className="mx-auto mt-5 max-w-xl text-lg leading-relaxed text-white/85">{x("lived_text")}</p>
+            <Link href="/contact" className="btn-accent mt-8 shadow-xl shadow-black/25">{x("lived_cta")} <IconArrow /></Link>
+          </Reveal>
+        </div>
+      </section>
 
       {/* Street View — kampüste ve şehirde yürü */}
       <section className="py-24 sm:py-28" style={{ backgroundColor: "rgb(var(--background))" }}>

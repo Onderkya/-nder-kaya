@@ -3,6 +3,15 @@
 > Canlı: **http://45.67.203.149:3010** (mutlaka `http://`) · dal `claude/consulting-site-plan-6k4lix`
 > Görsel/medya kaynakları: `public/images/CREDITS.txt` (tümü CC / Mixkit / CC0).
 
+## 🔁 Revizyon 5 — canlı PetLingo, video sayfalar, Land of Legends footage
+- **PetLingo CANLI:** telefon mockup'ı artık uygulamanın **gerçek Lottie pet animasyonları** (sunucudan `/opt/PetLingo/assets/lottie/*` → `public/lottie/`); `lottie-web` ile oynuyor. Alttaki pete tıkla → büyük 3D pet değişir, soru kartı döner, otomatik döngü. (`components/petlingo-live.tsx`). Bozuk `:4000` API CTA'sı → `/contact`.
+- **Ses butonu üstte:** dalga sesi aç/kapa sağ üst köşeye (premium glass pill) taşındı.
+- **Aktiviteler hepsi video:** scuba + **Land of Legends aqua** (resmi footage) + Kaleiçi tekneleri + jet ski (statik pool/harbor gitti).
+- **Land of Legends footage:** dual kartlar artık **gerçek video** — `lol-interior.mp4` (castle) + `lol-aqua.mp4` (hyper-coaster), thelandoflegends.com resmi tanıtım.
+- **Türkçe sayfası dinamik:** hero `les-notebook.mp4`; 4 süreç kartı videolu (harfler / canlı ders / online / Antalya'da konuş — Lara bayrak). PetLingo öncesi "**bunu biz de yaşadık**" güven bandı.
+- **Eğitim sayfası dinamik:** hero `edu-street.mp4`; StudyJourney adımları videolu (`edu-ocean/walk/students`); "bunu biz de yaşadık" bandı. `StudyJourney`'e video desteği eklendi.
+- **Mesaj:** 5 dilde `lived_badge/title/text/cta` — "verdiğimiz her danışmanlığı önce kendimiz başardık" (burslu okuduk, Türkçe öğrettik, Antalya'da yaşıyoruz, otelin içindeyiz).
+
 ## 🔁 Revizyon 4 — sinematik video reel + kullanıcı seçimi klipler
 - **goturkiye tarzı sticky-stack reel:** "Antalya'nın incileri" artık scroll'da **kartların birbirinin üstüne bindiği** sinematik video reel'i (`components/stacked-reel.tsx`). Önceki kart örtüldükçe küçülüp kararır (derinlik). Yalnız ekranda baskın panelin videosu oynar; poster `next/image` (lazy, optimize), video üstüne yumuşak biner → performans korunur.
 - **Kullanıcının seçtiği Pexels klipleri** (telifsiz): hero üstü `kaputas-drone.mp4` (birebir Kaputaş) + sualtı `dive-fish.mp4` yenilendi; reel = Kaş / Suluada / Olympos / Kemer / Kaleiçi / Düden / Alanya Kalesi / Kleopatra (`public/media/vid-*.mp4`).

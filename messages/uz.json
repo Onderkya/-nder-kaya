@@ -101,7 +101,11 @@
     "sell_b1": "Sizga maxsus tayyorlangan reja — nusxa emas",
     "sell_b2": "Yagona aloqa: boshidan oxirigacha bitta odam",
     "sell_b3": "O'z tilingizda: TR · EN · RU · KK · UZ",
-    "sell_cta": "Shaxsiy rejani boshlash"
+    "sell_cta": "Shaxsiy rejani boshlash",
+    "lived_badge": "Buni biz ham boshdan kechirdik",
+    "lived_title": "Taklif qiladigan har bir xizmatni avval o'zimiz amalga oshirdik",
+    "lived_text": "Biz grant bilan o'qidik, turk tilini o'rgatdik, Antalyada yashaymiz va mehmonxonalarda ishlaymiz. Nazariyadan emas — bu yo'lni o'zimiz bosib o'tganmiz va jamoamiz buni chinakam biladi.",
+    "lived_cta": "Yo'lingni boshla"
   },
   "meta": {
     "siteName": "Antalya Bridge",

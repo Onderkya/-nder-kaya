@@ -31,8 +31,9 @@ export default async function HomePage({
     existsSync(path.join(process.cwd(), "public", "images", name)) ? `/images/${name}` : fallback;
   const has = (name: string) => existsSync(path.join(process.cwd(), "public", "images", name));
 
-  const lolInterior = imgOr("lol-interior.jpg", "/images/landoflegends.jpg");
-  const lolAqua = imgOr("lol-aqua.jpg", "/images/coaster.jpg");
+  // Land of Legends resmi tanıtım videoları (poster = fallback kare).
+  const lolInterior = "/media/lol-interior.mp4";
+  const lolAqua = "/media/lol-aqua.mp4";
 
   // Gerçek görseli olan oteller + kullanıcı dosya bırakınca otomatik eklenen üst-segment slotlar.
   const hotels = [
@@ -98,9 +99,9 @@ export default async function HomePage({
         eyebrow={t("actTitle")}
         scenes={[
           { kind: "video", src: "/media/act-scuba.mp4", title: t("actScuba"), place: "Akdeniz" },
-          { kind: "image", src: "/images/kaleici-harbor.jpg", title: t("actBoat"), place: "Kaleiçi" },
+          { kind: "video", src: "/media/lol-aqua.mp4", title: "Land of Legends", place: "Belek" },
+          { kind: "video", src: "/media/vid-kaleici.mp4", title: t("actBoat"), place: "Kaleiçi" },
           { kind: "video", src: "/media/act-jetski.mp4", title: t("actSports"), place: "Sahil" },
-          { kind: "image", src: "/images/pool.jpg", title: t("actHotels"), place: "Resort" },
         ]}
       />
 
@@ -128,11 +129,11 @@ export default async function HomePage({
           <Reveal delay={120}>
             <div className="grid grid-cols-2 gap-3">
               {[
-                { img: lolInterior, label: x("lol_h4"), tag: x("lol_h3") },
-                { img: lolAqua, label: x("lol_h2"), tag: x("lol_h1") },
+                { video: lolInterior, poster: "/images/landoflegends.jpg", label: x("lol_h4"), tag: x("lol_h3") },
+                { video: lolAqua, poster: "/images/coaster.jpg", label: x("lol_h2"), tag: x("lol_h1") },
               ].map((m) => (
-                <figure key={m.label} className="img-zoom relative aspect-[4/5] overflow-hidden rounded-2xl shadow-xl ring-1 ring-white/10">
-                  <Image src={m.img} alt={m.label} fill sizes="(max-width: 1024px) 50vw, 25vw" className="object-cover" />
+                <figure key={m.label} className="relative aspect-[4/5] overflow-hidden rounded-2xl shadow-xl ring-1 ring-white/10">
+                  <video className="absolute inset-0 h-full w-full object-cover" src={m.video} poster={m.poster} autoPlay muted loop playsInline preload="metadata" aria-hidden />
                   <div className="img-scrim absolute inset-0" />
                   <figcaption className="absolute inset-x-0 bottom-0 p-4">
                     <span className="tracking-widest2 block text-[9px] uppercase" style={{ color: "rgb(251 191 80)" }}>{m.tag}</span>

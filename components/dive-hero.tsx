@@ -293,8 +293,8 @@ export function DiveHero({ title, subtitle, ctaPrimary, ctaSecondary, deepLine, 
         onClick={toggleSound}
         aria-pressed={sound}
         aria-label={soundLabel}
-        className="glass fixed bottom-5 left-5 z-50 inline-flex items-center gap-2 rounded-full border px-4 py-2.5 text-xs font-semibold text-white"
-        style={{ borderColor: "rgb(255 255 255 / 0.25)", backgroundColor: "rgb(4 28 40 / 0.55)" }}
+        className="glass fixed right-4 top-[5.25rem] z-40 inline-flex items-center gap-2 rounded-full border px-4 py-2.5 text-xs font-semibold text-white shadow-lg shadow-black/25 transition-transform hover:-translate-y-0.5 sm:right-6"
+        style={{ borderColor: "rgb(255 255 255 / 0.3)", backgroundColor: "rgb(4 28 40 / 0.5)" }}
       >
         <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
           <path d="M11 5 6 9H2v6h4l5 4z" />

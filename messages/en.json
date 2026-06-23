@@ -101,7 +101,11 @@
     "sell_b1": "A plan prepared just for you — not copy-paste",
     "sell_b2": "One contact: the same person start to finish",
     "sell_b3": "In your language: TR · EN · RU · KK · UZ",
-    "sell_cta": "Start your personal plan"
+    "sell_cta": "Start your personal plan",
+    "lived_badge": "We've lived this too",
+    "lived_title": "We achieved every service we offer ourselves first",
+    "lived_text": "We studied on scholarships, taught Turkish, live in Antalya and work inside the hotels. We don't guide from theory — we walked this path ourselves, and our team truly knows it.",
+    "lived_cta": "Start your journey"
   },
   "meta": {
     "siteName": "Antalya Bridge",

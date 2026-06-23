@@ -9,6 +9,8 @@ export type JourneyStep = {
   text: string;
   place: string;
   img: string;
+  /** Varsa arka plan videosu (poster = img); yalnız aktif adım oynar. */
+  video?: string;
   points?: string[];
 };
 
@@ -21,6 +23,7 @@ const seg = (p: number, a: number, b: number) => Math.min(1, Math.max(0, (p - a)
  */
 export function StudyJourney({ eyebrow, steps }: { eyebrow: string; steps: JourneyStep[] }) {
   const rootRef = useRef<HTMLElement>(null);
+  const videoEls = useRef<Array<HTMLVideoElement | null>>([]);
 
   useEffect(() => {
     const root = rootRef.current;
@@ -42,6 +45,12 @@ export function StudyJourney({ eyebrow, steps }: { eyebrow: string; steps: Journ
       const top = root.getBoundingClientRect().top;
       const p = total > 0 ? Math.min(1, Math.max(0, -top / total)) : 0;
       const pos = p * N;
+      const active = Math.max(0, Math.min(N - 1, Math.round(pos)));
+      videoEls.current.forEach((v, i) => {
+        if (!v) return;
+        if (i === active) v.play().catch(() => {});
+        else v.pause();
+      });
       for (let k = 0; k < N; k++) {
         if (bgs[k]) bgs[k].style.opacity = String(seg(pos, k - 0.6, k));
         if (wraps[k]) wraps[k].style.transform = `scale(${(1.06 + seg(pos, k - 0.5, k + 0.5) * 0.16).toFixed(3)})`;
@@ -78,7 +87,23 @@ export function StudyJourney({ eyebrow, steps }: { eyebrow: string; steps: Journ
         {steps.map((st, k) => (
           <div key={k} className="sj-bg absolute inset-0" style={{ opacity: k === 0 ? 1 : 0 }}>
             <div className="sj-bg-wrap absolute inset-0 will-change-transform" style={{ transform: "scale(1.06)" }}>
-              <Image src={st.img} alt={st.title} fill sizes="100vw" className="object-cover" />
+              {st.video ? (
+                <video
+                  ref={(el) => {
+                    videoEls.current[k] = el;
+                  }}
+                  className="absolute inset-0 h-full w-full object-cover"
+                  src={st.video}
+                  poster={st.img}
+                  muted
+                  loop
+                  playsInline
+                  preload="none"
+                  aria-hidden
+                />
+              ) : (
+                <Image src={st.img} alt={st.title} fill sizes="100vw" className="object-cover" />
+              )}
             </div>
             <div className="absolute inset-0" style={{ background: "linear-gradient(105deg, rgba(4,18,26,0.86) 0%, rgba(4,18,26,0.55) 45%, rgba(4,18,26,0.25) 100%)" }} />
           </div>

@@ -101,7 +101,11 @@
     "sell_b1": "Sana özel hazırlanan plan — kopyala-yapıştır değil",
     "sell_b2": "Tek muhatap: baştan sona aynı kişi",
     "sell_b3": "Kendi dilinde: TR · EN · RU · KK · UZ",
-    "sell_cta": "Sana özel planı başlat"
+    "sell_cta": "Sana özel planı başlat",
+    "lived_badge": "Bunu biz de yaşadık",
+    "lived_title": "Verdiğimiz her danışmanlığı önce kendimiz başardık",
+    "lived_text": "Burslu okuduk, Türkçeyi öğrettik, Antalya'da yaşıyor ve otelin içinde çalışıyoruz. Teoriden değil; bizzat yürüdüğümüz yoldan anlatıyoruz — ekibimiz bu işi gerçekten biliyor.",
+    "lived_cta": "Yolculuğuna başla"
   },
   "meta": {
     "siteName": "Antalya Bridge",

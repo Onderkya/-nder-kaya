@@ -1,11 +1,12 @@
+import { Link } from "@/i18n/routing";
 import { IconArrow } from "./icons";
+import { PetLingoLive } from "./petlingo-live";
 
 /**
  * PetLingo destek vitrini — Türkçe öğrenme sayfasında "her gün pratik" aracı.
- * Sol: oyunlaştırılmış uygulama ekranı mockup'ı. Sağ: özellikler + CTA.
- * Uygulama henüz mağazalarda değil → ana buton web demoya, mağaza rozetleri "yakında".
+ * Sol: CANLI uygulama demosu (gerçek Lottie pet'leri, interaktif). Sağ: özellikler + CTA.
+ * Uygulama henüz mağazalarda değil → mağaza rozetleri "yakında".
  */
-const PETLINGO_WEB = "http://45.67.203.149:4000";
 
 type Labels = {
   eyebrow: string;
@@ -26,44 +27,7 @@ export function PetLingoShowcase({ labels }: { labels: Labels }) {
           <div className="phone-mock float-soft">
             <div className="phone-notch" />
             <div className="phone-screen">
-              <div className="flex items-center justify-between text-[13px] font-semibold" style={{ color: "#0b3a47" }}>
-                <span>🔥 7</span>
-                <span>❤️ ❤️ ❤️</span>
-                <span>⭐ 240</span>
-              </div>
-
-              <div className="mt-5 text-center">
-                <div className="text-6xl leading-none">🦊</div>
-                <div className="mx-auto mt-3 w-fit rounded-2xl bg-white px-4 py-2 text-sm font-semibold shadow" style={{ color: "#0b3a47" }}>
-                  "Sea" → Türkçe?
-                </div>
-              </div>
-
-              <div className="mt-5 space-y-2.5">
-                {[
-                  { t: "Deniz", ok: true },
-                  { t: "Güneş", ok: false },
-                  { t: "Çay", ok: false },
-                ].map((o) => (
-                  <div
-                    key={o.t}
-                    className="flex items-center justify-between rounded-2xl px-4 py-3 text-sm font-semibold"
-                    style={
-                      o.ok
-                        ? { background: "linear-gradient(135deg,#12b8cc,#0d94a8)", color: "#fff", boxShadow: "0 8px 18px -8px rgba(13,148,168,0.7)" }
-                        : { background: "#fff", color: "#0b3a47" }
-                    }
-                  >
-                    {o.t}
-                    {o.ok ? <span>✓</span> : null}
-                  </div>
-                ))}
-              </div>
-
-              <div className="mt-5 h-2.5 overflow-hidden rounded-full" style={{ background: "#cfeef3" }}>
-                <div className="h-full rounded-full" style={{ width: "72%", background: "linear-gradient(90deg,#f9a826,#f45e23)" }} />
-              </div>
-              <div className="mt-3 flex justify-center gap-2 text-xl">🐱 🐶 🐦 🐼 🦊</div>
+              <PetLingoLive />
             </div>
           </div>
         </div>
@@ -86,9 +50,9 @@ export function PetLingoShowcase({ labels }: { labels: Labels }) {
           </div>
 
           <div className="mt-9 flex flex-wrap items-center gap-3">
-            <a href={PETLINGO_WEB} target="_blank" rel="noopener" className="btn-accent shadow-xl shadow-black/30">
+            <Link href="/contact" className="btn-accent shadow-xl shadow-black/30">
               {labels.cta} <IconArrow />
-            </a>
+            </Link>
             <div className="flex flex-col gap-1.5">
               <div className="flex gap-2">
                 <span className="inline-flex items-center gap-1.5 rounded-xl border px-3 py-2 text-xs font-semibold text-white/70" style={{ borderColor: "rgb(255 255 255 / 0.2)" }}> App Store</span>
