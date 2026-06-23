@@ -62,14 +62,15 @@ export default async function AntalyaPage({ params }: { params: Promise<{ locale
         title={x("ant_regionsTitle")}
         places={[
           { img: "/images/kaputas.jpg", name: "Kaputaş", sub: "Kaş" },
-          { img: "/images/lagoon.jpg", name: "Mavi Lagün", sub: "Ölüdeniz" },
+          { img: "/images/suluada.jpg", name: "Suluada", sub: "Adrasan" },
+          { img: "/images/kemer.jpg", name: "Kemer", sub: "Marina" },
           { img: "/images/olympos.jpg", name: "Olympos", sub: "Çıralı" },
-          { img: "/images/phaselis.jpg", name: "Phaselis", sub: "Kemer" },
           { img: "/images/side.jpg", name: "Side", sub: "Antik kent" },
-          { img: "/images/duden.jpg", name: "Düden", sub: "Şelale" },
-          { img: "/images/konyaalti.jpg", name: "Konyaaltı", sub: "Akdeniz" },
+          { img: "/images/beachpark.jpg", name: "Beach Park", sub: "Konyaaltı" },
           { img: "/images/lara.jpg", name: "Lara", sub: "Falezler" },
-          { img: "/images/kaleici.jpg", name: "Kaleiçi", sub: "Antalya" },
+          { img: "/images/kaleici-inside.jpg", name: "Kaleiçi", sub: "Kale içi" },
+          { img: "/images/kaleici-harbor.jpg", name: "Yat Limanı", sub: "Kaleiçi" },
+          { img: "/images/duden.jpg", name: "Düden", sub: "Şelale" },
         ]}
       />
 

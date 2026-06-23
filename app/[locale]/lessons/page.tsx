@@ -54,7 +54,7 @@ export default async function LessonsPage({ params }: { params: Promise<{ locale
     <>
       <JsonLd data={{ "@context": "https://schema.org", "@type": "Course", name: t("title"), description: t("intro"), provider: { "@type": "Organization", name: "Antalya Bridge" } }} />
 
-      <CinematicHero eyebrow={x("les_processEyebrow")} title={t("title")} intro={t("intro")} image="/images/coffee.jpg" />
+      <CinematicHero eyebrow={x("les_processEyebrow")} title={t("title")} intro={t("intro")} image="/images/kaleici-inside.jpg" />
 
       {/* Süreç — nasıl öğreniyorsunuz */}
       <section className="container-wide py-24 sm:py-32">

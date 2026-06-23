@@ -133,10 +133,14 @@
     "errorRetry": "Try again"
   },
   "home": {
-    "heroTitle": "Discover Antalya, learn Turkish, study in Turkey — with a guide who has lived it",
-    "heroSubtitle": "We help international guests plan their Antalya trip, learn Turkish online, and navigate studying in Turkey. Local expertise, personal guidance, no agency runaround.",
-    "heroCtaPrimary": "Talk to us",
-    "heroCtaSecondary": "See our services",
+    "heroTitle": "Let someone who lives in Antalya guide you — not an agency",
+    "heroSubtitle": "Your trip, your Turkish lessons and your path to studying in Turkey — one trusted person, in your own language. No copy-paste packages; everything tailored to you.",
+    "heroProof1": "Service in 5 languages",
+    "heroProof2": "One contact, start to finish",
+    "heroProof3": "We live in Antalya",
+    "heroDiff": "What makes us different?",
+    "heroCtaPrimary": "Get a free consultation",
+    "heroCtaSecondary": "How we work",
     "servicesTitle": "How we help",
     "servicesSubtitle": "Three services, one trusted point of contact.",
     "whyTitle": "Why work with us",

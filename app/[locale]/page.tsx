@@ -1,3 +1,5 @@
+import { existsSync } from "fs";
+import path from "path";
 import Image from "next/image";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { Link } from "@/i18n/routing";
@@ -24,10 +26,36 @@ export default async function HomePage({
   const meta = await getTranslations("meta");
   const x = await getTranslations("imm");
 
+  // Otomatik-yüklenen görsel slotu: dosya public/images içine bırakılınca devreye girer.
+  const imgOr = (name: string, fallback: string) =>
+    existsSync(path.join(process.cwd(), "public", "images", name)) ? `/images/${name}` : fallback;
+  const has = (name: string) => existsSync(path.join(process.cwd(), "public", "images", name));
+
+  const lolInterior = imgOr("lol-interior.jpg", "/images/landoflegends.jpg");
+  const lolAqua = imgOr("lol-aqua.jpg", "/images/coaster.jpg");
+
+  // Gerçek görseli olan oteller + kullanıcı dosya bırakınca otomatik eklenen üst-segment slotlar.
+  const hotels = [
+    { name: "Maxx Royal", place: "Belek", img: "/images/maxxroyal.jpg" },
+    { name: "Rixos Premium", place: "Belek", img: "/images/rixos.jpg" },
+    { name: "NG Phaselis", place: "Kemer", img: imgOr("hotel-ngphaselis.jpg", "/images/ngphaselis.jpg") },
+    { name: "Kremlin Palace", place: "Lara", img: "/images/kremlin.jpg" },
+    { name: "Miracle Resort", place: "Lara", img: "/images/pool.jpg" },
+    ...[
+      { name: "Titanic Deluxe", place: "Belek", file: "hotel-titanic.jpg" },
+      { name: "Delphin Imperial", place: "Lara", file: "hotel-delphin.jpg" },
+      { name: "Calista Luxury", place: "Belek", file: "hotel-calista.jpg" },
+      { name: "Regnum Carya", place: "Belek", file: "hotel-regnum.jpg" },
+      { name: "Nirvana Cosmopolitan", place: "Kemer", file: "hotel-nirvana.jpg" },
+    ]
+      .filter((h) => has(h.file))
+      .map((h) => ({ name: h.name, place: h.place, img: `/images/${h.file}` })),
+  ];
+
   const services = [
-    { href: "/antalya", n: "01", title: s("antalyaTitle"), desc: s("antalyaDesc"), img: "/images/harbor-night.jpg", place: "Yat Limanı" },
-    { href: "/lessons", n: "02", title: s("lessonsTitle"), desc: s("lessonsDesc"), img: "/images/coffee.jpg", place: "Türk Kahvesi" },
-    { href: "/education", n: "03", title: s("educationTitle"), desc: s("educationDesc"), img: "/images/aspendos.jpg", place: "Aspendos" },
+    { href: "/antalya", n: "01", title: s("antalyaTitle"), desc: s("antalyaDesc"), img: "/images/suluada.jpg", place: "Suluada · Adrasan" },
+    { href: "/lessons", n: "02", title: s("lessonsTitle"), desc: s("lessonsDesc"), img: "/images/kaleici-inside.jpg", place: "Kaleiçi" },
+    { href: "/education", n: "03", title: s("educationTitle"), desc: s("educationDesc"), img: "/images/akdeniz-campus.jpg", place: "Akdeniz Üniversitesi" },
   ];
 
   const reasons = [
@@ -60,6 +88,8 @@ export default async function HomePage({
         deepLine={t("diveDeep")}
         scrollCue={t("scrollCue")}
         soundLabel={t("soundWave")}
+        diffLabel={t("heroDiff")}
+        proof={[t("heroProof1"), t("heroProof2"), t("heroProof3")]}
         aerialVideo="/media/kaputas-drone.mp4"
       />
 
@@ -68,7 +98,7 @@ export default async function HomePage({
         eyebrow={t("actTitle")}
         scenes={[
           { kind: "video", src: "/media/act-scuba.mp4", title: t("actScuba"), place: "Akdeniz" },
-          { kind: "image", src: "/images/harbor.jpg", title: t("actBoat"), place: "Kaleiçi" },
+          { kind: "image", src: "/images/kaleici-harbor.jpg", title: t("actBoat"), place: "Kaleiçi" },
           { kind: "video", src: "/media/act-jetski.mp4", title: t("actSports"), place: "Sahil" },
           { kind: "image", src: "/images/pool.jpg", title: t("actHotels"), place: "Resort" },
         ]}
@@ -96,7 +126,24 @@ export default async function HomePage({
             </Link>
           </Reveal>
           <Reveal delay={120}>
-            <YouTubeEmbed id="jB0xnYf4GrM" title="Rixos World The Land of Legends — tanıtım" />
+            <div className="grid grid-cols-2 gap-3">
+              {[
+                { img: lolInterior, label: x("lol_h4"), tag: x("lol_h3") },
+                { img: lolAqua, label: x("lol_h2"), tag: x("lol_h1") },
+              ].map((m) => (
+                <figure key={m.label} className="img-zoom relative aspect-[4/5] overflow-hidden rounded-2xl shadow-xl ring-1 ring-white/10">
+                  <Image src={m.img} alt={m.label} fill sizes="(max-width: 1024px) 50vw, 25vw" className="object-cover" />
+                  <div className="img-scrim absolute inset-0" />
+                  <figcaption className="absolute inset-x-0 bottom-0 p-4">
+                    <span className="tracking-widest2 block text-[9px] uppercase" style={{ color: "rgb(251 191 80)" }}>{m.tag}</span>
+                    <span className="font-display mt-1 block text-lg leading-tight text-white">{m.label}</span>
+                  </figcaption>
+                </figure>
+              ))}
+            </div>
+            <div className="mt-3 overflow-hidden rounded-2xl ring-1 ring-white/10">
+              <YouTubeEmbed id="jB0xnYf4GrM" title="Rixos World The Land of Legends — tanıtım" />
+            </div>
             <p className="mt-3 text-center text-xs text-white/45">{x("lol_watch")} · Rixos World</p>
           </Reveal>
         </div>
@@ -109,34 +156,30 @@ export default async function HomePage({
             <p className="eyebrow justify-center" style={{ color: "rgb(var(--accent))" }}>{t("hotelsEyebrow")}</p>
             <h2 className="h-section mt-5" style={{ color: "rgb(var(--foreground))" }}>{t("hotelsTitle")}</h2>
           </Reveal>
-          <div className="mt-14 grid gap-5 sm:grid-cols-2">
-            {[
-              { name: "Maxx Royal", place: "Belek", img: "/images/maxxroyal.jpg" },
-              { name: "Rixos Premium", place: "Belek", img: "/images/rixos.jpg" },
-              { name: "Kremlin Palace", place: "Lara", img: "/images/kremlin.jpg" },
-              { name: "Miracle Resort", place: "Lara", img: "/images/pool.jpg" },
-            ].map((h, i) => (
-              <Reveal key={h.name} delay={i * 70}>
-                <figure className="img-zoom relative aspect-[16/10] overflow-hidden rounded-3xl shadow-lg">
-                  <Image src={h.img} alt={`${h.name}, Antalya`} fill sizes="(max-width: 1024px) 100vw, 50vw" className="object-cover" />
+          <div className="mt-14 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+            {hotels.map((h, i) => (
+              <Reveal key={h.name} delay={(i % 3) * 70}>
+                <figure className="img-zoom card-lift relative aspect-[16/11] overflow-hidden rounded-3xl shadow-lg">
+                  <Image src={h.img} alt={`${h.name}, Antalya`} fill sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw" className="object-cover" />
                   <div className="img-scrim absolute inset-0" />
-                  <figcaption className="absolute inset-x-0 bottom-0 flex items-end justify-between p-6 text-white">
-                    <span className="font-display text-2xl leading-none">{h.name}</span>
-                    <span className="tracking-widest2 text-[10px] uppercase text-white/65">{h.place}</span>
+                  <figcaption className="absolute inset-x-0 bottom-0 flex items-end justify-between p-5 text-white">
+                    <span className="font-display text-xl leading-none">{h.name}</span>
+                    <span className="inline-flex items-center gap-1 rounded-full bg-white/15 px-2 py-0.5 text-[10px] uppercase tracking-widest2 text-white/80">{h.place}</span>
                   </figcaption>
                 </figure>
               </Reveal>
             ))}
           </div>
           <p className="mt-7 text-center text-xs" style={{ color: "rgb(var(--muted-foreground))" }}>
-            Görseller: Wikimedia Commons (CC). Rezervasyon ve güncel bilgi için bizimle iletişime geçin.
+            5★ resort koordinasyonu — Belek · Lara · Kemer. Sana en uygun oteli ve fiyatı birlikte seçelim.
           </p>
         </div>
       </section>
 
       {/* ============ SANA ÖZEL (satış bandı) ============ */}
       <section className="relative overflow-hidden py-24 text-white sm:py-32" style={{ background: "linear-gradient(135deg, #0d94a8 0%, #0e7490 45%, #f45e23 140%)" }}>
-        <div className="absolute inset-0 opacity-25" style={{ backgroundImage: "radial-gradient(rgba(255,255,255,0.5) 1px, transparent 1px)", backgroundSize: "26px 26px" }} />
+        <div className="dot-drift absolute inset-0 opacity-25" style={{ backgroundImage: "radial-gradient(rgba(255,255,255,0.5) 1px, transparent 1px)", backgroundSize: "26px 26px" }} />
+        <span className="sheen" />
         <div className="container-wide relative grid items-center gap-12 lg:grid-cols-2 lg:gap-16">
           <div>
             <Reveal>
@@ -201,8 +244,8 @@ export default async function HomePage({
             <Reveal className="reveal-clip" delay={120}>
               <figure className="img-zoom relative aspect-[4/5] overflow-hidden rounded-3xl shadow-xl">
                 <Image
-                  src="/images/kaleici.jpg"
-                  alt="Kaleiçi eski şehir ve Yivli Minare, Antalya"
+                  src="/images/kaleici-harbor.jpg"
+                  alt="Kaleiçi Yat Limanı, Antalya"
                   fill
                   sizes="(max-width: 1024px) 100vw, 40vw"
                   className="object-cover"
@@ -309,15 +352,16 @@ export default async function HomePage({
         title={t("placesTitle")}
         places={[
           { img: "/images/kaputas.jpg", name: "Kaputaş", sub: "Kaş" },
-          { img: "/images/lagoon.jpg", name: "Mavi Lagün", sub: "Ölüdeniz" },
+          { img: "/images/suluada.jpg", name: "Suluada", sub: "Adrasan" },
           { img: "/images/sunset.jpg", name: "Kaş", sub: "Gün batımı" },
+          { img: "/images/kemer.jpg", name: "Kemer", sub: "Marina" },
+          { img: "/images/lara.jpg", name: "Lara", sub: "Falezler" },
+          { img: "/images/beachpark.jpg", name: "Beach Park", sub: "Konyaaltı" },
           { img: "/images/olympos.jpg", name: "Olympos", sub: "Çıralı" },
-          { img: "/images/phaselis.jpg", name: "Phaselis", sub: "Kemer" },
           { img: "/images/side.jpg", name: "Side", sub: "Antik kent" },
-          { img: "/images/konyaalti.jpg", name: "Konyaaltı", sub: "Akdeniz" },
-          { img: "/images/kaleici.jpg", name: "Kaleiçi", sub: "Antalya" },
+          { img: "/images/kaleici-inside.jpg", name: "Kaleiçi", sub: "Kale içi" },
+          { img: "/images/kaleici-harbor.jpg", name: "Yat Limanı", sub: "Kaleiçi" },
           { img: "/images/duden.jpg", name: "Düden", sub: "Şelale" },
-          { img: "/images/harbor-night.jpg", name: "Yat Limanı", sub: "Kaleiçi" },
         ]}
       />
 

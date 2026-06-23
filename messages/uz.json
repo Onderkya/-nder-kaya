@@ -133,10 +133,14 @@
     "errorRetry": "Qayta urinish"
   },
   "home": {
-    "heroTitle": "Antalyani kashf eting, turk tilini o'rganing, Turkiyada o'qing — buni o'zi boshidan kechirgan yo'lboshchi bilan",
-    "heroSubtitle": "Biz xalqaro mehmonlarga Antalya sayohatini rejalashtirishga, turk tilini onlayn o'rganishga va Turkiyada o'qish jarayonida yo'l topishga yordam beramiz. Mahalliy tajriba, shaxsiy yo'riqnoma, agentlik ovorachiligisiz.",
-    "heroCtaPrimary": "Biz bilan gaplashing",
-    "heroCtaSecondary": "Xizmatlarimizni ko'ring",
+    "heroTitle": "Antalyani agentlik emas, shu yerda yashaydigan inson tanishtirsin",
+    "heroSubtitle": "Sayohating, turk tili darslaring va Turkiyada o'qish yo'ling — bitta ishonchli mutaxassis bilan, o'z tilingda. Tayyor paketlar yo'q; hammasi senga moslangan.",
+    "heroProof1": "5 tilda xizmat",
+    "heroProof2": "Boshidan oxirigacha bitta mutaxassis",
+    "heroProof3": "Biz Antalyada yashaymiz",
+    "heroDiff": "Farqimiz nimada?",
+    "heroCtaPrimary": "Bepul maslahat oling",
+    "heroCtaSecondary": "Qanday ishlaymiz",
     "servicesTitle": "Biz qanday yordam beramiz",
     "servicesSubtitle": "Uchta xizmat, bitta ishonchli aloqa nuqtasi.",
     "whyTitle": "Nega biz bilan ishlash kerak",

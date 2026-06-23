@@ -133,10 +133,14 @@
     "errorRetry": "Tekrar dene"
   },
   "home": {
-    "heroTitle": "Antalya'yı keşfedin, Türkçe öğrenin, Türkiye'de okuyun — bunu yaşamış bir rehberle",
-    "heroSubtitle": "Yurtdışından gelen misafirlere Antalya gezisini planlamada, online Türkçe öğrenmede ve Türkiye'de eğitim sürecinde yardımcı oluyoruz. Yerel uzmanlık, kişisel rehberlik, acente karmaşası yok.",
-    "heroCtaPrimary": "Bizimle konuşun",
-    "heroCtaSecondary": "Hizmetlerimiz",
+    "heroTitle": "Antalya'yı acente değil, burada yaşayan biri anlatsın",
+    "heroSubtitle": "Seyahat planın, Türkçe dersin ve Türkiye'de eğitim yolculuğun — tek güvenilir muhatapla, kendi dilinde. Kopyala-yapıştır paket yok; her şey sana özel.",
+    "heroProof1": "5 dilde hizmet",
+    "heroProof2": "Tek muhatap, baştan sona",
+    "heroProof3": "Antalya'da yaşıyoruz",
+    "heroDiff": "Farkımız ne?",
+    "heroCtaPrimary": "Ücretsiz danışmanlık al",
+    "heroCtaSecondary": "Nasıl çalışıyoruz?",
     "servicesTitle": "Nasıl yardımcı oluyoruz",
     "servicesSubtitle": "Üç hizmet, tek güvenilir muhatap.",
     "whyTitle": "Neden biz",

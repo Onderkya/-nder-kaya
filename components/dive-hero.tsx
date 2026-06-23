@@ -14,6 +14,8 @@ type Props = {
   scrollCue: string;
   brand: string;
   soundLabel: string;
+  diffLabel: string;
+  proof: string[];
   /** Varsa havadan Kaputaş dron VİDEOSU (poster = kaputas.jpg fallback). */
   aerialVideo?: string;
 };
@@ -33,7 +35,7 @@ const BUBBLES = Array.from({ length: 14 }, (_, i) => {
 
 const seg = (p: number, a: number, b: number) => Math.min(1, Math.max(0, (p - a) / (b - a)));
 
-export function DiveHero({ title, subtitle, ctaPrimary, ctaSecondary, deepLine, scrollCue, brand, soundLabel, aerialVideo }: Props) {
+export function DiveHero({ title, subtitle, ctaPrimary, ctaSecondary, deepLine, scrollCue, brand, soundLabel, diffLabel, proof, aerialVideo }: Props) {
   const rootRef = useRef<HTMLElement>(null);
   const audioRef = useRef<HTMLAudioElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
@@ -232,20 +234,41 @@ export function DiveHero({ title, subtitle, ctaPrimary, ctaSecondary, deepLine, 
           style={{ opacity: 0, background: "radial-gradient(circle at 50% 42%, rgba(220,250,255,0.9), rgba(170,235,250,0.25) 45%, transparent 72%)" }}
         />
 
-        {/* İÇERİK */}
-        <div className="container-wide absolute inset-0 z-10 flex flex-col justify-end pb-16 sm:pb-24">
-          <div className="dive-phase1 max-w-4xl text-white">
-            <p className="eyebrow text-white/85">{brand} — Antalya · Kaputaş</p>
-            <h1 className="h-hero mt-6 text-balance">{title}</h1>
-            <p className="mt-7 max-w-2xl text-lg leading-relaxed text-white/85 sm:text-xl">{subtitle}</p>
-            <div className="mt-9 flex flex-wrap items-center gap-3">
-              <Link href="/contact" className="btn-accent shadow-xl shadow-black/20">
+        {/* İÇERİK — alt-hizalı, satış odaklı */}
+        <div className="container-wide absolute inset-0 z-10 flex flex-col justify-end pb-12 sm:pb-16">
+          <div className="dive-phase1 max-w-3xl text-white">
+            <span
+              className="badge-glow inline-flex items-center gap-2 rounded-full px-4 py-1.5 text-xs font-bold uppercase tracking-[0.18em]"
+              style={{ backgroundImage: "linear-gradient(135deg, rgb(var(--accent2)), rgb(var(--accent)))", color: "rgb(var(--accent-foreground))" }}
+            >
+              <span className="h-1.5 w-1.5 rounded-full bg-current opacity-80" />
+              {diffLabel}
+            </span>
+            <h1
+              className="font-display mt-5 font-semibold leading-[0.98] tracking-[-0.02em] text-balance"
+              style={{ fontSize: "clamp(2.1rem, 5vw, 4.4rem)" }}
+            >
+              {title}
+            </h1>
+            <p className="mt-5 max-w-xl text-base leading-relaxed text-white/85 sm:text-lg">{subtitle}</p>
+            <div className="mt-7 flex flex-wrap items-center gap-3">
+              <Link href="/contact" className="btn-accent shadow-xl shadow-black/25">
                 {ctaPrimary} <IconArrow />
               </Link>
               <Link href="/antalya" className="btn-ghost-light glass">
                 {ctaSecondary}
               </Link>
             </div>
+            <ul className="mt-6 flex flex-wrap items-center gap-x-5 gap-y-2.5">
+              {proof.map((p) => (
+                <li key={p} className="inline-flex items-center gap-2 text-[13px] font-medium text-white/80">
+                  <span className="flex h-5 w-5 items-center justify-center rounded-full" style={{ backgroundColor: "rgb(var(--lagoon) / 0.25)" }}>
+                    <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="rgb(175 240 255)" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><path d="m5 13 4 4L19 7" /></svg>
+                  </span>
+                  {p}
+                </li>
+              ))}
+            </ul>
           </div>
 
           <div
