@@ -3,6 +3,41 @@
 > Canlı: **http://45.67.203.149:3010** (mutlaka `http://`) · dal `claude/consulting-site-plan-6k4lix`
 > Görsel/medya kaynakları: `public/images/CREDITS.txt` (tümü CC / Mixkit / CC0).
 
+## 🔁 Revizyon 9 — gerçek fermuar, hazır rotalar, IT alanı, öğretmen kimliği, ödeme (GÜNCEL)
+
+> **Şu an buradayız.** Son commit dalda; deploy için sunucuda `git reset --hard origin/...` (aşağıdaki nota bak).
+
+- **FERMUAR (ana sayfa "deneyim" bölümü) — `components/zipper-reveal.tsx`:** birçok tur döndü, son hâli **Coca-Cola "real magic" tarzı ÇAPRAZ fermuar**:
+  - Çapraz/kıvrımlı dikiş ekranı ikiye böler; **gerçek metal dişler = kalın `stroke-dasharray` stroke** (iki sıra kenetli), metalik **sürgü + sallanan kulp**.
+  - **Turkuaz deniz örtüsü** (`kaputas-drone.mp4`) `clip-path` ile çapraz açılıp altındaki içeriği (scuba + Kaputaş/Kaş/Suluada/Olympos/Kemer/Alanya/Kleopatra/Land of Legends) gösterir.
+  - smootherstep **ease** (yağ gibi), hafif **salınım** (sürekli rAF, yalnız görünürken), içerik **sana doğru zoom**, sonunda **tam açılır**.
+  - ⏳ **Kullanıcı telefonda görsel ince ayar bekliyor** (diş boyutu/metaliklik, dikiş açısı, kıvrım, örtü klibi, sürgü boyutu). Eski denemeler: dikey "V" fermuar, sticky-stack reel (kasıyordu — kaldırıldı).
+- **HAZIR ROTALAR** (`app/[locale]/page.tsx`): 4 sinematik rota kartı — **Klasik Antalya (5g/5★) · Lüks & Adrenalin (7g/5★) · Romantik Kaş (4g) · Aile Tatili (6g/5★)**. Gün gün dikey zaman çizgisi, yıldız, **"uçak + otel + transfer dahil"**, güçlü CTA. 5 dilde (`routes` ad alanı).
+- **IT / YAZILIM — ÖZEL bölüm** (teknolojik koyu tema): danışmanlık + **uygulanabilirlik analizi** + web/mobil + AI entegrasyonu + ürün iyileştirme. "Hizmetimizde sınır yok." 5 dilde (`services.it_*`). (Hizmet kartı da duruyor.)
+- **ÖĞRETMEN KİMLİĞİ** (lessons): **anadili Kazakça & Rusça · C2 Türkçe & İngilizce · 10+ yıl Türkiye'de · Antalya'yı/otelleri içeriden bilir** (`imm.les_teacher_*`, `les_cred1-4`).
+- **PetLingo:** "⚡ Bizim kendi uygulamamız" + "✦ Yapay zekâ destekli" rozetleri + telefon arkası parıltı/AI ikon. Canlı Lottie mini-oyun zaten oynanıyor.
+- **ÖDEME şeridi (ana sayfa):** **Kazakistan → Kaspi** + **Kripto (USDT/BTC)** (mevcut `payment` ad alanı).
+- **Oteller:** akordeonda aktif panelde **5★ "Lüks resort"** rozeti.
+- **Mobil menü bug DÜZELTİLDİ:** overlay `<header>` içindeydi → `backdrop-filter` onu 64px header kutusuna hapsediyordu (arka sayfa sızıyordu). **Header DIŞINA** alındı, opak zemin, `z-[70]`.
+- **AI butonu:** kafa karıştıran toggle kaldırıldı; WhatsApp+Telegram hep görünür; AI butonu **yeni ikon + isim** ("Asistana Sor / Ask our AI / …").
+
+### ⛔ AÇIK / BLOKLAYAN
+- **AI chat cevap vermiyor — anahtar yok:** sunucu `.env`'de **`ANTHROPIC_API_KEY=""` ve `OPENROUTER_API_KEY=""` ikisi de BOŞ**. Kod iki sağlayıcıyı da destekliyor (`app/api/chat/route.ts`, model env `CHAT_MODEL`); anahtar eklenince anında çalışır. Yokken widget kibarca WhatsApp/Telegram'a düşüyor (bozuk değil).
+- **Fermuar görsel ince ayarı** (yukarıda) — kullanıcının "şu şöyle olsun" geri bildirimi bekleniyor.
+- **Otel "wow" konsepti** — kullanıcı daha çarpıcı/farklı bir yapı istiyor (şu an akordeon + 5★).
+- **Tipografi/renk/font yönü** — kullanıcı "çok daha iyi" istiyor; 3 yön önerildi (editoryal-lüks / modern-net / sıcak-güven), seçim bekleniyor.
+- **Land of Legends aqua medyası** — daha iyi klip istendi; şu an resmi coaster loop'u kullanılıyor (medya ajanı API hatasıyla düşmüştü).
+- **Akdeniz Üni uzaktan kampüs** — Commons'ta yok; `akdeniz-campus-wide.jpg` slotu açık.
+
+### 🚀 Deploy notu (ÖNEMLİ)
+Sunucuda `git pull` bazen ilerlemiyor (untracked `build.log` / `docker-compose.override.yml`). **Garantili deploy:**
+```
+cd /opt/antalya-bridge
+git fetch origin claude/consulting-site-plan-6k4lix
+git reset --hard origin/claude/consulting-site-plan-6k4lix
+docker compose up -d --build
+```
+
 ## 🔁 Revizyon 8 — AI asistan, LoL kaldırıldı, IT hizmeti, dalga buton, mobil menü
 - **AI sohbet asistanı her sayfada:** yüzen widget (AI Asistan + WhatsApp + Telegram). `/api/chat` (OpenRouter, public + rate-limit) müşterinin dilinde konuşur, hedef/tarih/bütçe sorar, ona özel taslak plan sunar, WhatsApp'a yönlendirir. `components/floating-contact.tsx` (5 dil UI). Fiyat vermez, uydurmaz.
 - **Land of Legends bölümü kaldırıldı** + **Aktiviteler kaldırıldı**; ikisi tek performanslı "Antalya'nın incileri" reel'inde toplandı (8→6 panel, üst üste binme azaldı). Aqua park reel'e "seni buraya da götürürüz" notuyla eklendi.
