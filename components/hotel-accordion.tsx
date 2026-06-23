@@ -50,6 +50,12 @@ export function HotelAccordion({ hotels, ctaLabel }: { hotels: Hotel[]; ctaLabel
             <figcaption className="absolute inset-x-0 bottom-0 flex items-end justify-between gap-3 p-5 text-left text-white sm:p-6">
               <div className="min-w-0">
                 <span
+                  className="block overflow-hidden text-sm transition-all duration-500"
+                  style={{ maxHeight: isActive ? "1.5rem" : 0, opacity: isActive ? 1 : 0, color: "rgb(251 191 80)" }}
+                >
+                  ★★★★★ <span className="text-white/70">Lüks resort</span>
+                </span>
+                <span
                   className="font-display block leading-none transition-all duration-500"
                   style={{ fontSize: isActive ? "clamp(1.8rem, 3.4vw, 3rem)" : "1.1rem", whiteSpace: "nowrap" }}
                 >

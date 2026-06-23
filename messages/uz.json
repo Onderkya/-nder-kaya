@@ -187,7 +187,14 @@
     "educationTitle": "Turkiyada o'qish bo'yicha yo'riqnoma",
     "educationDesc": "Arizalar, grantlar va ta'lim jarayoni bo'yicha bosqichma-bosqich yordam.",
     "itTitle": "Dasturiy ta'minot & IT maslahat",
-    "itDesc": "Veb-sayt, mobil ilova, avtomatlashtirish va sun'iy intellekt — g'oyangizni katta muhandis bilan hayotga tatbiq eting. Xizmatimizda chegara yo'q; har qanday so'rovni ko'rib chiqamiz."
+    "itDesc": "Veb-sayt, mobil ilova, avtomatlashtirish va sun'iy intellekt — g'oyangizni katta muhandis bilan hayotga tatbiq eting. Xizmatimizda chegara yo'q; har qanday so'rovni ko'rib chiqamiz.",
+    "it_eyebrow": "Dasturiy ta'minot & IT",
+    "it_lead": "Faqat dam olish emas — katta muhandis bilan g'oyangizni kodga aylantiramiz. Avval amalga oshirish tahlili, keyin ishga tushirish. Xizmatimizda chegara yo'q.",
+    "it_f1": "Maslahat va amalga oshirish tahlili",
+    "it_f2": "Veb va mobil ilova ishlab chiqish",
+    "it_f3": "Avtomatlashtirish va sun'iy intellekt integratsiyasi",
+    "it_f4": "Mavjud mahsulotingizni yaxshilash va qo'llab-quvvatlash",
+    "it_cta": "Loyihangizni gaplashamiz"
   },
   "routes": {
     "eyebrow": "Tayyor marshrutlar",

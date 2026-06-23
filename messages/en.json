@@ -187,7 +187,14 @@
     "educationTitle": "Study in Turkey Guidance",
     "educationDesc": "Step-by-step help with applications, scholarships and the education process.",
     "itTitle": "Software & IT Consulting",
-    "itDesc": "Website, mobile app, automation and AI — bring your idea to life with a senior software engineer. No limits to our service; we consider every request."
+    "itDesc": "Website, mobile app, automation and AI — bring your idea to life with a senior software engineer. No limits to our service; we consider every request.",
+    "it_eyebrow": "Software & IT",
+    "it_lead": "Not just holidays — with a senior software engineer we turn your idea into code. First a feasibility analysis, then we build it. No limits to our service.",
+    "it_f1": "Consulting & feasibility analysis",
+    "it_f2": "Web & mobile app development",
+    "it_f3": "Automation & AI integration",
+    "it_f4": "Improving & maintaining your product",
+    "it_cta": "Let's talk about your project"
   },
   "routes": {
     "eyebrow": "Ready-made routes",

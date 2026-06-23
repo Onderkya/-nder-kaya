@@ -26,6 +26,7 @@ export default async function HomePage({
   const meta = await getTranslations("meta");
   const x = await getTranslations("imm");
   const r = await getTranslations("routes");
+  const pay = await getTranslations("payment");
 
   // Otomatik-yüklenen görsel slotu: dosya public/images içine bırakılınca devreye girer.
   const imgOr = (name: string, fallback: string) =>
@@ -183,46 +184,65 @@ export default async function HomePage({
           <div className="mt-14 grid gap-6 lg:grid-cols-2">
             {routes.map((rt, i) => (
               <Reveal key={rt.name} delay={(i % 2) * 90}>
-                <div className="card-lift flex h-full flex-col overflow-hidden rounded-[2rem] border shadow-lg" style={{ borderColor: "rgb(var(--border))", backgroundColor: "rgb(var(--card))" }}>
-                  {/* Üst görsel + başlık */}
-                  <div className="relative aspect-[16/8] overflow-hidden">
+                <div className="card-lift group flex h-full flex-col overflow-hidden rounded-[2rem] shadow-xl ring-1 ring-black/5" style={{ backgroundColor: "rgb(var(--card))" }}>
+                  {/* Sinematik görsel başlık */}
+                  <div className="img-zoom relative aspect-[16/10] overflow-hidden">
                     <Image src={rt.img} alt={rt.name} fill sizes="(max-width:1024px) 100vw, 50vw" className="object-cover" />
-                    <div className="img-scrim absolute inset-0" />
-                    <div className="absolute inset-x-0 bottom-0 flex items-end justify-between p-5 text-white">
-                      <div>
-                        <h3 className="font-display text-2xl font-semibold leading-none sm:text-3xl">{rt.name}</h3>
-                        <p className="mt-1.5 text-sm text-white/80">{rt.tag}</p>
-                      </div>
-                      <div className="text-right">
-                        <span className="font-display block text-3xl leading-none">{rt.days}<span className="ml-1 text-sm font-normal text-white/80">{r("daysWord")}</span></span>
-                        <span className="mt-1 block text-xs" style={{ color: "rgb(251 191 80)" }}>{"★".repeat(rt.stars)} {rt.hotel}</span>
-                      </div>
+                    <div className="absolute inset-0" style={{ background: "linear-gradient(180deg, rgba(4,18,24,0.15) 0%, transparent 35%, rgba(4,18,24,0.55) 75%, rgba(4,18,24,0.9) 100%)" }} />
+                    {/* Süre + yıldız rozeti */}
+                    <div className="glass absolute right-4 top-4 flex items-center gap-2 rounded-full border px-3 py-1.5 text-white" style={{ borderColor: "rgb(255 255 255 / 0.3)", backgroundColor: "rgb(4 28 40 / 0.45)" }}>
+                      <span className="font-display text-xl leading-none">{rt.days}</span>
+                      <span className="text-[10px] font-semibold uppercase tracking-wide text-white/80">{r("daysWord")}</span>
+                    </div>
+                    {/* İsim + hayal cümlesi */}
+                    <div className="absolute inset-x-0 bottom-0 p-6 text-white">
+                      <span className="text-sm" style={{ color: "rgb(251 191 80)" }}>{"★".repeat(rt.stars)} · {rt.hotel}</span>
+                      <h3 className="font-display mt-1.5 font-semibold leading-[0.95] tracking-[-0.02em]" style={{ fontSize: "clamp(2rem, 4vw, 2.9rem)" }}>{rt.name}</h3>
+                      <p className="mt-1.5 max-w-sm text-[15px] text-white/85">{rt.tag}</p>
                     </div>
                   </div>
-                  {/* Gün gün plan */}
-                  <div className="flex flex-1 flex-col p-6">
-                    <span className="inline-flex w-fit items-center gap-1.5 rounded-full px-3 py-1 text-[11px] font-bold uppercase tracking-wide" style={{ backgroundColor: "rgb(var(--primary) / 0.1)", color: "rgb(var(--primary))" }}>
+                  {/* Gün gün — dikey zaman çizgisi */}
+                  <div className="flex flex-1 flex-col p-6 sm:p-7">
+                    <span className="inline-flex w-fit items-center gap-1.5 rounded-full px-3.5 py-1.5 text-[11px] font-bold uppercase tracking-wide" style={{ backgroundImage: "linear-gradient(135deg, rgb(var(--lagoon) / 0.16), rgb(var(--primary) / 0.16))", color: "rgb(var(--primary))" }}>
                       ✈ {r("included")}
                     </span>
-                    <ol className="mt-5 flex-1 space-y-3">
+                    <ol className="relative mt-6 flex-1 space-y-0.5 border-l-2 pl-6" style={{ borderColor: "rgb(var(--border))" }}>
                       {rt.plan.map((d, di) => (
-                        <li key={di} className="flex items-center gap-3 text-sm">
-                          <span className="grid h-7 w-7 shrink-0 place-items-center rounded-lg font-display text-xs font-semibold" style={{ backgroundColor: "rgb(var(--muted))", color: "rgb(var(--foreground))" }}>{di + 1}</span>
-                          <span className="flex-1 font-medium" style={{ color: "rgb(var(--foreground))" }}>{d.place}</span>
-                          <span className="rounded-full px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide" style={{ backgroundColor: "rgb(var(--accent) / 0.1)", color: "rgb(var(--accent))" }}>{d.tag}</span>
+                        <li key={di} className="relative pb-4 last:pb-0">
+                          <span className="absolute -left-[31px] grid h-6 w-6 place-items-center rounded-full font-display text-[11px] font-bold text-white shadow" style={{ backgroundImage: "linear-gradient(135deg, rgb(var(--lagoon)), rgb(var(--primary)))" }}>{di + 1}</span>
+                          <div className="flex flex-wrap items-center gap-2">
+                            <span className="font-semibold" style={{ color: "rgb(var(--foreground))" }}>{d.place}</span>
+                            <span className="rounded-full px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide" style={{ backgroundColor: "rgb(var(--accent) / 0.1)", color: "rgb(var(--accent))" }}>{d.tag}</span>
+                          </div>
                         </li>
                       ))}
                     </ol>
-                    <div className="mt-6 flex items-center justify-between gap-3 border-t pt-5" style={{ borderColor: "rgb(var(--border))" }}>
-                      <span className="text-xs" style={{ color: "rgb(var(--muted-foreground))" }}>{r("custom")}</span>
-                      <Link href="/contact" className="btn-primary shrink-0 !px-5 !py-2.5 text-xs">{r("cta")} <IconArrow /></Link>
-                    </div>
+                    <Link href="/contact" className="btn-accent mt-7 w-full justify-center shadow-lg shadow-black/10">{r("cta")} <IconArrow /></Link>
+                    <span className="mt-3 text-center text-xs" style={{ color: "rgb(var(--muted-foreground))" }}>{r("custom")}</span>
                   </div>
                 </div>
               </Reveal>
             ))}
           </div>
         </div>
+      </section>
+
+      {/* ============ ÖDEME — Kaspi (KZ) + Kripto ============ */}
+      <section className="container-wide pb-4">
+        <Reveal className="grid gap-4 sm:grid-cols-2">
+          {[
+            { t: pay("kaspiTitle"), d: pay("kaspiText"), ic: "💳", c: "#E4002B" },
+            { t: pay("cryptoTitle"), d: pay("cryptoText"), ic: "₿", c: "#f59e0b" },
+          ].map((p) => (
+            <div key={p.t} className="flex items-center gap-4 rounded-3xl border p-5" style={{ borderColor: "rgb(var(--border))", backgroundColor: "rgb(var(--card))" }}>
+              <span className="grid h-12 w-12 shrink-0 place-items-center rounded-2xl text-2xl font-bold text-white" style={{ backgroundColor: p.c }}>{p.ic}</span>
+              <div>
+                <p className="font-semibold" style={{ color: "rgb(var(--foreground))" }}>{p.t}</p>
+                <p className="mt-0.5 text-sm" style={{ color: "rgb(var(--muted-foreground))" }}>{p.d}</p>
+              </div>
+            </div>
+          ))}
+        </Reveal>
       </section>
 
       {/* ============ SANA ÖZEL (satış bandı) ============ */}
@@ -349,6 +369,36 @@ export default async function HomePage({
               </Reveal>
             ))}
           </div>
+        </div>
+      </section>
+
+      {/* ============ IT / YAZILIM DANIŞMANLIĞI (özel alan) ============ */}
+      <section className="relative overflow-hidden py-24 text-white sm:py-28" style={{ background: "radial-gradient(120% 120% at 80% 0%, #11324a 0%, #0a2030 45%, #060f18 100%)" }}>
+        <div className="absolute inset-0 opacity-[0.07]" style={{ backgroundImage: "linear-gradient(rgba(120,220,240,0.6) 1px, transparent 1px), linear-gradient(90deg, rgba(120,220,240,0.6) 1px, transparent 1px)", backgroundSize: "44px 44px" }} />
+        <div className="container-wide relative grid items-center gap-12 lg:grid-cols-2 lg:gap-16">
+          <Reveal>
+            <p className="eyebrow" style={{ color: "rgb(120 230 255)" }}>{s("it_eyebrow")}</p>
+            <h2 className="font-display mt-5 font-semibold leading-[1.0] tracking-[-0.02em]" style={{ fontSize: "clamp(2.2rem, 4.6vw, 3.6rem)" }}>{s("itTitle")}</h2>
+            <p className="mt-6 max-w-lg text-lg leading-relaxed text-white/80">{s("it_lead")}</p>
+            <Link href="/contact" className="btn-accent mt-8 shadow-xl shadow-black/30">{s("it_cta")} <IconArrow /></Link>
+          </Reveal>
+          <Reveal delay={120}>
+            <div className="grid gap-3 sm:grid-cols-2">
+              {[
+                { t: s("it_f1"), ic: "M9 18l6-6-6-6" },
+                { t: s("it_f2"), ic: "M4 7h16M4 12h16M4 17h10" },
+                { t: s("it_f3"), ic: "M12 2v4M12 18v4M4.9 4.9l2.8 2.8M16.3 16.3l2.8 2.8M2 12h4M18 12h4M4.9 19.1l2.8-2.8M16.3 7.7l2.8-2.8" },
+                { t: s("it_f4"), ic: "M20 6 9 17l-5-5" },
+              ].map((f) => (
+                <div key={f.t} className="rounded-2xl border p-5" style={{ borderColor: "rgb(255 255 255 / 0.12)", backgroundColor: "rgb(255 255 255 / 0.04)" }}>
+                  <span className="grid h-10 w-10 place-items-center rounded-xl" style={{ backgroundColor: "rgb(120 230 255 / 0.14)" }}>
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="rgb(120 230 255)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d={f.ic} /></svg>
+                  </span>
+                  <p className="mt-4 text-[15px] font-medium leading-snug text-white/90">{f.t}</p>
+                </div>
+              ))}
+            </div>
+          </Reveal>
         </div>
       </section>
 

@@ -187,7 +187,14 @@
     "educationTitle": "Türkiye'de Eğitim Rehberliği",
     "educationDesc": "Başvuru, burs ve eğitim sürecinde adım adım destek.",
     "itTitle": "Yazılım & IT Danışmanlığı",
-    "itDesc": "Web sitesi, mobil uygulama, otomasyon ve yapay zekâ — fikrini kıdemli bir yazılım mühendisiyle hayata geçir. Hizmetimizde sınır yok; her talebi değerlendiririz."
+    "itDesc": "Web sitesi, mobil uygulama, otomasyon ve yapay zekâ — fikrini kıdemli bir yazılım mühendisiyle hayata geçir. Hizmetimizde sınır yok; her talebi değerlendiririz.",
+    "it_eyebrow": "Yazılım & IT",
+    "it_lead": "Sadece tatil değil — kıdemli bir yazılım mühendisiyle fikrini koda döküyoruz. Önce uygulanabilirlik analizi, sonra hayata geçirme. Hizmetimizde sınır yok.",
+    "it_f1": "Danışmanlık & uygulanabilirlik analizi",
+    "it_f2": "Web & mobil uygulama geliştirme",
+    "it_f3": "Otomasyon & yapay zekâ entegrasyonu",
+    "it_f4": "Mevcut ürününü iyileştirme & bakım",
+    "it_cta": "Projeni konuşalım"
   },
   "routes": {
     "eyebrow": "Hazır rotalar",
