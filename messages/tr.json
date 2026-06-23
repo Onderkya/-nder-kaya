@@ -52,10 +52,10 @@
     "edu_streetTitle": "Kampüste ve şehirde yürü",
     "edu_streetIntro": "Akdeniz Üniversitesi kampüsünden Konyaaltı ve Lara'ya — okuyacağın ve yaşayacağın yerlerde Street View ile şimdiden gez.",
     "ab_eyebrow": "Hikayemiz",
-    "ab_story1Title": "Otelin içinden",
-    "ab_story1Text": "Birimiz Antalya'da otel satışında çalışıyor; turizmi broşürden değil içeriden biliyor. Hangi otel sözünü tutar, nerede tuzak var — dürüstçe söyleriz.",
-    "ab_story2Title": "Öğrencinin gözünden",
-    "ab_story2Text": "Diğerimiz Türkiye'ye burslu öğrenci olarak geldi, şimdi Türkçe öğretiyor. Başvurudan ilk kış gününe kadar bu yolu bizzat yürüdü.",
+    "ab_story1Title": "Mühendisin elinden",
+    "ab_story1Text": "Birimiz kıdemli yazılım mühendisi — PetLingo'yu ve bu platformu sıfırdan biz kurduk. Antalya'yı, otelleri ve turizmi yıllardır yakından takip ediyoruz; teknolojiyle işi kolaylaştırır, her şeyi şeffaf tutarız.",
+    "ab_story2Title": "Öğretmenin sesinden",
+    "ab_story2Text": "Diğerimiz Kazakistanlı. Türkiye'ye geldi, üniversite ve burs yolunu bizzat yürüdü; şimdi Türkçeyi anadili gibi öğretiyor. Başvurudan ilk kış gününe kadar bu yolu yaşadı — sana da aynısını yaşatır.",
     "ab_valuesTitle": "Bizi farklı kılan",
     "ab_v1Title": "Yüzü olan danışman",
     "ab_v1Text": "İsimsiz bir acente değil, gerçek bir kişiyle konuşursun.",
@@ -72,6 +72,7 @@
     "lol_h2": "Aqua park",
     "lol_h3": "Gösteriler & şovlar",
     "lol_h4": "5★ Kingdom Hotel",
+    "lol_takeYou": "Burası bizim değil — ama hayalindeki tatilde seni buraya da götürürüz.",
     "les_processEyebrow": "Nasıl öğreniyorsunuz?",
     "les_processTitle": "Sıfırdan konuşmaya, yanınızda biri var",
     "les_processDesc": "Türkçeyi tek bir uygulamayla değil; anadili Türkçe bir öğretmen + her gün cebinizdeki pratikle öğrenin. İşte adım adım yolunuz.",
@@ -95,6 +96,7 @@
     "pl_cta": "PetLingo'yu dene",
     "pl_soon": "Yakında App Store & Google Play",
     "pl_combo": "Uygulama + canlı ders = en hızlı yol",
+    "pl_own": "PetLingo bizim kendi uygulamamız",
     "sell_eyebrow": "Paket değil, sana özel",
     "sell_title": "Her misafire aynı şeyi satmıyoruz",
     "sell_text": "Sen yaz, biz dinleyelim. Tarihlerine, bütçene, hayalindeki tatile ya da eğitim hedefine göre planı sıfırdan, sana özel kuruyoruz — kopyala-yapıştır paket yok. Antalya'da yaşayan, Türkiye'de okumuş gerçek insanlarla, kendi dilinde.",
@@ -104,7 +106,7 @@
     "sell_cta": "Sana özel planı başlat",
     "lived_badge": "Bunu biz de yaşadık",
     "lived_title": "Verdiğimiz her danışmanlığı önce kendimiz başardık",
-    "lived_text": "Burslu okuduk, Türkçeyi öğrettik, Antalya'da yaşıyor ve otelin içinde çalışıyoruz. Teoriden değil; bizzat yürüdüğümüz yoldan anlatıyoruz — ekibimiz bu işi gerçekten biliyor.",
+    "lived_text": "Burslu okuduk, Türkçeyi öğrettik ve Antalya'da yaşıyoruz. PetLingo uygulamasını da biz geliştirdik. Teoriden değil; bizzat yürüdüğümüz yoldan anlatıyoruz — ekibimiz bu işi gerçekten biliyor.",
     "lived_cta": "Yolculuğuna başla"
   },
   "meta": {
@@ -149,7 +151,7 @@
     "servicesSubtitle": "Üç hizmet, tek güvenilir muhatap.",
     "whyTitle": "Neden biz",
     "why1Title": "Gerçek yerel uzmanlık",
-    "why1Text": "Antalya'da yaşıyor ve otel & turizm sektörünün içinde çalışıyoruz — yüzü olmayan bir acente değiliz.",
+    "why1Text": "Antalya'da yaşıyoruz; şehri, otelleri ve turizmi yıllardır yakından tanıyoruz — yüzü olmayan bir acente değiliz.",
     "why2Title": "Türkiye'de biz de okuduk",
     "why2Text": "Başvuru ve eğitim sürecini içeriden bilen eski bir burslu öğrenci.",
     "why3Title": "Sizin dilinizde",
@@ -183,7 +185,7 @@
     "feature1": "Bütçenize ve tarzınıza uygun otel seçimi",
     "feature2": "Havalimanı transferi ve araç kiralama koordinasyonu",
     "feature3": "Yerel acente ve hizmet sağlayıcılarla irtibat",
-    "feature4": "Otel sektöründen dürüst, içeriden tavsiye",
+    "feature4": "Antalya turizmini yakından tanıyan birinden dürüst tavsiye",
     "cta": "Tarihlerinizi yazın, size bir plan hazırlayalım"
   },
   "lessons": {
@@ -223,7 +225,7 @@
   },
   "about": {
     "title": "Hakkımızda",
-    "body": "Antalya merkezli küçük bir ekibiz. Birimiz otel satışında çalışıyor ve turizm sektörünü içeriden biliyor; diğeri Türkiye'ye burslu öğrenci olarak geldi ve şimdi Türkçe öğretiyor. Bunu, acentelerin nadiren sunduğu bir şeyi misafirlere vermek için kurduk: dürüst, kişisel, çok dilli yardım — yapmak üzere olduğunuz şeyi gerçekten yaşamış birinden."
+    "body": "Antalya merkezli küçük bir aileyiz. Biri kıdemli yazılım mühendisi: PetLingo uygulamasını ve bu platformu kendi geliştirdi, Antalya'yı ve turizmi yıllardır yakından tanıyor. Diğeri Kazakistanlı: Türkiye'ye geldi, üniversite yolunu bizzat yürüdü, Türkçeyi anadili gibi konuşuyor ve şimdi öğretiyor. Acentelerin nadiren sunduğu şeyi veriyoruz: dürüst, kişisel, çok dilli ve gerçekten yaşanmış rehberlik."
   },
   "contact": {
     "title": "İletişime geçin",

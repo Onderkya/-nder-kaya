@@ -3,6 +3,16 @@
 > Canlı: **http://45.67.203.149:3010** (mutlaka `http://`) · dal `claude/consulting-site-plan-6k4lix`
 > Görsel/medya kaynakları: `public/images/CREDITS.txt` (tümü CC / Mixkit / CC0).
 
+## 🔁 Revizyon 7 — dürüst ekip, geçişli hero'lar, otel akordeonu, perf
+- **Dürüstlük:** "otelde çalışıyoruz" iddiası **5 dilde kaldırıldı**. Gerçek ekip: kıdemli yazılım mühendisi (PetLingo'yu + bu platformu o yaptı) + Kazakistanlı eş (Türkçe öğretmeni, üniversite/burs yolunu bizzat yürüdü). Hakkımızda yeniden yazıldı. PetLingo "**bizim kendi uygulamamız**" rozeti eklendi.
+- **Geçişli (cycling) hero'lar:** Antalya, Türkçe (+Türk bayrağı), Eğitim (ofis→kampüs→öğrenci) hero'ları artık sabit değil, videolar **cross-fade** geçiyor (`CinematicHero` çok-videolu).
+- **Aktiviteler güçlendirildi:** scuba2 (etkileyici dalış) + özel yat + Land of Legends + 5★ resort — hepsi premium landscape.
+- **Land of Legends:** "burası bizim değil — seni oraya da götürürüz" mesajı eklendi (5 dil).
+- **Oteller akordeonu:** sıradan grid → **yatay "fermuar" akordeon** (üstüne gel/tıkla → büyür, diğerleri kısalır; mobilde dikey). `components/hotel-accordion.tsx`.
+- **Eğitim düzeltildi:** kötü "01" kampüs close-up → **kampüs havadan videosu**; yarısı kesilen dikey videolar → landscape (office-consult / campus-aerial / edu-street); 4. adım temiz görsel.
+- **Ses butonu** → ekolayzer/dalga animasyonlu premium buton.
+- **Performans:** `AutoVideo` — dekoratif videolar yalnız görünürken oynar (services/LoL/about/lessons). Eş zamanlı autoplay yükü kalktı.
+
 ## 🔁 Revizyon 6 — Travel videolu, iç sayfa hero videoları, PetLingo mini-oyun
 - **Antalya/Travel:** hero gerçek Kaputaş drone videosu; bölge galerisi (`HorizontalPlaces`) artık **videolu yatay galeri** (Kaputaş/Suluada/Kemer/Olympos/Alanya/Kaleiçi/Düden) — yalnız görünür kart oynar.
 - **About/SSS/İletişim hero videoları:** About `vid-kaleici`, SSS `vid-kemer`, İletişim `vid-kas` (Kaş gün batımı). About hikaye görselleri düzeltildi (Aspendos→Akdeniz kampüs, düşük çöz kaleici→harbor).

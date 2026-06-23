@@ -287,21 +287,23 @@ export function DiveHero({ title, subtitle, ctaPrimary, ctaSecondary, deepLine, 
         </div>
       </div>
 
-      {/* Dalga sesi toggle */}
+      {/* Dalga sesi toggle — ekolayzer/dalga animasyonlu premium buton */}
       <button
         type="button"
         onClick={toggleSound}
         aria-pressed={sound}
         aria-label={soundLabel}
-        className="glass fixed right-4 top-[5.25rem] z-40 inline-flex items-center gap-2 rounded-full border px-4 py-2.5 text-xs font-semibold text-white shadow-lg shadow-black/25 transition-transform hover:-translate-y-0.5 sm:right-6"
-        style={{ borderColor: "rgb(255 255 255 / 0.3)", backgroundColor: "rgb(4 28 40 / 0.5)" }}
+        className="glass fixed right-4 top-[5.25rem] z-40 inline-flex items-center gap-2.5 rounded-full border py-2.5 pl-3.5 pr-4 text-xs font-semibold text-white shadow-lg shadow-black/25 transition-all hover:-translate-y-0.5 sm:right-6"
+        style={{
+          borderColor: sound ? "rgb(120 230 255 / 0.55)" : "rgb(255 255 255 / 0.28)",
+          backgroundColor: "rgb(4 28 40 / 0.5)",
+          boxShadow: sound ? "0 8px 26px -10px rgba(56,214,230,0.6)" : undefined,
+        }}
       >
-        <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-          <path d="M11 5 6 9H2v6h4l5 4z" />
-          {sound ? <><path d="M15.5 8.5a5 5 0 0 1 0 7" /><path d="M18.5 5.5a9 9 0 0 1 0 13" /></> : <path d="m17 9 5 6m0-6-5 6" />}
-        </svg>
-        {soundLabel}
-        {sound && <span className="sound-pulse h-1.5 w-1.5 rounded-full" style={{ backgroundColor: "rgb(120 230 255)" }} />}
+        <span className="eq" data-on={sound} style={{ color: sound ? "rgb(120 230 255)" : "rgb(255 255 255 / 0.75)" }}>
+          <i /><i /><i /><i /><i />
+        </span>
+        <span className="tracking-wide">{soundLabel}</span>
       </button>
       <audio ref={audioRef} src="/media/waves.mp3" loop preload="none" />
     </section>

@@ -3,6 +3,7 @@ import { getTranslations, setRequestLocale } from "next-intl/server";
 import type { Metadata } from "next";
 import { Link } from "@/i18n/routing";
 import { CinematicHero } from "@/components/cinematic-hero";
+import { AutoVideo } from "@/components/auto-video";
 import { Reveal } from "@/components/reveal";
 import { IconArrow } from "@/components/icons";
 
@@ -20,8 +21,8 @@ export default async function AboutPage({ params }: { params: Promise<{ locale: 
   const c = await getTranslations("common");
 
   const stories = [
-    { title: x("ab_story1Title"), text: x("ab_story1Text"), img: "/images/maxxroyal.jpg", place: "Belek · Resort" },
-    { title: x("ab_story2Title"), text: x("ab_story2Text"), img: "/images/akdeniz-campus.jpg", place: "Akdeniz Üniversitesi" },
+    { title: x("ab_story1Title"), text: x("ab_story1Text"), img: "/images/harbor-night.jpg", video: "/media/office-consult.mp4", place: "Yazılım & danışmanlık" },
+    { title: x("ab_story2Title"), text: x("ab_story2Text"), img: "/images/lessons-meaning.jpg", video: "/media/les-teacher.mp4", place: "Türkçe öğretmeni" },
   ];
 
   const values = [
@@ -51,6 +52,9 @@ export default async function AboutPage({ params }: { params: Promise<{ locale: 
               <div className="grid items-center gap-8 lg:grid-cols-2 lg:gap-16">
                 <figure className={`img-zoom relative aspect-[16/11] overflow-hidden rounded-[2rem] shadow-xl ${i % 2 ? "lg:order-2" : ""}`}>
                   <Image src={s.img} alt={s.title} fill sizes="(max-width:1024px) 100vw, 50vw" className="object-cover" />
+                  {s.video ? (
+                    <AutoVideo className="absolute inset-0 h-full w-full object-cover" src={s.video} poster={s.img} />
+                  ) : null}
                   <div className="img-scrim-soft absolute inset-0" />
                   <span className="tracking-widest2 absolute bottom-6 left-7 text-[10px] uppercase text-white/75">{s.place}</span>
                 </figure>

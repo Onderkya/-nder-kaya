@@ -2,6 +2,7 @@ import { getTranslations, setRequestLocale } from "next-intl/server";
 import type { Metadata } from "next";
 import { Link } from "@/i18n/routing";
 import { CinematicHero } from "@/components/cinematic-hero";
+import { AutoVideo } from "@/components/auto-video";
 import { PetLingoShowcase } from "@/components/petlingo-showcase";
 import { JsonLd } from "@/components/json-ld";
 import { IconClock, IconArrow } from "@/components/icons";
@@ -54,7 +55,14 @@ export default async function LessonsPage({ params }: { params: Promise<{ locale
     <>
       <JsonLd data={{ "@context": "https://schema.org", "@type": "Course", name: t("title"), description: t("intro"), provider: { "@type": "Organization", name: "Antalya Bridge" } }} />
 
-      <CinematicHero eyebrow={x("les_processEyebrow")} title={t("title")} intro={t("intro")} image="/images/lessons-meaning.jpg" video="/media/les-notebook.mp4" />
+      <CinematicHero
+        eyebrow={x("les_processEyebrow")}
+        title={t("title")}
+        intro={t("intro")}
+        image="/images/lessons-meaning.jpg"
+        videos={["/media/les-notebook.mp4", "/media/les-teacher.mp4", "/media/les-online.mp4", "/media/les-spell.mp4"]}
+        flag
+      />
 
       {/* Süreç — nasıl öğreniyorsunuz */}
       <section className="container-wide py-24 sm:py-32">
@@ -69,7 +77,7 @@ export default async function LessonsPage({ params }: { params: Promise<{ locale
             <Reveal key={st.n} delay={i * 90} className="process-step">
               <div className="card-lift overflow-hidden rounded-3xl border" style={{ borderColor: "rgb(var(--border))", backgroundColor: "rgb(var(--card))" }}>
                 <div className="relative aspect-[16/11] overflow-hidden">
-                  <video className="absolute inset-0 h-full w-full object-cover" src={st.video} autoPlay muted loop playsInline preload="none" aria-hidden />
+                  <AutoVideo className="absolute inset-0 h-full w-full object-cover" src={st.video} />
                   <div className="absolute inset-0" style={{ background: "linear-gradient(to top, rgba(6,26,34,0.6), transparent 55%)" }} />
                   <div className="process-num absolute bottom-3 left-3">{st.n}</div>
                 </div>
@@ -106,6 +114,7 @@ export default async function LessonsPage({ params }: { params: Promise<{ locale
           cta: x("pl_cta"),
           soon: x("pl_soon"),
           combo: x("pl_combo"),
+          own: x("pl_own"),
         }}
       />
 

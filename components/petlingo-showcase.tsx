@@ -16,6 +16,7 @@ type Labels = {
   cta: string;
   soon: string;
   combo: string;
+  own: string;
 };
 
 export function PetLingoShowcase({ labels }: { labels: Labels }) {
@@ -34,6 +35,9 @@ export function PetLingoShowcase({ labels }: { labels: Labels }) {
 
         {/* Metin + özellikler */}
         <div className="order-1 lg:order-2">
+          <span className="mb-4 inline-flex items-center gap-2 rounded-full px-3.5 py-1.5 text-xs font-bold uppercase tracking-[0.16em]" style={{ backgroundColor: "rgb(var(--accent2) / 0.18)", color: "rgb(var(--accent2))" }}>
+            ⚡ {labels.own}
+          </span>
           <p className="eyebrow" style={{ color: "rgb(var(--accent2))" }}>{labels.eyebrow}</p>
           <h2 className="font-display mt-5 font-semibold leading-[1.0] tracking-[-0.015em] text-white" style={{ fontSize: "clamp(2.2rem, 4.5vw, 3.6rem)" }}>
             {labels.title}

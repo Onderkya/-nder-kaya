@@ -52,10 +52,10 @@
     "edu_streetTitle": "Kampusda va shaharda yur",
     "edu_streetIntro": "Akdeniz universiteti kampusidan Konyaalti va Laragacha — o'qiydigan va yashaydigan joylaringizda Street View bilan hozirdan sayr qiling.",
     "ab_eyebrow": "Bizning hikoyamiz",
-    "ab_story1Title": "Mehmonxona ichidan",
-    "ab_story1Text": "Birimiz Antalyada mehmonxona sotuvida ishlaymiz; turizmni varaqadan emas, ichidan bilamiz. Qaysi mehmonxona so'zida turadi, qayerda tuzoq bor — rostini aytamiz.",
-    "ab_story2Title": "Talaba ko'zi bilan",
-    "ab_story2Text": "Boshqamiz Turkiyaga grant bilan keldi, endi turk tili o'qitadi. Arizadan birinchi qish kunigacha bu yo'ldan o'zimiz o'tdik.",
+    "ab_story1Title": "Muhandis qo'lidan",
+    "ab_story1Text": "Birimiz — katta dasturiy ta'minot muhandisi: PetLingo va shu platformani noldan o'zimiz yaratdik. Antalyani, uning mehmonxonalari va turizmini yillar davomida yaqindan kuzatib boramiz; texnologiya bilan ishni osonlashtiramiz va hammasini shaffof tutamiz.",
+    "ab_story2Title": "O'qituvchi ovozi bilan",
+    "ab_story2Text": "Boshqamiz — Qozog'istondan. U Turkiyaga keldi, universitet va grant yo'lini o'zi bosib o'tdi; endi turk tilini ona tilidek o'qitadi. U bu yo'lni arizadan birinchi qish kunigacha o'zi boshdan kechirdi — sizni ham aynan shunday olib boradi.",
     "ab_valuesTitle": "Bizni ajratib turadigan narsa",
     "ab_v1Title": "Yuzi bor maslahatchi",
     "ab_v1Text": "Nomsiz agentlik emas, haqiqiy odam bilan gaplashasiz.",
@@ -72,6 +72,7 @@
     "lol_h2": "Aquapark",
     "lol_h3": "Shou va favvoralar",
     "lol_h4": "5★ Kingdom Hotel",
+    "lol_takeYou": "Bu bizniki emas — lekin orzuingizdagi dam olishda sizni bu yerga ham olib boramiz.",
     "les_processEyebrow": "Qanday o'rganasiz?",
     "les_processTitle": "Noldan gapirishgacha — yoningizda odam bor",
     "les_processDesc": "Turk tilini bitta ilova bilan emas; ona tili turkcha o'qituvchi + har kuni cho'ntagingizdagi mashq bilan o'rganing. Mana bosqichma-bosqich yo'lingiz.",
@@ -95,6 +96,7 @@
     "pl_cta": "PetLingo'ni sinab ko'ring",
     "pl_soon": "Tez orada App Store va Google Play'da",
     "pl_combo": "Ilova + jonli dars = eng tez yo'l",
+    "pl_own": "PetLingo — bizning o'z ilovamiz",
     "sell_eyebrow": "Paket emas — sizga maxsus",
     "sell_title": "Hammaga bir xil narsa sotmaymiz",
     "sell_text": "Siz yozing — biz tinglaymiz. Rejani sanalaringiz, byudjetingiz, orzuingizdagi dam olish yoki ta'lim maqsadingizga qarab noldan, sizga maxsus tuzamiz — nusxa-ko'chirma paket yo'q. Antalyada yashaydigan, Turkiyada o'qigan haqiqiy odamlar bilan, o'z tilingizda.",
@@ -104,7 +106,7 @@
     "sell_cta": "Shaxsiy rejani boshlash",
     "lived_badge": "Buni biz ham boshdan kechirdik",
     "lived_title": "Taklif qiladigan har bir xizmatni avval o'zimiz amalga oshirdik",
-    "lived_text": "Biz grant bilan o'qidik, turk tilini o'rgatdik, Antalyada yashaymiz va mehmonxonalarda ishlaymiz. Nazariyadan emas — bu yo'lni o'zimiz bosib o'tganmiz va jamoamiz buni chinakam biladi.",
+    "lived_text": "Biz grant bilan o'qidik, turk tilini o'rgatdik va Antalyada yashaymiz. PetLingo ilovasini ham o'zimiz yaratdik. Nazariyadan emas — bu yo'lni o'zimiz bosib o'tganmiz va jamoamiz buni chinakam biladi.",
     "lived_cta": "Yo'lingni boshla"
   },
   "meta": {
@@ -149,7 +151,7 @@
     "servicesSubtitle": "Uchta xizmat, bitta ishonchli aloqa nuqtasi.",
     "whyTitle": "Nega biz bilan ishlash kerak",
     "why1Title": "Haqiqiy mahalliy tajriba",
-    "why1Text": "Biz Antalyada yashaymiz va mehmonxona hamda turizm sohasida ishlaymiz — yuzsiz agentlik emas.",
+    "why1Text": "Biz Antalyada yashaymiz; shaharni, uning mehmonxonalari va turizmini yillar davomida yaqindan bilamiz — yuzsiz agentlik emasmiz.",
     "why2Title": "Biz o'zimiz Turkiyada o'qiganmiz",
     "why2Text": "Ariza topshirish va ta'lim jarayonini ichdan biladigan sobiq grant talabasi.",
     "why3Title": "Sizning tilingizda, sizga qulay tarzda",
@@ -183,7 +185,7 @@
     "feature1": "Byudjet va uslubingizga mos mehmonxona tanlash",
     "feature2": "Aeroport transferlari va avtomobil ijarasini muvofiqlashtirish",
     "feature3": "Mahalliy agentliklar va xizmat ko'rsatuvchilar bilan aloqa",
-    "feature4": "Mehmonxona sohasidan halol, ichki maslahat",
+    "feature4": "Antalya turizmini yaqindan biladigan odamdan halol maslahat",
     "cta": "Sanalaringizni ayting, biz reja tayyorlaymiz"
   },
   "lessons": {
@@ -223,7 +225,7 @@
   },
   "about": {
     "title": "Biz haqimizda",
-    "body": "Biz Antalyada joylashgan kichik jamoamiz. Birimiz mehmonxona savdosida ishlaymiz va turizm sohasini ichdan bilamiz; ikkinchimiz Turkiyaga grant talabasi sifatida kelgan va hozir turk tilidan dars beradi. Biz buni xalqaro mehmonlarga agentliklar kamdan-kam taklif qiladigan narsani berish uchun boshladik: halol, shaxsiy, ko'p tilli yordam — siz qilmoqchi bo'lgan ishni haqiqatan boshidan kechirgan kishidan."
+    "body": "Biz Antalyada joylashgan kichik oilamiz. Birimiz — katta dasturiy ta'minot muhandisi: PetLingo ilovasini va shu butun platformani o'zi yaratdi, Antalya va uning turizmini yillar davomida yaqindan biladi. Boshqamiz — Qozog'istondan: u Turkiyaga keldi, universitet yo'lini o'zi bosib o'tdi, turk tilini ona tilidek gapiradi va hozir o'qitadi. Biz agentliklar kamdan-kam taklif qiladigan narsani beramiz: halol, shaxsiy, ko'p tilli va chinakam boshdan kechirilgan yo'riqnoma."
   },
   "contact": {
     "title": "Bog'lanish",

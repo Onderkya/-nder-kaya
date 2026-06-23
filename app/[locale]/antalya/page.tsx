@@ -27,7 +27,13 @@ export default async function AntalyaPage({ params }: { params: Promise<{ locale
     <>
       <JsonLd data={{ "@context": "https://schema.org", "@type": "Service", serviceType: "Travel consulting", name: t("title"), description: t("intro"), areaServed: "Antalya, Türkiye" }} />
 
-      <CinematicHero eyebrow={x("ant_introEyebrow")} title={t("title")} intro={t("intro")} image="/images/kaputas.jpg" video="/media/kaputas-drone.mp4" />
+      <CinematicHero
+        eyebrow={x("ant_introEyebrow")}
+        title={t("title")}
+        intro={t("intro")}
+        image="/images/kaputas.jpg"
+        videos={["/media/kaputas-drone.mp4", "/media/vid-suluada.mp4", "/media/vid-kemer.mp4", "/media/vid-kas.mp4"]}
+      />
 
       {/* Editoryal giriş + özellik listesi */}
       <section className="container-wide py-24 sm:py-32">

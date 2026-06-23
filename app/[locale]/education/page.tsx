@@ -32,16 +32,22 @@ export default async function EducationPage({ params }: { params: Promise<{ loca
     <>
       <JsonLd data={{ "@context": "https://schema.org", "@type": "Service", serviceType: "Education consulting", name: t("title"), description: t("intro"), areaServed: "Türkiye" }} />
 
-      <CinematicHero eyebrow={x("edu_journeyEyebrow")} title={t("title")} intro={t("intro")} image={campus} video="/media/edu-street.mp4" />
+      <CinematicHero
+        eyebrow={x("edu_journeyEyebrow")}
+        title={t("title")}
+        intro={t("intro")}
+        image={campus}
+        videos={["/media/office-consult.mp4", "/media/campus-aerial.mp4", "/media/edu-students.mp4"]}
+      />
 
       {/* Immersive iniş: 4 adım */}
       <StudyJourney
         eyebrow={x("edu_journeyEyebrow")}
         steps={[
-          { n: "01", title: x("edu_s1Title"), place: x("edu_s1Place"), text: x("edu_s1Text"), img: campus, points: [x("edu_s1a"), x("edu_s1b")] },
-          { n: "02", title: x("edu_s2Title"), place: x("edu_s2Place"), text: x("edu_s2Text"), img: "/images/konyaalti.jpg", video: "/media/edu-ocean.mp4", points: [x("edu_s2a"), x("edu_s2b")] },
-          { n: "03", title: x("edu_s3Title"), place: x("edu_s3Place"), text: x("edu_s3Text"), img: "/images/kaleici-inside.jpg", video: "/media/edu-walk.mp4", points: [x("edu_s3a"), x("edu_s3b")] },
-          { n: "04", title: x("edu_s4Title"), place: x("edu_s4Place"), text: x("edu_s4Text"), img: "/images/dorm.jpg", video: "/media/edu-students.mp4", points: [x("edu_s4a"), x("edu_s4b")] },
+          { n: "01", title: x("edu_s1Title"), place: x("edu_s1Place"), text: x("edu_s1Text"), img: campus, video: "/media/campus-aerial.mp4", points: [x("edu_s1a"), x("edu_s1b")] },
+          { n: "02", title: x("edu_s2Title"), place: x("edu_s2Place"), text: x("edu_s2Text"), img: "/images/campus.jpg", video: "/media/office-consult.mp4", points: [x("edu_s2a"), x("edu_s2b")] },
+          { n: "03", title: x("edu_s3Title"), place: x("edu_s3Place"), text: x("edu_s3Text"), img: "/images/kaleici-inside.jpg", video: "/media/edu-street.mp4", points: [x("edu_s3a"), x("edu_s3b")] },
+          { n: "04", title: x("edu_s4Title"), place: x("edu_s4Place"), text: x("edu_s4Text"), img: "/images/dorm.jpg", points: [x("edu_s4a"), x("edu_s4b")] },
         ]}
       />
 

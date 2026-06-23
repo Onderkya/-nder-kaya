@@ -52,10 +52,10 @@
     "edu_streetTitle": "Walk the campus and the city",
     "edu_streetIntro": "From the Akdeniz University campus to Konyaaltı and Lara — explore where you'll study and live with Street View, right now.",
     "ab_eyebrow": "Our story",
-    "ab_story1Title": "From inside the hotel",
-    "ab_story1Text": "One of us works in hotel sales in Antalya and knows tourism from the inside, not from a brochure. Which hotel keeps its promise, where the traps are — we tell you honestly.",
-    "ab_story2Title": "Through a student's eyes",
-    "ab_story2Text": "The other came to Turkey on a scholarship and now teaches Turkish. From application to the first winter day, we walked this road ourselves.",
+    "ab_story1Title": "Built by the engineer",
+    "ab_story1Text": "One of us is a senior software engineer — we built PetLingo and this platform from scratch. We've followed Antalya, its hotels and tourism closely for years; we make things easy with technology and keep everything transparent.",
+    "ab_story2Title": "In the teacher's voice",
+    "ab_story2Text": "The other of us is from Kazakhstan. She came to Turkey and walked the university and scholarship path herself; now she teaches Turkish like a native. She lived this road from application to the first winter day — and will guide you through the very same.",
     "ab_valuesTitle": "What makes us different",
     "ab_v1Title": "A consultant with a face",
     "ab_v1Text": "You talk to a real person, not a faceless agency.",
@@ -72,6 +72,7 @@
     "lol_h2": "Aqua park",
     "lol_h3": "Shows & fountains",
     "lol_h4": "5★ Kingdom Hotel",
+    "lol_takeYou": "It's not ours — but on your dream holiday, we'll take you here too.",
     "les_processEyebrow": "How do you learn?",
     "les_processTitle": "From zero to speaking, with someone beside you",
     "les_processDesc": "Learn Turkish not with a single app, but with a native teacher + daily practice in your pocket. Here's your step-by-step path.",
@@ -95,6 +96,7 @@
     "pl_cta": "Try PetLingo",
     "pl_soon": "Coming soon to App Store & Google Play",
     "pl_combo": "App + live lessons = the fastest path",
+    "pl_own": "PetLingo is our own app",
     "sell_eyebrow": "Not a package — made for you",
     "sell_title": "We don't sell everyone the same thing",
     "sell_text": "You write, we listen. We build the plan from scratch around your dates, budget, dream holiday or study goal — no copy-paste packages. With real people who live in Antalya and studied in Turkey, in your own language.",
@@ -104,7 +106,7 @@
     "sell_cta": "Start your personal plan",
     "lived_badge": "We've lived this too",
     "lived_title": "We achieved every service we offer ourselves first",
-    "lived_text": "We studied on scholarships, taught Turkish, live in Antalya and work inside the hotels. We don't guide from theory — we walked this path ourselves, and our team truly knows it.",
+    "lived_text": "We studied on scholarships, taught Turkish and live in Antalya. We also built the PetLingo app ourselves. We don't guide from theory — we walked this path ourselves, and our team truly knows it.",
     "lived_cta": "Start your journey"
   },
   "meta": {
@@ -149,7 +151,7 @@
     "servicesSubtitle": "Three services, one trusted point of contact.",
     "whyTitle": "Why work with us",
     "why1Title": "Real local expertise",
-    "why1Text": "We live in Antalya and work inside the hotel and tourism industry — not a faceless agency.",
+    "why1Text": "We live in Antalya and know the city, its hotels and tourism inside out — we're not a faceless agency.",
     "why2Title": "We studied in Turkey ourselves",
     "why2Text": "A former scholarship student who knows the application and education process from the inside.",
     "why3Title": "Your language, your way",
@@ -183,7 +185,7 @@
     "feature1": "Hotel selection that fits your budget and style",
     "feature2": "Airport transfers and car rental coordination",
     "feature3": "Liaison with local agencies and service providers",
-    "feature4": "Honest, insider advice from the hotel industry",
+    "feature4": "Honest advice from someone who knows Antalya tourism inside out",
     "cta": "Tell us your dates and we'll prepare a plan"
   },
   "lessons": {
@@ -223,7 +225,7 @@
   },
   "about": {
     "title": "About us",
-    "body": "We're a small team based in Antalya. One of us works in hotel sales and knows the tourism industry from the inside; the other came to Turkey as a scholarship student and now teaches Turkish. We started this to give international guests something agencies rarely offer: honest, personal, multilingual help — from someone who has actually lived what you're about to do."
+    "body": "We're a small family based in Antalya. One of us is a senior software engineer who built the PetLingo app and this whole platform, and knows Antalya and its tourism inside out. The other is from Kazakhstan: she came to Turkey, walked the university path herself, speaks Turkish like a native and now teaches it. We give what agencies rarely do: honest, personal, multilingual guidance from people who have actually lived it."
   },
   "contact": {
     "title": "Get in touch",

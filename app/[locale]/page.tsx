@@ -8,6 +8,8 @@ import { Reveal } from "@/components/reveal";
 import { DiveHero } from "@/components/dive-hero";
 import { ActivitiesDive } from "@/components/activities-dive";
 import { StackedReel } from "@/components/stacked-reel";
+import { HotelAccordion } from "@/components/hotel-accordion";
+import { AutoVideo } from "@/components/auto-video";
 import { TurkishAlphabet } from "@/components/turkish-alphabet";
 import { YouTubeEmbed } from "@/components/youtube-embed";
 import { IconArrow, IconCheck } from "@/components/icons";
@@ -54,9 +56,9 @@ export default async function HomePage({
   ];
 
   const services = [
-    { href: "/antalya", n: "01", title: s("antalyaTitle"), desc: s("antalyaDesc"), img: "/images/suluada.jpg", place: "Suluada · Adrasan" },
-    { href: "/lessons", n: "02", title: s("lessonsTitle"), desc: s("lessonsDesc"), img: imgOr("lessons-meaning.jpg", "/images/kaleici-inside.jpg"), place: "Dil öğrenimi" },
-    { href: "/education", n: "03", title: s("educationTitle"), desc: s("educationDesc"), img: imgOr("akdeniz-campus-wide.jpg", "/images/akdeniz-campus.jpg"), place: "Akdeniz Üniversitesi" },
+    { href: "/antalya", n: "01", title: s("antalyaTitle"), desc: s("antalyaDesc"), img: "/images/suluada.jpg", video: "/media/vid-suluada.mp4", place: "Suluada · Adrasan" },
+    { href: "/lessons", n: "02", title: s("lessonsTitle"), desc: s("lessonsDesc"), img: imgOr("lessons-meaning.jpg", "/images/kaleici-inside.jpg"), video: "/media/les-teacher.mp4", place: "Dil öğrenimi" },
+    { href: "/education", n: "03", title: s("educationTitle"), desc: s("educationDesc"), img: "/images/akdeniz-campus.jpg", video: "/media/campus-aerial.mp4", place: "Akdeniz Üniversitesi" },
   ];
 
   const reasons = [
@@ -98,10 +100,10 @@ export default async function HomePage({
       <ActivitiesDive
         eyebrow={t("actTitle")}
         scenes={[
-          { kind: "video", src: "/media/act-scuba.mp4", title: t("actScuba"), place: "Akdeniz" },
+          { kind: "video", src: "/media/act-scuba2.mp4", title: t("actScuba"), place: "Akdeniz" },
+          { kind: "video", src: "/media/act-yacht.mp4", title: t("actBoat"), place: "Özel Tekne" },
           { kind: "video", src: "/media/lol-aqua.mp4", title: "Land of Legends", place: "Belek" },
-          { kind: "video", src: "/media/vid-kaleici.mp4", title: t("actBoat"), place: "Kaleiçi" },
-          { kind: "video", src: "/media/act-jetski.mp4", title: t("actSports"), place: "Sahil" },
+          { kind: "video", src: "/media/act-beachclub.mp4", title: t("actHotels"), place: "5★ Resort" },
         ]}
       />
 
@@ -114,6 +116,9 @@ export default async function HomePage({
               The Land of <span className="serif-italic" style={{ color: "rgb(251 191 80)" }}>Legends</span>
             </h2>
             <p className="mt-6 max-w-md text-lg leading-relaxed text-white/75">{t("lolDesc")}</p>
+            <p className="mt-4 max-w-md border-l-2 pl-4 text-sm italic leading-relaxed text-white/60" style={{ borderColor: "rgb(251 191 80)" }}>
+              {x("lol_takeYou")}
+            </p>
             <div className="mt-8 grid max-w-md grid-cols-2 gap-3">
               {[x("lol_h1"), x("lol_h2"), x("lol_h3"), x("lol_h4")].map((h) => (
                 <div key={h} className="flex items-center gap-2.5 rounded-2xl border px-4 py-3 text-sm font-medium text-white/85" style={{ borderColor: "rgb(255 255 255 / 0.14)", backgroundColor: "rgb(255 255 255 / 0.04)" }}>
@@ -133,7 +138,7 @@ export default async function HomePage({
                 { video: lolAqua, poster: "/images/coaster.jpg", label: x("lol_h2"), tag: x("lol_h1") },
               ].map((m) => (
                 <figure key={m.label} className="relative aspect-[4/5] overflow-hidden rounded-2xl shadow-xl ring-1 ring-white/10">
-                  <video className="absolute inset-0 h-full w-full object-cover" src={m.video} poster={m.poster} autoPlay muted loop playsInline preload="metadata" aria-hidden />
+                  <AutoVideo className="absolute inset-0 h-full w-full object-cover" src={m.video} poster={m.poster} />
                   <div className="img-scrim absolute inset-0" />
                   <figcaption className="absolute inset-x-0 bottom-0 p-4">
                     <span className="tracking-widest2 block text-[9px] uppercase" style={{ color: "rgb(251 191 80)" }}>{m.tag}</span>
@@ -157,22 +162,11 @@ export default async function HomePage({
             <p className="eyebrow justify-center" style={{ color: "rgb(var(--accent))" }}>{t("hotelsEyebrow")}</p>
             <h2 className="h-section mt-5" style={{ color: "rgb(var(--foreground))" }}>{t("hotelsTitle")}</h2>
           </Reveal>
-          <div className="mt-14 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-            {hotels.map((h, i) => (
-              <Reveal key={h.name} delay={(i % 3) * 70}>
-                <figure className="img-zoom card-lift relative aspect-[16/11] overflow-hidden rounded-3xl shadow-lg">
-                  <Image src={h.img} alt={`${h.name}, Antalya`} fill sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw" className="object-cover" />
-                  <div className="img-scrim absolute inset-0" />
-                  <figcaption className="absolute inset-x-0 bottom-0 flex items-end justify-between p-5 text-white">
-                    <span className="font-display text-xl leading-none">{h.name}</span>
-                    <span className="inline-flex items-center gap-1 rounded-full bg-white/15 px-2 py-0.5 text-[10px] uppercase tracking-widest2 text-white/80">{h.place}</span>
-                  </figcaption>
-                </figure>
-              </Reveal>
-            ))}
-          </div>
+          <Reveal className="mt-12">
+            <HotelAccordion hotels={hotels} ctaLabel={c("learnMore")} />
+          </Reveal>
           <p className="mt-7 text-center text-xs" style={{ color: "rgb(var(--muted-foreground))" }}>
-            5★ resort koordinasyonu — Belek · Lara · Kemer. Sana en uygun oteli ve fiyatı birlikte seçelim.
+            5★ resort koordinasyonu — Belek · Lara · Kemer. Üstüne gel, fermuar gibi açılsın. Sana en uygun oteli ve fiyatı birlikte seçelim.
           </p>
         </div>
       </section>
@@ -277,6 +271,9 @@ export default async function HomePage({
                 <Link href={srv.href} className="group grid items-center gap-8 lg:grid-cols-2 lg:gap-16">
                   <div className={`img-zoom relative aspect-[16/11] overflow-hidden rounded-[2rem] shadow-xl ${i % 2 ? "lg:order-2" : ""}`}>
                     <Image src={srv.img} alt={srv.title} fill sizes="(max-width: 1024px) 100vw, 50vw" className="object-cover" />
+                    {srv.video ? (
+                      <AutoVideo className="absolute inset-0 h-full w-full object-cover" src={srv.video} poster={srv.img} />
+                    ) : null}
                     <div className="img-scrim-soft absolute inset-0" />
                     <span className="absolute left-7 top-6 font-display text-5xl text-white/85">{srv.n}</span>
                     <span className="tracking-widest2 absolute bottom-6 left-7 text-[10px] uppercase text-white/70">{srv.place}</span>
