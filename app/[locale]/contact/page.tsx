@@ -21,7 +21,7 @@ export default async function ContactPage({ params }: { params: Promise<{ locale
 
   return (
     <>
-      <CinematicHero eyebrow={t("orReach")} title={t("title")} intro={t("subtitle")} image="/images/sunset.jpg" />
+      <CinematicHero eyebrow={t("orReach")} title={t("title")} intro={t("subtitle")} image="/images/sunset.jpg" video="/media/vid-kas.mp4" />
 
       <section className="container-page grid gap-10 py-20 lg:grid-cols-2">
         <Reveal>

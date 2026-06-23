@@ -27,7 +27,7 @@ export default async function AntalyaPage({ params }: { params: Promise<{ locale
     <>
       <JsonLd data={{ "@context": "https://schema.org", "@type": "Service", serviceType: "Travel consulting", name: t("title"), description: t("intro"), areaServed: "Antalya, Türkiye" }} />
 
-      <CinematicHero eyebrow={x("ant_introEyebrow")} title={t("title")} intro={t("intro")} image="/images/kaputas.jpg" />
+      <CinematicHero eyebrow={x("ant_introEyebrow")} title={t("title")} intro={t("intro")} image="/images/kaputas.jpg" video="/media/kaputas-drone.mp4" />
 
       {/* Editoryal giriş + özellik listesi */}
       <section className="container-wide py-24 sm:py-32">
@@ -61,16 +61,16 @@ export default async function AntalyaPage({ params }: { params: Promise<{ locale
         eyebrow={x("ant_regionsEyebrow")}
         title={x("ant_regionsTitle")}
         places={[
-          { img: "/images/kaputas.jpg", name: "Kaputaş", sub: "Kaş" },
-          { img: "/images/suluada.jpg", name: "Suluada", sub: "Adrasan" },
-          { img: "/images/kemer.jpg", name: "Kemer", sub: "Marina" },
-          { img: "/images/olympos.jpg", name: "Olympos", sub: "Çıralı" },
-          { img: "/images/side.jpg", name: "Side", sub: "Antik kent" },
+          { img: "/images/kaputas.jpg", video: "/media/kaputas-drone.mp4", name: "Kaputaş", sub: "Kaş" },
+          { img: "/images/suluada.jpg", video: "/media/vid-suluada.mp4", name: "Suluada", sub: "Adrasan" },
+          { img: "/images/kemer.jpg", video: "/media/vid-kemer.mp4", name: "Kemer", sub: "Marina" },
+          { img: "/images/olympos.jpg", video: "/media/vid-olympos.mp4", name: "Olympos", sub: "Çıralı" },
+          { img: "/images/alanya.jpg", video: "/media/vid-alanya-castle.mp4", name: "Alanya", sub: "Kızıl Kule" },
           { img: "/images/beachpark.jpg", name: "Beach Park", sub: "Konyaaltı" },
           { img: "/images/lara.jpg", name: "Lara", sub: "Falezler" },
-          { img: "/images/kaleici-inside.jpg", name: "Kaleiçi", sub: "Kale içi" },
-          { img: "/images/kaleici-harbor.jpg", name: "Yat Limanı", sub: "Kaleiçi" },
-          { img: "/images/duden.jpg", name: "Düden", sub: "Şelale" },
+          { img: "/images/kaleici-harbor.jpg", video: "/media/vid-kaleici.mp4", name: "Kaleiçi", sub: "Yat Limanı" },
+          { img: "/images/side.jpg", name: "Side", sub: "Antik kent" },
+          { img: "/images/duden.jpg", video: "/media/vid-duden.mp4", name: "Düden", sub: "Şelale" },
         ]}
       />
 

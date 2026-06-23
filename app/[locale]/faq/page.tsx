@@ -36,7 +36,7 @@ export default async function FaqPage({ params }: { params: Promise<{ locale: st
           })),
         }}
       />
-      <CinematicHero eyebrow={x("faq_eyebrow")} title={t("title")} image="/images/yivli.jpg" />
+      <CinematicHero eyebrow={x("faq_eyebrow")} title={t("title")} image="/images/kemer.jpg" video="/media/vid-kemer.mp4" />
       <section className="container-wide py-20 sm:py-28">
         <FaqAccordion items={items} />
       </section>

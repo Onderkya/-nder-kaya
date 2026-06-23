@@ -3,11 +3,28 @@
 import { useEffect, useRef } from "react";
 import Image from "next/image";
 
-export type Place = { img: string; name: string; sub: string };
+export type Place = { img: string; name: string; sub: string; video?: string };
 
 export function HorizontalPlaces({ eyebrow, title, places }: { eyebrow: string; title: string; places: Place[] }) {
   const rootRef = useRef<HTMLElement>(null);
   const trackRef = useRef<HTMLDivElement>(null);
+  const videoEls = useRef<Array<HTMLVideoElement | null>>([]);
+
+  // Yalnız görünür kartların videosu oynar (yatay galeride performans).
+  useEffect(() => {
+    const io = new IntersectionObserver(
+      (entries) => {
+        for (const e of entries) {
+          const v = e.target as HTMLVideoElement;
+          if (e.isIntersecting && e.intersectionRatio > 0.5) v.play().catch(() => {});
+          else v.pause();
+        }
+      },
+      { threshold: [0, 0.5, 1] },
+    );
+    videoEls.current.forEach((v) => v && io.observe(v));
+    return () => io.disconnect();
+  }, [places.length]);
 
   useEffect(() => {
     const root = rootRef.current;
@@ -54,7 +71,23 @@ export function HorizontalPlaces({ eyebrow, title, places }: { eyebrow: string; 
               key={i}
               className="img-zoom relative h-[58vh] w-[80vw] shrink-0 overflow-hidden rounded-3xl shadow-xl sm:w-[46vw] lg:w-[33vw]"
             >
-              <Image src={pl.img} alt={pl.name} fill sizes="(max-width: 1024px) 80vw, 33vw" className="object-cover" />
+              {pl.video ? (
+                <video
+                  ref={(el) => {
+                    videoEls.current[i] = el;
+                  }}
+                  className="absolute inset-0 h-full w-full object-cover"
+                  src={pl.video}
+                  poster={pl.img}
+                  muted
+                  loop
+                  playsInline
+                  preload="none"
+                  aria-hidden
+                />
+              ) : (
+                <Image src={pl.img} alt={pl.name} fill sizes="(max-width: 1024px) 80vw, 33vw" className="object-cover" />
+              )}
               <div className="img-scrim absolute inset-0" />
               <figcaption className="absolute inset-x-0 bottom-0 flex items-end justify-between p-6 text-white">
                 <span className="font-display text-3xl leading-none sm:text-4xl">{pl.name}</span>

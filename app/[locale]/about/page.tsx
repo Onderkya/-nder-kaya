@@ -20,8 +20,8 @@ export default async function AboutPage({ params }: { params: Promise<{ locale: 
   const c = await getTranslations("common");
 
   const stories = [
-    { title: x("ab_story1Title"), text: x("ab_story1Text"), img: "/images/harbor-night.jpg", place: "Yat Limanı" },
-    { title: x("ab_story2Title"), text: x("ab_story2Text"), img: "/images/aspendos.jpg", place: "Aspendos" },
+    { title: x("ab_story1Title"), text: x("ab_story1Text"), img: "/images/maxxroyal.jpg", place: "Belek · Resort" },
+    { title: x("ab_story2Title"), text: x("ab_story2Text"), img: "/images/akdeniz-campus.jpg", place: "Akdeniz Üniversitesi" },
   ];
 
   const values = [
@@ -32,7 +32,7 @@ export default async function AboutPage({ params }: { params: Promise<{ locale: 
 
   return (
     <>
-      <CinematicHero eyebrow={x("ab_eyebrow")} title={t("title")} image="/images/kaleici.jpg" />
+      <CinematicHero eyebrow={x("ab_eyebrow")} title={t("title")} image="/images/kaleici-harbor.jpg" video="/media/vid-kaleici.mp4" />
 
       {/* Manifesto */}
       <section className="container-wide py-24 sm:py-32">
