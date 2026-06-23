@@ -7,7 +7,7 @@ import { JsonLd } from "@/components/json-ld";
 import { Reveal } from "@/components/reveal";
 import { DiveHero } from "@/components/dive-hero";
 import { ActivitiesDive } from "@/components/activities-dive";
-import { HorizontalPlaces } from "@/components/horizontal-places";
+import { StackedReel } from "@/components/stacked-reel";
 import { TurkishAlphabet } from "@/components/turkish-alphabet";
 import { YouTubeEmbed } from "@/components/youtube-embed";
 import { IconArrow, IconCheck } from "@/components/icons";
@@ -54,8 +54,8 @@ export default async function HomePage({
 
   const services = [
     { href: "/antalya", n: "01", title: s("antalyaTitle"), desc: s("antalyaDesc"), img: "/images/suluada.jpg", place: "Suluada · Adrasan" },
-    { href: "/lessons", n: "02", title: s("lessonsTitle"), desc: s("lessonsDesc"), img: "/images/kaleici-inside.jpg", place: "Kaleiçi" },
-    { href: "/education", n: "03", title: s("educationTitle"), desc: s("educationDesc"), img: "/images/akdeniz-campus.jpg", place: "Akdeniz Üniversitesi" },
+    { href: "/lessons", n: "02", title: s("lessonsTitle"), desc: s("lessonsDesc"), img: imgOr("lessons-meaning.jpg", "/images/kaleici-inside.jpg"), place: "Dil öğrenimi" },
+    { href: "/education", n: "03", title: s("educationTitle"), desc: s("educationDesc"), img: imgOr("akdeniz-campus-wide.jpg", "/images/akdeniz-campus.jpg"), place: "Akdeniz Üniversitesi" },
   ];
 
   const reasons = [
@@ -346,22 +346,20 @@ export default async function HomePage({
         </div>
       </section>
 
-      {/* ============ GEZİLECEK YERLER (sağa-sola yatay) ============ */}
-      <HorizontalPlaces
+      {/* ============ ANTALYA'NIN İNCİLERİ — sinematik sticky-stack reel ============ */}
+      <StackedReel
         eyebrow="Antalya"
         title={t("placesTitle")}
-        places={[
-          { img: "/images/kaputas.jpg", name: "Kaputaş", sub: "Kaş" },
-          { img: "/images/suluada.jpg", name: "Suluada", sub: "Adrasan" },
-          { img: "/images/sunset.jpg", name: "Kaş", sub: "Gün batımı" },
-          { img: "/images/kemer.jpg", name: "Kemer", sub: "Marina" },
-          { img: "/images/lara.jpg", name: "Lara", sub: "Falezler" },
-          { img: "/images/beachpark.jpg", name: "Beach Park", sub: "Konyaaltı" },
-          { img: "/images/olympos.jpg", name: "Olympos", sub: "Çıralı" },
-          { img: "/images/side.jpg", name: "Side", sub: "Antik kent" },
-          { img: "/images/kaleici-inside.jpg", name: "Kaleiçi", sub: "Kale içi" },
-          { img: "/images/kaleici-harbor.jpg", name: "Yat Limanı", sub: "Kaleiçi" },
-          { img: "/images/duden.jpg", name: "Düden", sub: "Şelale" },
+        intro={x("ant_introText")}
+        items={[
+          { video: "/media/vid-kas.mp4", poster: "/images/sunset.jpg", name: "Kaş", sub: "Gün batımı" },
+          { video: "/media/vid-suluada.mp4", poster: "/images/suluada.jpg", name: "Suluada", sub: "Adrasan" },
+          { video: "/media/vid-olympos.mp4", poster: "/images/olympos.jpg", name: "Olympos", sub: "Çıralı" },
+          { video: "/media/vid-kemer.mp4", poster: "/images/kemer.jpg", name: "Kemer", sub: "Marina" },
+          { video: "/media/vid-kaleici.mp4", poster: "/images/kaleici-harbor.jpg", name: "Kaleiçi", sub: "Yat Limanı" },
+          { video: "/media/vid-duden.mp4", poster: "/images/duden.jpg", name: "Düden", sub: "Şelale" },
+          { video: "/media/vid-alanya-castle.mp4", poster: imgOr("alanya.jpg", "/images/sunset.jpg"), name: "Alanya Kalesi", sub: "Kızıl Kule" },
+          { video: "/media/vid-alanya-kleopatra.mp4", poster: imgOr("alanya.jpg", "/images/sunset.jpg"), name: "Kleopatra", sub: "Alanya sahili" },
         ]}
       />
 
