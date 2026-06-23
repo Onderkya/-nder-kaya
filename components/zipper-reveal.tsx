@@ -6,23 +6,24 @@ import Image from "next/image";
 export type ZipItem = { name: string; sub: string; img: string; video?: string };
 
 const clamp = (v: number, a = 0, b = 1) => Math.min(b, Math.max(a, v));
-const smooth = (x: number) => x * x * x * (x * (x * 6 - 15) + 10); // smootherstep — yağ gibi
-const TEETH = 60;
+const smooth = (x: number) => x * x * x * (x * (x * 6 - 15) + 10);
 
 /**
- * GERÇEK fermuar — deniz VİDEOSU iki yarı; clip-path ile KIVRIMLI "V" açılır.
- * SVG dişler kenar boyunca (kıvrımlı), metalik sürgü aşağı iner ve sarkaç gibi
- * SALLANIR. Sonunda yarılar tümüyle ekrandan çıkar → tam açılır. Sürekli rAF
- * (yalnız görünürken) → yumuşak salınım + akıcılık. Yalnız aktif video oynar.
+ * ÇAPRAZ fermuar (Coca-Cola "real magic" tarzı) — turkuaz deniz örtüsü, kıvrımlı
+ * çapraz dikiş boyunca GERÇEK metal dişler (kalın dash stroke) + metalik sürgü
+ * (sallanan kulp). Scroll'la dikiş çapraz süpürür, deniz açılıp içeriği gösterir.
+ * Yalnız görünürken rAF (yumuşak salınım). Yalnız aktif video oynar.
  */
 export function ZipperReveal({ eyebrow, title, items }: { eyebrow: string; title: string; items: ZipItem[] }) {
   const rootRef = useRef<HTMLElement>(null);
-  const leftSea = useRef<HTMLDivElement>(null);
-  const rightSea = useRef<HTMLDivElement>(null);
+  const cover = useRef<HTMLDivElement>(null);
   const svgRef = useRef<SVGSVGElement>(null);
-  const leftT = useRef<Array<SVGRectElement | null>>([]);
-  const rightT = useRef<Array<SVGRectElement | null>>([]);
+  const tapeRef = useRef<SVGPathElement>(null);
+  const teethRef = useRef<SVGPathElement>(null);
+  const teeth2Ref = useRef<SVGPathElement>(null);
+  const seamRef = useRef<SVGPathElement>(null);
   const sliderRef = useRef<SVGGElement>(null);
+  const bodyRef = useRef<SVGGElement>(null);
   const pullRef = useRef<SVGGElement>(null);
   const headRef = useRef<HTMLDivElement>(null);
   const contentRef = useRef<HTMLDivElement>(null);
@@ -48,77 +49,49 @@ export function ZipperReveal({ eyebrow, title, items }: { eyebrow: string; title
 
     const frame = () => {
       const t = performance.now();
-      const cxBase = W / 2;
-      const sway = Math.sin(t * 0.0011) * 7; // bütün fermuar hafif salınım
-      const cx = cxBase + sway;
+      const cy = H / 2;
       const total = root.offsetHeight - H;
       const top = root.getBoundingClientRect().top;
       const scrolled = clamp(-top, 0, total);
-      const introPx = H * 0.95;
-      const open = smooth(clamp(scrolled / introPx)); // ease — yağ gibi
+      const introPx = H * 1.05;
+      const open = smooth(clamp(scrolled / introPx));
       const after = Math.max(1, total - introPx);
       const cp = clamp((scrolled - introPx) / after);
       const idx = clamp(Math.floor(cp * (N - 0.0001)), 0, N - 1);
 
-      const unzip = clamp(open / 0.82); // V açılışı (sürgü iner)
-      const full = clamp((open - 0.82) / 0.18); // son: yarılar ekrandan çıkar
-      const sliderY = unzip * H;
-      const gapTop = W * 0.5 * unzip;
+      // Çapraz kıvrımlı dikiş: x(y) = L - y + bulge ; L süpürür → açılır.
+      const span = W + H;
+      const L = -0.1 * span + open * 1.2 * span + Math.sin(t * 0.0011) * 10; // salınım
+      const amp = W * 0.13;
+      const xSeam = (y: number) => L - y * 0.9 + amp * Math.sin((y / H) * Math.PI);
 
-      // Kıvrımlı kenar: x(y)
-      const offset = (y: number) => (y < sliderY ? gapTop * Math.pow(1 - y / sliderY, 0.62) : 0);
+      // Dikiş path + örtü clip-path (dikişin sağı kapalı)
+      const SAMP = 16;
+      let d = `M${xSeam(0).toFixed(1)} 0`;
+      for (let s = 1; s <= SAMP; s++) {
+        const y = (H * s) / SAMP;
+        d += ` L${xSeam(y).toFixed(1)} ${y.toFixed(1)}`;
+      }
+      const clipD = d + ` L${W} ${H} L${W} 0 Z`;
+      if (cover.current) cover.current.style.clipPath = `path('${clipD}')`;
+      tapeRef.current?.setAttribute("d", d);
+      seamRef.current?.setAttribute("d", d);
+      teethRef.current?.setAttribute("d", d);
+      teeth2Ref.current?.setAttribute("d", d);
 
-      // clip-path path() — kıvrımlı V + tam açılış kayması
-      const S = 9;
-      let dL = "M0 0";
-      let dR = `M${W} 0`;
-      for (let s = 0; s <= S; s++) {
-        const y = sliderY * (s / S);
-        dL += ` L${(cx - offset(y)).toFixed(1)} ${y.toFixed(1)}`;
-        dR += ` L${(cx + offset(y)).toFixed(1)} ${y.toFixed(1)}`;
-      }
-      dL += ` L${cx.toFixed(1)} ${H} L0 ${H} Z`;
-      dR += ` L${cx.toFixed(1)} ${H} L${W} ${H} Z`;
-      if (leftSea.current) {
-        leftSea.current.style.clipPath = `path('${dL}')`;
-        leftSea.current.style.transform = `translate3d(${(-full * 75).toFixed(1)}%, 0, 0)`;
-      }
-      if (rightSea.current) {
-        rightSea.current.style.clipPath = `path('${dR}')`;
-        rightSea.current.style.transform = `translate3d(${(full * 75).toFixed(1)}%, 0, 0)`;
-      }
+      // Sürgü — dikiş orta noktasında, dikişe hizalı; kulp aşağı sarkar/sallanır
+      const sx = xSeam(cy);
+      const slope = -0.9 + amp * (Math.PI / H) * Math.cos((cy / H) * Math.PI); // dx/dy
+      const deg = (Math.atan2(1, slope) * 180) / Math.PI; // dikiş yönü
+      if (sliderRef.current) sliderRef.current.setAttribute("transform", `translate(${sx.toFixed(1)}, ${cy.toFixed(1)})`);
+      if (bodyRef.current) bodyRef.current.setAttribute("transform", `rotate(${deg.toFixed(1)})`);
+      if (pullRef.current) pullRef.current.setAttribute("transform", `rotate(${(Math.sin(t * 0.0019) * 12).toFixed(1)})`);
 
-      // Dişler
-      const spacing = H / TEETH;
-      const teethOp = 1 - full;
-      for (let i = 0; i < TEETH; i++) {
-        const yL = i * spacing + spacing * 0.5;
-        const yR = i * spacing + spacing;
-        const lt = leftT.current[i];
-        const rt = rightT.current[i];
-        if (lt) {
-          lt.setAttribute("x", (cx - offset(yL) - 13).toFixed(1));
-          lt.setAttribute("y", (yL - 5).toFixed(1));
-          lt.style.opacity = yL > H ? "0" : String(teethOp);
-        }
-        if (rt) {
-          rt.setAttribute("x", (cx + offset(yR) - 1).toFixed(1));
-          rt.setAttribute("y", (yR - 5).toFixed(1));
-          rt.style.opacity = yR > H ? "0" : String(teethOp);
-        }
-      }
-      // Sürgü + sarkan kulp (sallanır)
-      if (sliderRef.current) {
-        sliderRef.current.setAttribute("transform", `translate(${cx.toFixed(1)}, ${sliderY.toFixed(1)})`);
-        sliderRef.current.style.opacity = String((1 - clamp((open - 0.9) * 8)) * (1 - full));
-      }
-      if (pullRef.current) {
-        const swing = Math.sin(t * 0.0019) * 11; // kulp sarkaç gibi
-        pullRef.current.setAttribute("transform", `rotate(${swing.toFixed(1)})`);
-      }
+      const fade = 1 - clamp((open - 0.92) * 12);
+      if (svgRef.current) svgRef.current.style.opacity = String(fade);
 
       if (headRef.current) headRef.current.style.opacity = String(clamp((open - 0.6) * 2.4));
-      if (contentRef.current) contentRef.current.style.transform = `scale(${(1 + (1 - open) * 0.1).toFixed(3)})`;
+      if (contentRef.current) contentRef.current.style.transform = `scale(${(1 + (1 - open) * 0.08).toFixed(3)})`;
 
       for (let k = 0; k < N; k++) {
         const card = cards[k];
@@ -142,13 +115,11 @@ export function ZipperReveal({ eyebrow, title, items }: { eyebrow: string; title
 
     sizeSvg();
     if (reduce) {
-      if (leftSea.current) leftSea.current.style.transform = "translateX(-100%)";
-      if (rightSea.current) rightSea.current.style.transform = "translateX(100%)";
+      if (cover.current) cover.current.style.opacity = "0";
       cards.forEach((c, k) => (c.style.opacity = k === 0 ? "1" : "0"));
       return;
     }
 
-    // Yalnız görünürken sürekli rAF (salınım için) çalışır.
     const io = new IntersectionObserver(
       (es) => {
         const vis = es[0]?.isIntersecting;
@@ -167,9 +138,9 @@ export function ZipperReveal({ eyebrow, title, items }: { eyebrow: string; title
   }, [items.length]);
 
   return (
-    <section ref={rootRef} className="relative" style={{ height: `${items.length * 56 + 80}vh`, backgroundColor: "#02151f" }}>
+    <section ref={rootRef} className="relative" style={{ height: `${items.length * 56 + 90}vh`, backgroundColor: "#02151f" }}>
       <div className="sticky top-0 h-[100svh] w-full overflow-hidden">
-        {/* İÇERİK */}
+        {/* İÇERİK (dikişin solu — açılınca görünür) */}
         <div ref={contentRef} className="absolute inset-0 will-change-transform">
           {items.map((it, k) => (
             <div key={it.name} className="zip-card absolute inset-0 will-change-[transform,opacity]" style={{ opacity: k === 0 ? 1 : 0 }}>
@@ -189,49 +160,49 @@ export function ZipperReveal({ eyebrow, title, items }: { eyebrow: string; title
         </div>
 
         {/* Başlık */}
-        <div ref={headRef} className="pointer-events-none absolute inset-x-0 top-[15%] z-30 text-center text-white" style={{ opacity: 0 }}>
+        <div ref={headRef} className="pointer-events-none absolute inset-x-0 top-[15%] z-40 text-center text-white" style={{ opacity: 0 }}>
           <p className="eyebrow justify-center text-white/85">{eyebrow}</p>
           <h2 className="h-section mx-auto mt-3 max-w-2xl text-balance px-6">{title}</h2>
         </div>
 
-        {/* DENİZ — gerçek su videosu, iki yarı (clip-path V) */}
-        <div ref={leftSea} className="absolute inset-0 z-20 will-change-transform" style={{ clipPath: "path('M0 0 L50% 0 L50% 100% L0 100% Z')" }}>
-          <video className="absolute inset-0 h-full w-full object-cover" src="/media/dive-fish.mp4" autoPlay muted loop playsInline preload="metadata" aria-hidden />
-          <div className="absolute inset-0" style={{ background: "linear-gradient(115deg, rgba(14,116,144,0.55) 0%, rgba(5,63,89,0.65) 100%)" }} />
-        </div>
-        <div ref={rightSea} className="absolute inset-0 z-20 will-change-transform" style={{ clipPath: "path('M100% 0 L50% 0 L50% 100% L100% 100% Z')" }}>
-          <video className="absolute inset-0 h-full w-full object-cover" src="/media/dive-fish.mp4" autoPlay muted loop playsInline preload="metadata" aria-hidden />
-          <div className="absolute inset-0" style={{ background: "linear-gradient(245deg, rgba(14,116,144,0.55) 0%, rgba(5,63,89,0.65) 100%)" }} />
+        {/* TURKUAZ DENİZ ÖRTÜSÜ (dikişin sağı — clip-path) */}
+        <div ref={cover} className="absolute inset-0 z-20" style={{ clipPath: "path('M50% 0 L50% 100% L100% 100% L100% 0 Z')" }}>
+          <video className="absolute inset-0 h-full w-full object-cover" src="/media/kaputas-drone.mp4" poster="/images/kaputas.jpg" autoPlay muted loop playsInline preload="metadata" aria-hidden />
+          <div className="absolute inset-0" style={{ background: "linear-gradient(135deg, rgba(13,148,168,0.35), rgba(5,95,123,0.45))" }} />
         </div>
 
-        {/* DİŞLER + SÜRGÜ */}
+        {/* DİKİŞ + DİŞLER + SÜRGÜ */}
         <svg ref={svgRef} className="pointer-events-none absolute inset-0 z-30 h-full w-full" preserveAspectRatio="none" aria-hidden>
           <defs>
-            <linearGradient id="tooth" x1="0" y1="0" x2="1" y2="0">
-              <stop offset="0" stopColor="#eafaff" />
-              <stop offset="0.5" stopColor="#a8dceb" />
-              <stop offset="1" stopColor="#5fa6bd" />
+            <linearGradient id="tooth" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0" stopColor="#f2fbff" />
+              <stop offset="0.5" stopColor="#b8dfec" />
+              <stop offset="1" stopColor="#5f93a6" />
             </linearGradient>
             <linearGradient id="zslider" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0" stopColor="#fde2b8" />
-              <stop offset="0.5" stopColor="#f59e3c" />
-              <stop offset="1" stopColor="#dd5e1c" />
+              <stop offset="0" stopColor="#fdf1da" />
+              <stop offset="0.45" stopColor="#e9eef2" />
+              <stop offset="1" stopColor="#9fb0bb" />
             </linearGradient>
           </defs>
-          {Array.from({ length: TEETH }).map((_, i) => (
-            <rect key={`l${i}`} ref={(el) => { leftT.current[i] = el; }} width="14" height="10" rx="3.5" fill="url(#tooth)" />
-          ))}
-          {Array.from({ length: TEETH }).map((_, i) => (
-            <rect key={`r${i}`} ref={(el) => { rightT.current[i] = el; }} width="14" height="10" rx="3.5" fill="url(#tooth)" />
-          ))}
+          {/* Kumaş bandı (dikişin altında) */}
+          <path ref={tapeRef} fill="none" stroke="#06303d" strokeWidth="34" strokeLinecap="round" opacity="0.5" />
+          {/* Metal dişler — kalın dash stroke (iki sıra kenetli) */}
+          <path ref={teethRef} fill="none" stroke="url(#tooth)" strokeWidth="22" strokeDasharray="7 7" strokeLinecap="butt" />
+          <path ref={teeth2Ref} fill="none" stroke="url(#tooth)" strokeWidth="22" strokeDasharray="7 7" strokeDashoffset="7" strokeLinecap="butt" opacity="0.92" />
+          {/* Orta birleşim çizgisi */}
+          <path ref={seamRef} fill="none" stroke="#063a49" strokeWidth="2.5" opacity="0.7" />
+          {/* Sürgü */}
           <g ref={sliderRef}>
-            <rect x="-18" y="-26" width="36" height="50" rx="10" fill="url(#zslider)" stroke="rgba(255,255,255,0.6)" strokeWidth="1.6" />
-            <rect x="-7" y="-19" width="14" height="36" rx="6" fill="rgba(255,255,255,0.2)" />
-            {/* sarkan kulp (sallanır) */}
+            <g ref={bodyRef}>
+              <rect x="-15" y="-30" width="30" height="60" rx="11" fill="url(#zslider)" stroke="#7d8c96" strokeWidth="1.4" />
+              <rect x="-15" y="-7" width="30" height="14" rx="5" fill="#c3d0d8" />
+              <rect x="-6" y="-26" width="12" height="20" rx="5" fill="rgba(255,255,255,0.6)" />
+            </g>
             <g ref={pullRef}>
-              <line x1="0" y1="22" x2="0" y2="34" stroke="url(#zslider)" strokeWidth="4" strokeLinecap="round" />
-              <rect x="-9" y="34" width="18" height="26" rx="6" fill="url(#zslider)" stroke="rgba(255,255,255,0.5)" strokeWidth="1.3" />
-              <circle cx="0" cy="44" r="4" fill="rgba(255,255,255,0.35)" />
+              <line x1="0" y1="6" x2="0" y2="22" stroke="#aab8c0" strokeWidth="4.5" strokeLinecap="round" />
+              <rect x="-10" y="20" width="20" height="30" rx="7" fill="url(#zslider)" stroke="#7d8c96" strokeWidth="1.4" />
+              <circle cx="0" cy="32" r="4.5" fill="rgba(120,140,150,0.5)" />
             </g>
           </g>
         </svg>
