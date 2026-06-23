@@ -13,6 +13,10 @@ type Strings = {
   fBudget: string;
   fStyle: string;
   fContact: string;
+  fHandle: string;
+  fHandlePh: string;
+  fNote: string;
+  fNotePh: string;
   styles: { key: string; label: string }[];
   budgets: { key: string; label: string }[];
   contactWa: string;
@@ -26,6 +30,8 @@ type Strings = {
   msgDays: string;
   msgBudget: string;
   msgStyle: string;
+  msgHandle: string;
+  msgNote: string;
 };
 
 /**
@@ -40,6 +46,8 @@ export function QuickPlanForm({ t }: { t: Strings }) {
   const [budget, setBudget] = useState(t.budgets[1]?.key ?? "");
   const [style, setStyle] = useState(t.styles[0]?.key ?? "");
   const [channel, setChannel] = useState<"wa" | "tg">("wa");
+  const [handle, setHandle] = useState("");
+  const [note, setNote] = useState("");
 
   function buildMessage() {
     const styleLabel = t.styles.find((s) => s.key === style)?.label ?? style;
@@ -52,6 +60,8 @@ export function QuickPlanForm({ t }: { t: Strings }) {
       `• ${t.msgBudget}: ${budgetLabel}`,
       `• ${t.msgStyle}: ${styleLabel}`,
     ];
+    if (handle.trim()) lines.push(`• ${t.msgHandle}: ${handle.trim()}`);
+    if (note.trim()) lines.push(`• ${t.msgNote}: ${note.trim()}`);
     return lines.join("\n");
   }
 
@@ -177,6 +187,33 @@ export function QuickPlanForm({ t }: { t: Strings }) {
             );
           })}
         </div>
+      </div>
+
+      {/* İletişim adresi (WhatsApp no / Telegram kullanıcı adı) */}
+      <div className="mt-4">
+        <label className={labelCls} style={labelStyle}>{t.fHandle}</label>
+        <input
+          type="text"
+          value={handle}
+          onChange={(e) => setHandle(e.target.value)}
+          placeholder={t.fHandlePh}
+          className={field}
+          style={fieldStyle}
+          autoComplete="off"
+        />
+      </div>
+
+      {/* Eklemek istediğin not */}
+      <div className="mt-4">
+        <label className={labelCls} style={labelStyle}>{t.fNote}</label>
+        <textarea
+          value={note}
+          onChange={(e) => setNote(e.target.value)}
+          placeholder={t.fNotePh}
+          rows={3}
+          className={`${field} resize-none`}
+          style={fieldStyle}
+        />
       </div>
 
       <button type="submit" className="btn-accent mt-6 w-full justify-center shadow-lg shadow-black/10">

@@ -2,9 +2,18 @@
  * Site geneli yapılandırma. Bu değerler ortam değişkenlerinden okunur;
  * ileride admin panelden DB'ye taşınabilir (Settings modeli).
  */
+// Placeholder değerler: env doldurulmamışsa canlıda "ölü" wa.me/t.me linki
+// üretmemek için bunları "yapılandırılmamış" sayıp /contact'a düşürüyoruz.
+const WA_PLACEHOLDER = "905555555555";
+const rawWhatsapp = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER ?? process.env.NEXT_PUBLIC_WHATSAPP ?? "";
+const rawTelegram = process.env.NEXT_PUBLIC_TELEGRAM_USERNAME ?? process.env.NEXT_PUBLIC_TELEGRAM ?? "";
+
 export const siteConfig = {
-  whatsapp: process.env.NEXT_PUBLIC_WHATSAPP ?? "905555555555",
-  telegram: process.env.NEXT_PUBLIC_TELEGRAM ?? "antalyabridge",
+  whatsapp: rawWhatsapp || WA_PLACEHOLDER,
+  telegram: rawTelegram || "antalyabridge",
+  // Gerçek numara/kullanıcı adı tanımlı mı? Tanımlı değilse butonlar /contact'a yönlenir.
+  whatsappConfigured: rawWhatsapp !== "" && rawWhatsapp !== WA_PLACEHOLDER,
+  telegramConfigured: rawTelegram !== "",
   email: process.env.NEXT_PUBLIC_CONTACT_EMAIL ?? "onderkya35@gmail.com",
   social: {
     instagram: process.env.NEXT_PUBLIC_INSTAGRAM ?? "",

@@ -53,8 +53,12 @@ export function SiteFooter() {
             {t("contact")}
           </h3>
           <ul className="space-y-2 text-sm">
-            <li><a href={whatsappLink()} target="_blank" rel="noopener" className="hover:underline">WhatsApp</a></li>
-            <li><a href={telegramLink()} target="_blank" rel="noopener" className="hover:underline">Telegram</a></li>
+            <li>{siteConfig.whatsappConfigured
+              ? <a href={whatsappLink()} target="_blank" rel="noopener" className="hover:underline">WhatsApp</a>
+              : <Link href="/contact" className="hover:underline">WhatsApp</Link>}</li>
+            <li>{siteConfig.telegramConfigured
+              ? <a href={telegramLink()} target="_blank" rel="noopener" className="hover:underline">Telegram</a>
+              : <Link href="/contact" className="hover:underline">Telegram</Link>}</li>
             <li><a href={`mailto:${siteConfig.email}`} className="hover:underline">{siteConfig.email}</a></li>
           </ul>
           {social.length > 0 && (

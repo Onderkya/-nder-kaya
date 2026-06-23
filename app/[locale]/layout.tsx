@@ -40,18 +40,33 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { locale } = await params;
   const t = await getTranslations({ locale, namespace: "meta" });
+  const ogImage = { url: "/og/antalya-bridge.jpg", width: 1200, height: 630, alt: t("siteName") };
+  const ogLocaleMap: Record<string, string> = { tr: "tr_TR", en: "en_US", ru: "ru_RU", kk: "kk_KZ", uz: "uz_UZ" };
   return {
     metadataBase: new URL(siteConfig.url),
     title: { default: `${t("siteName")} — ${t("tagline")}`, template: `%s · ${t("siteName")}` },
     description: t("description"),
     alternates: {
-      languages: Object.fromEntries(routing.locales.map((l) => [l, `/${l}`])),
+      canonical: `/${locale}`,
+      languages: {
+        ...Object.fromEntries(routing.locales.map((l) => [l, `/${l}`])),
+        "x-default": `/${routing.defaultLocale}`,
+      },
     },
     openGraph: {
-      title: t("siteName"),
+      title: `${t("siteName")} — ${t("tagline")}`,
       description: t("description"),
       type: "website",
-      locale,
+      url: `/${locale}`,
+      siteName: t("siteName"),
+      locale: ogLocaleMap[locale] ?? "tr_TR",
+      images: [ogImage],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: `${t("siteName")} — ${t("tagline")}`,
+      description: t("description"),
+      images: [ogImage.url],
     },
   };
 }

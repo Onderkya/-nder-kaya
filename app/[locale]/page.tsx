@@ -29,6 +29,7 @@ export default async function HomePage({
   const trust = await getTranslations("trust");
   const lh = await getTranslations("lessonsHome");
   const st = await getTranslations("studyHome");
+  const hd = await getTranslations("hotelsd");
 
   // Otomatik-yüklenen görsel slotu: dosya public/images içine bırakılınca devreye girer.
   const imgOr = (name: string, fallback: string) =>
@@ -37,11 +38,11 @@ export default async function HomePage({
 
   // Gerçek görseli olan oteller + kullanıcı dosya bırakınca otomatik eklenen üst-segment slotlar.
   const hotels = [
-    { name: "Maxx Royal", place: "Belek", img: "/images/maxxroyal.jpg" },
-    { name: "Rixos Premium", place: "Belek", img: "/images/rixos.jpg" },
-    { name: "NG Phaselis", place: "Kemer", img: imgOr("hotel-ngphaselis.jpg", "/images/ngphaselis.jpg") },
-    { name: "Kremlin Palace", place: "Lara", img: "/images/kremlin.jpg" },
-    { name: "Miracle Resort", place: "Lara", img: "/images/pool.jpg" },
+    { name: "Maxx Royal", place: "Belek", img: "/images/maxxroyal.jpg", best: hd("maxx_best"), why: hd("maxx_why"), note: hd("maxx_note") },
+    { name: "Rixos Premium", place: "Belek", img: "/images/rixos.jpg", best: hd("rixos_best"), why: hd("rixos_why"), note: hd("rixos_note") },
+    { name: "NG Phaselis", place: "Kemer", img: imgOr("hotel-ngphaselis.jpg", "/images/ngphaselis.jpg"), best: hd("ngphaselis_best"), why: hd("ngphaselis_why"), note: hd("ngphaselis_note") },
+    { name: "Kremlin Palace", place: "Lara", img: "/images/kremlin.jpg", best: hd("kremlin_best"), why: hd("kremlin_why"), note: hd("kremlin_note") },
+    { name: "Miracle Resort", place: "Lara", img: "/images/pool.jpg", best: hd("miracle_best"), why: hd("miracle_why"), note: hd("miracle_note") },
     ...[
       { name: "Titanic Deluxe", place: "Belek", file: "hotel-titanic.jpg" },
       { name: "Delphin Imperial", place: "Lara", file: "hotel-delphin.jpg" },
@@ -116,6 +117,10 @@ export default async function HomePage({
     fBudget: plan("fBudget"),
     fStyle: plan("fStyle"),
     fContact: plan("fContact"),
+    fHandle: plan("fHandle"),
+    fHandlePh: plan("fHandlePh"),
+    fNote: plan("fNote"),
+    fNotePh: plan("fNotePh"),
     styles: [
       { key: "family", label: plan("styleFamily") },
       { key: "romantic", label: plan("styleRomantic") },
@@ -139,6 +144,8 @@ export default async function HomePage({
     msgDays: plan("msgDays"),
     msgBudget: plan("msgBudget"),
     msgStyle: plan("msgStyle"),
+    msgHandle: plan("msgHandle"),
+    msgNote: plan("msgNote"),
   };
 
   return (
@@ -170,7 +177,7 @@ export default async function HomePage({
         scrollCue={t("scrollCue")}
         soundLabel={t("soundWave")}
         diffLabel={t("heroDiff")}
-        proof={[t("heroProof1"), t("heroProof2"), t("heroProof3")]}
+        proof={[t("heroProof1"), t("heroProof2"), t("heroProof3"), t("heroProof4")]}
         aerialVideo="/media/kaputas-drone.mp4"
       />
 
@@ -187,23 +194,6 @@ export default async function HomePage({
           </Reveal>
         </div>
       </section>
-
-      {/* ============ 2.5 · FERMUAR DENEYİMİ (scuba + Antalya — imza animasyon) ============ */}
-      <ZipperReveal
-        eyebrow={t("actTitle")}
-        title={x("ant_introTitle")}
-        items={[
-          { video: "/media/act-scuba2.mp4", img: "/images/kaputas-deep.jpg", name: t("actScuba"), sub: "Akdeniz'in altı" },
-          { video: "/media/kaputas-drone.mp4", img: "/images/kaputas.jpg", name: "Kaputaş Plajı", sub: "Kaş" },
-          { video: "/media/vid-kas.mp4", img: "/images/sunset.jpg", name: "Kaş", sub: "Gün batımı" },
-          { video: "/media/vid-suluada.mp4", img: "/images/suluada.jpg", name: "Suluada", sub: "Adrasan" },
-          { video: "/media/vid-olympos.mp4", img: "/images/olympos.jpg", name: "Olympos", sub: "Çıralı" },
-          { video: "/media/vid-kemer.mp4", img: "/images/kemer.jpg", name: "Kemer", sub: "Marina" },
-          { video: "/media/vid-alanya-castle.mp4", img: "/images/alanya.jpg", name: "Alanya Kalesi", sub: "Kızıl Kule" },
-          { video: "/media/vid-alanya-kleopatra.mp4", img: "/images/alanya.jpg", name: "Kleopatra", sub: "Alanya sahili" },
-          { video: "/media/lol-aqua.mp4", img: "/images/coaster.jpg", name: "Land of Legends", sub: "Aqua park · Belek" },
-        ]}
-      />
 
       {/* ============ 3 · HAZIR ROTALAR ============ */}
       <section className="py-24 sm:py-28" style={{ backgroundColor: "rgb(var(--muted) / 0.5)" }}>
@@ -232,9 +222,13 @@ export default async function HomePage({
                     </div>
                   </div>
                   <div className="flex flex-1 flex-col p-6 sm:p-7">
-                    <span className="inline-flex w-fit items-center gap-1.5 rounded-full px-3.5 py-1.5 text-[11px] font-bold uppercase tracking-wide" style={{ backgroundImage: "linear-gradient(135deg, rgb(var(--lagoon) / 0.16), rgb(var(--primary) / 0.16))", color: "rgb(var(--primary))" }}>
-                      ✈ {r("included")}
+                    <p className="text-[14px] leading-snug" style={{ color: "rgb(var(--muted-foreground))" }}>
+                      <span className="font-semibold" style={{ color: "rgb(var(--foreground))" }}>{r("bestForLabel")}:</span> {r(`r${i + 1}best`)}
+                    </p>
+                    <span className="mt-4 inline-flex w-fit items-center gap-1.5 rounded-full px-3.5 py-1.5 text-[11px] font-bold uppercase tracking-wide" style={{ backgroundImage: "linear-gradient(135deg, rgb(var(--lagoon) / 0.16), rgb(var(--primary) / 0.16))", color: "rgb(var(--primary))" }}>
+                      <IconCheck className="h-3 w-3" /> {r("included")}
                     </span>
+                    <span className="mt-2 text-[12px]" style={{ color: "rgb(var(--muted-foreground))" }}>{r("flightsNote")}</span>
                     <ol className="relative mt-6 flex-1 space-y-0.5 border-l-2 pl-6" style={{ borderColor: "rgb(var(--border))" }}>
                       {rt.plan.map((d, di) => (
                         <li key={di} className="relative pb-4 last:pb-0">
@@ -264,13 +258,30 @@ export default async function HomePage({
             <h2 className="h-section mt-5" style={{ color: "rgb(var(--foreground))" }}>{t("hotelsTitle")}</h2>
           </Reveal>
           <Reveal className="mt-12">
-            <HotelAccordion hotels={hotels} ctaLabel={t("hotelsCta")} />
+            <HotelAccordion hotels={hotels} labels={{ cta: t("hotelsCta"), bestFor: hd("bestFor"), why: hd("why"), note: hd("note") }} />
           </Reveal>
           <p className="mt-7 text-center text-xs" style={{ color: "rgb(var(--muted-foreground))" }}>
             {t("hotelsNote")}
           </p>
         </div>
       </section>
+
+      {/* ============ 5 · FERMUAR DENEYİMİ (scuba + Antalya — imza animasyon) ============ */}
+      <ZipperReveal
+        eyebrow={t("actTitle")}
+        title={x("ant_introTitle")}
+        items={[
+          { video: "/media/act-scuba2.mp4", img: "/images/kaputas-deep.jpg", name: t("actScuba"), sub: "Akdeniz'in altı" },
+          { video: "/media/kaputas-drone.mp4", img: "/images/kaputas.jpg", name: "Kaputaş Plajı", sub: "Kaş" },
+          { video: "/media/vid-kas.mp4", img: "/images/sunset.jpg", name: "Kaş", sub: "Gün batımı" },
+          { video: "/media/vid-suluada.mp4", img: "/images/suluada.jpg", name: "Suluada", sub: "Adrasan" },
+          { video: "/media/vid-olympos.mp4", img: "/images/olympos.jpg", name: "Olympos", sub: "Çıralı" },
+          { video: "/media/vid-kemer.mp4", img: "/images/kemer.jpg", name: "Kemer", sub: "Marina" },
+          { video: "/media/vid-alanya-castle.mp4", img: "/images/alanya.jpg", name: "Alanya Kalesi", sub: "Kızıl Kule" },
+          { video: "/media/vid-alanya-kleopatra.mp4", img: "/images/alanya.jpg", name: "Kleopatra", sub: "Alanya sahili" },
+          { video: "/media/lol-aqua.mp4", img: "/images/coaster.jpg", name: "Land of Legends", sub: "Aqua park · Belek" },
+        ]}
+      />
 
       {/* ============ 6 · NEDEN ANTALYA BRIDGE (koyu deniz bandı) ============ */}
       <section className="relative overflow-hidden text-white" style={{ backgroundColor: "#07212b" }}>
@@ -409,8 +420,8 @@ export default async function HomePage({
           </Reveal>
 
           {/* Güven noktaları */}
-          <Reveal className="mx-auto mt-6 grid max-w-3xl gap-3 sm:grid-cols-2 lg:grid-cols-4" delay={140}>
-            {[trust("p1"), trust("p2"), trust("p3"), trust("p4")].map((p) => (
+          <Reveal className="mx-auto mt-6 flex max-w-3xl flex-wrap justify-center gap-3" delay={140}>
+            {[trust("p1"), trust("p2"), trust("p3"), trust("p4"), trust("p5")].map((p) => (
               <div key={p} className="flex items-center gap-2.5 rounded-2xl px-4 py-3 text-[13px] font-medium" style={{ backgroundColor: "rgb(var(--muted) / 0.6)", color: "rgb(var(--foreground))" }}>
                 <span className="grid h-5 w-5 shrink-0 place-items-center rounded-full text-white" style={{ backgroundColor: "rgb(var(--primary))" }}><IconCheck className="h-3 w-3" /></span>
                 {p}
@@ -436,11 +447,11 @@ export default async function HomePage({
             <h2 className="h-section mt-6 text-balance">{t("ctaTitle")}</h2>
             <p className="mx-auto mt-5 max-w-lg text-lg text-white/85">{t("ctaText")}</p>
             <div className="mt-9 flex flex-wrap items-center justify-center gap-3">
-              <Link href="/contact" className="btn-accent shadow-xl shadow-black/30">
-                {t("heroCtaPrimary")} <IconArrow />
+              <Link href="#hizli-plan" className="btn-accent shadow-xl shadow-black/30">
+                {t("ctaCta")} <IconArrow />
               </Link>
-              <Link href="#hizli-plan" className="btn-ghost-light glass">
-                {plan("cta")}
+              <Link href="/contact" className="btn-ghost-light glass">
+                {c("contactUs")}
               </Link>
             </div>
             <p className="mt-8 flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-xs text-white/65">
