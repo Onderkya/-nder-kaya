@@ -1,37 +1,39 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
-import { chat, openrouterAvailable, defaultModel } from "@/lib/ai/llm";
+import Anthropic from "@anthropic-ai/sdk";
 import { rateLimit, clientIp } from "@/lib/rate-limit";
 
 export const dynamic = "force-dynamic";
+
+const CHAT_MODEL = process.env.CHAT_MODEL || "claude-3-5-haiku-latest";
 
 const schema = z.object({
   message: z.string().min(1).max(1500),
   locale: z.string().max(5).optional(),
   history: z
-    .array(z.object({ role: z.enum(["user", "assistant"]), content: z.string().max(4000) }))
+    .array(z.object({ role: z.enum(["user", "assistant"]), content: z.string().min(1).max(4000) }))
     .max(16)
     .optional(),
 });
 
-function systemPrompt(locale?: string): string {
+function systemPrompt(): string {
   return `Sen "Antalya Bridge"in sıcak, profesyonel ve satış odaklı AI danışmanısın.
 
 HİZMETLERİMİZ (sınır yok — misafirin HER türlü istek ve talebini değerlendiririz):
 1) Antalya seyahat & tatil danışmanlığı — oteller, transfer, rota, aktiviteler (dalış, tekne, Land of Legends'a götürme dahil).
 2) Online Türkçe dersleri — anadili Türkçe öğretmen + kendi uygulamamız PetLingo.
 3) Türkiye'de eğitim & burs rehberliği — üniversite seçimi, Türkiye Bursları, başvuru, vize, geliş.
-4) Yazılım / IT danışmanlığı — kıdemli yazılım mühendisi tarafından.
+4) Yazılım / IT danışmanlığı — kıdemli yazılım mühendisi tarafından (web, mobil, otomasyon, yapay zekâ).
 
 EKİBİMİZ: kıdemli bir yazılım mühendisi (PetLingo'yu ve bu platformu yapan) + Kazakistanlı bir Türkçe öğretmeni. Bu yolların hepsini bizzat yürüdük; bu işte gerçekten iyiyiz.
 
 NASIL KONUŞURSUN:
 - Misafirin yazdığı DİLDE yanıt ver (Türkçe / İngilizce / Rusça / Kazakça / Özbekçe).
 - Kısa, samimi, umut veren ol (2-5 cümle). Ölçülü emoji.
-- Önce hayalini/hedefini öğren: ne için geliyor (tatil mi, Türkçe mi, eğitim mi, IT mi), tarih, kişi sayısı, bütçe aralığı, tercihleri.
+- Önce hedefini öğren: ne için (tatil, Türkçe, eğitim, IT), tarih, kişi sayısı, bütçe aralığı, tercihler.
 - Sonra ona ÖZEL kısa bir taslak plan sun ve heyecanlandır — hayalindeki tatili/eğitimi yaşatacağımızı hissettir.
-- Kesinleştirme için WhatsApp'tan yazmaya davet et ("Planını netleştirip fiyat verelim — WhatsApp'tan yazman yeterli").
-- Net fiyat VERME (her plan kişiye özel hazırlanır). Uydurma bilgi verme; emin değilsen "danışmanımız netleştirir" de.`;
+- Kesinleştirme için WhatsApp'tan yazmaya davet et.
+- Net fiyat VERME (her plan kişiye özel). Uydurma bilgi verme; emin değilsen "danışmanımız netleştirir" de.`;
 }
 
 export async function POST(req: Request) {
@@ -51,23 +53,28 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: "bad_request" }, { status: 400 });
   }
 
-  if (!openrouterAvailable()) {
+  if (!process.env.ANTHROPIC_API_KEY) {
     return NextResponse.json({
       answer: "Şu an canlı yazışma için WhatsApp veya Telegram butonunu kullan — gerçek bir danışman hemen dönüyor!",
     });
   }
 
   try {
-    const res = await chat({
-      model: defaultModel(),
+    const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
+    const res = await anthropic.messages.create({
+      model: CHAT_MODEL,
+      max_tokens: 600,
+      system: systemPrompt(),
       messages: [
-        { role: "system", content: systemPrompt(body.locale) },
-        ...(body.history ?? []),
-        { role: "user", content: body.message },
+        ...(body.history ?? []).map((h) => ({ role: h.role, content: h.content })),
+        { role: "user" as const, content: body.message },
       ],
-      maxTokens: 600,
     });
-    return NextResponse.json({ answer: res.content?.trim() || "Seni dinliyorum — ne için Antalya'dayız? 🌊" });
+    const answer = res.content
+      .map((b) => (b.type === "text" ? b.text : ""))
+      .join("")
+      .trim();
+    return NextResponse.json({ answer: answer || "Seni dinliyorum — ne için Antalya'dayız? 🌊" });
   } catch {
     return NextResponse.json({
       answer: "Küçük bir aksilik oldu. WhatsApp'tan yazarsan danışmanımız hemen yardımcı olur!",
