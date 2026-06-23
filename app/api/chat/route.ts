@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { z } from "zod";
 import Anthropic from "@anthropic-ai/sdk";
 import { rateLimit, clientIp } from "@/lib/rate-limit";
+import { chat as orChat, openrouterAvailable, defaultModel } from "@/lib/ai/llm";
 
 export const dynamic = "force-dynamic";
 
@@ -53,27 +54,39 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: "bad_request" }, { status: 400 });
   }
 
-  if (!process.env.ANTHROPIC_API_KEY) {
+  const hasAnthropic = !!process.env.ANTHROPIC_API_KEY;
+  const hasOpenRouter = openrouterAvailable();
+  if (!hasAnthropic && !hasOpenRouter) {
     return NextResponse.json({
       answer: "Şu an canlı yazışma için WhatsApp veya Telegram butonunu kullan — gerçek bir danışman hemen dönüyor!",
     });
   }
 
+  const history = (body.history ?? []).map((h) => ({ role: h.role, content: h.content }));
+
   try {
-    const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
-    const res = await anthropic.messages.create({
-      model: CHAT_MODEL,
-      max_tokens: 600,
-      system: systemPrompt(),
-      messages: [
-        ...(body.history ?? []).map((h) => ({ role: h.role, content: h.content })),
-        { role: "user" as const, content: body.message },
-      ],
-    });
-    const answer = res.content
-      .map((b) => (b.type === "text" ? b.text : ""))
-      .join("")
-      .trim();
+    let answer = "";
+    if (hasAnthropic) {
+      const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
+      const res = await anthropic.messages.create({
+        model: CHAT_MODEL,
+        max_tokens: 600,
+        system: systemPrompt(),
+        messages: [...history, { role: "user" as const, content: body.message }],
+      });
+      answer = res.content.map((b) => (b.type === "text" ? b.text : "")).join("").trim();
+    } else {
+      const res = await orChat({
+        model: defaultModel(),
+        messages: [
+          { role: "system", content: systemPrompt() },
+          ...history,
+          { role: "user", content: body.message },
+        ],
+        maxTokens: 600,
+      });
+      answer = (res.content ?? "").trim();
+    }
     return NextResponse.json({ answer: answer || "Seni dinliyorum — ne için Antalya'dayız? 🌊" });
   } catch {
     return NextResponse.json({
