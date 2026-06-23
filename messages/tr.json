@@ -182,9 +182,9 @@
     "hotelsNote": "5★ resort koordinasyonu — Belek · Lara · Kemer. Sana en uygun oteli ve fiyatı birlikte seçelim."
   },
   "plan": {
-    "eyebrow": "Hızlı plan",
-    "title": "30 saniyede planını başlat",
-    "subtitle": "Birkaç detay yaz; sana özel taslak rotayı WhatsApp veya Telegram'dan kişisel olarak ileteriz.",
+    "eyebrow": "Plan iste",
+    "title": "Tatilini birlikte planlayalım",
+    "subtitle": "Tarihini, kişi sayını ve tatil tarzını yaz. Sana özel taslak rotayı, Antalya'da yaşayan gerçek bir kişi hazırlayıp WhatsApp ya da Telegram'dan gönderir.",
     "fArrival": "Geliş tarihi",
     "fPeople": "Kişi sayısı",
     "fDays": "Kaç gün",
@@ -203,7 +203,7 @@
     "contactWa": "WhatsApp",
     "contactTg": "Telegram",
     "cta": "Planımı hazırla",
-    "note": "Ücretsiz · kişiye özel teklif · bağlayıcı değil",
+    "note": "Kişiye özel · bağlayıcı değil · ilk mesajdan plana kadar aynı kişi",
     "msgIntro": "Merhaba! Antalya için bir tatil planı istiyorum:",
     "msgArrival": "Geliş tarihi",
     "msgPeople": "Kişi sayısı",

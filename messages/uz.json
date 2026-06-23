@@ -182,9 +182,9 @@
     "hotelsNote": "5★ kurortlarni muvofiqlashtirish — Belek · Lara · Kemer. Sizga eng mos mehmonxona va narxni birga tanlaymiz."
   },
   "plan": {
-    "eyebrow": "Tezkor reja",
-    "title": "Rejangizni 30 soniyada boshlang",
-    "subtitle": "Bir nechta tafsilot yozing; sizga maxsus dastlabki marshrutni WhatsApp yoki Telegram orqali shaxsan yuboramiz.",
+    "eyebrow": "Reja so'rang",
+    "title": "Dam olishingizni birga rejalashtiramiz",
+    "subtitle": "Sanalaringizni, necha kishi ekaningizni va qanday dam olishni yoqtirishingizni yozing. Sizga maxsus dastlabki marshrutni Antalyada yashaydigan haqiqiy odam tayyorlab, WhatsApp yoki Telegram orqali yuboradi.",
     "fArrival": "Kelish sanasi",
     "fPeople": "Kishilar soni",
     "fDays": "Necha kun",
@@ -203,7 +203,7 @@
     "contactWa": "WhatsApp",
     "contactTg": "Telegram",
     "cta": "Rejamni tayyorla",
-    "note": "Bepul · shaxsiy taklif · majburiyatsiz",
+    "note": "Sizga maxsus · majburiyatsiz · birinchi xabardan rejagacha bitta odam",
     "msgIntro": "Salom! Antalya uchun dam olish rejasini xohlayman:",
     "msgArrival": "Kelish sanasi",
     "msgPeople": "Kishilar soni",

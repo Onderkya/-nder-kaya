@@ -182,9 +182,9 @@
     "hotelsNote": "5★ resort coordination — Belek · Lara · Kemer. Let's pick the right hotel and price together."
   },
   "plan": {
-    "eyebrow": "Quick plan",
-    "title": "Start your plan in 30 seconds",
-    "subtitle": "Write a few details; we'll personally send you a draft route via WhatsApp or Telegram.",
+    "eyebrow": "Request a plan",
+    "title": "Let's plan your trip together",
+    "subtitle": "Tell us your dates, group size and travel style. A real person who lives in Antalya prepares a draft route just for you and sends it over WhatsApp or Telegram.",
     "fArrival": "Arrival date",
     "fPeople": "Number of people",
     "fDays": "How many days",
@@ -203,7 +203,7 @@
     "contactWa": "WhatsApp",
     "contactTg": "Telegram",
     "cta": "Prepare my plan",
-    "note": "Free · personalized quote · no obligation",
+    "note": "Personalized · no commitment · the same person from first message to final plan",
     "msgIntro": "Hello! I'd like a holiday plan for Antalya:",
     "msgArrival": "Arrival date",
     "msgPeople": "Number of people",
