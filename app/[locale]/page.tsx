@@ -7,7 +7,7 @@ import { JsonLd } from "@/components/json-ld";
 import { Reveal } from "@/components/reveal";
 import { DiveHero } from "@/components/dive-hero";
 import { ZipperReveal } from "@/components/zipper-reveal";
-import { HotelAccordion } from "@/components/hotel-accordion";
+import { HotelCards } from "@/components/hotel-cards";
 import { QuickPlanForm } from "@/components/quick-plan-form";
 import { IconArrow, IconCheck } from "@/components/icons";
 import { siteConfig } from "@/lib/config";
@@ -32,27 +32,30 @@ export default async function HomePage({
   const hd = await getTranslations("hotelsd");
 
   // Otomatik-yüklenen görsel slotu: dosya public/images içine bırakılınca devreye girer.
-  const imgOr = (name: string, fallback: string) =>
-    existsSync(path.join(process.cwd(), "public", "images", name)) ? `/images/${name}` : fallback;
   const has = (name: string) => existsSync(path.join(process.cwd(), "public", "images", name));
 
-  // Gerçek görseli olan oteller + kullanıcı dosya bırakınca otomatik eklenen üst-segment slotlar.
-  const hotels = [
-    { name: "Maxx Royal", place: "Belek", img: "/images/maxxroyal.jpg", best: hd("maxx_best"), why: hd("maxx_why"), note: hd("maxx_note") },
-    { name: "Rixos Premium", place: "Belek", img: "/images/rixos.jpg", best: hd("rixos_best"), why: hd("rixos_why"), note: hd("rixos_note") },
-    { name: "NG Phaselis", place: "Kemer", img: imgOr("hotel-ngphaselis.jpg", "/images/ngphaselis.jpg"), best: hd("ngphaselis_best"), why: hd("ngphaselis_why"), note: hd("ngphaselis_note") },
-    { name: "Kremlin Palace", place: "Lara", img: "/images/kremlin.jpg", best: hd("kremlin_best"), why: hd("kremlin_why"), note: hd("kremlin_note") },
-    { name: "Miracle Resort", place: "Lara", img: "/images/pool.jpg", best: hd("miracle_best"), why: hd("miracle_why"), note: hd("miracle_note") },
-    ...[
-      { name: "Titanic Deluxe", place: "Belek", file: "hotel-titanic.jpg" },
-      { name: "Delphin Imperial", place: "Lara", file: "hotel-delphin.jpg" },
-      { name: "Calista Luxury", place: "Belek", file: "hotel-calista.jpg" },
-      { name: "Regnum Carya", place: "Belek", file: "hotel-regnum.jpg" },
-      { name: "Nirvana Cosmopolitan", place: "Kemer", file: "hotel-nirvana.jpg" },
-    ]
-      .filter((h) => has(h.file))
-      .map((h) => ({ name: h.name, place: h.place, img: `/images/${h.file}` })),
+  // Öne çıkan Antalya otelleri — gerçek görseller public/images/hotels/ içinde.
+  // Eksik görsel olursa o kart otomatik listeden düşer (existsSync).
+  const allHotels = [
+    { key: "cullinan", name: "Cullinan Belek", file: "cullinan-belek.jpg" },
+    { key: "maxxbelek", name: "Maxx Royal Belek", file: "maxx-royal-belek.jpg" },
+    { key: "regnum", name: "Regnum Carya", file: "regnum-carya.jpg" },
+    { key: "maxxkemer", name: "Maxx Royal Kemer", file: "maxx-royal-kemer.jpg" },
+    { key: "ngphaselis", name: "NG Phaselis Bay", file: "ng-phaselis-bay.jpg" },
+    { key: "larabarut", name: "Lara Barut Collection", file: "lara-barut.jpg" },
+    { key: "bayou", name: "Bayou Villas", file: "bayou-villas.jpg" },
+    { key: "legends", name: "Land of Legends Kingdom", file: "land-of-legends-kingdom.jpg" },
   ];
+  const hotels = allHotels
+    .filter((h) => has(path.join("hotels", h.file)))
+    .map((h) => ({
+      name: h.name,
+      img: `/images/hotels/${h.file}`,
+      location: hd(`${h.key}_loc`),
+      best: hd(`${h.key}_best`),
+      why: hd(`${h.key}_why`),
+      note: hd(`${h.key}_note`),
+    }));
 
   const reasons = [
     { n: "I", title: t("why1Title"), text: t("why1Text") },
@@ -258,7 +261,7 @@ export default async function HomePage({
             <h2 className="h-section mt-5" style={{ color: "rgb(var(--foreground))" }}>{t("hotelsTitle")}</h2>
           </Reveal>
           <Reveal className="mt-12">
-            <HotelAccordion hotels={hotels} labels={{ cta: t("hotelsCta"), bestFor: hd("bestFor"), why: hd("why"), note: hd("note") }} />
+            <HotelCards hotels={hotels} labels={{ cta: t("hotelsCta"), bestFor: hd("bestFor"), why: hd("why"), note: hd("note") }} />
           </Reveal>
           <p className="mt-7 text-center text-xs" style={{ color: "rgb(var(--muted-foreground))" }}>
             {t("hotelsNote")}
