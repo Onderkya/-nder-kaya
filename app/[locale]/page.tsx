@@ -8,6 +8,7 @@ import { Reveal } from "@/components/reveal";
 import { DiveHero } from "@/components/dive-hero";
 import { ZipperReveal } from "@/components/zipper-reveal";
 import { HotelCards, Pin3D } from "@/components/hotel-cards";
+import { RouteIcon } from "@/components/route-icons";
 import { QuickPlanForm } from "@/components/quick-plan-form";
 import { IconArrow, IconCheck } from "@/components/icons";
 import { siteConfig } from "@/lib/config";
@@ -63,48 +64,69 @@ export default async function HomePage({
     { n: "III", title: t("why3Title"), text: t("why3Text") },
   ];
 
-  // Hazır rotalar — gün gün, mantıklı; uçak+otel+transfer dahil (kişiye özel).
+  // Hazır rotalar — adım adım yolculuk: uçuş → transfer → otel → gün gün duraklar.
+  // İlk üç adım (uçuş/transfer/giriş) her rotada paylaşılır.
+  const flightStep = { icon: "plane", day: 1, t: r("st_flight_t"), d: r("st_flight_d") };
+  const transferStep = { icon: "car", day: 1, t: r("st_transfer_t"), d: r("st_transfer_d") };
+  const checkin = (ckKey: string) => ({ icon: "bed", day: 1, t: r("st_checkin_t"), d: r(ckKey) });
+
   const routes = [
     {
-      name: r("r1name"), tag: r("r1tag"), days: 5, stars: 5, hotel: "Cullinan Belek", loc: hd("cullinan_loc"), img: "/images/hotels/cullinan-belek.jpg",
-      plan: [
-        { place: "Kaleiçi & Yat Limanı", tag: r("t_history") },
-        { place: "Düden & Konyaaltı", tag: r("t_sea") },
-        { place: "Aspendos & Side", tag: r("t_ancient") },
-        { place: "Land of Legends", tag: r("t_park") },
-        { place: "Kaputaş & Kaş", tag: r("t_sea") },
+      key: "r1", name: r("r1_name"), tag: r("r1_tag"), best: r("r1_best"), aud: r("aud_classic"),
+      days: 3, stars: 5, hotel: "Lara Barut Collection", loc: hd("larabarut_loc"), img: "/images/hotels/lara-barut.jpg",
+      steps: [
+        flightStep, transferStep, checkin("r1_ck"),
+        { icon: "landmark", day: 2, t: r("r1_s1_t"), d: r("r1_s1_d") },
+        { icon: "droplet", day: 2, t: r("r1_s2_t"), d: r("r1_s2_d") },
+        { icon: "sunset", day: 3, t: r("r1_s3_t"), d: r("r1_s3_d") },
       ],
     },
     {
-      name: r("r2name"), tag: r("r2tag"), days: 7, stars: 5, hotel: "Maxx Royal Kemer", loc: hd("maxxkemer_loc"), img: "/images/hotels/maxx-royal-kemer.jpg",
-      plan: [
-        { place: "Karşılama & resort", tag: r("t_arrival") },
-        { place: "Land of Legends Aqua", tag: r("t_aqua") },
-        { place: "Kaş'ta tüplü dalış", tag: r("t_dive") },
-        { place: "Özel yat turu", tag: r("t_boat") },
-        { place: "Suluada", tag: r("t_sea") },
-        { place: "Kemer & Olympos", tag: r("t_nature") },
-        { place: "Kaleiçi", tag: r("t_history") },
+      key: "r2", name: r("r2_name"), tag: r("r2_tag"), best: r("r2_best"), aud: r("aud_classic"),
+      days: 5, stars: 5, hotel: "Cullinan Belek", loc: hd("cullinan_loc"), img: "/images/hotels/cullinan-belek.jpg",
+      steps: [
+        flightStep, transferStep, checkin("r2_ck"),
+        { icon: "landmark", day: 2, t: r("r2_s1_t"), d: r("r2_s1_d") },
+        { icon: "landmark", day: 3, t: r("r2_s2_t"), d: r("r2_s2_d") },
+        { icon: "droplet", day: 4, t: r("r2_s3_t"), d: r("r2_s3_d") },
+        { icon: "bag", day: 5, t: r("r2_s4_t"), d: r("r2_s4_d") },
       ],
     },
     {
-      name: r("r3name"), tag: r("r3tag"), days: 4, stars: 5, hotel: "NG Phaselis Bay", loc: hd("ngphaselis_loc"), img: "/images/hotels/ng-phaselis-bay.jpg",
-      plan: [
-        { place: "Kaş kasabası", tag: r("t_sea") },
-        { place: "Kaputaş Plajı", tag: r("t_sea") },
-        { place: "Suluada tekne turu", tag: r("t_boat") },
-        { place: "Kalkan & gün batımı", tag: r("t_sunset") },
+      key: "r3", name: r("r3_name"), tag: r("r3_tag"), best: r("r3_best"), aud: r("aud_honeymoon"),
+      days: 5, stars: 5, hotel: "NG Phaselis Bay", loc: hd("ngphaselis_loc"), img: "/images/hotels/ng-phaselis-bay.jpg",
+      steps: [
+        flightStep, transferStep, { icon: "heart", day: 1, t: r("st_checkin_t"), d: r("r3_ck") },
+        { icon: "landmark", day: 2, t: r("r3_s1_t"), d: r("r3_s1_d") },
+        { icon: "cablecar", day: 3, t: r("r3_s2_t"), d: r("r3_s2_d") },
+        { icon: "sailboat", day: 4, t: r("r3_s3_t"), d: r("r3_s3_d") },
+        { icon: "flower", day: 5, t: r("r3_s4_t"), d: r("r3_s4_d") },
       ],
     },
     {
-      name: r("r4name"), tag: r("r4tag"), days: 6, stars: 5, hotel: "Land of Legends Kingdom", loc: hd("legends_loc"), img: "/images/hotels/land-of-legends-kingdom.jpg",
-      plan: [
-        { place: "Karşılama & resort", tag: r("t_arrival") },
-        { place: "Land of Legends", tag: r("t_park") },
-        { place: "Aqua park", tag: r("t_aqua") },
-        { place: "Konyaaltı Beach Park", tag: r("t_sea") },
-        { place: "Düden & doğa", tag: r("t_nature") },
-        { place: "Kaleiçi", tag: r("t_history") },
+      key: "r4", name: r("r4_name"), tag: r("r4_tag"), best: r("r4_best"), aud: r("aud_family"),
+      days: 7, stars: 5, hotel: "Land of Legends Kingdom", loc: hd("legends_loc"), img: "/images/hotels/land-of-legends-kingdom.jpg",
+      steps: [
+        flightStep, transferStep, checkin("r4_ck"),
+        { icon: "ferris", day: 2, t: r("r4_s1_t"), d: r("r4_s1_d") },
+        { icon: "waves", day: 3, t: r("r4_s2_t"), d: r("r4_s2_d") },
+        { icon: "fish", day: 4, t: r("r4_s3_t"), d: r("r4_s3_d") },
+        { icon: "sailboat", day: 5, t: r("r4_s4_t"), d: r("r4_s4_d") },
+        { icon: "landmark", day: 6, t: r("r4_s5_t"), d: r("r4_s5_d") },
+        { icon: "bag", day: 7, t: r("r4_s6_t"), d: r("r4_s6_d") },
+      ],
+    },
+    {
+      key: "r5", name: r("r5_name"), tag: r("r5_tag"), best: r("r5_best"), aud: r("aud_luxury"),
+      days: 7, stars: 5, hotel: "Maxx Royal Kemer", loc: hd("maxxkemer_loc"), img: "/images/hotels/maxx-royal-kemer.jpg",
+      steps: [
+        flightStep, transferStep, checkin("r5_ck"),
+        { icon: "mountain", day: 2, t: r("r5_s1_t"), d: r("r5_s1_d") },
+        { icon: "anchor", day: 3, t: r("r5_s2_t"), d: r("r5_s2_d") },
+        { icon: "sailboat", day: 4, t: r("r5_s3_t"), d: r("r5_s3_d") },
+        { icon: "cablecar", day: 5, t: r("r5_s4_t"), d: r("r5_s4_d") },
+        { icon: "flag", day: 6, t: r("r5_s5_t"), d: r("r5_s5_d") },
+        { icon: "bag", day: 7, t: r("r5_s6_t"), d: r("r5_s6_d") },
       ],
     },
   ];
@@ -207,47 +229,71 @@ export default async function HomePage({
             <p className="mt-5 text-lg leading-relaxed" style={{ color: "rgb(var(--muted-foreground))" }}>{r("subtitle")}</p>
           </Reveal>
 
-          <div className="mt-14 grid gap-6 lg:grid-cols-2">
+          <div className="mt-14 grid items-start gap-6 lg:grid-cols-2">
             {routes.map((rt, i) => (
-              <Reveal key={rt.name} delay={(i % 2) * 90}>
+              <Reveal key={rt.key} delay={(i % 2) * 90}>
                 <div className="card-lift group flex h-full flex-col overflow-hidden rounded-[2rem] shadow-xl ring-1 ring-black/5" style={{ backgroundColor: "rgb(var(--card))" }}>
                   <div className="img-zoom relative aspect-[16/10] overflow-hidden">
-                    <Image src={rt.img} alt={rt.name} fill sizes="(max-width:1024px) 100vw, 50vw" className="object-cover" />
-                    <div className="absolute inset-0" style={{ background: "linear-gradient(180deg, rgba(4,18,24,0.15) 0%, transparent 35%, rgba(4,18,24,0.55) 75%, rgba(4,18,24,0.9) 100%)" }} />
-                    <div className="glass absolute right-4 top-4 flex items-center gap-2 rounded-full border px-3 py-1.5 text-white" style={{ borderColor: "rgb(255 255 255 / 0.3)", backgroundColor: "rgb(4 28 40 / 0.45)" }}>
+                    <Image src={rt.img} alt={`${rt.name} — ${rt.hotel}`} fill sizes="(max-width:1024px) 100vw, 50vw" className="object-cover" />
+                    <div className="absolute inset-0" style={{ background: "linear-gradient(180deg, rgba(4,18,24,0.2) 0%, transparent 30%, rgba(4,18,24,0.5) 62%, rgba(4,18,24,0.92) 100%)" }} />
+                    {/* Kitle rozeti — sol üst */}
+                    <span className="absolute left-4 top-4 rounded-full px-3 py-1.5 text-[11px] font-bold uppercase tracking-wide text-white shadow-lg" style={{ backgroundImage: "linear-gradient(135deg, rgb(var(--accent2)), rgb(var(--accent)))" }}>
+                      {rt.aud}
+                    </span>
+                    {/* Gün rozeti — sağ üst */}
+                    <div className="glass absolute right-4 top-4 flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-white" style={{ borderColor: "rgb(255 255 255 / 0.3)", backgroundColor: "rgb(4 28 40 / 0.45)" }}>
                       <span className="font-display text-xl leading-none">{rt.days}</span>
                       <span className="text-[10px] font-semibold uppercase tracking-wide text-white/80">{r("daysWord")}</span>
                     </div>
-                    {/* 3D konum pini — sağ üstteki gün rozetinin solunda */}
-                    <div className="glass absolute left-4 top-4 flex items-center gap-1.5 rounded-full border py-1.5 pl-2 pr-3 text-white" style={{ borderColor: "rgb(255 255 255 / 0.3)", backgroundColor: "rgb(4 28 40 / 0.45)" }}>
-                      <Pin3D />
-                      <span className="text-[12px] font-semibold leading-none">{rt.loc}</span>
-                    </div>
+                    {/* İsim + otel (3D konum pini) */}
                     <div className="absolute inset-x-0 bottom-0 p-6 text-white">
-                      <span className="text-sm" style={{ color: "rgb(251 191 80)" }}>{"★".repeat(rt.stars)} · {rt.hotel}</span>
-                      <h3 className="font-display mt-1.5 font-semibold leading-[0.95] tracking-[-0.02em]" style={{ fontSize: "clamp(2rem, 4vw, 2.9rem)" }}>{rt.name}</h3>
-                      <p className="mt-1.5 max-w-sm text-[15px] text-white/85">{rt.tag}</p>
+                      <span className="text-[13px]" style={{ color: "rgb(251 191 80)" }}>{"★".repeat(rt.stars)}</span>
+                      <h3 className="font-display mt-1 font-semibold leading-[0.95] tracking-[-0.02em]" style={{ fontSize: "clamp(1.9rem, 3.6vw, 2.7rem)" }}>{rt.name}</h3>
+                      <p className="mt-1.5 max-w-sm text-[14px] text-white/85">{rt.tag}</p>
+                      <div className="mt-3 inline-flex items-center gap-1.5 rounded-full border py-1 pl-1.5 pr-3" style={{ borderColor: "rgb(255 255 255 / 0.25)", backgroundColor: "rgb(4 28 40 / 0.4)" }}>
+                        <Pin3D />
+                        <span className="text-[12px] font-semibold">{rt.hotel} · {rt.loc}</span>
+                      </div>
                     </div>
                   </div>
                   <div className="flex flex-1 flex-col p-6 sm:p-7">
                     <p className="text-[14px] leading-snug" style={{ color: "rgb(var(--muted-foreground))" }}>
-                      <span className="font-semibold" style={{ color: "rgb(var(--foreground))" }}>{r("bestForLabel")}:</span> {r(`r${i + 1}best`)}
+                      <span className="font-semibold" style={{ color: "rgb(var(--foreground))" }}>{r("bestForLabel")}:</span> {rt.best}
                     </p>
-                    <span className="mt-4 inline-flex w-fit items-center gap-1.5 rounded-full px-3.5 py-1.5 text-[11px] font-bold uppercase tracking-wide" style={{ backgroundImage: "linear-gradient(135deg, rgb(var(--lagoon) / 0.16), rgb(var(--primary) / 0.16))", color: "rgb(var(--primary))" }}>
-                      <IconCheck className="h-3 w-3" /> {r("included")}
-                    </span>
-                    <span className="mt-2 text-[12px]" style={{ color: "rgb(var(--muted-foreground))" }}>{r("flightsNote")}</span>
-                    <ol className="relative mt-6 flex-1 space-y-0.5 border-l-2 pl-6" style={{ borderColor: "rgb(var(--border))" }}>
-                      {rt.plan.map((d, di) => (
-                        <li key={di} className="relative pb-4 last:pb-0">
-                          <span className="absolute -left-[31px] grid h-6 w-6 place-items-center rounded-full font-display text-[11px] font-bold text-white shadow" style={{ backgroundImage: "linear-gradient(135deg, rgb(var(--lagoon)), rgb(var(--primary)))" }}>{di + 1}</span>
-                          <div className="flex flex-wrap items-center gap-2">
-                            <span className="font-semibold" style={{ color: "rgb(var(--foreground))" }}>{d.place}</span>
-                            <span className="rounded-full px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide" style={{ backgroundColor: "rgb(var(--accent) / 0.1)", color: "rgb(var(--accent))" }}>{d.tag}</span>
-                          </div>
-                        </li>
-                      ))}
+                    <div className="mt-4 flex flex-wrap items-center gap-x-3 gap-y-1.5">
+                      <span className="inline-flex items-center gap-1.5 rounded-full px-3.5 py-1.5 text-[11px] font-bold uppercase tracking-wide" style={{ backgroundImage: "linear-gradient(135deg, rgb(var(--lagoon) / 0.16), rgb(var(--primary) / 0.16))", color: "rgb(var(--primary))" }}>
+                        <IconCheck className="h-3 w-3" /> {r("included")}
+                      </span>
+                      <span className="text-[12px]" style={{ color: "rgb(var(--muted-foreground))" }}>{r("flightsNote")}</span>
+                    </div>
+
+                    {/* Adım adım yolculuk — ikonlu zaman çizgisi */}
+                    <ol className="mt-6 flex-1">
+                      {rt.steps.map((s, si) => {
+                        const newDay = si === 0 || s.day !== rt.steps[si - 1].day;
+                        const last = si === rt.steps.length - 1;
+                        return (
+                          <li key={si} className="flex gap-4">
+                            <div className="flex flex-col items-center">
+                              <span className="grid h-9 w-9 shrink-0 place-items-center rounded-full text-white shadow-md" style={{ backgroundImage: "linear-gradient(135deg, rgb(var(--lagoon)), rgb(var(--primary)))" }}>
+                                <RouteIcon name={s.icon} className="h-[18px] w-[18px]" />
+                              </span>
+                              {!last && <span className="my-1 w-0.5 flex-1 rounded-full" style={{ backgroundColor: "rgb(var(--border))" }} />}
+                            </div>
+                            <div className={last ? "pb-0" : "pb-5"}>
+                              {newDay && (
+                                <span className="inline-block rounded-full px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wide" style={{ backgroundColor: "rgb(var(--accent) / 0.12)", color: "rgb(var(--accent))" }}>
+                                  {r("dayLabel", { n: s.day })}
+                                </span>
+                              )}
+                              <p className={`font-semibold ${newDay ? "mt-1.5" : ""}`} style={{ color: "rgb(var(--foreground))" }}>{s.t}</p>
+                              <p className="mt-0.5 text-[13.5px] leading-relaxed" style={{ color: "rgb(var(--muted-foreground))" }}>{s.d}</p>
+                            </div>
+                          </li>
+                        );
+                      })}
                     </ol>
+
                     <Link href="/contact" className="btn-accent mt-7 w-full justify-center shadow-lg shadow-black/10">{r("cta")} <IconArrow /></Link>
                     <span className="mt-3 text-center text-xs" style={{ color: "rgb(var(--muted-foreground))" }}>{r("custom")}</span>
                   </div>
