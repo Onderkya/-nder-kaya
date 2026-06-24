@@ -16,6 +16,8 @@ const navItems = [
   { href: "/admin/payments", label: "Ödeme Yöntemleri" },
   { href: "/admin/invoices", label: "Faturalar" },
   { href: "/admin/ai", label: "AI Asistan" },
+  { href: "/admin/users", label: "Kullanıcılar" },
+  { href: "/admin/audit", label: "Denetim" },
 ];
 
 export default async function AdminLayout({ children }: { children: ReactNode }) {

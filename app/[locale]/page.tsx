@@ -244,11 +244,11 @@ export default async function HomePage({
             <p className="mt-5 text-lg leading-relaxed" style={{ color: "rgb(var(--muted-foreground))" }}>{r("subtitle")}</p>
           </Reveal>
 
-          <div className="mt-14 grid items-start gap-6 lg:grid-cols-2">
+          <div className="mt-14 grid items-start gap-7 sm:gap-8 lg:grid-cols-2">
             {routes.map((rt, i) => (
               <Reveal key={rt.key} delay={(i % 2) * 90}>
-                <div className="card-lift group flex h-full flex-col overflow-hidden rounded-[2rem] shadow-xl ring-1 ring-black/5" style={{ backgroundColor: "rgb(var(--card))" }}>
-                  <div className="img-zoom relative aspect-[16/10] overflow-hidden">
+                <div className="route-card group flex h-full flex-col overflow-hidden rounded-[2.25rem] ring-1 ring-black/5" style={{ backgroundColor: "rgb(var(--card))" }}>
+                  <div className="route-img relative aspect-[3/2] overflow-hidden">
                     <Image src={rt.img} alt={`${rt.name} — ${rt.hotel}`} fill sizes="(max-width:1024px) 100vw, 50vw" className="object-cover" />
                     <div className="absolute inset-0" style={{ background: "linear-gradient(180deg, rgba(4,18,24,0.2) 0%, transparent 30%, rgba(4,18,24,0.5) 62%, rgba(4,18,24,0.92) 100%)" }} />
                     {/* Kitle rozeti — sol üst */}

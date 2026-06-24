@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { prisma } from "@/lib/db";
 
 export const dynamic = "force-dynamic";
@@ -21,9 +22,19 @@ export default async function AdminDashboard() {
     { label: "Bekleyen fatura", value: pendingInvoices },
   ];
 
+  const quickLinks = [
+    { href: "/admin/content", label: "Site İçeriği" },
+    { href: "/admin/leads", label: "Talepler" },
+    { href: "/admin/booking", label: "Rezervasyon" },
+    { href: "/admin/users", label: "Kullanıcılar" },
+    { href: "/admin/audit", label: "Denetim" },
+    { href: "/admin/ai", label: "AI Asistan" },
+  ];
+
   return (
-    <div>
-      <h1 className="mb-6 text-2xl font-bold">Panel</h1>
+    <div className="space-y-8">
+      <h1 className="text-2xl font-bold">Panel</h1>
+
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         {cards.map((c) => (
           <div key={c.label} className="rounded-2xl bg-white p-6 shadow-sm">
@@ -32,10 +43,26 @@ export default async function AdminDashboard() {
           </div>
         ))}
       </div>
-      <p className="mt-8 text-sm text-slate-500">
+
+      <div>
+        <h2 className="mb-3 text-sm font-semibold text-slate-500">Hızlı erişim</h2>
+        <div className="flex flex-wrap gap-3">
+          {quickLinks.map((l) => (
+            <Link
+              key={l.href}
+              href={l.href}
+              className="rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm font-medium shadow-sm hover:border-cyan-300 hover:bg-cyan-50"
+            >
+              {l.label}
+            </Link>
+          ))}
+        </div>
+      </div>
+
+      <p className="text-sm text-slate-500">
         Hoş geldiniz. Soldaki menüden site içeriğini, medyayı, talepleri,
-        rezervasyonları, indirim kodlarını, ödeme yöntemlerini, bot sohbetlerini ve
-        AI asistanı yönetebilirsiniz.
+        rezervasyonları, indirim kodlarını, ödeme yöntemlerini, bot sohbetlerini, AI
+        asistanı, kullanıcıları ve denetim kaydını yönetebilirsiniz.
       </p>
     </div>
   );

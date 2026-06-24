@@ -4,7 +4,21 @@
 > ↩️ **Geri dönüş (rollback):** eski sürüm dokunulmadı → dal `claude/consulting-site-plan-6k4lix` + etiket `safe/before-redesign-rev9`. Beğenilmezse sunucuda o dala `git reset --hard` + rebuild.
 > Görsel/medya kaynakları: `public/images/CREDITS.txt` (CC / Mixkit / CC0) · oteller: kullanıcının verdiği resmi fotoğraflar (`public/images/hotels/`).
 
-## 🔁 Revizyon 11 — iç sayfa rötuşları + eğitim hero düzeltmesi (GÜNCEL · dal `claude/redesign-conversion`)
+## 🔁 Revizyon 12 — premium rota kartları + admin paneli genişletmesi (GÜNCEL · dal `claude/redesign-conversion`)
+
+> **Şu an buradayız.**
+
+- **ROTA KARTLARI premium yükseltme** (`app/globals.css` `.route-card`/`.route-img` + `app/[locale]/page.tsx`): daha büyük görsel (16:10 → **3:2**), kart aralığı arttı, **kartın üstüne gelince otel fotoğrafı büyür** (scale 1.12, kartın kendisinde hover), **turkuaz/mercan ışıltılı gölge** + daha derin lift (translateY −12px). reduced-motion korumalı. Renk/yazı zaten uyumlu (Cormorant başlık + accent gradient rozetler).
+- **ADMIN PANELİ genişletildi** (`app/admin/**`, sadece admin — public dokunulmadı):
+  - **Kullanıcılar** (`/admin/users`): admin/editör ekle-sil, rol değiştir; parola `lib/auth.hashPassword` (bcrypt) ile; **kendini silme + son admini silme/düşürme koruması**; e-posta/parola doğrulama; AuditLog'a yazar. Parola hash'i asla seçilmez/gösterilmez.
+  - **Denetim Kaydı** (`/admin/audit`): son ~100 AuditLog (zaman · actor · action · entity · detay), salt-okunur.
+  - **Dashboard**: "Hızlı erişim" kısayolları + nav'a **Kullanıcılar** ve **Denetim** linkleri. Her sayfa/aksiyon `requireAdmin()`.
+- **Mevcut admin yetenekleri (hatırlatma):** Tüm site metinleri — **rotalar (`r*`), oteller (`hotelsd.*`), voices, hero, SSS dahil** — `/admin/content` üzerinden **5 dilde** düzenlenebilir (`SiteText` override + `lib/messages.ts` merge). Medya yükleme, talepler, rezervasyon (ders tipi+slot), sohbetler, indirim kodları, ödeme yöntemleri, faturalar yönetilebilir. **AI asistan** (`/admin/ai`): doğal dille DB sorgusu + onaylı INSERT/UPDATE (silme yok) — `OPENROUTER_API_KEY` gerekir.
+- **⏭️ Sıradaki (tam dinamik sıralama):** rota/otel/voices **listelerinin sırası ve ekle/çıkar** hâlâ kodda (`page.tsx` dizileri). Drag-drop sıralama + admin'den kart ekleme için bunları DB'ye taşımak gerekir (yeni `Route`/`Hotel` modelleri + CRUD UI + `order` alanı + 5 dil içerik). Büyük, ayrı bir faz — canlıyı riske atmamak için metin düzenleme şimdilik `/admin/content`'ten yapılıyor.
+
+`tsc --noEmit` ✓ · `next build` ✓ (13/13 — admin/users + admin/audit eklendi).
+
+## 🔁 Revizyon 11 — iç sayfa rötuşları + eğitim hero düzeltmesi (dal `claude/redesign-conversion`)
 
 > **Şu an buradayız.** Kullanıcı geri bildirimiyle iç sayfa düzeltmeleri yapıldı.
 
