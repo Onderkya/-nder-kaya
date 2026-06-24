@@ -22,12 +22,13 @@ export default async function LessonsPage({ params }: { params: Promise<{ locale
   const t = await getTranslations("lessons");
   const tb = await getTranslations("booking");
   const x = await getTranslations("imm");
+  const lh = await getTranslations("lessonsHome");
 
   const steps = [
-    { n: "01", title: x("les_p1Title"), text: x("les_p1Text"), video: "/media/les-spell.mp4" },
-    { n: "02", title: x("les_p2Title"), text: x("les_p2Text"), video: "/media/les-teacher.mp4" },
-    { n: "03", title: x("les_p3Title"), text: x("les_p3Text"), video: "/media/les-online.mp4" },
-    { n: "04", title: x("les_p4Title"), text: x("les_p4Text"), video: "/media/les-lara.mp4" },
+    { n: "01", title: x("les_p1Title"), text: x("les_p1Text"), video: "/media/les-spell.mp4", pet: false },
+    { n: "02", title: x("les_p2Title"), text: x("les_p2Text"), video: "/media/les-teacher.mp4", pet: false },
+    { n: "03", title: x("les_p3Title"), text: x("les_p3Text"), video: "/media/les-online.mp4", pet: true },
+    { n: "04", title: x("les_p4Title"), text: x("les_p4Text"), video: "/media/les-online.mp4", pet: false },
   ];
 
   const durations = [
@@ -72,18 +73,28 @@ export default async function LessonsPage({ params }: { params: Promise<{ locale
           <p className="mt-5 text-lg leading-relaxed" style={{ color: "rgb(var(--muted-foreground))" }}>{x("les_processDesc")}</p>
         </Reveal>
 
-        <div className="mt-16 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="mt-16 grid items-stretch gap-6 sm:grid-cols-2 lg:grid-cols-4">
           {steps.map((st, i) => (
-            <Reveal key={st.n} delay={i * 90} className="process-step">
-              <div className="card-lift overflow-hidden rounded-3xl border" style={{ borderColor: "rgb(var(--border))", backgroundColor: "rgb(var(--card))" }}>
+            <Reveal key={st.n} delay={i * 90} className="process-step h-full">
+              <div className="card-lift flex h-full flex-col overflow-hidden rounded-3xl border" style={{ borderColor: st.pet ? "rgb(var(--primary) / 0.45)" : "rgb(var(--border))", backgroundColor: "rgb(var(--card))", ...(st.pet ? { boxShadow: "0 18px 40px -20px rgb(var(--primary) / 0.55)" } : {}) }}>
                 <div className="relative aspect-[16/11] overflow-hidden">
                   <AutoVideo className="absolute inset-0 h-full w-full object-cover" src={st.video} />
                   <div className="absolute inset-0" style={{ background: "linear-gradient(to top, rgba(6,26,34,0.6), transparent 55%)" }} />
                   <div className="process-num absolute bottom-3 left-3">{st.n}</div>
+                  {st.pet && (
+                    <span className="ai-pulse absolute right-3 top-3 inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-[10px] font-bold uppercase tracking-wide text-white" style={{ backgroundImage: "linear-gradient(135deg, rgb(var(--accent2)), rgb(var(--accent)))" }}>
+                      🎁 {lh("bonusBadge")}
+                    </span>
+                  )}
                 </div>
-                <div className="p-5">
+                <div className="flex flex-1 flex-col p-5">
                   <h3 className="font-display text-lg font-semibold leading-snug" style={{ color: "rgb(var(--foreground))" }}>{st.title}</h3>
-                  <p className="mt-2 text-[14px] leading-relaxed" style={{ color: "rgb(var(--muted-foreground))" }}>{st.text}</p>
+                  <p className="mt-2 flex-1 text-[14px] leading-relaxed" style={{ color: "rgb(var(--muted-foreground))" }}>{st.text}</p>
+                  {st.pet && (
+                    <a href="#petlingo" className="btn-accent mt-4 w-full justify-center text-[13px] shadow-lg shadow-black/10">
+                      {x("pl_cta")} <IconArrow />
+                    </a>
+                  )}
                 </div>
               </div>
             </Reveal>

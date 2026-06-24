@@ -107,8 +107,8 @@ export default async function AntalyaPage({ params }: { params: Promise<{ locale
       {/* CTA */}
       <section className="container-wide pb-24 pt-4">
         <Reveal className="relative flex min-h-[380px] items-center justify-center overflow-hidden rounded-[2rem] px-6 py-20 text-center text-white">
-          <Image src="/images/harbor-night.jpg" alt="Antalya Yat Limanı gece" fill sizes="(max-width:1280px) 100vw, 1200px" className="object-cover" />
-          <div className="absolute inset-0" style={{ background: "linear-gradient(180deg, rgb(4 18 24 / 0.5), rgb(4 18 24 / 0.8))" }} />
+          <Image src="/images/kaputas.jpg" alt="Kaputaş Plajı, Kaş — turkuaz Akdeniz" fill sizes="(max-width:1280px) 100vw, 1200px" className="object-cover" />
+          <div className="absolute inset-0" style={{ background: "linear-gradient(180deg, rgb(4 18 24 / 0.35), rgb(4 18 24 / 0.7))" }} />
           <div className="relative z-10 mx-auto max-w-2xl">
             <h2 className="h-section text-balance">{x("ant_ctaTitle")}</h2>
             <p className="mx-auto mt-5 max-w-lg text-lg text-white/85">{x("ant_ctaText")}</p>

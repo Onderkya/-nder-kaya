@@ -22,7 +22,7 @@ type Labels = {
 
 export function PetLingoShowcase({ labels }: { labels: Labels }) {
   return (
-    <section className="relative overflow-hidden py-24 sm:py-32" style={{ background: "radial-gradient(120% 110% at 15% 0%, #0c4a5c 0%, #07303d 45%, #061a22 100%)" }}>
+    <section id="petlingo" className="relative scroll-mt-20 overflow-hidden py-24 sm:py-32" style={{ background: "radial-gradient(120% 110% at 15% 0%, #0c4a5c 0%, #07303d 45%, #061a22 100%)" }}>
       <div className="container-wide grid items-center gap-14 lg:grid-cols-2 lg:gap-20">
         {/* Telefon mockup */}
         <div className="relative order-2 flex justify-center lg:order-1">

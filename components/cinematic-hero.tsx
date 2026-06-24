@@ -18,6 +18,7 @@ export function CinematicHero({
   video,
   videos,
   flag = false,
+  emblem = false,
   align = "end",
   height = "78svh",
 }: {
@@ -28,6 +29,7 @@ export function CinematicHero({
   video?: string;
   videos?: string[];
   flag?: boolean;
+  emblem?: boolean;
   align?: "end" | "center";
   height?: string;
 }) {
@@ -117,6 +119,20 @@ export function CinematicHero({
               <circle cx="25" cy="20" r="10" fill="#fff" />
               <circle cx="28.5" cy="20" r="8" fill="#E30A17" />
               <polygon points="41.5,20 35.8,21.8 35.8,21.8 33.9,16.2 32,21.8 26.3,21.8 30.9,25.3 29.1,30.9 33.9,27.4 38.7,30.9 36.9,25.3" fill="#fff" />
+            </svg>
+          </div>
+        </div>
+      ) : null}
+
+      {/* Mezuniyet/diploma madalyonu (eğitim sayfası) */}
+      {emblem ? (
+        <div className="absolute right-4 top-24 z-20 sm:right-8">
+          <div className="float-soft grid h-16 w-16 place-items-center rounded-full text-white shadow-xl ring-1 ring-white/30 backdrop-blur sm:h-20 sm:w-20" style={{ backgroundImage: "linear-gradient(135deg, rgb(var(--lagoon) / 0.55), rgb(var(--primary) / 0.55))" }}>
+            <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+              <path d="M22 10 12 5 2 10l10 5 10-5Z" />
+              <path d="M6 12v5c0 1 2.7 2.5 6 2.5s6-1.5 6-2.5v-5" />
+              <path d="M22 10v5.5" />
+              <circle cx="22" cy="17" r="1.1" fill="currentColor" stroke="none" />
             </svg>
           </div>
         </div>

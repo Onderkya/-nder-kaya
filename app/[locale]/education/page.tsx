@@ -36,8 +36,9 @@ export default async function EducationPage({ params }: { params: Promise<{ loca
         eyebrow={x("edu_journeyEyebrow")}
         title={t("title")}
         intro={t("intro")}
-        image={campus}
-        videos={["/media/office-consult.mp4", "/media/campus-aerial.mp4", "/media/edu-students.mp4"]}
+        image="/images/turkish-flag.jpg"
+        videos={["/media/turkish-flag-boat.mp4"]}
+        emblem
       />
 
       {/* Immersive iniş: 4 adım */}
