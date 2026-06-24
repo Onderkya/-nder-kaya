@@ -1,9 +1,45 @@
 # DEVRİM — Antalya Bridge immersive site (durum)
 
-> Canlı: **http://45.67.203.149:3010** (mutlaka `http://`) · dal `claude/consulting-site-plan-6k4lix`
-> Görsel/medya kaynakları: `public/images/CREDITS.txt` (tümü CC / Mixkit / CC0).
+> Canlı: **http://45.67.203.149:3010** (mutlaka `http://`) · dal **`claude/redesign-conversion`**
+> ↩️ **Geri dönüş (rollback):** eski sürüm dokunulmadı → dal `claude/consulting-site-plan-6k4lix` + etiket `safe/before-redesign-rev9`. Beğenilmezse sunucuda o dala `git reset --hard` + rebuild.
+> Görsel/medya kaynakları: `public/images/CREDITS.txt` (CC / Mixkit / CC0) · oteller: kullanıcının verdiği resmi fotoğraflar (`public/images/hotels/`).
 
-## 🔁 Revizyon 9 — gerçek fermuar, hazır rotalar, IT alanı, öğretmen kimliği, ödeme (GÜNCEL)
+## 🔁 Revizyon 10 — DÖNÜŞÜM ODAKLI YENİDEN YAPI (GÜNCEL · dal `claude/redesign-conversion`)
+
+> **Şu an buradayız.** Ana ürün net: **kişiye özel Antalya tatil planlama**. Türkçe ders + Türkiye'de eğitim ikincil; IT ana sayfadan kaldırıldı. Tüm değişiklikler 5 dilde.
+
+**Yeni ana sayfa akışı (`app/[locale]/page.tsx`):**
+1. **Hero** — seyahat odaklı: "Antalya tatilini sana özel planlayan yerel rehberin" + 4 güven rozeti (Antalya'da yaşıyoruz · 5 dil · otel+transfer+aktivite · baştan sona tek muhatap).
+2. **Hızlı Plan formu** (`components/quick-plan-form.tsx`) — tarih/kişi/gün/bütçe/tarz + **WhatsApp no/Telegram kullanıcı adı** + **"bilmemiz gereken bir şey?"** notu → girdilerden özet kurup **WhatsApp/Telegram'a deep-link** (backend yok, manuel/kişisel konum).
+3. **Hazır Rotalar** — **5 adım-adım ikonlu rota** (`components/route-icons.tsx` = RouteIcon): ✈ uçuş → 🚐 transfer → 🏨 otel → gün gün duraklar, "N. Gün" etiketli. **3/5/7 gün × klasik/balayı/aile/lüks** kitle rozetli. İçerik **web araştırmasıyla** kuruldu (Aspendos/Side/Perge/Düden/Phaselis/Tahtalı/Çıralı/Kekova/Köprülü/Land of Legends/Antalya Akvaryumu). `routes` ad alanı **85 anahtar**, 5 dil. Kart üstünde 3D konum pini + otel adı.
+   - Rotalar→oteller: Kısa Kaçamak (3g · Lara Barut) · Klasik Antalya (5g · Cullinan Belek) · **Balayı Kıyısı (5g · NG Phaselis Bay)** · Aile Macerası (7g · Land of Legends) · Lüks & Adrenalin (7g · Maxx Royal Kemer).
+4. **Oteller** (`components/hotel-cards.tsx`) — **8 gerçek otel** premium kart grid'i; görseller **kullanıcının resmi fotoğrafları** (`public/images/hotels/*.jpg`, 1600px). Her kartta **3D konum pini** (sağ üst), **Kimler için / Neden öneriyoruz / ⓘ Dürüst not** + "Bu otel için teklif iste" (butonlar `mt-auto` ile hizalı). `hotelsd` ad alanı. **NG Phaselis Bay = Göynük, Kemer** (Tekirova değil — resmi adresle düzeltildi). Eski `hotel-accordion.tsx` duruyor (kullanılmıyor).
+5. **Fermuar deneyimi** — iki modlu (aşağıda PERF).
+6. **Neden Antalya Bridge** (koyu deniz bandı, 3 neden).
+7. **Türkçe ders + PetLingo** — sağ kolonda **CANLI uygulama** (telefon mockup + `PetLingoLive`, gerçek Lottie mini-oyun), "🎁 Ücretsiz bonus" rozeti. Ders bonusu olarak konumlandırıldı.
+8. **Türkiye'de eğitim** (ikincil) — görsel yerine **Türk bayraklı tekne videosu** (`turkish-flag-boat.mp4`, AutoVideo, yalnız görünürken oynar; Pexels #30383116, 148MB→**9.6MB** ffmpeg ile sıkıştırıldı, poster `turkish-flag.jpg`).
+9. **Ödeme & Güven** — Kaspi + kripto + **5 güven maddesi** (net anlaşma · manuel onay · gizli ücret yok · WA/TG · ilk mesajdan plana kadar tek muhatap). Sakin dil, kripto öne çıkmıyor.
+10. **Son CTA** — "Antalya planını birlikte kuralım" → #hizli-plan + /contact.
+
+**SEO/metadata (`app/[locale]/layout.tsx`):** dönüşüm odaklı başlık/açıklama (TR: "Antalya Tatilini Yerel Uzmanlarla Sana Özel Planla" / EN: "Personalized Antalya Travel Planning with Local Experts") 5 dil · **og:image + twitter:image** `/og/antalya-bridge.jpg` (1200×630, üretildi) · `summary_large_image` · canonical + **hreflang (5 dil + x-default)** + locale `og:locale` · **TravelAgency** JSON-LD (knowsLanguage + offers).
+
+**İletişim güvenliği (`lib/config.ts`):** `NEXT_PUBLIC_WHATSAPP_NUMBER` / `NEXT_PUBLIC_TELEGRAM_USERNAME` (eski adlara fallback). Numara/kullanıcı adı yoksa veya placeholder ise WA/TG butonları **ölü link yerine `/contact`'a** düşer (footer + floating-contact).
+
+**⚡ PERFORMANS — fermuar iki modlu (`components/zipper-reveal.tsx`):**
+- **Mobil / dokunmatik / reduced-motion →** native **scroll-snap galeri** (poster görseller, video YOK, rAF YOK, clip-path YOK) → tarayıcının kendi 60fps'i. Eski sorun: her karede `clip-path: path()` + sürekli rAF salınımı + 9 eşzamanlı `<video>` decode mobilde kasıyordu.
+- **Masaüstü (≥1024 + pointer:fine) →** imza fermuar korunur ama **sürekli rAF yerine yalnız scroll'da tek kare** hesap (boştayken sıfır repaint); idle `sin()` salınımı kaldırıldı; "canlılık" sürgü kulpunda küçük CSS transform (`.zip-pull`); `will-change` yalnız cover+content; kart videoları `preload=none` + yalnız aktif oynar.
+- **Temizlik:** kullanılmayan **29 medya dosyası silindi** (eski `act-*`/`lol-*`/`edu-*` videolar, eski otel/ders görselleri) → `public` **203MB→143MB**.
+
+**i18n yeni ad alanları (5 dil):** `plan` · `trust` · `lessonsHome` · `studyHome` · `hotelsd` · yenilenen `routes` (85). `tsc --noEmit` ✓, `next build` ✓ (11/11).
+
+### ⛔ AÇIK / YAPILACAK (Rev 10)
+- **Production env:** `NEXT_PUBLIC_SITE_URL` gerçek domaine ayarlanmalı (şu an canonical/og IP gösteriyor). `NEXT_PUBLIC_WHATSAPP_NUMBER` + `NEXT_PUBLIC_TELEGRAM_USERNAME` gerçek değerlerle doldurulmalı (yoksa butonlar /contact'a düşüyor).
+- **AI chat anahtarı hâlâ boş** (Rev 9'dan devam) — `.env` `ANTHROPIC_API_KEY`/`OPENROUTER_API_KEY`.
+- **Güvenlik:** sunucu root şifresi sohbette açık geçti → **değiştirilmeli**.
+- **Tipografi:** Cormorant Garamond (başlık) + Onest (gövde) **korundu** — Kiril (RU/KK) gerekliliği premium serif seçimini kısıtlıyor; mevcut pairing uygun ve premium. Opsiyonel alternatif: Playfair Display (Kiril destekli) — istenirse.
+- Daha fazla otel fotoğrafı gelince `public/images/hotels/<ad>.jpg` (1600px) + `hotelsd`/route eşleşmesi eklenir.
+
+## 🔁 Revizyon 9 — gerçek fermuar, hazır rotalar, IT alanı, öğretmen kimliği, ödeme
 
 > **Şu an buradayız.** Son commit dalda; deploy için sunucuda `git reset --hard origin/...` (aşağıdaki nota bak).
 
@@ -30,13 +66,14 @@
 - **Akdeniz Üni uzaktan kampüs** — Commons'ta yok; `akdeniz-campus-wide.jpg` slotu açık.
 
 ### 🚀 Deploy notu (ÖNEMLİ)
-Sunucuda `git pull` bazen ilerlemiyor (untracked `build.log` / `docker-compose.override.yml`). **Garantili deploy:**
+Sunucuda `git pull` bazen ilerlemiyor (untracked `build.log` / `docker-compose.override.yml`). **Garantili deploy (GÜNCEL dal):**
 ```
 cd /opt/antalya-bridge
-git fetch origin claude/consulting-site-plan-6k4lix
-git reset --hard origin/claude/consulting-site-plan-6k4lix
+git fetch origin claude/redesign-conversion
+git reset --hard origin/claude/redesign-conversion
 docker compose up -d --build
 ```
+**Geri dönüş:** yukarıdaki iki `redesign-conversion` satırını `consulting-site-plan-6k4lix` ile değiştir → eski sürüm geri gelir.
 
 ## 🔁 Revizyon 8 — AI asistan, LoL kaldırıldı, IT hizmeti, dalga buton, mobil menü
 - **AI sohbet asistanı her sayfada:** yüzen widget (AI Asistan + WhatsApp + Telegram). `/api/chat` (OpenRouter, public + rate-limit) müşterinin dilinde konuşur, hedef/tarih/bütçe sorar, ona özel taslak plan sunar, WhatsApp'a yönlendirir. `components/floating-contact.tsx` (5 dil UI). Fiyat vermez, uydurmaz.

@@ -82,11 +82,11 @@ export function HotelCards({ hotels, labels }: { hotels: HotelCard[]; labels: La
             <p className="mt-3 text-[14px] leading-relaxed" style={{ color: "rgb(var(--muted-foreground))" }}>
               <span className="font-semibold" style={{ color: "rgb(var(--foreground))" }}>{labels.why}:</span> {h.why}
             </p>
-            <p className="mt-2 flex gap-1.5 text-[12.5px] leading-relaxed" style={{ color: "rgb(var(--muted-foreground))" }}>
+            <p className="mt-2 mb-6 flex gap-1.5 text-[12.5px] leading-relaxed" style={{ color: "rgb(var(--muted-foreground))" }}>
               <span aria-hidden="true">ⓘ</span>
               <span><span className="font-semibold">{labels.note}:</span> {h.note}</span>
             </p>
-            <Link href="/contact" className="btn-accent mt-5 w-full justify-center shadow-lg shadow-black/10">
+            <Link href="/contact" className="btn-accent mt-auto w-full justify-center shadow-lg shadow-black/10">
               {labels.cta} <IconArrow />
             </Link>
           </div>

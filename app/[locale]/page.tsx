@@ -9,6 +9,8 @@ import { DiveHero } from "@/components/dive-hero";
 import { ZipperReveal } from "@/components/zipper-reveal";
 import { HotelCards, Pin3D } from "@/components/hotel-cards";
 import { RouteIcon } from "@/components/route-icons";
+import { PetLingoLive } from "@/components/petlingo-live";
+import { AutoVideo } from "@/components/auto-video";
 import { QuickPlanForm } from "@/components/quick-plan-form";
 import { IconArrow, IconCheck } from "@/components/icons";
 import { siteConfig } from "@/lib/config";
@@ -398,22 +400,23 @@ export default async function HomePage({
             <Link href="/lessons" className="btn-accent mt-8 shadow-lg shadow-black/10">{lh("cta")} <IconArrow /></Link>
           </Reveal>
 
-          {/* PetLingo ücretsiz bonus kartı */}
+          {/* PetLingo — CANLI uygulama (Türkçe ders bonusu) */}
           <Reveal delay={120}>
-            <div className="relative overflow-hidden rounded-[2rem] border p-8 shadow-xl" style={{ borderColor: "rgb(var(--border))", backgroundImage: "linear-gradient(150deg, rgb(var(--lagoon) / 0.10), rgb(var(--primary) / 0.06))" }}>
-              <span className="absolute right-5 top-5 rounded-full px-3 py-1 text-[11px] font-bold uppercase tracking-wide text-white" style={{ backgroundImage: "linear-gradient(135deg, rgb(var(--accent2)), rgb(var(--accent)))" }}>
-                {lh("bonusBadge")}
+            <div className="relative flex flex-col items-center">
+              <span className="z-10 mb-4 inline-flex items-center gap-1.5 rounded-full px-3.5 py-1.5 text-[11px] font-bold uppercase tracking-wide text-white shadow-lg" style={{ backgroundImage: "linear-gradient(135deg, rgb(var(--accent2)), rgb(var(--accent)))" }}>
+                🎁 {lh("bonusBadge")}
               </span>
-              <span className="text-5xl">🐾</span>
-              <h3 className="font-display mt-4 text-3xl font-semibold leading-tight" style={{ color: "rgb(var(--foreground))" }}>PetLingo</h3>
-              <p className="mt-2 text-sm font-semibold" style={{ color: "rgb(var(--primary))" }}>{x("pl_own")} · {x("pl_ai")}</p>
-              <p className="mt-4 text-[15px] leading-relaxed" style={{ color: "rgb(var(--muted-foreground))" }}>{lh("petlingoText")}</p>
-              <div className="mt-6 grid grid-cols-2 gap-2">
-                {[x("pl_f3"), x("pl_f4"), x("pl_f1"), x("pl_f6")].map((f) => (
-                  <span key={f} className="rounded-xl px-3 py-2 text-[12px] font-medium" style={{ backgroundColor: "rgb(var(--card))", color: "rgb(var(--foreground))" }}>{f}</span>
-                ))}
+              <div className="relative flex justify-center">
+                <div className="pointer-events-none absolute left-1/2 top-1/2 h-[115%] w-[115%] -translate-x-1/2 -translate-y-1/2 rounded-full blur-3xl" style={{ background: "radial-gradient(circle, rgb(var(--accent2) / 0.24), rgb(var(--lagoon) / 0.10) 45%, transparent 70%)" }} />
+                <div className="phone-mock float-soft relative">
+                  <div className="phone-notch" />
+                  <div className="phone-screen"><PetLingoLive /></div>
+                  <span className="ai-pulse absolute -right-2 -top-2 z-10 grid h-11 w-11 place-items-center rounded-full text-white shadow-xl" style={{ backgroundImage: "linear-gradient(135deg, rgb(var(--lagoon)), rgb(var(--primary)))" }}>
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M12 3l1.6 3.6L17 8.2l-3.4 1.6L12 13.4l-1.6-3.6L7 8.2l3.4-1.6z" fill="currentColor" stroke="none" /><circle cx="18" cy="17" r="1.3" fill="currentColor" stroke="none" /></svg>
+                  </span>
+                </div>
               </div>
-              <p className="mt-5 text-[13px] font-semibold" style={{ color: "rgb(var(--accent))" }}>{x("pl_combo")}</p>
+              <p className="mt-6 text-center text-[13px] font-semibold" style={{ color: "rgb(var(--primary))" }}>{x("pl_own")} · {x("pl_ai")}</p>
             </div>
           </Reveal>
         </div>
@@ -424,8 +427,9 @@ export default async function HomePage({
         <div className="container-wide">
           <div className="grid items-center gap-10 lg:grid-cols-12 lg:gap-16">
             <Reveal className="lg:col-span-5">
-              <figure className="img-zoom relative aspect-[4/3] overflow-hidden rounded-[2rem] shadow-xl">
-                <Image src="/images/akdeniz-campus.jpg" alt="Akdeniz Üniversitesi" fill sizes="(max-width:1024px) 100vw, 40vw" className="object-cover" />
+              <figure className="relative aspect-[4/3] overflow-hidden rounded-[2rem] shadow-xl">
+                <AutoVideo className="absolute inset-0 h-full w-full object-cover" src="/media/turkish-flag-boat.mp4" poster="/images/turkish-flag.jpg" />
+                <div className="absolute inset-0" style={{ background: "linear-gradient(180deg, transparent 55%, rgba(4,18,24,0.45) 100%)" }} />
               </figure>
             </Reveal>
             <Reveal className="lg:col-span-7" delay={100}>
