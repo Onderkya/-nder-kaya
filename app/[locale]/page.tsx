@@ -7,7 +7,7 @@ import { JsonLd } from "@/components/json-ld";
 import { Reveal } from "@/components/reveal";
 import { DiveHero } from "@/components/dive-hero";
 import { ZipperReveal } from "@/components/zipper-reveal";
-import { HotelCards } from "@/components/hotel-cards";
+import { HotelCards, Pin3D } from "@/components/hotel-cards";
 import { QuickPlanForm } from "@/components/quick-plan-form";
 import { IconArrow, IconCheck } from "@/components/icons";
 import { siteConfig } from "@/lib/config";
@@ -66,7 +66,7 @@ export default async function HomePage({
   // Hazır rotalar — gün gün, mantıklı; uçak+otel+transfer dahil (kişiye özel).
   const routes = [
     {
-      name: r("r1name"), tag: r("r1tag"), days: 5, stars: 5, hotel: "Belek", img: "/images/maxxroyal.jpg",
+      name: r("r1name"), tag: r("r1tag"), days: 5, stars: 5, hotel: "Cullinan Belek", loc: hd("cullinan_loc"), img: "/images/hotels/cullinan-belek.jpg",
       plan: [
         { place: "Kaleiçi & Yat Limanı", tag: r("t_history") },
         { place: "Düden & Konyaaltı", tag: r("t_sea") },
@@ -76,7 +76,7 @@ export default async function HomePage({
       ],
     },
     {
-      name: r("r2name"), tag: r("r2tag"), days: 7, stars: 5, hotel: "Lara", img: "/images/kremlin.jpg",
+      name: r("r2name"), tag: r("r2tag"), days: 7, stars: 5, hotel: "Maxx Royal Kemer", loc: hd("maxxkemer_loc"), img: "/images/hotels/maxx-royal-kemer.jpg",
       plan: [
         { place: "Karşılama & resort", tag: r("t_arrival") },
         { place: "Land of Legends Aqua", tag: r("t_aqua") },
@@ -88,7 +88,7 @@ export default async function HomePage({
       ],
     },
     {
-      name: r("r3name"), tag: r("r3tag"), days: 4, stars: 4, hotel: "Kaş", img: "/images/sunset.jpg",
+      name: r("r3name"), tag: r("r3tag"), days: 4, stars: 5, hotel: "NG Phaselis Bay", loc: hd("ngphaselis_loc"), img: "/images/hotels/ng-phaselis-bay.jpg",
       plan: [
         { place: "Kaş kasabası", tag: r("t_sea") },
         { place: "Kaputaş Plajı", tag: r("t_sea") },
@@ -97,7 +97,7 @@ export default async function HomePage({
       ],
     },
     {
-      name: r("r4name"), tag: r("r4tag"), days: 6, stars: 5, hotel: "Belek", img: "/images/rixos.jpg",
+      name: r("r4name"), tag: r("r4tag"), days: 6, stars: 5, hotel: "Land of Legends Kingdom", loc: hd("legends_loc"), img: "/images/hotels/land-of-legends-kingdom.jpg",
       plan: [
         { place: "Karşılama & resort", tag: r("t_arrival") },
         { place: "Land of Legends", tag: r("t_park") },
@@ -217,6 +217,11 @@ export default async function HomePage({
                     <div className="glass absolute right-4 top-4 flex items-center gap-2 rounded-full border px-3 py-1.5 text-white" style={{ borderColor: "rgb(255 255 255 / 0.3)", backgroundColor: "rgb(4 28 40 / 0.45)" }}>
                       <span className="font-display text-xl leading-none">{rt.days}</span>
                       <span className="text-[10px] font-semibold uppercase tracking-wide text-white/80">{r("daysWord")}</span>
+                    </div>
+                    {/* 3D konum pini — sağ üstteki gün rozetinin solunda */}
+                    <div className="glass absolute left-4 top-4 flex items-center gap-1.5 rounded-full border py-1.5 pl-2 pr-3 text-white" style={{ borderColor: "rgb(255 255 255 / 0.3)", backgroundColor: "rgb(4 28 40 / 0.45)" }}>
+                      <Pin3D />
+                      <span className="text-[12px] font-semibold leading-none">{rt.loc}</span>
                     </div>
                     <div className="absolute inset-x-0 bottom-0 p-6 text-white">
                       <span className="text-sm" style={{ color: "rgb(251 191 80)" }}>{"★".repeat(rt.stars)} · {rt.hotel}</span>

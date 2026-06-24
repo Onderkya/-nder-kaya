@@ -14,7 +14,7 @@ export type HotelCard = {
 type Labels = { cta: string; bestFor: string; why: string; note: string };
 
 /** 3D görünümlü konum pini — katmanlı gradient + iç parlama + yumuşak gölge. */
-function Pin3D() {
+export function Pin3D() {
   return (
     <svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true" style={{ filter: "drop-shadow(0 2px 2px rgba(0,0,0,0.45))" }}>
       <defs>
