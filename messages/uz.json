@@ -250,6 +250,15 @@
     "f4": "Kelish va hayot qo'llab-quvvatlashi",
     "cta": "Turkiyada o'qish haqida so'rang"
   },
+  "voices": {
+    "eyebrow": "Mehmonlar fikri",
+    "title": "Mehmonlarimiz nima deydi",
+    "honest": "Faqat haqiqiy mehmonlar — soxta sharhlar yo'q",
+    "emptyTitle": "Birinchi bo'lib fikr bildiring",
+    "emptyText": "Biz endigina ish boshladik va sharhlarni o'ylab topmaymiz — bu yerda faqat haqiqiy mehmonlar tajribasi e'lon qilinadi. Antaliyaga sayohatingizni birga rejalashtirganimizdan so'ng, istasangiz, o'z tajribangiz bilan bo'lishishingiz mumkin.",
+    "serve": "Biz Qozog'iston, Rossiya, O'zbekiston va Turkiyadan kelgan mehmonlarga yordam beramiz.",
+    "cta": "Tajribangiz bilan bo'lishing"
+  },
   "hotelsd": {
     "bestFor": "Kimga mos",
     "why": "Nega tavsiya qilamiz",

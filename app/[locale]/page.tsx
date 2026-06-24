@@ -11,6 +11,9 @@ import { HotelCards, Pin3D } from "@/components/hotel-cards";
 import { RouteIcon } from "@/components/route-icons";
 import { PetLingoLive } from "@/components/petlingo-live";
 import { AutoVideo } from "@/components/auto-video";
+import { GuestVoices } from "@/components/guest-voices";
+import { FaqAccordion } from "@/components/faq-accordion";
+import { MobilePlanCta } from "@/components/mobile-plan-cta";
 import { QuickPlanForm } from "@/components/quick-plan-form";
 import { IconArrow, IconCheck } from "@/components/icons";
 import { siteConfig } from "@/lib/config";
@@ -33,6 +36,16 @@ export default async function HomePage({
   const lh = await getTranslations("lessonsHome");
   const st = await getTranslations("studyHome");
   const hd = await getTranslations("hotelsd");
+  const v = await getTranslations("voices");
+  const f = await getTranslations("faq");
+
+  // Ana sayfa mini-SSS (itiraz giderme) — mevcut faq çevirilerinden.
+  const faqItems = [
+    { q: f("q1"), a: f("a1") },
+    { q: f("q2"), a: f("a2") },
+    { q: f("q3"), a: f("a3") },
+    { q: f("q4"), a: f("a4") },
+  ];
 
   // Otomatik-yüklenen görsel slotu: dosya public/images içine bırakılınca devreye girer.
   const has = (name: string) => existsSync(path.join(process.cwd(), "public", "images", name));
@@ -452,6 +465,20 @@ export default async function HomePage({
         </div>
       </section>
 
+      {/* ============ 8.5 · MİSAFİR SÖZLERİ (dürüst yorum paneli) ============ */}
+      <GuestVoices
+        labels={{
+          eyebrow: v("eyebrow"),
+          title: v("title"),
+          honest: v("honest"),
+          emptyTitle: v("emptyTitle"),
+          emptyText: v("emptyText"),
+          serve: v("serve"),
+          cta: v("cta"),
+        }}
+        reviews={[]}
+      />
+
       {/* ============ 9 · ÖDEME & GÜVEN ============ */}
       <section className="py-24 sm:py-28" style={{ backgroundColor: "rgb(var(--background))" }}>
         <div className="container-wide">
@@ -489,6 +516,19 @@ export default async function HomePage({
         </div>
       </section>
 
+      {/* ============ 9.5 · MİNİ SSS (itiraz giderme) ============ */}
+      <section className="py-24 sm:py-28" style={{ backgroundColor: "rgb(var(--muted) / 0.5)" }}>
+        <div className="container-wide">
+          <Reveal className="mx-auto max-w-2xl text-center">
+            <p className="eyebrow justify-center" style={{ color: "rgb(var(--accent))" }}>{x("faq_eyebrow")}</p>
+            <h2 className="h-section mt-5 text-balance" style={{ color: "rgb(var(--foreground))" }}>{f("title")}</h2>
+          </Reveal>
+          <Reveal className="mt-12">
+            <FaqAccordion items={faqItems} />
+          </Reveal>
+        </div>
+      </section>
+
       {/* ============ 10 · SON CTA ============ */}
       <section className="relative">
         <Reveal className="relative flex min-h-[460px] items-center justify-center overflow-hidden px-6 py-24 text-center text-white sm:min-h-[540px]">
@@ -520,6 +560,9 @@ export default async function HomePage({
           </div>
         </Reveal>
       </section>
+
+      {/* Mobil sabit "Tatil planı iste" pili */}
+      <MobilePlanCta label={t("heroCtaPrimary")} />
     </>
   );
 }

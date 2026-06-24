@@ -506,5 +506,14 @@
     "quickLinks": "Hızlı bağlantılar",
     "services": "Hizmetler",
     "contact": "İletişim"
+  },
+  "voices": {
+    "eyebrow": "Misafir sözleri",
+    "title": "Misafirlerimiz ne diyor?",
+    "honest": "Yalnızca gerçek misafirler — uydurma yorum yok",
+    "emptyTitle": "İlk paylaşan sen ol",
+    "emptyText": "Yeni yola çıktık ve yorumları uydurmuyoruz; burada yalnızca gerçek misafir deneyimleri yer alır. Antalya planını birlikte yaptıktan sonra, dilersen deneyimini burada yayınlarız.",
+    "serve": "Kazakistan, Rusya, Özbekistan ve Türkiye'den misafirlere hizmet veriyoruz.",
+    "cta": "Deneyimini paylaş"
   }
 }

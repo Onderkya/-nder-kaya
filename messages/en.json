@@ -250,6 +250,15 @@
     "f4": "Arrival & life support",
     "cta": "Ask about studying in Turkey"
   },
+  "voices": {
+    "eyebrow": "Guest voices",
+    "title": "What our guests say",
+    "honest": "Real guests only — no fake reviews",
+    "emptyTitle": "Be the first to share",
+    "emptyText": "We're just getting started, and we don't make up reviews — only real guest experiences appear here. After we plan your Antalya trip together, you're welcome to share yours.",
+    "serve": "We help guests from Kazakhstan, Russia, Uzbekistan and Türkiye.",
+    "cta": "Share your experience"
+  },
   "hotelsd": {
     "bestFor": "Best for",
     "why": "Why we recommend it",
