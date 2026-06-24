@@ -36,8 +36,7 @@ export default async function EducationPage({ params }: { params: Promise<{ loca
         eyebrow={x("edu_journeyEyebrow")}
         title={t("title")}
         intro={t("intro")}
-        image="/images/turkish-flag.jpg"
-        videos={["/media/turkish-flag-boat.mp4"]}
+        image="/images/turkish-flag-sky.jpg"
         emblem
       />
 

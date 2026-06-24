@@ -4,7 +4,22 @@
 > ↩️ **Geri dönüş (rollback):** eski sürüm dokunulmadı → dal `claude/consulting-site-plan-6k4lix` + etiket `safe/before-redesign-rev9`. Beğenilmezse sunucuda o dala `git reset --hard` + rebuild.
 > Görsel/medya kaynakları: `public/images/CREDITS.txt` (CC / Mixkit / CC0) · oteller: kullanıcının verdiği resmi fotoğraflar (`public/images/hotels/`).
 
-## 🔁 Revizyon 10 — DÖNÜŞÜM ODAKLI YENİDEN YAPI (GÜNCEL · dal `claude/redesign-conversion`)
+## 🔁 Revizyon 11 — iç sayfa rötuşları + eğitim hero düzeltmesi (GÜNCEL · dal `claude/redesign-conversion`)
+
+> **Şu an buradayız.** Kullanıcı geri bildirimiyle iç sayfa düzeltmeleri yapıldı.
+
+- **EĞİTİM HERO DÜZELTİLDİ** (`app/[locale]/education/page.tsx`): Boat-flag videosu **PORTRAIT (9:16)** olduğu için full-bleed landscape hero'da dikey şeride kırpılıyordu (direk + martılar, dağınık) → **temiz LANDSCAPE Türk bayrağı fotosu** ile değiştirildi (`turkish-flag-sky.jpg`, Wikimedia CC, 1920×1272, gökyüzünde dalgalanan bayrak; başlık için bol temiz alan). Statik + CinematicHero scroll-zoom = sakin/premium. Mezuniyet madalyonu (`emblem`) korundu. (Komite/kurul fotosu zaten Rev 10'da kaldırılmıştı.)
+- **ANTALYA CTA arka planı** (`antalya/page.tsx`): gece marina (`harbor-night.jpg`) → **Kaputaş/Kaş turkuaz denizi** (`kaputas.jpg`), overlay hafifletildi.
+- **TÜRKÇE DERS — ZOOM ONLY:** tüm "Antalya'da yüz yüze" iddiaları kaldırıldı; dersler artık yalnız **Zoom üzerinden online** (5 dil: `imm.les_p2Text` · `lessonsHome.c3` · `lessons.intro` · `services.lessonsDesc` · `faq.a3`).
+- **Ders süreç kartları** eşit yükseklik (`h-full` flex). **PetLingo kartı (03)**: "🎁 Ücretsiz bonus" pulse rozeti + **"PetLingo'yu dene →"** CTA → `#petlingo` (PetLingoShowcase'e `id` + `scroll-mt-20` eklendi); turkuaz glow ile öne çıkarıldı.
+- **CinematicHero**: yeni opsiyonel **`emblem`** prop'u (cam içinde mezuniyet kepi madalyonu, sağ üst).
+- **Ana sayfa eklemeleri (Rev 10 sonrası):** **Misafir sözleri paneli** (`guest-voices.tsx`) — DÜRÜST: uydurma yorum yok; boşken "yalnızca gerçek misafirler" daveti + bayraklar; gerçek yorum gelince `reviews[]` dizisine eklenir. **Mini-SSS** (mevcut faq q1-a4). **Mobil sabit "Tatil planı iste" pili** (`mobile-plan-cta.tsx`, sol alt). `voices` ad alanı 5 dilde.
+- **Özbekçe (uz) PASİF:** `i18n/routing.ts` locales = `["tr","en","ru","kk"]`; `uz.json` + çeviriler duruyor (tek satırla geri açılır). `/uz` artık servis edilmiyor.
+- **Türk bayraklı tekne videosu** (`turkish-flag-boat.mp4`, portrait) hâlâ ana sayfa "Türkiye'de eğitim" bölümünün **4:3 figüründe** kullanılıyor (orada kabul edilebilir kırpılıyor); eğitim HERO'da artık landscape foto var.
+
+`tsc --noEmit` ✓ · `next build` ✓ (11/11) · 4 aktif dil.
+
+## 🔁 Revizyon 10 — DÖNÜŞÜM ODAKLI YENİDEN YAPI (dal `claude/redesign-conversion`)
 
 > **Şu an buradayız.** Ana ürün net: **kişiye özel Antalya tatil planlama**. Türkçe ders + Türkiye'de eğitim ikincil; IT ana sayfadan kaldırıldı. Tüm değişiklikler 5 dilde.
 
