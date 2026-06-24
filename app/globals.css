@@ -536,3 +536,12 @@
   background-image: linear-gradient(135deg, rgb(var(--lagoon)), rgb(var(--primary)));
   box-shadow: 0 12px 26px -12px rgb(var(--primary) / 0.6);
 }
+
+/* ----- Scrollbar gizle (mobil yer galerisi vb.) ----- */
+.no-scrollbar::-webkit-scrollbar { display: none; }
+.no-scrollbar { scrollbar-width: none; -ms-overflow-style: none; }
+
+/* ----- Fermuar sürgü kulpu — yalnız küçük öğe, GPU transform (ucuz "canlılık") ----- */
+.zip-pull { transform-box: fill-box; transform-origin: 50% 2px; animation: zipSwing 2.8s ease-in-out infinite; }
+@keyframes zipSwing { 0%, 100% { transform: rotate(-8deg); } 50% { transform: rotate(8deg); } }
+@media (prefers-reduced-motion: reduce) { .zip-pull { animation: none; } }
