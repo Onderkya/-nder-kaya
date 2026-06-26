@@ -3,7 +3,6 @@
 import { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import Image from "next/image";
-import { Reveal } from "@/components/reveal";
 import { RouteIcon } from "@/components/route-icons";
 import { Pin3D } from "@/components/hotel-cards";
 import { IconArrow, IconCheck } from "@/components/icons";
@@ -14,6 +13,7 @@ type Route = {
   key: string; name: string; tag: string; best: string; aud: string;
   days: number; stars: number; hotel: string; loc: string; img: string;
   steps: Step[]; wa: string | null;
+  hotelWhy: string; hotelNote: string; mapQ: string;
 };
 type Inclusion = { icon: string; label: string };
 type Addon = { key: string; label: string };
@@ -21,7 +21,7 @@ type Labels = {
   daysWord: string; routeLabel: string; bestForLabel: string; allInLabel: string;
   ctaPick: string; oneMessage: string; flightsNote: string; custom: string;
   curated: string; details: string; close: string; dayByDay: string; contactHref: string;
-  priceLabel: string;
+  priceLabel: string; whyHotel: string; mapTitle: string; noteLabel: string;
   custTitle: string; custHint: string; addonsTitle: string; addNotePh: string;
   mIntro2: string; mKept: string; mRemoved: string; mAddons: string; mNote: string;
 };
@@ -39,16 +39,16 @@ export function RouteGallery({ routes, inclusions, addons, labels }: { routes: R
   const [excluded, setExcluded] = useState<Set<number>>(new Set());
   const [picked, setPicked] = useState<Set<string>>(new Set());
   const [note, setNote] = useState("");
-  const railRef = useRef<HTMLDivElement>(null);
+  const hoverTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const active = routes.find((r) => r.key === openKey) ?? null;
 
-  const scrollRail = (dir: number) => {
-    const el = railRef.current;
-    if (!el) return;
-    const card = el.querySelector<HTMLElement>("[data-pkg-card]");
-    const step = card ? card.offsetWidth + 20 : el.clientWidth * 0.85;
-    el.scrollBy({ left: dir * step, behavior: "smooth" });
+  // Üstüne gelince aç (yalnız hover'lı cihazlarda; küçük gecikme yanlış açılmayı önler).
+  const openOnHover = (key: string) => {
+    if (typeof window !== "undefined" && window.matchMedia && !window.matchMedia("(hover: hover)").matches) return;
+    if (hoverTimer.current) clearTimeout(hoverTimer.current);
+    hoverTimer.current = setTimeout(() => setOpenKey(key), 200);
   };
+  const cancelHover = () => { if (hoverTimer.current) clearTimeout(hoverTimer.current); };
 
   useEffect(() => { setMounted(true); }, []);
 
@@ -96,24 +96,22 @@ export function RouteGallery({ routes, inclusions, addons, labels }: { routes: R
 
   return (
     <>
-      <Reveal className="relative mt-12">
-        {/* Oklar — masaüstü */}
-        <button type="button" aria-label="‹" onClick={() => scrollRail(-1)} className="absolute -left-2 top-1/2 z-10 hidden -translate-y-1/2 place-items-center rounded-full border p-2.5 shadow-lg backdrop-blur transition hover:scale-105 sm:grid lg:-left-5" style={{ borderColor: "rgb(var(--border))", backgroundColor: "rgb(var(--card) / 0.9)", color: "rgb(var(--foreground))" }}>
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"><path d="m15 18-6-6 6-6" /></svg>
-        </button>
-        <button type="button" aria-label="›" onClick={() => scrollRail(1)} className="absolute -right-2 top-1/2 z-10 hidden -translate-y-1/2 place-items-center rounded-full border p-2.5 shadow-lg backdrop-blur transition hover:scale-105 sm:grid lg:-right-5" style={{ borderColor: "rgb(var(--border))", backgroundColor: "rgb(var(--card) / 0.9)", color: "rgb(var(--foreground))" }}>
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"><path d="m9 18 6-6-6-6" /></svg>
-        </button>
+      <div className="pkg-marquee-wrap relative mt-12 w-full overflow-hidden">
+        {/* Kenar yumuşatma (sinematik fade) */}
+        <div aria-hidden className="pointer-events-none absolute inset-y-0 left-0 z-10 w-12 sm:w-28" style={{ background: "linear-gradient(90deg, rgb(var(--background)), transparent)" }} />
+        <div aria-hidden className="pointer-events-none absolute inset-y-0 right-0 z-10 w-12 sm:w-28" style={{ background: "linear-gradient(270deg, rgb(var(--background)), transparent)" }} />
 
-        <div ref={railRef} className="no-scrollbar flex snap-x snap-mandatory gap-5 overflow-x-auto px-1 pb-3">
-          {routes.map((rt) => (
+        <div className="pkg-marquee flex gap-5 px-3 py-2">
+          {[...routes, ...routes].map((rt, i) => (
             <button
-              key={rt.key}
+              key={`${rt.key}-${i}`}
               data-pkg-card
               type="button"
               onClick={() => setOpenKey(rt.key)}
+              onMouseEnter={() => openOnHover(rt.key)}
+              onMouseLeave={cancelHover}
               aria-label={`${rt.name} — ${labels.details}`}
-              className="route-card group relative w-[84vw] max-w-[360px] shrink-0 snap-center overflow-hidden rounded-[2rem] text-left ring-1 ring-black/5 sm:w-[360px]"
+              className="route-card group relative w-[80vw] max-w-[360px] shrink-0 overflow-hidden rounded-[2rem] text-left ring-1 ring-black/5 sm:w-[360px]"
             >
               <div className="route-img relative aspect-[5/7] overflow-hidden">
                 <Image src={rt.img} alt={`${rt.name} — ${rt.hotel}`} fill sizes="(max-width:640px) 84vw, 360px" className="object-cover" />
@@ -148,8 +146,7 @@ export function RouteGallery({ routes, inclusions, addons, labels }: { routes: R
             </button>
           ))}
         </div>
-      </Reveal>
-      <p className="mt-3 text-center text-[15px] tracking-[0.5em] sm:hidden" style={{ color: "rgb(var(--muted-foreground))" }} aria-hidden>‹ ›</p>
+      </div>
 
       {active && mounted && createPortal(
         <div className="fixed inset-0 z-[80] flex items-end justify-center sm:items-center sm:p-6" role="dialog" aria-modal="true" aria-label={active.name} onClick={() => setOpenKey(null)}>
@@ -185,6 +182,30 @@ export function RouteGallery({ routes, inclusions, addons, labels }: { routes: R
               <p className="text-[14px] leading-snug" style={{ color: "rgb(var(--muted-foreground))" }}>
                 <span className="font-semibold" style={{ color: "rgb(var(--foreground))" }}>{labels.bestForLabel}:</span> {active.best}
               </p>
+
+              {/* Neden bu otel — satış metni */}
+              {active.hotelWhy && (
+                <div className="mt-4 rounded-2xl border p-4" style={{ borderColor: "rgb(var(--border))", backgroundColor: "rgb(var(--muted) / 0.4)" }}>
+                  <p className="text-[11px] font-bold uppercase tracking-[0.1em]" style={{ color: "rgb(var(--accent))" }}>{labels.whyHotel}</p>
+                  <p className="mt-1.5 text-[14px] leading-relaxed" style={{ color: "rgb(var(--foreground))" }}>{active.hotelWhy}</p>
+                  {active.hotelNote && (
+                    <p className="mt-2 text-[12.5px] italic leading-relaxed" style={{ color: "rgb(var(--muted-foreground))" }}>{labels.noteLabel}: {active.hotelNote}</p>
+                  )}
+                </div>
+              )}
+
+              {/* Otelin tam konumu — gerçek harita (denizin kenarı) */}
+              <p className="mt-6 text-[11px] font-bold uppercase tracking-[0.1em]" style={{ color: "rgb(var(--accent))" }}>{labels.mapTitle}</p>
+              <div className="mt-3 overflow-hidden rounded-2xl border" style={{ borderColor: "rgb(var(--border))" }}>
+                <iframe
+                  title={active.hotel}
+                  src={`https://www.google.com/maps?q=${active.mapQ}&z=14&output=embed`}
+                  loading="lazy"
+                  referrerPolicy="no-referrer-when-downgrade"
+                  className="block h-[230px] w-full"
+                  style={{ border: 0 }}
+                />
+              </div>
 
               {/* Her şey dahil */}
               <div className="mt-5 rounded-2xl border p-4 sm:p-5" style={{ borderColor: "rgb(var(--primary) / 0.18)", backgroundColor: "rgb(var(--lagoon) / 0.06)" }}>

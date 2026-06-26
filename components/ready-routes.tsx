@@ -80,12 +80,21 @@ export async function ReadyRoutes() {
     },
   ];
 
+  // Rota → otel (hotelsd) eşlemesi: detay sayfasında otelin gerçek tanıtımı + konumu.
+  const hkeyOf: Record<string, string> = { r1: "larabarut", r2: "cullinan", r3: "ngphaselis", r4: "legends", r5: "maxxkemer" };
+
   const waReady = siteConfig.whatsappConfigured;
-  const routes = baseRoutes.map((rt) => ({
-    ...rt,
-    steps: rt.steps.map((s) => ({ ...s, dl: r("dayLabel", { n: s.day }) })),
-    wa: waReady ? whatsappLink(r("waMsg", { name: rt.name, days: rt.days, hotel: rt.hotel })) : null,
-  }));
+  const routes = baseRoutes.map((rt) => {
+    const hk = hkeyOf[rt.key];
+    return {
+      ...rt,
+      steps: rt.steps.map((s) => ({ ...s, dl: r("dayLabel", { n: s.day }) })),
+      wa: waReady ? whatsappLink(r("waMsg", { name: rt.name, days: rt.days, hotel: rt.hotel })) : null,
+      hotelWhy: hd(`${hk}_why`),
+      hotelNote: hd(`${hk}_note`),
+      mapQ: encodeURIComponent(`${rt.hotel} ${rt.loc} Antalya`),
+    };
+  });
 
   const inclusions = [
     { icon: "plane", label: r("inc_flight") },
@@ -119,6 +128,9 @@ export async function ReadyRoutes() {
     close: r("close"),
     dayByDay: r("dayByDay"),
     priceLabel: r("priceLabel"),
+    whyHotel: r("whyHotel"),
+    mapTitle: r("mapTitle"),
+    noteLabel: hd("note"),
     custTitle: r("custTitle"),
     custHint: r("custHint"),
     addonsTitle: r("addonsTitle"),
@@ -151,9 +163,10 @@ export async function ReadyRoutes() {
             <IconCheck className="h-3.5 w-3.5" /> {r("worryResolved")}
           </span>
         </Reveal>
-
-        <RouteGallery routes={routes} inclusions={inclusions} addons={addons} labels={labels} />
       </div>
+
+      {/* Tam ekran sonsuz marquee — container DIŞINDA, kenara kadar */}
+      <RouteGallery routes={routes} inclusions={inclusions} addons={addons} labels={labels} />
     </section>
   );
 }

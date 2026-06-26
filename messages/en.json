@@ -436,7 +436,9 @@
     "mRemoved": "Removed",
     "mAddons": "Extras I want",
     "mNote": "Note",
-    "priceLabel": "Custom-priced"
+    "priceLabel": "Custom-priced",
+    "whyHotel": "Why this hotel",
+    "mapTitle": "Exact hotel location"
   },
   "antalya": {
     "title": "Your dream Antalya holiday — already done",

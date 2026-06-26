@@ -436,7 +436,9 @@
     "mRemoved": "Olib tashladim",
     "mAddons": "Qoʼshimcha xohlaganim",
     "mNote": "Izoh",
-    "priceLabel": "Shaxsiy narx"
+    "priceLabel": "Shaxsiy narx",
+    "whyHotel": "Nega aynan shu mehmonxona",
+    "mapTitle": "Mehmonxonaning aniq joylashuvi"
   },
   "antalya": {
     "title": "Antaliyadagi orzuingizdagi dam olish — allaqachon tayyor",

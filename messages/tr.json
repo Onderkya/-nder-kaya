@@ -427,7 +427,9 @@
     "mRemoved": "Çıkardıklarım",
     "mAddons": "Ekstra istediklerim",
     "mNote": "Not",
-    "priceLabel": "Kişiye özel fiyat"
+    "priceLabel": "Kişiye özel fiyat",
+    "whyHotel": "Neden bu otel",
+    "mapTitle": "Otelin tam konumu"
   },
   "antalya": {
     "title": "Hayalindeki Antalya tatili — zaten hazır",

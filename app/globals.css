@@ -284,6 +284,13 @@
 .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
 .no-scrollbar::-webkit-scrollbar { display: none; }
 
+/* --- Sonsuz otomatik marquee (tam ekran paket vitrini) --- */
+@keyframes pkg-marquee { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+.pkg-marquee { width: max-content; animation: pkg-marquee var(--marquee-dur, 48s) linear infinite; will-change: transform; }
+.pkg-marquee-wrap:hover .pkg-marquee,
+.pkg-marquee:focus-within { animation-play-state: paused; }
+@media (prefers-reduced-motion: reduce) { .pkg-marquee { animation: none; } }
+
 /* --- Paket kartı modal (içine gir) --- */
 @keyframes pkg-fade { from { opacity: 0; } to { opacity: 1; } }
 @keyframes pkg-pop { from { opacity: 0; transform: translateY(18px) scale(0.97); } to { opacity: 1; transform: none; } }
