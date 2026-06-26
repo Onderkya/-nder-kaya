@@ -389,7 +389,17 @@
     "r5_s5_t": "Golf & spa",
     "r5_s5_d": "Belek’te golf turu veya resort spa günü.",
     "r5_s6_t": "Serbest gün & dönüş",
-    "r5_s6_d": "Son keyif; ardından havalimanına transfer."
+    "r5_s6_d": "Son keyif; ardından havalimanına transfer.",
+    "promise": "Detayları biz düşündük — uçuştan transfere, otelden günlük geziye kadar. Sen sadece tarihini seç, gerisini biz hallederiz.",
+    "allInLabel": "Bu pakette her şey dahil",
+    "inc_flight": "Uçuş ayarlanır",
+    "inc_transfer": "Kapıdan kapıya transfer",
+    "inc_hotel": "5★ otel seçili",
+    "inc_board": "Her şey dahil pansiyon",
+    "inc_tours": "Rehberli geziler & girişler",
+    "inc_support": "Türkçe & Rusça destek",
+    "ctaPick": "Bu tatili iste",
+    "waMsg": "Merhaba! Antalya için {name} rotasını istiyorum — {days} gün, {hotel}. Bana özel planı hazırlar mısınız?"
   },
   "antalya": {
     "title": "Antalya Seyahat Danışmanlığı",

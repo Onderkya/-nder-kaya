@@ -398,7 +398,17 @@
     "r5_s5_t": "Golf & spa",
     "r5_s5_d": "A round of golf in Belek or a resort spa day.",
     "r5_s6_t": "Free day & return",
-    "r5_s6_d": "One last treat; then transfer to the airport."
+    "r5_s6_d": "One last treat; then transfer to the airport.",
+    "promise": "We have thought of every detail — flights, transfers, hotel, day-by-day plans. You just pick your dates; we handle the rest.",
+    "allInLabel": "Everything in this package is included",
+    "inc_flight": "Flights arranged",
+    "inc_transfer": "Door-to-door transfer",
+    "inc_hotel": "5★ hotel chosen",
+    "inc_board": "All-inclusive board",
+    "inc_tours": "Guided tours & entries",
+    "inc_support": "Turkish & Russian support",
+    "ctaPick": "I want this trip",
+    "waMsg": "Hi! I would like the {name} route for Antalya — {days} days, {hotel}. Could you prepare a personal plan for me?"
   },
   "antalya": {
     "title": "Antalya Travel Consulting",

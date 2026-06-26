@@ -132,6 +132,19 @@ const PATHS: Record<string, JSX.Element> = {
     </>
   ),
   heart: <path d="M12 21S4 14 4 8a4 4 0 0 1 8-1 4 4 0 0 1 8 1c0 6-8 13-8 13z" />,
+  utensils: (
+    <>
+      <path d="M3 2v7c0 1.1.9 2 2 2h2a2 2 0 0 0 2-2V2" />
+      <path d="M6 2v20" />
+      <path d="M21 15V2a5 5 0 0 0-5 5v6c0 1.1.9 2 2 2h3Zm0 0v7" />
+    </>
+  ),
+  headset: (
+    <>
+      <path d="M3 14h3a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-7a9 9 0 0 1 18 0v7a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3" />
+      <path d="M21 16v2a4 4 0 0 1-4 4h-5" />
+    </>
+  ),
 };
 
 export function RouteIcon({ name, className }: { name: string; className?: string }) {

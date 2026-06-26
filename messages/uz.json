@@ -398,7 +398,17 @@
     "r5_s5_t": "Golf va spa",
     "r5_s5_d": "Belekda golf raundi yoki kurortda spa kuni.",
     "r5_s6_t": "Bo'sh kun va qaytish",
-    "r5_s6_d": "Oxirgi bir rohat; so'ng aeroportga transfer."
+    "r5_s6_d": "Oxirgi bir rohat; so'ng aeroportga transfer.",
+    "promise": "Har bir tafsilotni biz oʼyladik — parvoz, transfer, mehmonxona, kunlik reja. Siz faqat sanani tanlaysiz, qolganini biz hal qilamiz.",
+    "allInLabel": "Bu paketda hammasi kiritilgan",
+    "inc_flight": "Parvoz tashkil etiladi",
+    "inc_transfer": "Eshikdan eshikkacha transfer",
+    "inc_hotel": "5★ mehmonxona tanlangan",
+    "inc_board": "«Hammasi kiritilgan» ovqatlanish",
+    "inc_tours": "Gid bilan ekskursiyalar va chiptalar",
+    "inc_support": "Turkcha va ruscha qoʼllab-quvvatlash",
+    "ctaPick": "Shu sayohatni xohlayman",
+    "waMsg": "Salom! Antaliya uchun {name} yoʼnalishini xohlayman — {days} kun, {hotel}. Menga shaxsiy reja tayyorlab bera olasizmi?"
   },
   "antalya": {
     "title": "Antalya sayohat maslahati",

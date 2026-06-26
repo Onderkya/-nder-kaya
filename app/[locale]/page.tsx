@@ -16,7 +16,7 @@ import { FaqAccordion } from "@/components/faq-accordion";
 import { MobilePlanCta } from "@/components/mobile-plan-cta";
 import { QuickPlanForm } from "@/components/quick-plan-form";
 import { IconArrow, IconCheck } from "@/components/icons";
-import { siteConfig } from "@/lib/config";
+import { siteConfig, whatsappLink } from "@/lib/config";
 
 export default async function HomePage({
   params,
@@ -146,6 +146,23 @@ export default async function HomePage({
     },
   ];
 
+  // "Her şey dahil" manifestosu — her rotada paylaşılır. Misafirin aklındaki
+  // tüm soruları (uçak? transfer? araç? gezi dahil mi?) tek bakışta yanıtlar.
+  const inclusions = [
+    { icon: "plane", label: r("inc_flight") },
+    { icon: "car", label: r("inc_transfer") },
+    { icon: "bed", label: r("inc_hotel") },
+    { icon: "utensils", label: r("inc_board") },
+    { icon: "landmark", label: r("inc_tours") },
+    { icon: "headset", label: r("inc_support") },
+  ];
+
+  // "Bu tatili iste" → WhatsApp'a önceden doldurulmuş mesaj. Numara tanımlı
+  // değilse /contact'a düşer (whatsappConfigured).
+  const waReady = siteConfig.whatsappConfigured;
+  const routeWaLink = (rt: (typeof routes)[number]) =>
+    whatsappLink(r("waMsg", { name: rt.name, days: rt.days, hotel: rt.hotel }));
+
   // Quick Plan formuna geçilen 5 dilli metinler.
   const planStrings = {
     eyebrow: plan("eyebrow"),
@@ -242,6 +259,9 @@ export default async function HomePage({
             <p className="eyebrow justify-center" style={{ color: "rgb(var(--accent))" }}>{r("eyebrow")}</p>
             <h2 className="h-section mt-5 text-balance" style={{ color: "rgb(var(--foreground))" }}>{r("title")}</h2>
             <p className="mt-5 text-lg leading-relaxed" style={{ color: "rgb(var(--muted-foreground))" }}>{r("subtitle")}</p>
+            <p className="serif-italic mx-auto mt-6 max-w-xl text-balance text-[19px] leading-relaxed sm:text-[21px]" style={{ color: "rgb(var(--primary))" }}>
+              {r("promise")}
+            </p>
           </Reveal>
 
           <div className="mt-14 grid items-start gap-7 sm:gap-8 lg:grid-cols-2">
@@ -275,11 +295,23 @@ export default async function HomePage({
                     <p className="text-[14px] leading-snug" style={{ color: "rgb(var(--muted-foreground))" }}>
                       <span className="font-semibold" style={{ color: "rgb(var(--foreground))" }}>{r("bestForLabel")}:</span> {rt.best}
                     </p>
-                    <div className="mt-4 flex flex-wrap items-center gap-x-3 gap-y-1.5">
-                      <span className="inline-flex items-center gap-1.5 rounded-full px-3.5 py-1.5 text-[11px] font-bold uppercase tracking-wide" style={{ backgroundImage: "linear-gradient(135deg, rgb(var(--lagoon) / 0.16), rgb(var(--primary) / 0.16))", color: "rgb(var(--primary))" }}>
-                        <IconCheck className="h-3 w-3" /> {r("included")}
-                      </span>
-                      <span className="text-[12px]" style={{ color: "rgb(var(--muted-foreground))" }}>{r("flightsNote")}</span>
+                    {/* "Her şey dahil" manifestosu — uçak/transfer/otel/gezi sorularını tek bakışta kapatır */}
+                    <div className="mt-5 rounded-2xl border p-4 sm:p-5" style={{ borderColor: "rgb(var(--primary) / 0.18)", backgroundColor: "rgb(var(--lagoon) / 0.06)" }}>
+                      <p className="flex items-center gap-2 text-[11px] font-bold uppercase tracking-[0.08em]" style={{ color: "rgb(var(--primary))" }}>
+                        <span className="grid h-5 w-5 shrink-0 place-items-center rounded-full text-white" style={{ backgroundImage: "linear-gradient(135deg, rgb(var(--lagoon)), rgb(var(--primary)))" }}><IconCheck className="h-3 w-3" /></span>
+                        {r("allInLabel")}
+                      </p>
+                      <ul className="mt-3.5 grid grid-cols-1 gap-x-4 gap-y-2.5 sm:grid-cols-2">
+                        {inclusions.map((inc) => (
+                          <li key={inc.icon} className="flex items-center gap-2.5">
+                            <span className="grid h-7 w-7 shrink-0 place-items-center rounded-lg" style={{ backgroundColor: "rgb(var(--primary) / 0.1)", color: "rgb(var(--primary))" }}>
+                              <RouteIcon name={inc.icon} className="h-[15px] w-[15px]" />
+                            </span>
+                            <span className="text-[13.5px] font-medium leading-tight" style={{ color: "rgb(var(--foreground))" }}>{inc.label}</span>
+                          </li>
+                        ))}
+                      </ul>
+                      <p className="mt-3.5 text-[12px]" style={{ color: "rgb(var(--muted-foreground))" }}>{r("flightsNote")}</p>
                     </div>
 
                     {/* Adım adım yolculuk — ikonlu zaman çizgisi */}
@@ -309,7 +341,11 @@ export default async function HomePage({
                       })}
                     </ol>
 
-                    <Link href="/contact" className="btn-accent mt-7 w-full justify-center shadow-lg shadow-black/10">{r("cta")} <IconArrow /></Link>
+                    {waReady ? (
+                      <a href={routeWaLink(rt)} target="_blank" rel="noopener noreferrer" className="btn-accent mt-7 w-full justify-center shadow-lg shadow-black/10">{r("ctaPick")} <IconArrow /></a>
+                    ) : (
+                      <Link href="/contact" className="btn-accent mt-7 w-full justify-center shadow-lg shadow-black/10">{r("ctaPick")} <IconArrow /></Link>
+                    )}
                     <span className="mt-3 text-center text-xs" style={{ color: "rgb(var(--muted-foreground))" }}>{r("custom")}</span>
                   </div>
                 </div>
