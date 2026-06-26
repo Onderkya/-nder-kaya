@@ -280,6 +280,10 @@
 .spread-img img { transition: transform 1.1s cubic-bezier(0.16,1,0.3,1); will-change: transform; }
 .route-spread:hover .spread-img img { transform: scale(1.06); }
 
+/* --- Yatay karusel: scrollbar gizle --- */
+.no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+.no-scrollbar::-webkit-scrollbar { display: none; }
+
 /* --- Paket kartı modal (içine gir) --- */
 @keyframes pkg-fade { from { opacity: 0; } to { opacity: 1; } }
 @keyframes pkg-pop { from { opacity: 0; transform: translateY(18px) scale(0.97); } to { opacity: 1; transform: none; } }

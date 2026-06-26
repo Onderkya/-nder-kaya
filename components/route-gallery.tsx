@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import Image from "next/image";
 import { Reveal } from "@/components/reveal";
@@ -38,7 +38,16 @@ export function RouteGallery({ routes, inclusions, addons, labels }: { routes: R
   const [excluded, setExcluded] = useState<Set<number>>(new Set());
   const [picked, setPicked] = useState<Set<string>>(new Set());
   const [note, setNote] = useState("");
+  const railRef = useRef<HTMLDivElement>(null);
   const active = routes.find((r) => r.key === openKey) ?? null;
+
+  const scrollRail = (dir: number) => {
+    const el = railRef.current;
+    if (!el) return;
+    const card = el.querySelector<HTMLElement>("[data-pkg-card]");
+    const step = card ? card.offsetWidth + 20 : el.clientWidth * 0.85;
+    el.scrollBy({ left: dir * step, behavior: "smooth" });
+  };
 
   useEffect(() => { setMounted(true); }, []);
 
@@ -81,51 +90,57 @@ export function RouteGallery({ routes, inclusions, addons, labels }: { routes: R
 
   return (
     <>
-      <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-        {routes.map((rt, i) => (
-          <Reveal key={rt.key} delay={(i % 3) * 90}>
+      <Reveal className="relative mt-12">
+        {/* Oklar — masaüstü */}
+        <button type="button" aria-label="‹" onClick={() => scrollRail(-1)} className="absolute -left-2 top-1/2 z-10 hidden -translate-y-1/2 place-items-center rounded-full border p-2.5 shadow-lg backdrop-blur transition hover:scale-105 sm:grid lg:-left-5" style={{ borderColor: "rgb(var(--border))", backgroundColor: "rgb(var(--card) / 0.9)", color: "rgb(var(--foreground))" }}>
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"><path d="m15 18-6-6 6-6" /></svg>
+        </button>
+        <button type="button" aria-label="›" onClick={() => scrollRail(1)} className="absolute -right-2 top-1/2 z-10 hidden -translate-y-1/2 place-items-center rounded-full border p-2.5 shadow-lg backdrop-blur transition hover:scale-105 sm:grid lg:-right-5" style={{ borderColor: "rgb(var(--border))", backgroundColor: "rgb(var(--card) / 0.9)", color: "rgb(var(--foreground))" }}>
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"><path d="m9 18 6-6-6-6" /></svg>
+        </button>
+
+        <div ref={railRef} className="no-scrollbar flex snap-x snap-mandatory gap-5 overflow-x-auto px-1 pb-3">
+          {routes.map((rt) => (
             <button
+              key={rt.key}
+              data-pkg-card
               type="button"
               onClick={() => setOpenKey(rt.key)}
               aria-label={`${rt.name} — ${labels.details}`}
-              className="route-card group flex h-full w-full flex-col overflow-hidden rounded-[1.75rem] text-left ring-1 ring-black/5"
-              style={{ backgroundColor: "rgb(var(--card))" }}
+              className="route-card group relative w-[84vw] max-w-[360px] shrink-0 snap-center overflow-hidden rounded-[2rem] text-left ring-1 ring-black/5 sm:w-[360px]"
             >
-              <div className="route-img relative aspect-[5/6] overflow-hidden">
-                <Image src={rt.img} alt={`${rt.name} — ${rt.hotel}`} fill sizes="(max-width:640px) 100vw, (max-width:1024px) 50vw, 33vw" className="object-cover" />
-                <div className="absolute inset-0" style={{ background: "linear-gradient(180deg, rgba(4,18,24,0.18) 0%, transparent 32%, rgba(4,18,24,0.55) 64%, rgba(4,18,24,0.92) 100%)" }} />
+              <div className="route-img relative aspect-[5/7] overflow-hidden">
+                <Image src={rt.img} alt={`${rt.name} — ${rt.hotel}`} fill sizes="(max-width:640px) 84vw, 360px" className="object-cover" />
+                <div className="absolute inset-0" style={{ background: "linear-gradient(180deg, rgba(4,18,24,0.15) 0%, transparent 24%, rgba(4,18,24,0.5) 50%, rgba(4,18,24,0.96) 100%)" }} />
                 <span className="absolute left-4 top-4 rounded-full px-3 py-1.5 text-[10.5px] font-bold uppercase tracking-wide text-white shadow-lg" style={{ backgroundImage: "linear-gradient(135deg, rgb(var(--accent2)), rgb(var(--accent)))" }}>{rt.aud}</span>
                 <div className="glass absolute right-4 top-4 flex items-center gap-1 rounded-full border px-2.5 py-1 text-white" style={{ borderColor: "rgb(255 255 255 / 0.3)", backgroundColor: "rgb(4 28 40 / 0.45)" }}>
                   <span className="font-display text-lg leading-none">{rt.days}</span>
                   <span className="text-[9.5px] font-semibold uppercase tracking-wide text-white/80">{labels.daysWord}</span>
                 </div>
-                <div className="absolute inset-x-0 bottom-0 p-5 text-white">
+
+                <div className="absolute inset-x-0 bottom-0 p-6 text-white">
                   <span className="text-[12px]" style={{ color: "rgb(251 191 80)" }}>{"★".repeat(rt.stars)}</span>
-                  <h3 className="font-display mt-1 font-semibold leading-[0.95] tracking-[-0.02em]" style={{ fontSize: "clamp(1.6rem, 2.4vw, 2rem)" }}>{rt.name}</h3>
+                  <h3 className="font-display mt-1 font-semibold leading-[0.95] tracking-[-0.02em]" style={{ fontSize: "clamp(1.95rem, 5.4vw, 2.35rem)" }}>{rt.name}</h3>
                   <div className="mt-2 inline-flex items-center gap-1.5 rounded-full border py-0.5 pl-1.5 pr-2.5" style={{ borderColor: "rgb(255 255 255 / 0.25)", backgroundColor: "rgb(4 28 40 / 0.4)" }}>
                     <Pin3D />
                     <span className="text-[11px] font-semibold">{rt.hotel}</span>
                   </div>
+                  <p className="mt-3.5 flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-wide text-white/85"><IconCheck className="h-3 w-3" /> {labels.allInLabel}</p>
+                  <div className="mt-2 flex flex-wrap gap-1.5">
+                    {inclusions.map((inc) => (
+                      <span key={inc.icon} title={inc.label} aria-label={inc.label} className="grid h-7 w-7 place-items-center rounded-lg text-white" style={{ backgroundColor: "rgb(255 255 255 / 0.16)" }}>
+                        <RouteIcon name={inc.icon} className="h-[14px] w-[14px]" />
+                      </span>
+                    ))}
+                  </div>
+                  <span className="btn-accent pointer-events-none mt-4 w-full justify-center">{labels.details} <IconArrow /></span>
                 </div>
-              </div>
-
-              <div className="flex flex-1 flex-col p-5">
-                <p className="flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-wide" style={{ color: "rgb(var(--primary))" }}>
-                  <IconCheck className="h-3.5 w-3.5" /> {labels.allInLabel}
-                </p>
-                <div className="mt-3 flex flex-wrap gap-2">
-                  {inclusions.map((inc) => (
-                    <span key={inc.icon} title={inc.label} aria-label={inc.label} className="grid h-8 w-8 place-items-center rounded-lg" style={{ backgroundColor: "rgb(var(--primary) / 0.1)", color: "rgb(var(--primary))" }}>
-                      <RouteIcon name={inc.icon} className="h-[16px] w-[16px]" />
-                    </span>
-                  ))}
-                </div>
-                <span className="btn-accent pointer-events-none mt-5 w-full justify-center">{labels.details} <IconArrow /></span>
               </div>
             </button>
-          </Reveal>
-        ))}
-      </div>
+          ))}
+        </div>
+      </Reveal>
+      <p className="mt-3 text-center text-[15px] tracking-[0.5em] sm:hidden" style={{ color: "rgb(var(--muted-foreground))" }} aria-hidden>‹ ›</p>
 
       {active && mounted && createPortal(
         <div className="fixed inset-0 z-[80] flex items-end justify-center sm:items-center sm:p-6" role="dialog" aria-modal="true" aria-label={active.name} onClick={() => setOpenKey(null)}>
