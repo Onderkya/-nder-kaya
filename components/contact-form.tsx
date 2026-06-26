@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useLocale } from "next-intl";
 import { Turnstile } from "@/components/turnstile";
 import { siteConfig } from "@/lib/config";
@@ -15,7 +15,22 @@ export function ContactForm({ labels }: { labels: Labels }) {
   const locale = useLocale();
   const [status, setStatus] = useState<"idle" | "sending" | "ok" | "error">("idle");
   const [captcha, setCaptcha] = useState("");
+  const [message, setMessage] = useState("");
+  const [service, setService] = useState("");
   const captchaRequired = !!siteConfig.turnstileSiteKey;
+
+  // Hazır rotalardan "Bu tatili iste" ile gelen kişiselleştirilmiş paket özetini
+  // (sessionStorage) mesaj alanına önceden doldurur.
+  useEffect(() => {
+    try {
+      const pkg = sessionStorage.getItem("pkgRequest");
+      if (pkg) {
+        setMessage(pkg);
+        setService("antalya");
+        sessionStorage.removeItem("pkgRequest");
+      }
+    } catch { /* sessionStorage erişilemezse yok say */ }
+  }, []);
 
   const inputClass =
     "w-full rounded-xl border px-4 py-2.5 text-sm outline-none transition focus:ring-2";
@@ -39,6 +54,8 @@ export function ContactForm({ labels }: { labels: Labels }) {
       if (!res.ok) throw new Error("failed");
       setStatus("ok");
       form.reset();
+      setMessage("");
+      setService("");
     } catch {
       setStatus("error");
       // Token tek kullanımlık: yeniden denemede taze token alınsın.
@@ -74,7 +91,7 @@ export function ContactForm({ labels }: { labels: Labels }) {
       </div>
       <div>
         <label className="mb-1 block text-sm font-medium">{labels.service}</label>
-        <select name="service" className={inputClass} style={inputStyle} defaultValue="">
+        <select name="service" className={inputClass} style={inputStyle} value={service} onChange={(e) => setService(e.target.value)}>
           <option value="" disabled>—</option>
           <option value="antalya">{labels.serviceAntalya}</option>
           <option value="lessons">{labels.serviceLessons}</option>
@@ -84,7 +101,7 @@ export function ContactForm({ labels }: { labels: Labels }) {
       </div>
       <div>
         <label className="mb-1 block text-sm font-medium">{labels.message}</label>
-        <textarea name="message" required rows={5} className={inputClass} style={inputStyle} />
+        <textarea name="message" required rows={5} className={inputClass} style={inputStyle} value={message} onChange={(e) => setMessage(e.target.value)} />
       </div>
       {status === "error" && (
         <p className="text-sm font-medium text-red-500">{labels.error}</p>

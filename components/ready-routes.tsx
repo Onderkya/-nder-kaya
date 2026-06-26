@@ -118,6 +118,7 @@ export async function ReadyRoutes() {
     details: r("details"),
     close: r("close"),
     dayByDay: r("dayByDay"),
+    priceLabel: r("priceLabel"),
     custTitle: r("custTitle"),
     custHint: r("custHint"),
     addonsTitle: r("addonsTitle"),

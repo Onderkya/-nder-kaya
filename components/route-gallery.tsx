@@ -21,6 +21,7 @@ type Labels = {
   daysWord: string; routeLabel: string; bestForLabel: string; allInLabel: string;
   ctaPick: string; oneMessage: string; flightsNote: string; custom: string;
   curated: string; details: string; close: string; dayByDay: string; contactHref: string;
+  priceLabel: string;
   custTitle: string; custHint: string; addonsTitle: string; addNotePh: string;
   mIntro2: string; mKept: string; mRemoved: string; mAddons: string; mNote: string;
 };
@@ -84,8 +85,13 @@ export function RouteGallery({ routes, inclusions, addons, labels }: { routes: R
     if (wantedAddons.length) lines.push(`${labels.mAddons}: ${wantedAddons.join(", ")}`);
     if (note.trim()) lines.push(`${labels.mNote}: ${note.trim()}`);
     const msg = lines.join("\n");
-    if (siteConfig.whatsappConfigured) window.open(whatsappLink(msg), "_blank", "noopener");
-    else window.location.href = labels.contactHref;
+    if (siteConfig.whatsappConfigured) {
+      window.open(whatsappLink(msg), "_blank", "noopener");
+    } else {
+      // WhatsApp yoksa: özet iletişim formuna taşınır (lead olarak yakalanır).
+      try { sessionStorage.setItem("pkgRequest", msg); } catch { /* yok say */ }
+      window.location.href = labels.contactHref;
+    }
   }
 
   return (
@@ -121,9 +127,12 @@ export function RouteGallery({ routes, inclusions, addons, labels }: { routes: R
                 <div className="absolute inset-x-0 bottom-0 p-6 text-white">
                   <span className="text-[12px]" style={{ color: "rgb(251 191 80)" }}>{"★".repeat(rt.stars)}</span>
                   <h3 className="font-display mt-1 font-semibold leading-[0.95] tracking-[-0.02em]" style={{ fontSize: "clamp(1.95rem, 5.4vw, 2.35rem)" }}>{rt.name}</h3>
-                  <div className="mt-2 inline-flex items-center gap-1.5 rounded-full border py-0.5 pl-1.5 pr-2.5" style={{ borderColor: "rgb(255 255 255 / 0.25)", backgroundColor: "rgb(4 28 40 / 0.4)" }}>
-                    <Pin3D />
-                    <span className="text-[11px] font-semibold">{rt.hotel}</span>
+                  <div className="mt-2 flex flex-wrap items-center gap-2">
+                    <span className="inline-flex items-center gap-1.5 rounded-full border py-0.5 pl-1.5 pr-2.5" style={{ borderColor: "rgb(255 255 255 / 0.25)", backgroundColor: "rgb(4 28 40 / 0.4)" }}>
+                      <Pin3D />
+                      <span className="text-[11px] font-semibold">{rt.hotel}</span>
+                    </span>
+                    <span className="inline-flex items-center rounded-full px-2.5 py-1 text-[11px] font-bold" style={{ backgroundColor: "rgb(var(--gold) / 0.22)", color: "rgb(var(--gold))" }}>{labels.priceLabel}</span>
                   </div>
                   <p className="mt-3.5 flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-wide text-white/85"><IconCheck className="h-3 w-3" /> {labels.allInLabel}</p>
                   <div className="mt-2 flex flex-wrap gap-1.5">
