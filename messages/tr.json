@@ -147,15 +147,15 @@
     "errorRetry": "Tekrar dene"
   },
   "home": {
-    "heroTitle": "Antalya tatilini sana özel planlayan yerel rehberin",
-    "heroSubtitle": "Otel seçimi, transfer, günlük rota, aktiviteler ve yerel destek. Antalya'da yaşayan gerçek kişilerle; Türkçe, İngilizce, Rusça, Kazakça ve Özbekçe danışmanlık.",
+    "heroTitle": "Hayalindeki Antalya tatili. Zaten hazır.",
+    "heroSubtitle": "Uçak, transfer, otel, deniz ve geziler — hepsi senin için düşünüldü. Sen sadece birini seç; gerisini biz halledelim.",
     "heroProof1": "Antalya'da yaşıyoruz",
     "heroProof2": "5 dilde destek",
     "heroProof3": "Otel + transfer + aktivite",
     "heroProof4": "Baştan sona tek muhatap",
     "heroDiff": "Yerel rehberin",
-    "heroCtaPrimary": "Tatil planı iste",
-    "heroCtaSecondary": "Hazır rotalara bak",
+    "heroCtaPrimary": "Hazır tatilleri gör",
+    "heroCtaSecondary": "Bana özel kurun",
     "servicesTitle": "Nasıl yardımcı oluyoruz",
     "servicesSubtitle": "Üç hizmet, tek güvenilir muhatap.",
     "whyTitle": "Neden biz",
@@ -184,9 +184,9 @@
     "hotelsNote": "5★ resort koordinasyonu — Belek · Lara · Kemer. Sana en uygun oteli ve fiyatı birlikte seçelim."
   },
   "plan": {
-    "eyebrow": "Plan iste",
-    "title": "Tatilini birlikte planlayalım",
-    "subtitle": "Tarihini, kişi sayını ve tatil tarzını yaz. Sana özel taslak rotayı, Antalya'da yaşayan gerçek bir kişi hazırlayıp WhatsApp ya da Telegram'dan gönderir.",
+    "eyebrow": "Sana özel",
+    "title": "Hazırlardan biri tam uymadı mı?",
+    "subtitle": "O zaman sıfırdan, tamamen sana göre kuralım. Tarihini, kişi sayını ve tarzını yaz; bütçene uygun özel rotanı Antalya’da yaşayan biri hazırlayıp WhatsApp ya da Telegram’dan göndersin.",
     "fArrival": "Geliş tarihi",
     "fPeople": "Kişi sayısı",
     "fDays": "Kaç gün",

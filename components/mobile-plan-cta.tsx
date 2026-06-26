@@ -22,7 +22,7 @@ export function MobilePlanCta({ label }: { label: string }) {
 
   return (
     <a
-      href="#hizli-plan"
+      href="#hazir-rotalar"
       className={`fixed bottom-5 left-4 z-40 flex items-center gap-2 rounded-full py-3 pl-4 pr-5 text-sm font-bold text-white shadow-xl transition-all duration-300 lg:hidden ${
         show ? "translate-y-0 opacity-100" : "pointer-events-none translate-y-4 opacity-0"
       }`}

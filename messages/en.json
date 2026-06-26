@@ -147,15 +147,15 @@
     "errorRetry": "Try again"
   },
   "home": {
-    "heroTitle": "Your local guide who plans your Antalya holiday just for you",
-    "heroSubtitle": "Hotel selection, transfers, daily routes, activities and local support. Real people who live in Antalya — consulting in Turkish, English, Russian, Kazakh and Uzbek.",
+    "heroTitle": "Your dream Antalya holiday. Already done.",
+    "heroSubtitle": "Flights, transfers, hotel, sea and tours — all thought out for you. Just pick one; we handle the rest.",
     "heroProof1": "We live in Antalya",
     "heroProof2": "Support in 5 languages",
     "heroProof3": "Hotel + transfer + activities",
     "heroProof4": "One real contact from start to finish",
     "heroDiff": "Your local guide",
-    "heroCtaPrimary": "Request a trip plan",
-    "heroCtaSecondary": "See ready routes",
+    "heroCtaPrimary": "See ready holidays",
+    "heroCtaSecondary": "Build mine custom",
     "servicesTitle": "How we help",
     "servicesSubtitle": "Three services, one trusted point of contact.",
     "whyTitle": "Why work with us",
@@ -184,9 +184,9 @@
     "hotelsNote": "5★ resort coordination — Belek · Lara · Kemer. Let's pick the right hotel and price together."
   },
   "plan": {
-    "eyebrow": "Request a plan",
-    "title": "Let's plan your trip together",
-    "subtitle": "Tell us your dates, group size and travel style. A real person who lives in Antalya prepares a draft route just for you and sends it over WhatsApp or Telegram.",
+    "eyebrow": "Tailored to you",
+    "title": "None of the ready trips fit perfectly?",
+    "subtitle": "Then we’ll build one from scratch, entirely around you. Add your dates, group size and style; someone living in Antalya prepares your custom route and sends it on WhatsApp or Telegram.",
     "fArrival": "Arrival date",
     "fPeople": "Number of people",
     "fDays": "How many days",

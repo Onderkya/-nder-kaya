@@ -252,10 +252,10 @@ export function DiveHero({ title, subtitle, ctaPrimary, ctaSecondary, deepLine, 
             </h1>
             <p className="mt-5 max-w-xl text-base leading-relaxed text-white/85 sm:text-lg">{subtitle}</p>
             <div className="mt-7 flex flex-wrap items-center gap-3">
-              <Link href="/contact" className="btn-accent shadow-xl shadow-black/25">
+              <Link href="#hazir-rotalar" className="btn-accent shadow-xl shadow-black/25">
                 {ctaPrimary} <IconArrow />
               </Link>
-              <Link href="/antalya" className="btn-ghost-light glass">
+              <Link href="#hizli-plan" className="btn-ghost-light glass">
                 {ctaSecondary}
               </Link>
             </div>

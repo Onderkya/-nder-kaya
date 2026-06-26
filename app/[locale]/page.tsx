@@ -238,21 +238,7 @@ export default async function HomePage({
         aerialVideo="/media/kaputas-drone.mp4"
       />
 
-      {/* ============ 2 · HIZLI PLAN FORMU ============ */}
-      <section id="hizli-plan" className="relative scroll-mt-24 py-20 sm:py-24" style={{ backgroundColor: "rgb(var(--background))" }}>
-        <div className="container-wide">
-          <Reveal className="mx-auto max-w-2xl text-center">
-            <p className="eyebrow justify-center" style={{ color: "rgb(var(--accent))" }}>{plan("eyebrow")}</p>
-            <h2 className="h-section mt-5 text-balance" style={{ color: "rgb(var(--foreground))" }}>{plan("title")}</h2>
-            <p className="mt-5 text-lg leading-relaxed" style={{ color: "rgb(var(--muted-foreground))" }}>{plan("subtitle")}</p>
-          </Reveal>
-          <Reveal className="mt-10" delay={80}>
-            <QuickPlanForm t={planStrings} />
-          </Reveal>
-        </div>
-      </section>
-
-      {/* ============ 3 · HAZIR ROTALAR — sinematik paket vitrini (sayfanın spot ışığı) ============ */}
+      {/* ============ 2 · HAZIR ROTALAR — sinematik paket vitrini · ANASAYFANIN KALBİ (hero'dan hemen sonra; form aşağı alındı) ============ */}
       <section id="hazir-rotalar" className="relative scroll-mt-24 overflow-hidden py-24 sm:py-32" style={{ background: "linear-gradient(180deg, #061d26 0%, #0a2a36 48%, #061d26 100%)" }}>
         {/* atmosfer parıltıları (deniz + mercan) */}
         <div aria-hidden className="pointer-events-none absolute -left-40 top-24 h-[520px] w-[520px] rounded-full blur-3xl" style={{ background: "radial-gradient(circle, rgb(var(--lagoon) / 0.20), transparent 70%)" }} />
@@ -394,6 +380,20 @@ export default async function HomePage({
           <p className="mt-7 text-center text-xs" style={{ color: "rgb(var(--muted-foreground))" }}>
             {t("hotelsNote")}
           </p>
+        </div>
+      </section>
+
+      {/* ============ 4.5 · ÖZEL PLAN — hazır paketlerden sonra, "tam uymadıysa sıfırdan kuralım" (form buraya alındı) ============ */}
+      <section id="hizli-plan" className="relative scroll-mt-24 py-20 sm:py-24" style={{ backgroundColor: "rgb(var(--background))" }}>
+        <div className="container-wide">
+          <Reveal className="mx-auto max-w-2xl text-center">
+            <p className="eyebrow justify-center" style={{ color: "rgb(var(--accent))" }}>{plan("eyebrow")}</p>
+            <h2 className="h-section mt-5 text-balance" style={{ color: "rgb(var(--foreground))" }}>{plan("title")}</h2>
+            <p className="mt-5 text-lg leading-relaxed" style={{ color: "rgb(var(--muted-foreground))" }}>{plan("subtitle")}</p>
+          </Reveal>
+          <Reveal className="mt-10" delay={80}>
+            <QuickPlanForm t={planStrings} />
+          </Reveal>
         </div>
       </section>
 
