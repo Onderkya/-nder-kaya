@@ -7,6 +7,7 @@ import { Reveal } from "@/components/reveal";
 import { CinematicHero } from "@/components/cinematic-hero";
 import { HorizontalPlaces } from "@/components/horizontal-places";
 import { StreetWalk } from "@/components/street-walk";
+import { ReadyRoutes } from "@/components/ready-routes";
 import { IconArrow } from "@/components/icons";
 
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
@@ -34,6 +35,9 @@ export default async function AntalyaPage({ params }: { params: Promise<{ locale
         image="/images/kaputas.jpg"
         videos={["/media/kaputas-drone.mp4", "/media/vid-suluada.mp4", "/media/vid-kemer.mp4", "/media/vid-kas.mp4"]}
       />
+
+      {/* HAZIR ROTALAR — bu sayfanın kalbi: hayalindeki tatil zaten hazır, seç ve al */}
+      <ReadyRoutes />
 
       {/* Editoryal giriş + özellik listesi */}
       <section className="container-wide py-24 sm:py-32">
