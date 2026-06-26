@@ -6,7 +6,7 @@ import { Link } from "@/i18n/routing";
 import { JsonLd } from "@/components/json-ld";
 import { Reveal } from "@/components/reveal";
 import { DiveHero } from "@/components/dive-hero";
-import { CinematicShowcase } from "@/components/cinematic-showcase";
+import { ZipperReveal } from "@/components/zipper-reveal";
 import { HotelAccordion } from "@/components/hotel-accordion";
 import { AutoVideo } from "@/components/auto-video";
 import { TurkishAlphabet } from "@/components/turkish-alphabet";
@@ -139,8 +139,8 @@ export default async function HomePage({
         aerialVideo="/media/kaputas-drone.mp4"
       />
 
-      {/* ============ SİNEMATİK VİTRİN — scuba + tüm yerler tek tek (editoryal) ============ */}
-      <CinematicShowcase
+      {/* ============ FERMUAR — sayfa ortadan açılır, scuba + tüm yerler tek tek ============ */}
+      <ZipperReveal
         eyebrow={t("actTitle")}
         title={x("ant_introTitle")}
         items={[
