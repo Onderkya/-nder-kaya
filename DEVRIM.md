@@ -3,15 +3,16 @@
 > Canlı: **http://45.67.203.149:3010** (mutlaka `http://`) · dal `claude/consulting-site-plan-6k4lix`
 > Görsel/medya kaynakları: `public/images/CREDITS.txt` (tümü CC / Mixkit / CC0).
 
-## 🔁 Revizyon 10 — fermuar EMEKLİ → editoryal sinematik vitrin + otel vitrini (GÜNCEL)
+## 🔁 Revizyon 10 — SADECE fermuar değişti → editoryal sinematik vitrin (GÜNCEL)
 
 > **Şu an buradayız.** Son commit dalda; deploy için sunucuda `git reset --hard origin/...` (aşağıdaki nota bak).
+> **KAPSAM NOTU:** İstenen yalnızca fermuarı değiştirmekti. İlk denemede oteller de vitrine çevrilmişti; kullanıcı uyarınca **oteller AKORDEONA geri alındı** (`HotelAccordion`). Rotalara ve otel resim verisine HİÇ dokunulmadı.
 
 - **FERMUAR KALDIRILDI** (`components/zipper-reveal.tsx` artık import edilmiyor — dosya duruyor ama kullanılmıyor). Sebep: clip-path + dash-stroke dişler + elle çizilen sürgü kırılgandı, her ekranda kayıyordu ("değişik açılıyor"). Kullanıcı kararı: emekli et.
 - **YENİ: Editoryal sinematik vitrin** (`components/cinematic-showcase.tsx`) — "Antalya'nın incileri" 9 sahne (scuba/Kaputaş/Kaş/Suluada/Olympos/Kemer/Alanya/Kleopatra/LoL). Tam ekran sabit sahne, scroll'la **cross-fade**, aktif sahnede **Ken Burns yavaş zoom**, dev serif yer adı aşağıdan kayar, sağda **dikey ilerleme rayı** (aktif yanar), **"0X/09" sayaç**, altta ilerleme çizgisi, intro başlık erir. Yalnız görünürken rAF, yalnız aktif video oynar. goturkiye/Aman/Six Senses dili.
-- **YENİ: Otel vitrini** (`components/hotel-showcase.tsx`) — akordeon yerine büyük sinematik **sahne + altında yatay küçük resim rayı**. Aktif otel Ken Burns zoom + 5★ rozet + dev serif ad + yer pill + CTA. Ray'dan seç (gel/tıkla/odak) → cross-fade. Nazik otomatik geçiş (5sn), fareyle durur. `hotel-accordion.tsx` artık kullanılmıyor (dosya duruyor).
+- **OTELLER: değişmedi** — eski `HotelAccordion` (yatay akordeon, 5★ rozet) aynen duruyor. (Vitrin denemesi `hotel-showcase.tsx` SİLİNDİ.)
 - ✅ `tsc --noEmit` temiz, `next build` ✓.
-- ⏳ **Kullanıcı telefonda görsel geri bildirim verecek** (sahne süresi/zoom hızı, ray yeri, tipografi).
+- ⏳ **Kullanıcı telefonda fermuar/vitrin için görsel geri bildirim verecek** (sahne süresi/zoom hızı, ray yeri, tipografi). İstenirse fermuar da eski haline alınabilir.
 
 ## 🔁 Revizyon 9 — gerçek fermuar, hazır rotalar, IT alanı, öğretmen kimliği, ödeme
 

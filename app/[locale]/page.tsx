@@ -7,7 +7,7 @@ import { JsonLd } from "@/components/json-ld";
 import { Reveal } from "@/components/reveal";
 import { DiveHero } from "@/components/dive-hero";
 import { CinematicShowcase } from "@/components/cinematic-showcase";
-import { HotelShowcase } from "@/components/hotel-showcase";
+import { HotelAccordion } from "@/components/hotel-accordion";
 import { AutoVideo } from "@/components/auto-video";
 import { TurkishAlphabet } from "@/components/turkish-alphabet";
 import { IconArrow, IconCheck } from "@/components/icons";
@@ -164,10 +164,10 @@ export default async function HomePage({
             <h2 className="h-section mt-5" style={{ color: "rgb(var(--foreground))" }}>{t("hotelsTitle")}</h2>
           </Reveal>
           <Reveal className="mt-12">
-            <HotelShowcase hotels={hotels} ctaLabel={c("learnMore")} />
+            <HotelAccordion hotels={hotels} ctaLabel={c("learnMore")} />
           </Reveal>
           <p className="mt-7 text-center text-xs" style={{ color: "rgb(var(--muted-foreground))" }}>
-            5★ resort koordinasyonu — Belek · Lara · Kemer. Sana en uygun oteli ve fiyatı birlikte seçelim.
+            5★ resort koordinasyonu — Belek · Lara · Kemer. Üstüne gel, fermuar gibi açılsın. Sana en uygun oteli ve fiyatı birlikte seçelim.
           </p>
         </div>
       </section>
