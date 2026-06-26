@@ -399,7 +399,16 @@
     "inc_tours": "Rehberli geziler & girişler",
     "inc_support": "Türkçe & Rusça destek",
     "ctaPick": "Bu tatili iste",
-    "waMsg": "Merhaba! Antalya için {name} rotasını istiyorum — {days} gün, {hotel}. Bana özel planı hazırlar mısınız?"
+    "waMsg": "Merhaba! Antalya için {name} rotasını istiyorum — {days} gün, {hotel}. Bana özel planı hazırlar mısınız?",
+    "curated": "Bizzat planlandı",
+    "worryLead": "Artık bunları düşünme",
+    "worry1": "Hangi otel?",
+    "worry2": "Nasıl giderim?",
+    "worry3": "Transfer mi, araç mı?",
+    "worry4": "Gezi dahil mi?",
+    "worryResolved": "Hepsi çözüldü",
+    "routeLabel": "Rota",
+    "oneMessage": "Tek mesaj — planı biz kurar, sana göndeririz."
   },
   "antalya": {
     "title": "Antalya Seyahat Danışmanlığı",

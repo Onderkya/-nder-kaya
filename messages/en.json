@@ -408,7 +408,16 @@
     "inc_tours": "Guided tours & entries",
     "inc_support": "Turkish & Russian support",
     "ctaPick": "I want this trip",
-    "waMsg": "Hi! I would like the {name} route for Antalya — {days} days, {hotel}. Could you prepare a personal plan for me?"
+    "waMsg": "Hi! I would like the {name} route for Antalya — {days} days, {hotel}. Could you prepare a personal plan for me?",
+    "curated": "Personally planned",
+    "worryLead": "Stop worrying about",
+    "worry1": "Which hotel?",
+    "worry2": "How do I get there?",
+    "worry3": "Transfer or rental car?",
+    "worry4": "Are tours included?",
+    "worryResolved": "All sorted",
+    "routeLabel": "Route",
+    "oneMessage": "One message — we build the plan and send it to you."
   },
   "antalya": {
     "title": "Antalya Travel Consulting",

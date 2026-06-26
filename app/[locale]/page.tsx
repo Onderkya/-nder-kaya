@@ -252,105 +252,131 @@ export default async function HomePage({
         </div>
       </section>
 
-      {/* ============ 3 · HAZIR ROTALAR ============ */}
-      <section className="py-24 sm:py-28" style={{ backgroundColor: "rgb(var(--muted) / 0.5)" }}>
-        <div className="container-wide">
+      {/* ============ 3 · HAZIR ROTALAR — sinematik paket vitrini (sayfanın spot ışığı) ============ */}
+      <section id="hazir-rotalar" className="relative scroll-mt-24 overflow-hidden py-24 sm:py-32" style={{ background: "linear-gradient(180deg, #061d26 0%, #0a2a36 48%, #061d26 100%)" }}>
+        {/* atmosfer parıltıları (deniz + mercan) */}
+        <div aria-hidden className="pointer-events-none absolute -left-40 top-24 h-[520px] w-[520px] rounded-full blur-3xl" style={{ background: "radial-gradient(circle, rgb(var(--lagoon) / 0.20), transparent 70%)" }} />
+        <div aria-hidden className="pointer-events-none absolute -right-44 bottom-24 h-[560px] w-[560px] rounded-full blur-3xl" style={{ background: "radial-gradient(circle, rgb(var(--accent) / 0.16), transparent 70%)" }} />
+
+        <div className="container-wide relative">
           <Reveal className="mx-auto max-w-2xl text-center">
-            <p className="eyebrow justify-center" style={{ color: "rgb(var(--accent))" }}>{r("eyebrow")}</p>
-            <h2 className="h-section mt-5 text-balance" style={{ color: "rgb(var(--foreground))" }}>{r("title")}</h2>
-            <p className="mt-5 text-lg leading-relaxed" style={{ color: "rgb(var(--muted-foreground))" }}>{r("subtitle")}</p>
-            <p className="serif-italic mx-auto mt-6 max-w-xl text-balance text-[19px] leading-relaxed sm:text-[21px]" style={{ color: "rgb(var(--primary))" }}>
+            <p className="eyebrow justify-center" style={{ color: "rgb(var(--gold))" }}>{r("eyebrow")}</p>
+            <h2 className="h-section mt-5 text-balance text-white">{r("title")}</h2>
+            <p className="mt-5 text-lg leading-relaxed text-white/70">{r("subtitle")}</p>
+            <p className="serif-italic mx-auto mt-6 max-w-xl text-balance text-[20px] leading-relaxed sm:text-[23px]" style={{ color: "rgb(var(--gold))" }}>
               {r("promise")}
             </p>
           </Reveal>
 
-          <div className="mt-14 grid items-start gap-7 sm:gap-8 lg:grid-cols-2">
-            {routes.map((rt, i) => (
-              <Reveal key={rt.key} delay={(i % 2) * 90}>
-                <div className="route-card group flex h-full flex-col overflow-hidden rounded-[2.25rem] ring-1 ring-black/5" style={{ backgroundColor: "rgb(var(--card))" }}>
-                  <div className="route-img relative aspect-[3/2] overflow-hidden">
-                    <Image src={rt.img} alt={`${rt.name} — ${rt.hotel}`} fill sizes="(max-width:1024px) 100vw, 50vw" className="object-cover" />
-                    <div className="absolute inset-0" style={{ background: "linear-gradient(180deg, rgba(4,18,24,0.2) 0%, transparent 30%, rgba(4,18,24,0.5) 62%, rgba(4,18,24,0.92) 100%)" }} />
-                    {/* Kitle rozeti — sol üst */}
-                    <span className="absolute left-4 top-4 rounded-full px-3 py-1.5 text-[11px] font-bold uppercase tracking-wide text-white shadow-lg" style={{ backgroundImage: "linear-gradient(135deg, rgb(var(--accent2)), rgb(var(--accent)))" }}>
-                      {rt.aud}
-                    </span>
-                    {/* Gün rozeti — sağ üst */}
-                    <div className="glass absolute right-4 top-4 flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-white" style={{ borderColor: "rgb(255 255 255 / 0.3)", backgroundColor: "rgb(4 28 40 / 0.45)" }}>
-                      <span className="font-display text-xl leading-none">{rt.days}</span>
-                      <span className="text-[10px] font-semibold uppercase tracking-wide text-white/80">{r("daysWord")}</span>
-                    </div>
-                    {/* İsim + otel (3D konum pini) */}
-                    <div className="absolute inset-x-0 bottom-0 p-6 text-white">
-                      <span className="text-[13px]" style={{ color: "rgb(251 191 80)" }}>{"★".repeat(rt.stars)}</span>
-                      <h3 className="font-display mt-1 font-semibold leading-[0.95] tracking-[-0.02em]" style={{ fontSize: "clamp(1.9rem, 3.6vw, 2.7rem)" }}>{rt.name}</h3>
-                      <p className="mt-1.5 max-w-sm text-[14px] text-white/85">{rt.tag}</p>
-                      <div className="mt-3 inline-flex items-center gap-1.5 rounded-full border py-1 pl-1.5 pr-3" style={{ borderColor: "rgb(255 255 255 / 0.25)", backgroundColor: "rgb(4 28 40 / 0.4)" }}>
-                        <Pin3D />
-                        <span className="text-[12px] font-semibold">{rt.hotel} · {rt.loc}</span>
+          {/* Endişeler üstü çizili → hepsi çözüldü (kullanıcının kendi soruları) */}
+          <Reveal delay={80} className="mx-auto mt-10 flex max-w-3xl flex-wrap items-center justify-center gap-2.5 sm:gap-3">
+            <span className="text-[12px] font-semibold uppercase tracking-wide text-white/45">{r("worryLead")}</span>
+            {[r("worry1"), r("worry2"), r("worry3"), r("worry4")].map((w) => (
+              <span key={w} className="rounded-full border px-3.5 py-1.5 text-[13px] line-through" style={{ borderColor: "rgb(255 255 255 / 0.14)", color: "rgb(255 255 255 / 0.42)" }}>{w}</span>
+            ))}
+            <span className="inline-flex items-center gap-1.5 rounded-full px-4 py-1.5 text-[13px] font-bold text-white shadow-lg" style={{ backgroundImage: "linear-gradient(135deg, rgb(var(--lagoon)), rgb(var(--primary)))" }}>
+              <IconCheck className="h-3.5 w-3.5" /> {r("worryResolved")}
+            </span>
+          </Reveal>
+
+          {/* Sinematik paket spreadleri — dönüşümlü editoryal düzen */}
+          <div className="mt-16 space-y-16 sm:mt-20 sm:space-y-24">
+            {routes.map((rt, i) => {
+              const flip = i % 2 === 1;
+              const num = String(i + 1).padStart(2, "0");
+              return (
+                <Reveal key={rt.key}>
+                  <article className="route-spread group grid items-center gap-8 lg:grid-cols-12 lg:gap-12">
+                    {/* GÖRSEL — tam-bleed sinematik, isim üstte büyük tipografi */}
+                    <div className={`spread-img relative aspect-[4/5] overflow-hidden rounded-[2.5rem] shadow-2xl sm:aspect-[16/11] lg:col-span-7 lg:aspect-auto lg:min-h-[600px] ${flip ? "lg:order-last" : ""}`}>
+                      <Image src={rt.img} alt={`${rt.name} — ${rt.hotel}`} fill sizes="(max-width:1024px) 100vw, 58vw" className="object-cover" />
+                      <div className="absolute inset-0" style={{ background: "linear-gradient(180deg, rgba(4,18,24,0.25) 0%, transparent 26%, rgba(4,18,24,0.55) 58%, rgba(4,18,24,0.95) 100%)" }} />
+                      <div className="absolute left-5 top-5 flex flex-col gap-2">
+                        <span className="w-fit rounded-full px-3 py-1.5 text-[11px] font-bold uppercase tracking-wide text-white shadow-lg" style={{ backgroundImage: "linear-gradient(135deg, rgb(var(--accent2)), rgb(var(--accent)))" }}>{rt.aud}</span>
+                        <span className="glass inline-flex w-fit items-center gap-1.5 rounded-full border px-3 py-1 text-[11px] font-semibold text-white" style={{ borderColor: "rgb(255 255 255 / 0.25)", backgroundColor: "rgb(4 28 40 / 0.4)" }}>
+                          <IconCheck className="h-3 w-3" /> {r("curated")}
+                        </span>
+                      </div>
+                      <div className="glass absolute right-5 top-5 flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-white" style={{ borderColor: "rgb(255 255 255 / 0.3)", backgroundColor: "rgb(4 28 40 / 0.45)" }}>
+                        <span className="font-display text-xl leading-none">{rt.days}</span>
+                        <span className="text-[10px] font-semibold uppercase tracking-wide text-white/80">{r("daysWord")}</span>
+                      </div>
+                      <div className="absolute inset-x-0 bottom-0 p-7 text-white sm:p-9">
+                        <span className="font-display text-sm tracking-[0.3em] text-white/55">{r("routeLabel")} {num}</span>
+                        <span className="ml-3 text-[14px]" style={{ color: "rgb(251 191 80)" }}>{"★".repeat(rt.stars)}</span>
+                        <h3 className="font-display mt-2 font-semibold leading-[0.92] tracking-[-0.02em]" style={{ fontSize: "clamp(2.4rem, 4.6vw, 3.7rem)" }}>{rt.name}</h3>
+                        <p className="mt-2 max-w-md text-[15px] text-white/85">{rt.tag}</p>
+                        <div className="mt-3.5 inline-flex items-center gap-1.5 rounded-full border py-1 pl-1.5 pr-3" style={{ borderColor: "rgb(255 255 255 / 0.25)", backgroundColor: "rgb(4 28 40 / 0.4)" }}>
+                          <Pin3D />
+                          <span className="text-[12px] font-semibold">{rt.hotel} · {rt.loc}</span>
+                        </div>
                       </div>
                     </div>
-                  </div>
-                  <div className="flex flex-1 flex-col p-6 sm:p-7">
-                    <p className="text-[14px] leading-snug" style={{ color: "rgb(var(--muted-foreground))" }}>
-                      <span className="font-semibold" style={{ color: "rgb(var(--foreground))" }}>{r("bestForLabel")}:</span> {rt.best}
-                    </p>
-                    {/* "Her şey dahil" manifestosu — uçak/transfer/otel/gezi sorularını tek bakışta kapatır */}
-                    <div className="mt-5 rounded-2xl border p-4 sm:p-5" style={{ borderColor: "rgb(var(--primary) / 0.18)", backgroundColor: "rgb(var(--lagoon) / 0.06)" }}>
-                      <p className="flex items-center gap-2 text-[11px] font-bold uppercase tracking-[0.08em]" style={{ color: "rgb(var(--primary))" }}>
-                        <span className="grid h-5 w-5 shrink-0 place-items-center rounded-full text-white" style={{ backgroundImage: "linear-gradient(135deg, rgb(var(--lagoon)), rgb(var(--primary)))" }}><IconCheck className="h-3 w-3" /></span>
-                        {r("allInLabel")}
+
+                    {/* İÇERİK — her şey dahil + gün gün + tek baskın CTA */}
+                    <div className="lg:col-span-5">
+                      <p className="text-[14px] leading-snug text-white/65">
+                        <span className="font-semibold text-white">{r("bestForLabel")}:</span> {rt.best}
                       </p>
-                      <ul className="mt-3.5 grid grid-cols-1 gap-x-4 gap-y-2.5 sm:grid-cols-2">
-                        {inclusions.map((inc) => (
-                          <li key={inc.icon} className="flex items-center gap-2.5">
-                            <span className="grid h-7 w-7 shrink-0 place-items-center rounded-lg" style={{ backgroundColor: "rgb(var(--primary) / 0.1)", color: "rgb(var(--primary))" }}>
-                              <RouteIcon name={inc.icon} className="h-[15px] w-[15px]" />
-                            </span>
-                            <span className="text-[13.5px] font-medium leading-tight" style={{ color: "rgb(var(--foreground))" }}>{inc.label}</span>
-                          </li>
-                        ))}
-                      </ul>
-                      <p className="mt-3.5 text-[12px]" style={{ color: "rgb(var(--muted-foreground))" }}>{r("flightsNote")}</p>
-                    </div>
 
-                    {/* Adım adım yolculuk — ikonlu zaman çizgisi */}
-                    <ol className="mt-6 flex-1">
-                      {rt.steps.map((s, si) => {
-                        const newDay = si === 0 || s.day !== rt.steps[si - 1].day;
-                        const last = si === rt.steps.length - 1;
-                        return (
-                          <li key={si} className="flex gap-4">
-                            <div className="flex flex-col items-center">
-                              <span className="grid h-9 w-9 shrink-0 place-items-center rounded-full text-white shadow-md" style={{ backgroundImage: "linear-gradient(135deg, rgb(var(--lagoon)), rgb(var(--primary)))" }}>
-                                <RouteIcon name={s.icon} className="h-[18px] w-[18px]" />
+                      {/* "Her şey dahil" — buzlu cam panel, endişe kapatıcı */}
+                      <div className="mt-5 rounded-2xl border p-5 backdrop-blur-sm" style={{ borderColor: "rgb(255 255 255 / 0.12)", backgroundColor: "rgb(255 255 255 / 0.04)" }}>
+                        <p className="flex items-center gap-2 text-[11px] font-bold uppercase tracking-[0.08em]" style={{ color: "rgb(var(--gold))" }}>
+                          <span className="grid h-5 w-5 shrink-0 place-items-center rounded-full text-white" style={{ backgroundImage: "linear-gradient(135deg, rgb(var(--lagoon)), rgb(var(--primary)))" }}><IconCheck className="h-3 w-3" /></span>
+                          {r("allInLabel")}
+                        </p>
+                        <ul className="mt-3.5 grid grid-cols-1 gap-x-4 gap-y-2.5 sm:grid-cols-2">
+                          {inclusions.map((inc) => (
+                            <li key={inc.icon} className="flex items-center gap-2.5">
+                              <span className="grid h-7 w-7 shrink-0 place-items-center rounded-lg text-white" style={{ backgroundColor: "rgb(255 255 255 / 0.08)" }}>
+                                <RouteIcon name={inc.icon} className="h-[15px] w-[15px]" />
                               </span>
-                              {!last && <span className="my-1 w-0.5 flex-1 rounded-full" style={{ backgroundColor: "rgb(var(--border))" }} />}
-                            </div>
-                            <div className={last ? "pb-0" : "pb-5"}>
-                              {newDay && (
-                                <span className="inline-block rounded-full px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wide" style={{ backgroundColor: "rgb(var(--accent) / 0.12)", color: "rgb(var(--accent))" }}>
-                                  {r("dayLabel", { n: s.day })}
-                                </span>
-                              )}
-                              <p className={`font-semibold ${newDay ? "mt-1.5" : ""}`} style={{ color: "rgb(var(--foreground))" }}>{s.t}</p>
-                              <p className="mt-0.5 text-[13.5px] leading-relaxed" style={{ color: "rgb(var(--muted-foreground))" }}>{s.d}</p>
-                            </div>
-                          </li>
-                        );
-                      })}
-                    </ol>
+                              <span className="text-[13.5px] font-medium leading-tight text-white/90">{inc.label}</span>
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
 
-                    {waReady ? (
-                      <a href={routeWaLink(rt)} target="_blank" rel="noopener noreferrer" className="btn-accent mt-7 w-full justify-center shadow-lg shadow-black/10">{r("ctaPick")} <IconArrow /></a>
-                    ) : (
-                      <Link href="/contact" className="btn-accent mt-7 w-full justify-center shadow-lg shadow-black/10">{r("ctaPick")} <IconArrow /></Link>
-                    )}
-                    <span className="mt-3 text-center text-xs" style={{ color: "rgb(var(--muted-foreground))" }}>{r("custom")}</span>
-                  </div>
-                </div>
-              </Reveal>
-            ))}
+                      {/* Gün gün yolculuk — sana özel kurulmuş */}
+                      <ol className="mt-6">
+                        {rt.steps.map((s, si) => {
+                          const newDay = si === 0 || s.day !== rt.steps[si - 1].day;
+                          const last = si === rt.steps.length - 1;
+                          return (
+                            <li key={si} className="flex gap-4">
+                              <div className="flex flex-col items-center">
+                                <span className="grid h-9 w-9 shrink-0 place-items-center rounded-full text-white shadow-md" style={{ backgroundImage: "linear-gradient(135deg, rgb(var(--lagoon)), rgb(var(--primary)))" }}>
+                                  <RouteIcon name={s.icon} className="h-[18px] w-[18px]" />
+                                </span>
+                                {!last && <span className="my-1 w-0.5 flex-1 rounded-full" style={{ backgroundColor: "rgb(255 255 255 / 0.14)" }} />}
+                              </div>
+                              <div className={last ? "pb-0" : "pb-5"}>
+                                {newDay && (
+                                  <span className="inline-block rounded-full px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wide" style={{ backgroundColor: "rgb(var(--gold) / 0.16)", color: "rgb(var(--gold))" }}>
+                                    {r("dayLabel", { n: s.day })}
+                                  </span>
+                                )}
+                                <p className={`font-semibold text-white ${newDay ? "mt-1.5" : ""}`}>{s.t}</p>
+                                <p className="mt-0.5 text-[13.5px] leading-relaxed text-white/65">{s.d}</p>
+                              </div>
+                            </li>
+                          );
+                        })}
+                      </ol>
+
+                      {/* Tek baskın aksiyon */}
+                      {waReady ? (
+                        <a href={routeWaLink(rt)} target="_blank" rel="noopener noreferrer" className="btn-accent mt-7 w-full justify-center py-4 text-base shadow-xl shadow-black/30">{r("ctaPick")} <IconArrow /></a>
+                      ) : (
+                        <Link href="/contact" className="btn-accent mt-7 w-full justify-center py-4 text-base shadow-xl shadow-black/30">{r("ctaPick")} <IconArrow /></Link>
+                      )}
+                      <p className="mt-3 text-center text-[12.5px] text-white/60">{r("oneMessage")}</p>
+                      <p className="mx-auto mt-1 max-w-sm text-center text-[11.5px] leading-relaxed text-white/40">{r("flightsNote")} · {r("custom")}</p>
+                    </div>
+                  </article>
+                </Reveal>
+              );
+            })}
           </div>
         </div>
       </section>

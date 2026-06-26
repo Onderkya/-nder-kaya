@@ -408,7 +408,16 @@
     "inc_tours": "Gid bilan ekskursiyalar va chiptalar",
     "inc_support": "Turkcha va ruscha qoʼllab-quvvatlash",
     "ctaPick": "Shu sayohatni xohlayman",
-    "waMsg": "Salom! Antaliya uchun {name} yoʼnalishini xohlayman — {days} kun, {hotel}. Menga shaxsiy reja tayyorlab bera olasizmi?"
+    "waMsg": "Salom! Antaliya uchun {name} yoʼnalishini xohlayman — {days} kun, {hotel}. Menga shaxsiy reja tayyorlab bera olasizmi?",
+    "curated": "Shaxsan rejalashtirilgan",
+    "worryLead": "Endi bular haqida oʼylamang",
+    "worry1": "Qaysi mehmonxona?",
+    "worry2": "Qanday boraman?",
+    "worry3": "Transfermi yoki ijara avtomi?",
+    "worry4": "Ekskursiyalar kiradimi?",
+    "worryResolved": "Hammasi hal qilindi",
+    "routeLabel": "Yoʼnalish",
+    "oneMessage": "Bitta xabar — rejani biz tuzamiz va sizga yuboramiz."
   },
   "antalya": {
     "title": "Antalya sayohat maslahati",
