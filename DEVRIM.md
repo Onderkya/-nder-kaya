@@ -3,9 +3,17 @@
 > Canlı: **http://45.67.203.149:3010** (mutlaka `http://`) · dal `claude/consulting-site-plan-6k4lix`
 > Görsel/medya kaynakları: `public/images/CREDITS.txt` (tümü CC / Mixkit / CC0).
 
-## 🔁 Revizyon 9 — gerçek fermuar, hazır rotalar, IT alanı, öğretmen kimliği, ödeme (GÜNCEL)
+## 🔁 Revizyon 10 — fermuar EMEKLİ → editoryal sinematik vitrin + otel vitrini (GÜNCEL)
 
 > **Şu an buradayız.** Son commit dalda; deploy için sunucuda `git reset --hard origin/...` (aşağıdaki nota bak).
+
+- **FERMUAR KALDIRILDI** (`components/zipper-reveal.tsx` artık import edilmiyor — dosya duruyor ama kullanılmıyor). Sebep: clip-path + dash-stroke dişler + elle çizilen sürgü kırılgandı, her ekranda kayıyordu ("değişik açılıyor"). Kullanıcı kararı: emekli et.
+- **YENİ: Editoryal sinematik vitrin** (`components/cinematic-showcase.tsx`) — "Antalya'nın incileri" 9 sahne (scuba/Kaputaş/Kaş/Suluada/Olympos/Kemer/Alanya/Kleopatra/LoL). Tam ekran sabit sahne, scroll'la **cross-fade**, aktif sahnede **Ken Burns yavaş zoom**, dev serif yer adı aşağıdan kayar, sağda **dikey ilerleme rayı** (aktif yanar), **"0X/09" sayaç**, altta ilerleme çizgisi, intro başlık erir. Yalnız görünürken rAF, yalnız aktif video oynar. goturkiye/Aman/Six Senses dili.
+- **YENİ: Otel vitrini** (`components/hotel-showcase.tsx`) — akordeon yerine büyük sinematik **sahne + altında yatay küçük resim rayı**. Aktif otel Ken Burns zoom + 5★ rozet + dev serif ad + yer pill + CTA. Ray'dan seç (gel/tıkla/odak) → cross-fade. Nazik otomatik geçiş (5sn), fareyle durur. `hotel-accordion.tsx` artık kullanılmıyor (dosya duruyor).
+- ✅ `tsc --noEmit` temiz, `next build` ✓.
+- ⏳ **Kullanıcı telefonda görsel geri bildirim verecek** (sahne süresi/zoom hızı, ray yeri, tipografi).
+
+## 🔁 Revizyon 9 — gerçek fermuar, hazır rotalar, IT alanı, öğretmen kimliği, ödeme
 
 - **FERMUAR (ana sayfa "deneyim" bölümü) — `components/zipper-reveal.tsx`:** birçok tur döndü, son hâli **Coca-Cola "real magic" tarzı ÇAPRAZ fermuar**:
   - Çapraz/kıvrımlı dikiş ekranı ikiye böler; **gerçek metal dişler = kalın `stroke-dasharray` stroke** (iki sıra kenetli), metalik **sürgü + sallanan kulp**.
