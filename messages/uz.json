@@ -417,7 +417,10 @@
     "worry4": "Ekskursiyalar kiradimi?",
     "worryResolved": "Hammasi hal qilindi",
     "routeLabel": "Yoʼnalish",
-    "oneMessage": "Bitta xabar — rejani biz tuzamiz va sizga yuboramiz."
+    "oneMessage": "Bitta xabar — rejani biz tuzamiz va sizga yuboramiz.",
+    "details": "Batafsil",
+    "close": "Yopish",
+    "dayByDay": "Kun-kun reja"
   },
   "antalya": {
     "title": "Antaliyadagi orzuingizdagi dam olish — allaqachon tayyor",

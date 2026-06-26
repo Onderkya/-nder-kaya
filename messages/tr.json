@@ -408,7 +408,10 @@
     "worry4": "Gezi dahil mi?",
     "worryResolved": "Hepsi çözüldü",
     "routeLabel": "Rota",
-    "oneMessage": "Tek mesaj — planı biz kurar, sana göndeririz."
+    "oneMessage": "Tek mesaj — planı biz kurar, sana göndeririz.",
+    "details": "Detayları gör",
+    "close": "Kapat",
+    "dayByDay": "Gün gün plan"
   },
   "antalya": {
     "title": "Hayalindeki Antalya tatili — zaten hazır",

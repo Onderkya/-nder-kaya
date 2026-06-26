@@ -280,6 +280,13 @@
 .spread-img img { transition: transform 1.1s cubic-bezier(0.16,1,0.3,1); will-change: transform; }
 .route-spread:hover .spread-img img { transform: scale(1.06); }
 
+/* --- Paket kartı modal (içine gir) --- */
+@keyframes pkg-fade { from { opacity: 0; } to { opacity: 1; } }
+@keyframes pkg-pop { from { opacity: 0; transform: translateY(18px) scale(0.97); } to { opacity: 1; transform: none; } }
+.pkg-overlay { animation: pkg-fade 0.25s ease both; }
+.pkg-panel { animation: pkg-pop 0.34s cubic-bezier(0.16,1,0.3,1) both; }
+@media (prefers-reduced-motion: reduce) { .pkg-overlay, .pkg-panel { animation: none; } }
+
 @media (prefers-reduced-motion: reduce) {
   .dot-drift, .sheen, .badge-glow { animation: none; }
   .card-lift:hover { transform: none; }
