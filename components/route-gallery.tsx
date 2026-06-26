@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { createPortal } from "react-dom";
 import Image from "next/image";
 import { Reveal } from "@/components/reveal";
 import { RouteIcon } from "@/components/route-icons";
@@ -27,7 +28,10 @@ type Labels = {
  */
 export function RouteGallery({ routes, inclusions, labels }: { routes: Route[]; inclusions: Inclusion[]; labels: Labels }) {
   const [openKey, setOpenKey] = useState<string | null>(null);
+  const [mounted, setMounted] = useState(false);
   const active = routes.find((r) => r.key === openKey) ?? null;
+
+  useEffect(() => { setMounted(true); }, []);
 
   useEffect(() => {
     if (!active) return;
@@ -86,7 +90,7 @@ export function RouteGallery({ routes, inclusions, labels }: { routes: Route[]; 
         ))}
       </div>
 
-      {active && (
+      {active && mounted && createPortal(
         <div className="fixed inset-0 z-[80] flex items-end justify-center sm:items-center sm:p-6" role="dialog" aria-modal="true" aria-label={active.name} onClick={() => setOpenKey(null)}>
           <div className="pkg-overlay absolute inset-0" style={{ backgroundColor: "rgb(2 12 18 / 0.66)", backdropFilter: "blur(4px)" }} />
           <div
@@ -178,7 +182,8 @@ export function RouteGallery({ routes, inclusions, labels }: { routes: Route[]; 
               <p className="mx-auto mt-1 max-w-sm text-center text-[11.5px] leading-relaxed" style={{ color: "rgb(var(--muted-foreground))" }}>{labels.flightsNote} · {labels.custom}</p>
             </div>
           </div>
-        </div>
+        </div>,
+        document.body
       )}
     </>
   );
