@@ -7,6 +7,7 @@ import { Reveal } from "@/components/reveal";
 import { RouteIcon } from "@/components/route-icons";
 import { Pin3D } from "@/components/hotel-cards";
 import { IconArrow, IconCheck } from "@/components/icons";
+import { whatsappLink, siteConfig } from "@/lib/config";
 
 type Step = { icon: string; day: number; t: string; d: string; dl: string };
 type Route = {
@@ -15,23 +16,34 @@ type Route = {
   steps: Step[]; wa: string | null;
 };
 type Inclusion = { icon: string; label: string };
+type Addon = { key: string; label: string };
 type Labels = {
   daysWord: string; routeLabel: string; bestForLabel: string; allInLabel: string;
   ctaPick: string; oneMessage: string; flightsNote: string; custom: string;
   curated: string; details: string; close: string; dayByDay: string; contactHref: string;
+  custTitle: string; custHint: string; addonsTitle: string; addNotePh: string;
+  mIntro2: string; mKept: string; mRemoved: string; mAddons: string; mNote: string;
 };
+
+const CORE_STEPS = 3; // uçuş + transfer + giriş her zaman dahil (çıkarılamaz)
 
 /**
  * Modern paket vitrini: kompakt kartlar yan yana (ızgara) + tıkla → animasyonlu
  * detay modalı ("içine gir"). Kart sade kalır; gün gün plan + tüm dahiller
  * modalda. Tek baskın aksiyon: "Bu tatili iste".
  */
-export function RouteGallery({ routes, inclusions, labels }: { routes: Route[]; inclusions: Inclusion[]; labels: Labels }) {
+export function RouteGallery({ routes, inclusions, addons, labels }: { routes: Route[]; inclusions: Inclusion[]; addons: Addon[]; labels: Labels }) {
   const [openKey, setOpenKey] = useState<string | null>(null);
   const [mounted, setMounted] = useState(false);
+  const [excluded, setExcluded] = useState<Set<number>>(new Set());
+  const [picked, setPicked] = useState<Set<string>>(new Set());
+  const [note, setNote] = useState("");
   const active = routes.find((r) => r.key === openKey) ?? null;
 
   useEffect(() => { setMounted(true); }, []);
+
+  // Modal her açıldığında kişiselleştirme seçimleri sıfırlanır.
+  useEffect(() => { setExcluded(new Set()); setPicked(new Set()); setNote(""); }, [openKey]);
 
   useEffect(() => {
     if (!active) return;
@@ -41,6 +53,31 @@ export function RouteGallery({ routes, inclusions, labels }: { routes: Route[]; 
     window.addEventListener("keydown", onKey);
     return () => { document.body.style.overflow = prev; window.removeEventListener("keydown", onKey); };
   }, [active]);
+
+  const toggleStep = (i: number) =>
+    setExcluded((prev) => { const n = new Set(prev); n.has(i) ? n.delete(i) : n.add(i); return n; });
+  const toggleAddon = (k: string) =>
+    setPicked((prev) => { const n = new Set(prev); n.has(k) ? n.delete(k) : n.add(k); return n; });
+
+  // Kişiselleştirilmiş paketi WhatsApp mesajına çevirir (numara yoksa /contact).
+  function sendRequest() {
+    if (!active) return;
+    const program = active.steps.filter((_, i) => i < CORE_STEPS || !excluded.has(i)).map((s) => `• ${s.t}`);
+    const removed = active.steps.filter((s, i) => i >= CORE_STEPS && excluded.has(i)).map((s) => s.t);
+    const wantedAddons = addons.filter((a) => picked.has(a.key)).map((a) => a.label);
+    const lines = [
+      labels.mIntro2,
+      `${active.name} — ${active.days} ${labels.daysWord}, ${active.hotel}`,
+      `${labels.mKept}:`,
+      ...program,
+    ];
+    if (removed.length) lines.push(`${labels.mRemoved}: ${removed.join(", ")}`);
+    if (wantedAddons.length) lines.push(`${labels.mAddons}: ${wantedAddons.join(", ")}`);
+    if (note.trim()) lines.push(`${labels.mNote}: ${note.trim()}`);
+    const msg = lines.join("\n");
+    if (siteConfig.whatsappConfigured) window.open(whatsappLink(msg), "_blank", "noopener");
+    else window.location.href = labels.contactHref;
+  }
 
   return (
     <>
@@ -143,41 +180,92 @@ export function RouteGallery({ routes, inclusions, labels }: { routes: Route[]; 
                 </ul>
               </div>
 
-              {/* Gün gün plan */}
-              <p className="mt-7 text-[11px] font-bold uppercase tracking-[0.1em]" style={{ color: "rgb(var(--accent))" }}>{labels.dayByDay}</p>
+              {/* Kişiselleştir: durak çıkar + ekle */}
+              <div className="mt-7 flex items-baseline justify-between gap-3">
+                <p className="text-[11px] font-bold uppercase tracking-[0.1em]" style={{ color: "rgb(var(--accent))" }}>{labels.dayByDay}</p>
+                <p className="text-[12px] font-semibold" style={{ color: "rgb(var(--primary))" }}>{labels.custTitle}</p>
+              </div>
+              <p className="mt-1.5 text-[13px] leading-relaxed" style={{ color: "rgb(var(--muted-foreground))" }}>{labels.custHint}</p>
               <ol className="mt-4">
                 {active.steps.map((s, si) => {
                   const newDay = si === 0 || s.day !== active.steps[si - 1].day;
                   const last = si === active.steps.length - 1;
+                  const toggleable = si >= CORE_STEPS;
+                  const off = excluded.has(si);
                   return (
-                    <li key={si} className="flex gap-4">
+                    <li key={si} className={`flex gap-4 transition-opacity ${off ? "opacity-40" : ""}`}>
                       <div className="flex flex-col items-center">
                         <span className="grid h-9 w-9 shrink-0 place-items-center rounded-full text-white shadow-md" style={{ backgroundImage: "linear-gradient(135deg, rgb(var(--lagoon)), rgb(var(--primary)))" }}>
                           <RouteIcon name={s.icon} className="h-[18px] w-[18px]" />
                         </span>
                         {!last && <span className="my-1 w-0.5 flex-1 rounded-full" style={{ backgroundColor: "rgb(var(--border))" }} />}
                       </div>
-                      <div className={last ? "pb-0" : "pb-5"}>
+                      <div className={`flex-1 ${last ? "pb-0" : "pb-5"}`}>
                         {newDay && (
                           <span className="inline-block rounded-full px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wide" style={{ backgroundColor: "rgb(var(--accent) / 0.12)", color: "rgb(var(--accent))" }}>{s.dl}</span>
                         )}
-                        <p className={`font-semibold ${newDay ? "mt-1.5" : ""}`} style={{ color: "rgb(var(--foreground))" }}>{s.t}</p>
-                        <p className="mt-0.5 text-[13.5px] leading-relaxed" style={{ color: "rgb(var(--muted-foreground))" }}>{s.d}</p>
+                        <div className="flex items-start justify-between gap-3">
+                          <div>
+                            <p className={`font-semibold ${newDay ? "mt-1.5" : ""} ${off ? "line-through" : ""}`} style={{ color: "rgb(var(--foreground))" }}>{s.t}</p>
+                            <p className="mt-0.5 text-[13.5px] leading-relaxed" style={{ color: "rgb(var(--muted-foreground))" }}>{s.d}</p>
+                          </div>
+                          {toggleable && (
+                            <button
+                              type="button"
+                              onClick={() => toggleStep(si)}
+                              aria-pressed={!off}
+                              aria-label={s.t}
+                              className="mt-1 grid h-7 w-7 shrink-0 place-items-center rounded-full border transition"
+                              style={off
+                                ? { borderColor: "rgb(var(--border))", color: "rgb(var(--muted-foreground))", backgroundColor: "transparent" }
+                                : { borderColor: "transparent", color: "#fff", backgroundImage: "linear-gradient(135deg, rgb(var(--lagoon)), rgb(var(--primary)))" }}
+                            >
+                              {off
+                                ? <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round"><path d="M12 5v14M5 12h14" /></svg>
+                                : <IconCheck className="h-3.5 w-3.5" />}
+                            </button>
+                          )}
+                        </div>
                       </div>
                     </li>
                   );
                 })}
               </ol>
 
-              {/* Tek baskın aksiyon */}
-              <a
-                href={active.wa ?? labels.contactHref}
-                target={active.wa ? "_blank" : undefined}
-                rel={active.wa ? "noopener noreferrer" : undefined}
-                className="btn-accent mt-7 w-full justify-center py-4 text-base shadow-xl shadow-black/15"
-              >
+              {/* Eklemek ister misin? */}
+              <p className="mt-6 text-[11px] font-bold uppercase tracking-[0.1em]" style={{ color: "rgb(var(--accent))" }}>{labels.addonsTitle}</p>
+              <div className="mt-3 flex flex-wrap gap-2">
+                {addons.map((a) => {
+                  const on = picked.has(a.key);
+                  return (
+                    <button
+                      key={a.key}
+                      type="button"
+                      onClick={() => toggleAddon(a.key)}
+                      aria-pressed={on}
+                      className="inline-flex items-center gap-1.5 rounded-full border px-3.5 py-1.5 text-[13px] font-medium transition"
+                      style={on
+                        ? { borderColor: "transparent", color: "#fff", backgroundImage: "linear-gradient(135deg, rgb(var(--lagoon)), rgb(var(--primary)))" }
+                        : { borderColor: "rgb(var(--border))", color: "rgb(var(--foreground))", backgroundColor: "transparent" }}
+                    >
+                      {on ? <IconCheck className="h-3.5 w-3.5" /> : <span className="text-base leading-none">+</span>} {a.label}
+                    </button>
+                  );
+                })}
+              </div>
+              <textarea
+                value={note}
+                onChange={(e) => setNote(e.target.value)}
+                placeholder={labels.addNotePh}
+                rows={2}
+                className="mt-4 w-full resize-none rounded-2xl border bg-transparent px-4 py-3 text-[14px] outline-none transition focus:ring-2"
+                style={{ borderColor: "rgb(var(--border))", color: "rgb(var(--foreground))" }}
+              />
+
+              {/* Kişiselleştirilmiş paketi gönder */}
+              <button type="button" onClick={sendRequest} className="btn-accent mt-6 w-full justify-center py-4 text-base shadow-xl shadow-black/15">
                 {labels.ctaPick} <IconArrow />
-              </a>
+              </button>
               <p className="mt-3 text-center text-[12.5px]" style={{ color: "rgb(var(--muted-foreground))" }}>{labels.oneMessage}</p>
               <p className="mx-auto mt-1 max-w-sm text-center text-[11.5px] leading-relaxed" style={{ color: "rgb(var(--muted-foreground))" }}>{labels.flightsNote} · {labels.custom}</p>
             </div>

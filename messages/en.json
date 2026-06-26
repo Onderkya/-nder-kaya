@@ -420,7 +420,22 @@
     "oneMessage": "One message — we build the plan and send it to you.",
     "details": "See details",
     "close": "Close",
-    "dayByDay": "Day-by-day plan"
+    "dayByDay": "Day-by-day plan",
+    "custTitle": "Make it yours",
+    "custHint": "Remove any stop you do not want, add what you would like — then send it to us.",
+    "addonsTitle": "Want to add anything?",
+    "addNotePh": "Anything else? (stroller, vegetarian menu, early check-in…)",
+    "a_boat": "Boat trip",
+    "a_spa": "Spa & massage",
+    "a_guide": "Private guide",
+    "a_vip": "Airport VIP",
+    "a_night": "Extra night",
+    "a_dinner": "Special dinner",
+    "mIntro2": "Hi! I customized this ready route:",
+    "mKept": "My itinerary",
+    "mRemoved": "Removed",
+    "mAddons": "Extras I want",
+    "mNote": "Note"
   },
   "antalya": {
     "title": "Your dream Antalya holiday — already done",

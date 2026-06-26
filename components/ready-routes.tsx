@@ -96,6 +96,15 @@ export async function ReadyRoutes() {
     { icon: "headset", label: r("inc_support") },
   ];
 
+  const addons = [
+    { key: "boat", label: r("a_boat") },
+    { key: "spa", label: r("a_spa") },
+    { key: "guide", label: r("a_guide") },
+    { key: "vip", label: r("a_vip") },
+    { key: "night", label: r("a_night") },
+    { key: "dinner", label: r("a_dinner") },
+  ];
+
   const labels = {
     daysWord: r("daysWord"),
     routeLabel: r("routeLabel"),
@@ -109,6 +118,15 @@ export async function ReadyRoutes() {
     details: r("details"),
     close: r("close"),
     dayByDay: r("dayByDay"),
+    custTitle: r("custTitle"),
+    custHint: r("custHint"),
+    addonsTitle: r("addonsTitle"),
+    addNotePh: r("addNotePh"),
+    mIntro2: r("mIntro2"),
+    mKept: r("mKept"),
+    mRemoved: r("mRemoved"),
+    mAddons: r("mAddons"),
+    mNote: r("mNote"),
     contactHref: `/${locale}/contact`,
   };
 
@@ -133,7 +151,7 @@ export async function ReadyRoutes() {
           </span>
         </Reveal>
 
-        <RouteGallery routes={routes} inclusions={inclusions} labels={labels} />
+        <RouteGallery routes={routes} inclusions={inclusions} addons={addons} labels={labels} />
       </div>
     </section>
   );

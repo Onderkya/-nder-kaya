@@ -420,7 +420,22 @@
     "oneMessage": "Bitta xabar — rejani biz tuzamiz va sizga yuboramiz.",
     "details": "Batafsil",
     "close": "Yopish",
-    "dayByDay": "Kun-kun reja"
+    "dayByDay": "Kun-kun reja",
+    "custTitle": "Oʼzingizga moslang",
+    "custHint": "Keraksiz toʼxtashni olib tashlang, xohlaganingizni qoʼshing — shunday bizga yuboring.",
+    "addonsTitle": "Biror narsa qoʼshasizmi?",
+    "addNotePh": "Yana biror narsa? (kolyaska, vegetarian menyu, erta kirish…)",
+    "a_boat": "Qayiq sayohati",
+    "a_spa": "Spa va massaj",
+    "a_guide": "Shaxsiy gid",
+    "a_vip": "Aeroport VIP",
+    "a_night": "Qoʼshimcha tun",
+    "a_dinner": "Maxsus kechki ovqat",
+    "mIntro2": "Salom! Ushbu tayyor yoʼnalishni oʼzimga moslab oldim:",
+    "mKept": "Mening dasturim",
+    "mRemoved": "Olib tashladim",
+    "mAddons": "Qoʼshimcha xohlaganim",
+    "mNote": "Izoh"
   },
   "antalya": {
     "title": "Antaliyadagi orzuingizdagi dam olish — allaqachon tayyor",

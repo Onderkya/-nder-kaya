@@ -411,7 +411,22 @@
     "oneMessage": "Tek mesaj — planı biz kurar, sana göndeririz.",
     "details": "Detayları gör",
     "close": "Kapat",
-    "dayByDay": "Gün gün plan"
+    "dayByDay": "Gün gün plan",
+    "custTitle": "Paketi kendine göre ayarla",
+    "custHint": "İstemediğin durağı çıkar, eklemek istediklerini seç — bize öyle gönder.",
+    "addonsTitle": "Eklemek ister misin?",
+    "addNotePh": "Başka isteğin? (bebek arabası, vejetaryen menü, erken giriş…)",
+    "a_boat": "Tekne turu",
+    "a_spa": "Spa & masaj",
+    "a_guide": "Özel rehber",
+    "a_vip": "Havalimanı VIP",
+    "a_night": "Ekstra gece",
+    "a_dinner": "Özel akşam yemeği",
+    "mIntro2": "Merhaba! Bu hazır rotayı kendime göre ayarladım:",
+    "mKept": "İstediğim program",
+    "mRemoved": "Çıkardıklarım",
+    "mAddons": "Ekstra istediklerim",
+    "mNote": "Not"
   },
   "antalya": {
     "title": "Hayalindeki Antalya tatili — zaten hazır",
