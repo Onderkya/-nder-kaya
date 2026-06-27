@@ -42,6 +42,7 @@ export function RouteGallery({ routes, inclusions, addons, labels }: { routes: R
   const railRef = useRef<HTMLDivElement>(null);
   const pausedRef = useRef(false);
   const activeRef = useRef(false);
+  const resumeTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const active = routes.find((r) => r.key === openKey) ?? null;
 
   useEffect(() => { setMounted(true); }, []);
@@ -69,11 +70,26 @@ export function RouteGallery({ routes, inclusions, addons, labels }: { routes: R
   const step = (dir: number) => {
     const el = railRef.current;
     if (!el) return;
+    pausedRef.current = true; // otomatik kaymayı durdur — kendi yumuşak tween'imiz var
+    if (resumeTimer.current) clearTimeout(resumeTimer.current);
     const card = el.querySelector<HTMLElement>("[data-pkg-card]");
     const w = card ? card.offsetWidth + 20 : el.clientWidth * 0.8;
     const half = el.scrollWidth / 2;
-    if (dir < 0 && el.scrollLeft - w < 0) el.scrollLeft += half;
-    el.scrollBy({ left: dir * w, behavior: "smooth" });
+    if (dir < 0 && el.scrollLeft - w < 0) el.scrollLeft += half; // başta → sona sar
+    // Elle yumuşak kaydırma (native smooth, rAF yazımıyla çakıştığı için güvenilmez).
+    const startX = el.scrollLeft;
+    const target = startX + dir * w;
+    const dur = 480;
+    let t0 = 0;
+    const ease = (p: number) => 1 - Math.pow(1 - p, 3);
+    const anim = (now: number) => {
+      if (!t0) t0 = now;
+      const p = Math.min(1, (now - t0) / dur);
+      el.scrollLeft = startX + (target - startX) * ease(p);
+      if (p < 1) requestAnimationFrame(anim);
+      else resumeTimer.current = setTimeout(() => { pausedRef.current = false; }, 700);
+    };
+    requestAnimationFrame(anim);
   };
 
   // Modal her açıldığında kişiselleştirme seçimleri sıfırlanır.
@@ -161,7 +177,7 @@ export function RouteGallery({ routes, inclusions, addons, labels }: { routes: R
 
                 <div className="absolute inset-x-0 bottom-0 p-6 text-white">
                   <span className="text-[12px]" style={{ color: "rgb(251 191 80)" }}>{"★".repeat(rt.stars)}</span>
-                  <h3 className="font-display mt-1 font-semibold leading-[0.95] tracking-[-0.02em]" style={{ fontSize: "clamp(1.95rem, 5.4vw, 2.35rem)" }}>{rt.name}</h3>
+                  <h3 className="font-display mt-1 font-semibold leading-[0.9] tracking-[-0.015em]" style={{ fontSize: "clamp(2.15rem, 6vw, 2.7rem)", textShadow: "0 2px 24px rgba(0,0,0,0.55)" }}>{rt.name}</h3>
                   <div className="mt-2 flex flex-wrap items-center gap-2">
                     <span className="inline-flex items-center gap-1.5 rounded-full border py-0.5 pl-1.5 pr-2.5" style={{ borderColor: "rgb(255 255 255 / 0.25)", backgroundColor: "rgb(4 28 40 / 0.4)" }}>
                       <Pin3D />
@@ -207,7 +223,7 @@ export function RouteGallery({ routes, inclusions, addons, labels }: { routes: R
                   <span className="text-[12px]" style={{ color: "rgb(251 191 80)" }}>{"★".repeat(active.stars)}</span>
                   <span className="text-[12px] font-semibold text-white/85">{active.days} {labels.daysWord}</span>
                 </div>
-                <h3 className="font-display mt-2 font-semibold leading-[0.95] tracking-[-0.02em]" style={{ fontSize: "clamp(2rem, 4vw, 2.8rem)" }}>{active.name}</h3>
+                <h3 className="font-display mt-2 font-semibold leading-[0.92] tracking-[-0.015em]" style={{ fontSize: "clamp(2.2rem, 4.4vw, 3rem)", textShadow: "0 2px 24px rgba(0,0,0,0.55)" }}>{active.name}</h3>
                 <p className="mt-1.5 max-w-md text-[14px] text-white/85">{active.tag}</p>
                 <div className="mt-3 inline-flex items-center gap-1.5 rounded-full border py-1 pl-1.5 pr-3" style={{ borderColor: "rgb(255 255 255 / 0.25)", backgroundColor: "rgb(4 28 40 / 0.4)" }}>
                   <Pin3D />
