@@ -39,18 +39,42 @@ export function RouteGallery({ routes, inclusions, addons, labels }: { routes: R
   const [excluded, setExcluded] = useState<Set<number>>(new Set());
   const [picked, setPicked] = useState<Set<string>>(new Set());
   const [note, setNote] = useState("");
-  const hoverTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const railRef = useRef<HTMLDivElement>(null);
+  const pausedRef = useRef(false);
+  const activeRef = useRef(false);
   const active = routes.find((r) => r.key === openKey) ?? null;
 
-  // Üstüne gelince aç (yalnız hover'lı cihazlarda; küçük gecikme yanlış açılmayı önler).
-  const openOnHover = (key: string) => {
-    if (typeof window !== "undefined" && window.matchMedia && !window.matchMedia("(hover: hover)").matches) return;
-    if (hoverTimer.current) clearTimeout(hoverTimer.current);
-    hoverTimer.current = setTimeout(() => setOpenKey(key), 200);
-  };
-  const cancelHover = () => { if (hoverTimer.current) clearTimeout(hoverTimer.current); };
-
   useEffect(() => { setMounted(true); }, []);
+  useEffect(() => { activeRef.current = !!active; }, [active]);
+
+  // Sonsuz otomatik kaydırma (sola). Üstüne gelince / dokununca / modal açıkken durur.
+  useEffect(() => {
+    const el = railRef.current;
+    if (!el) return;
+    if (typeof window !== "undefined" && window.matchMedia?.("(prefers-reduced-motion: reduce)").matches) return;
+    let raf = 0;
+    const tick = () => {
+      if (el && !pausedRef.current && !activeRef.current && el.scrollWidth > el.clientWidth) {
+        el.scrollLeft += 0.5;
+        const half = el.scrollWidth / 2;
+        if (el.scrollLeft >= half) el.scrollLeft -= half;
+      }
+      raf = requestAnimationFrame(tick);
+    };
+    raf = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(raf);
+  }, []);
+
+  // İleri/geri — kart genişliği kadar kaydır; başa gelince sona sar (sonsuz).
+  const step = (dir: number) => {
+    const el = railRef.current;
+    if (!el) return;
+    const card = el.querySelector<HTMLElement>("[data-pkg-card]");
+    const w = card ? card.offsetWidth + 20 : el.clientWidth * 0.8;
+    const half = el.scrollWidth / 2;
+    if (dir < 0 && el.scrollLeft - w < 0) el.scrollLeft += half;
+    el.scrollBy({ left: dir * w, behavior: "smooth" });
+  };
 
   // Modal her açıldığında kişiselleştirme seçimleri sıfırlanır.
   useEffect(() => { setExcluded(new Set()); setPicked(new Set()); setNote(""); }, [openKey]);
@@ -96,20 +120,33 @@ export function RouteGallery({ routes, inclusions, addons, labels }: { routes: R
 
   return (
     <>
-      <div className="pkg-marquee-wrap relative mt-12 w-full overflow-hidden">
+      <div className="relative mt-12 w-full">
         {/* Kenar yumuşatma (sinematik fade) */}
         <div aria-hidden className="pointer-events-none absolute inset-y-0 left-0 z-10 w-12 sm:w-28" style={{ background: "linear-gradient(90deg, rgb(var(--background)), transparent)" }} />
         <div aria-hidden className="pointer-events-none absolute inset-y-0 right-0 z-10 w-12 sm:w-28" style={{ background: "linear-gradient(270deg, rgb(var(--background)), transparent)" }} />
 
-        <div className="pkg-marquee flex gap-5 px-3 py-2">
+        {/* İleri / geri */}
+        <button type="button" aria-label="‹" onClick={() => step(-1)} className="absolute left-2 top-1/2 z-20 grid h-11 w-11 -translate-y-1/2 place-items-center rounded-full border shadow-lg backdrop-blur transition hover:scale-105 sm:left-4" style={{ borderColor: "rgb(var(--border))", backgroundColor: "rgb(var(--card) / 0.92)", color: "rgb(var(--foreground))" }}>
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"><path d="m15 18-6-6 6-6" /></svg>
+        </button>
+        <button type="button" aria-label="›" onClick={() => step(1)} className="absolute right-2 top-1/2 z-20 grid h-11 w-11 -translate-y-1/2 place-items-center rounded-full border shadow-lg backdrop-blur transition hover:scale-105 sm:right-4" style={{ borderColor: "rgb(var(--border))", backgroundColor: "rgb(var(--card) / 0.92)", color: "rgb(var(--foreground))" }}>
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"><path d="m9 18 6-6-6-6" /></svg>
+        </button>
+
+        <div
+          ref={railRef}
+          onMouseEnter={() => { pausedRef.current = true; }}
+          onMouseLeave={() => { pausedRef.current = false; }}
+          onTouchStart={() => { pausedRef.current = true; }}
+          onTouchEnd={() => { pausedRef.current = false; }}
+          className="no-scrollbar flex gap-5 overflow-x-auto px-3 py-2"
+        >
           {[...routes, ...routes].map((rt, i) => (
             <button
               key={`${rt.key}-${i}`}
               data-pkg-card
               type="button"
               onClick={() => setOpenKey(rt.key)}
-              onMouseEnter={() => openOnHover(rt.key)}
-              onMouseLeave={cancelHover}
               aria-label={`${rt.name} — ${labels.details}`}
               className="route-card group relative w-[80vw] max-w-[360px] shrink-0 overflow-hidden rounded-[2rem] text-left ring-1 ring-black/5 sm:w-[360px]"
             >
@@ -149,10 +186,11 @@ export function RouteGallery({ routes, inclusions, addons, labels }: { routes: R
       </div>
 
       {active && mounted && createPortal(
-        <div className="fixed inset-0 z-[80] flex items-end justify-center sm:items-center sm:p-6" role="dialog" aria-modal="true" aria-label={active.name} onClick={() => setOpenKey(null)}>
+        <div data-lenis-prevent className="fixed inset-0 z-[80] flex items-end justify-center overscroll-contain sm:items-center sm:p-6" role="dialog" aria-modal="true" aria-label={active.name} onClick={() => setOpenKey(null)}>
           <div className="pkg-overlay absolute inset-0" style={{ backgroundColor: "rgb(2 12 18 / 0.66)", backdropFilter: "blur(4px)" }} />
           <div
-            className="pkg-panel relative z-10 max-h-[94vh] w-full max-w-2xl overflow-y-auto rounded-t-[2rem] shadow-2xl sm:rounded-[2rem]"
+            data-lenis-prevent
+            className="pkg-panel relative z-10 max-h-[94vh] w-full max-w-2xl overflow-y-auto overscroll-contain rounded-t-[2rem] shadow-2xl sm:rounded-[2rem]"
             style={{ backgroundColor: "rgb(var(--card))" }}
             onClick={(e) => e.stopPropagation()}
           >
