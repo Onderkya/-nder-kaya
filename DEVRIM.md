@@ -4,9 +4,47 @@
 > ↩️ **Geri dönüş (rollback):** eski sürüm dokunulmadı → dal `claude/consulting-site-plan-6k4lix` + etiket `safe/before-redesign-rev9`. Beğenilmezse sunucuda o dala `git reset --hard` + rebuild.
 > Görsel/medya kaynakları: `public/images/CREDITS.txt` (CC / Mixkit / CC0) · oteller: kullanıcının verdiği resmi fotoğraflar (`public/images/hotels/`).
 
-## 🔁 Revizyon 12 — premium rota kartları + admin paneli genişletmesi (GÜNCEL · dal `claude/redesign-conversion`)
+## 🔁 Revizyon 13 — "Antalya Danışmanlık" sayfası = HAYALİ SEÇ + KİŞİSELLEŞTİR + SAT (GÜNCEL · dal `claude/redesign-conversion`)
 
-> **Şu an buradayız.**
+> **Şu an buradayız.** Kullanıcının "insanlar detaya boğulmadan hayalindeki tatili seçip alsın" vizyonu, **doğru sayfada** (Antalya Danışmanlık) sinematik bir satış deneyimine dönüştü.
+
+### ⚠️ EN KRİTİK DERS — DOĞRU SAYFA
+- Kullanıcının dediği **"Antalya danışmanlık page" = menüdeki "Antalya Danışmanlık" linki = `/[locale]/antalya` rotası** (`app/[locale]/antalya/page.tsx`). **ANA SAYFA (`/`) DEĞİL.**
+- 6 tur boyunca yanlışlıkla **ana sayfa** düzenlendi; kullanıcı menüden /antalya'ya gidip "değişiklik göremiyorum / sen hangi sayfayı yaptın?" dedi. Header menüsü: Ana Sayfa→/ · **Antalya Danışmanlık→/antalya** · Türkçe Ders→/lessons · Türkiye'de Eğitim→/education · Hakkımızda · SSS · İletişim.
+- Bir sonraki chat: "Antalya/paket/danışmanlık" işi = önce **`/antalya`** ve **`components/ready-routes.tsx` + `components/route-gallery.tsx`**.
+
+### 🎬 HAZIR ROTALAR — paylaşılan bileşen (ana sayfa + /antalya, tek kaynak)
+- **`components/ready-routes.tsx` (server):** `routes` + `hotelsd` çevirilerini okur, 5 rotayı (veri + adımlar + otel why/note + Google harita sorgusu) hazırlar, intro'yu (eyebrow/başlık/promise + "endişeler üstü çizili → Hepsi çözüldü" çipleri) container içinde, **`<RouteGallery>`'yi container DIŞINDA tam ekran** render eder. Rota→otel eşlemesi: `hkeyOf = {r1:larabarut, r2:cullinan, r3:ngphaselis, r4:legends, r5:maxxkemer}`.
+- **`components/route-gallery.tsx` (client "use client"):** tüm etkileşim burada.
+  - **Tam ekran (kenara kadar) SONSUZ otomatik marquee** — JS rAF ile sola `scrollLeft += 0.5`, yarıya gelince `-= half` (kartlar `[...routes, ...routes]` 2× çoğaltılı → kusursuz döngü). Kenarlarda sinematik fade. Üstüne gelince / dokununca / **modal açıkken** durur (`pausedRef`, `activeRef`).
+  - **İleri/geri ‹ › butonları** — native `scrollBy({behavior:'smooth'})` rAF'ın per-frame yazımıyla **çakışıp iptal oluyordu** (hata buydu); yerine **kendi eased rAF tween'imiz** (doğrudan `scrollLeft`) + tween boyunca otomatik kayma duraklı (`resumeTimer`). Geri başta → `scrollLeft += half` ile sona sarar.
+  - **Poster kartlar** (aspect 5/7, gerçek otel görseli): kitle rozeti · gün · yıldız · ad (büyük Cormorant + text-shadow) · otel pini · **"Kişiye özel fiyat"** altın rozet · "BU PAKETTE HER ŞEY DAHİL" 6 ikon · "Detayları gör". Premium katmanlı gölge + hover'da altın hat/turkuaz glow (`.route-card` globals.css).
+  - **Tıkla/dokun → detay modalı** (hover ile AÇILMIYOR — denendi, kaldırıldı). Modal `createPortal(document.body)` ile render edilir — çünkü sayfa-geçiş sarmalayıcısı `.animate-fade-up` **transform** taşıyor ve `position:fixed`'i bozuyordu (panel ekran dışında ~15000px açılıyordu).
+  - **Modal = OTEL SATIŞ sayfası:** büyük görsel başlık → **"Neden bu otel"** (`hotelsd._why`) + dürüst not → **"Otelin tam konumu"** GERÇEK Google harita embed (`https://www.google.com/maps?q=<otel adı + loc>&output=embed`, anahtarsız, isimle birebir resort/deniz kenarı; CSP `frame-src`'de www.google.com zaten açık) → "her şey dahil" tam liste → **GÜN GÜN PLAN: durak ÇIKAR/EKLE** (uçuş/transfer/giriş = ilk 3 adım sabit/çıkarılamaz; gerisi onay kutusuyla çıkarılır/geri eklenir) → **"Eklemek ister misin?"** çipleri (tekne/spa/rehber/VIP/ekstra gece/özel akşam yemeği) → serbest not → **"Bu tatili iste"**.
+  - **Modal scroll düzeltmesi:** `data-lenis-prevent` (dialog + panel) + `overscroll-contain` + body `overflow:hidden`. Önceki hata: Lenis smooth-scroll modal'ı dinlemiyor, arka sayfa kayıyordu.
+  - **"Bu tatili iste" akışı:** WhatsApp tanımlıysa → `wa.me` önceden-doldurulmuş mesaj; **tanımlı değilse** (ŞU AN BÖYLE) → özet `sessionStorage("pkgRequest")`'e yazılır → `/contact`'a gider; **`components/contact-form.tsx`** mount'ta bunu okuyup **mesaj alanını + hizmet=antalya'yı önceden doldurur** → `/api/contact` ile **LEAD** olarak yakalanır. (Mesaj: intro + ad/gün/otel + istenen program + çıkarılanlar + eklenenler + not.)
+
+### 🏠 Ana sayfa (`app/[locale]/page.tsx`) — omurga da değişti
+- Hero yeniden yazıldı: **"Hayalindeki Antalya tatili. Zaten hazır."** + "uçak/transfer/otel/deniz/gezi düşünüldü, sen seç". DiveHero CTA'ları artık **#hazir-rotalar** (birincil) + **#hizli-plan** (özel).
+- Sıra: Hero → **`<ReadyRoutes/>`** → Oteller → (aşağı alınan) **Hızlı Plan formu** ("Hazırlardan biri tam uymadı mı? sıfırdan kuralım") → Fermuar → … Mobil sabit CTA → #hazir-rotalar.
+
+### 🌐 i18n / ikon / CSS
+- **`routes` ad alanı ~125 anahtar** (5 dil): promise, worry1-4/worryLead/worryResolved, allInLabel, inc_flight/transfer/hotel/board/tours/support, ctaPick, waMsg, curated, routeLabel, oneMessage, details, close, dayByDay, custTitle/custHint, addonsTitle/addNotePh, a_boat/spa/guide/vip/night/dinner, mIntro2/mKept/mRemoved/mAddons/mNote, priceLabel, whyHotel, mapTitle. Ayrıca `home.hero*`, `plan.eyebrow/title/subtitle`, `antalya.title/intro` "dream" diline çevrildi (uz dahil 5 dil, ama uz pasif).
+- **`components/route-icons.tsx`:** `utensils` + `headset` ikonları eklendi.
+- **`app/globals.css`:** `.no-scrollbar`, modal `pkg-overlay`/`pkg-panel` animasyon, premium `.route-card` gölge/hover glow, (kullanılmayan) `.pkg-marquee` keyframe.
+- `tsc --noEmit` ✓ · `next build` ✓ (11/11).
+
+### ⛔ AÇIK / SIRADAKİ (Rev 13)
+- **WhatsApp/Telegram sunucuda BOŞ:** `.env` içinde `NEXT_PUBLIC_WHATSAPP`, `NEXT_PUBLIC_TELEGRAM`, `TELEGRAM_BOT_TOKEN`, `TELEGRAM_OWNER_CHAT_ID` **hepsi boş**. Bu yüzden "Bu tatili iste" şimdilik forma düşüyor (lead olarak yakalanıyor). **Gerçek WhatsApp numarası gelince** `NEXT_PUBLIC_WHATSAPP_NUMBER=905XXXXXXXXX` (ülke kodlu, + yok) eklenip rebuild → tek-tık önceden-doldurulmuş WhatsApp aktifleşir. NEXT_PUBLIC_* build'e gömülür → rebuild şart.
+- **İleri/geri butonu:** düzeltme deploy edildi (manuel tween) ama otomatik test ortamı sayfa-geçişte **2 kopya RouteGallery** ürettiği için tık-testi temiz doğrulanamadı; canlı (tek kopya) doğrulanmalı. Çalışmazsa not edilsin.
+- **Sosyal kanıt:** gerçek misafir yorumları / "X kişi yaşadı" / fiyat aralığı — kullanıcı istedi, **gerçek veri** lazım (uydurma yok). `guest-voices` paneli zaten boş-dürüst bekliyor.
+- **/antalya alt kısmı:** `StreetWalk` (Street View sokak turu) hâlâ duruyor; kullanıcı "map konumları kötü" demişti — detay modalına birebir otel haritası eklendi ama StreetWalk koordinatları elden geçmedi (istenirse).
+- Harita modal **açılınca** (client) yüklenir; iframe src + CSP yerelde doğrulandı.
+
+### 📌 Deploy (bu oturumda SSH ile yapıldı)
+`sshpass -p '<root-şifresi>' ssh root@45.67.203.149` → `cd /opt/antalya-bridge && git fetch origin claude/redesign-conversion && git reset --hard origin/claude/redesign-conversion && docker compose up -d --build`. **Not:** `docker compose up --build` bazen ilk denemede geçici hata (OOM/ağ) veriyor → tekrar çalıştır, geçiyor. Bu oturum commit'leri (redesign-conversion): `2408aae → 4862318 → dda9dca → c0994aa → 5a65b98 → d27e30c → 4b9b764 → 90df52d → ceac545 → 7411ea0`. **Sunucu root şifresi sohbette açık geçti → DEĞİŞTİRİLMELİ.**
+
+## 🔁 Revizyon 12 — premium rota kartları + admin paneli genişletmesi (dal `claude/redesign-conversion`)
 
 - **ROTA KARTLARI premium yükseltme** (`app/globals.css` `.route-card`/`.route-img` + `app/[locale]/page.tsx`): daha büyük görsel (16:10 → **3:2**), kart aralığı arttı, **kartın üstüne gelince otel fotoğrafı büyür** (scale 1.12, kartın kendisinde hover), **turkuaz/mercan ışıltılı gölge** + daha derin lift (translateY −12px). reduced-motion korumalı. Renk/yazı zaten uyumlu (Cormorant başlık + accent gradient rozetler).
 - **ADMIN PANELİ genişletildi** (`app/admin/**`, sadece admin — public dokunulmadı):
