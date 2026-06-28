@@ -30,10 +30,12 @@ export default async function EducationPage({ params }: { params: Promise<{ loca
 
   const deliverables = [sh("f1"), sh("f2"), sh("f3"), sh("f4")];
 
-  // Uzaktan/havadan kampüs gelince otomatik devreye girer; yoksa mevcut kampüs fotosu.
+  // Uzaktan/havadan kampüs gelince otomatik devreye girer; yoksa gerçek kampüs fotosu.
+  // NOT: akdeniz-campus.jpg bir kurul/komite toplantısı fotosuydu (bizi yansıtmıyordu) →
+  // artık kullanılmıyor; gerçek Akdeniz Üniversitesi kampüsü (campus.jpg) kullanılıyor.
   const campus = existsSync(path.join(process.cwd(), "public", "images", "akdeniz-campus-wide.jpg"))
     ? "/images/akdeniz-campus-wide.jpg"
-    : "/images/akdeniz-campus.jpg";
+    : "/images/campus.jpg";
 
   return (
     <>
@@ -112,8 +114,8 @@ export default async function EducationPage({ params }: { params: Promise<{ loca
           <Image src={campus} alt="Akdeniz Üniversitesi kampüsü, Antalya" fill sizes="(max-width:1280px) 100vw, 1200px" className="object-cover" />
           <div className="absolute inset-0" style={{ background: "linear-gradient(180deg, rgb(4 18 24 / 0.55), rgb(4 18 24 / 0.82))" }} />
           <div className="relative z-10 mx-auto max-w-2xl">
-            <h2 className="h-section text-balance">{t("title")}</h2>
-            <p className="mx-auto mt-5 max-w-lg text-lg text-white/85">{t("intro")}</p>
+            <h2 className="h-section text-balance">{sh("title")}</h2>
+            <p className="mx-auto mt-5 max-w-lg text-lg text-white/85">{sh("text")}</p>
             <div className="mt-9 flex flex-wrap items-center justify-center gap-3">
               <Link href="/contact" className="btn-accent shadow-xl shadow-black/30">{cv("eduCta")} <IconArrow /></Link>
               {siteConfig.whatsappConfigured ? (
