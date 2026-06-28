@@ -6,7 +6,6 @@ import { JsonLd } from "@/components/json-ld";
 import { Reveal } from "@/components/reveal";
 import { CinematicHero } from "@/components/cinematic-hero";
 import { HorizontalPlaces } from "@/components/horizontal-places";
-import { StreetWalk } from "@/components/street-walk";
 import { ReadyRoutes } from "@/components/ready-routes";
 import { IconArrow } from "@/components/icons";
 
@@ -83,30 +82,6 @@ export default async function AntalyaPage({ params }: { params: Promise<{ locale
           { img: "/images/duden.jpg", video: "/media/vid-duden.mp4", name: "Düden", sub: "Şelale" },
         ]}
       />
-
-      {/* Street View — sokakta yürü */}
-      <section className="py-24 sm:py-28" style={{ backgroundColor: "rgb(var(--muted) / 0.5)" }}>
-        <div className="container-wide">
-          <Reveal className="mx-auto max-w-2xl text-center">
-            <p className="eyebrow justify-center" style={{ color: "rgb(var(--accent))" }}>{x("ant_streetEyebrow")}</p>
-            <h2 className="h-section mt-5 text-balance" style={{ color: "rgb(var(--foreground))" }}>{x("ant_streetTitle")}</h2>
-            <p className="mt-5 text-lg leading-relaxed" style={{ color: "rgb(var(--muted-foreground))" }}>{x("ant_streetIntro")}</p>
-          </Reveal>
-          <Reveal delay={120} className="mt-12">
-            <StreetWalk
-              hint={x("ant_streetHint")}
-              spots={[
-                { id: "kas", label: "Kaş", sub: "Uzun Çarşı", lat: 36.20137, lng: 29.64041, heading: 210 },
-                { id: "kaleici", label: "Kaleiçi", sub: "Antalya", lat: 36.88454, lng: 30.70565, heading: 120 },
-                { id: "kemer", label: "Kemer", sub: "Marina", lat: 36.59889, lng: 30.56041, heading: 30 },
-                { id: "side", label: "Side", sub: "Apollon", lat: 36.76757, lng: 31.38866, heading: 270 },
-                { id: "alanya", label: "Alanya", sub: "Liman", lat: 36.54388, lng: 31.99983, heading: 90 },
-                { id: "kalkan", label: "Kalkan", sub: "Kaş", lat: 36.26563, lng: 29.41374, heading: 200 },
-              ]}
-            />
-          </Reveal>
-        </div>
-      </section>
 
       {/* CTA */}
       <section className="container-wide pb-24 pt-4">
