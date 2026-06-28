@@ -270,7 +270,22 @@
     "conAssure3": "O'z tilingizda, yagona aloqa",
     "conQuick": "Eng tez yo'l",
     "conQuickText": "WhatsApp yoki Telegram orqali yozing — darhol suhbatni boshlaymiz.",
-    "whatsapp": "WhatsApp orqali yozish"
+    "whatsapp": "WhatsApp orqali yozish",
+    "aboutTimelineTitle": "Bizning hikoyamiz qadam-baqadam",
+    "aboutServicesTitle": "Qaysi sohalarda xizmat ko'rsatamiz",
+    "founderEng": "Dasturchi muhandis",
+    "founderTeacher": "Turk tili o'qituvchisi",
+    "coupleCaption": "Antalyada yashovchi kichik oila — qozoq va turk",
+    "tl1T": "Qozog'istondan Turkiyaga",
+    "tl1X": "Birimiz Qozog'istondan keldik: yangi til, yangi yurt, noldan boshlangan hayot.",
+    "tl2T": "Universitet va stipendiya yo'li",
+    "tl2X": "Ariza, stipendiya va kelish jarayonini o'zi bosib o'tdi — endi shu yo'lni boshqalarga ko'rsatadi.",
+    "tl3T": "Turk tilini o'qitish",
+    "tl3X": "Turkchani ona tilidek gapira boshladi va o'qitdi; PetLingo g'oyasi ham shu yerda tug'ildi.",
+    "tl4T": "Dasturlash va Antalya",
+    "tl4X": "Boshqamiz tajribali dasturchi muhandis; Antalya va turizmni yillab biladi, PetLingo va shu platformani o'zi yaratdi.",
+    "tl5T": "Antalya Bridge — bugun",
+    "tl5X": "Ikki yo'lni birlashtirdik: dam olish, turk tili, ta'lim va dasturlashda o'z tilingizda yagona aloqa."
   },
   "voices": {
     "eyebrow": "Mehmonlar fikri",

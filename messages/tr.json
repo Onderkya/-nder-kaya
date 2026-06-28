@@ -567,7 +567,22 @@
     "conAssure3": "Kendi dilinde, tek muhatap",
     "conQuick": "En hızlısı",
     "conQuickText": "WhatsApp ya da Telegram'dan yaz, hemen sohbete başlayalım.",
-    "whatsapp": "WhatsApp'tan yaz"
+    "whatsapp": "WhatsApp'tan yaz",
+    "aboutTimelineTitle": "Adım adım bizim hikâyemiz",
+    "aboutServicesTitle": "Hangi alanlarda hizmet veriyoruz",
+    "founderEng": "Yazılım mühendisi",
+    "founderTeacher": "Türkçe öğretmeni",
+    "coupleCaption": "Antalya merkezli küçük bir aile — Kazak & Türk",
+    "tl1T": "Kazakistan'dan Türkiye'ye",
+    "tl1X": "Birimiz Kazakistan'dan geldi: yeni bir dil, yeni bir ülke, sıfırdan bir hayat.",
+    "tl2T": "Üniversite & burs yolu",
+    "tl2X": "Başvuru, burs ve geliş sürecini bizzat yürüdü — şimdi aynı yolu başkalarına gösteriyor.",
+    "tl3T": "Türkçe öğretmenliği",
+    "tl3X": "Türkçeyi anadili gibi konuşur oldu ve öğretmeye başladı; PetLingo fikri de buradan doğdu.",
+    "tl4T": "Yazılım & Antalya",
+    "tl4X": "Diğerimiz kıdemli yazılım mühendisi; Antalya'yı ve turizmi yıllardır tanır, PetLingo'yu ve bu platformu kendi geliştirdi.",
+    "tl5T": "Antalya Bridge — bugün",
+    "tl5X": "İki yolu birleştirdik: tatil, Türkçe, eğitim ve yazılımda kendi dilinde tek muhatap."
   },
   "voices": {
     "eyebrow": "Misafir sözleri",
