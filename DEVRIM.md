@@ -4,7 +4,36 @@
 > ↩️ **Geri dönüş (rollback):** eski sürüm dokunulmadı → dal `claude/consulting-site-plan-6k4lix` + etiket `safe/before-redesign-rev9`. Beğenilmezse sunucuda o dala `git reset --hard` + rebuild.
 > Görsel/medya kaynakları: `public/images/CREDITS.txt` (CC / Mixkit / CC0) · oteller: kullanıcının verdiği resmi fotoğraflar (`public/images/hotels/`).
 
-## 🔁 Revizyon 13 — "Antalya Danışmanlık" sayfası = HAYALİ SEÇ + KİŞİSELLEŞTİR + SAT (GÜNCEL · dal `claude/redesign-conversion`)
+## 🔁 Revizyon 14 — canlı doğrulama + kırık Street View kaldırıldı (GÜNCEL · dal `claude/redesign-conversion`)
+
+> **Şu an buradayız.** Bu oturum canlıda (Chrome) doğrulama + tek temiz kod düzeltmesi yaptı. Kalan işler **kullanıcının vereceği değerlere** bağlı (WhatsApp no, gerçek yorum verisi, sunucu sırları). Son commit: **`f75a57d`** (dalda, deploy bekliyor).
+
+### ✅ Canlıda DOĞRULANDI (http://45.67.203.149:3010/tr/antalya)
+- **İleri/geri ‹ › butonları ÇALIŞIYOR.** Her iki yön + başa/sona sarma canlıda test edildi (Chrome tıklama). Rev 13'ün manuel-tween düzeltmesi sağlam. Kod değişmedi.
+- **Detay modalı haritası ÇALIŞIYOR.** "Klasik Antalya" açıldı → "Otelin tam konumu" gerçek Google harita (Belek golf-resort kıyısı, Cullinan Links, deniz altta) yükleniyor; otel doğru deniz-kenarı bölgede. Anahtarsız **place embed** (`output=embed`) güvenilir — kod değişmedi.
+
+### 🔧 YAPILDI — Street View kaldırıldı (commit f75a57d)
+- **EN ÖNEMLİ DERS:** Google **anahtarsız Street View gömmeyi** (`output=svembed`, `components/street-walk.tsx:25`) devre dışı bıraktı → panel canlıda **SİYAH KUTU** çıkıyor, lat/lng ne olursa olsun. Yani "koordinatlar kötü" yanlış teşhis; **gömme yöntemi ölü**, koordinat ayarı çözmez.
+- `/antalya`'dan `StreetWalk` bölümü + import'u **kaldırıldı** (`app/[locale]/antalya/page.tsx`). Hemen üstündeki "Antalya'nın incileri" galerisi o yerleri zaten gösteriyor. `tsc --noEmit` ✓.
+- **NOT:** Aynı `<StreetWalk>` hâlâ **`/education`**'da duruyor — orada da siyah. İstenirse kaldır/yeniden yap. Gerçek Street View için **Google Maps Embed API key** (faturalı GCP) gerekir.
+
+### ⛔ AÇIK / SIRADAKİ (Rev 14) — kullanıcı girdisi bekliyor
+- **Deploy:** Bu oturum SSH yapamadı (root şifresi bu sohbette yok — olmamalı). Kullanıcı `f75a57d`'i deploy etmeli (siyah kutu canlıda o zaman gider).
+- **Task 4 — WhatsApp:** KOD HAZIR, değişiklik gerekmez. Numara gelince sunucu `.env`'e `NEXT_PUBLIC_WHATSAPP_NUMBER=905XXXXXXXXX` (ülke kodlu, + yok) + rebuild → "Bu tatili iste" tek-tık WhatsApp. **Numara bekleniyor.**
+- **Task 3 — sosyal kanıt:** `GuestVoices` yalnız **ana sayfada** (`app/[locale]/page.tsx:330`, `reviews={[]}`). Wire için her yorum: **ad · ülke · bayrak emoji · yıldız(1-5) · metin**. Ayrıca KARAR: nereye? (ana sayfa paneli / `/antalya` route modalı / ikisi). Varsa gerçek "X kişi bu rotayı yaşadı" sayısı. **Gerçek veri bekleniyor — uydurma yok.**
+- **Task 6 — güvenlik (hepsi sunucu tarafı, kullanıcı aksiyonu):**
+  - **Root şifresi kullanıcı kendi değiştirmeli** (asistan sunucu güvenlik kimlik bilgisini değiştirmez, sohbete sır girmez). `passwd` veya SSH-key-only.
+  - Sunucu `.env`'e gerçek değerler (sır sohbete girilmeden): `ANTHROPIC_API_KEY`, `OPENROUTER_API_KEY` (admin AI asistanı), `NEXT_PUBLIC_SITE_URL=https://<domain>` (canonical/OG; NEXT_PUBLIC_* → rebuild şart).
+
+### 📌 Deploy (kullanıcı çalıştırır)
+```
+cd /opt/antalya-bridge && git fetch origin claude/redesign-conversion \
+  && git reset --hard origin/claude/redesign-conversion \
+  && docker compose up -d --build
+```
+İlk denemede geçici hata (OOM/ağ) verirse tekrar çalıştır.
+
+## 🔁 Revizyon 13 — "Antalya Danışmanlık" sayfası = HAYALİ SEÇ + KİŞİSELLEŞTİR + SAT (dal `claude/redesign-conversion`)
 
 > **Şu an buradayız.** Kullanıcının "insanlar detaya boğulmadan hayalindeki tatili seçip alsın" vizyonu, **doğru sayfada** (Antalya Danışmanlık) sinematik bir satış deneyimine dönüştü.
 
