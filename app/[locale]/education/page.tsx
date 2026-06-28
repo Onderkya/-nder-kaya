@@ -8,8 +8,10 @@ import { JsonLd } from "@/components/json-ld";
 import { Reveal } from "@/components/reveal";
 import { CinematicHero } from "@/components/cinematic-hero";
 import { StudyJourney } from "@/components/study-journey";
-import { StreetWalk } from "@/components/street-walk";
+import { TrustStrip } from "@/components/trust-strip";
+import { MobilePlanCta } from "@/components/mobile-plan-cta";
 import { IconArrow } from "@/components/icons";
+import { siteConfig, whatsappLink } from "@/lib/config";
 
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
   const { locale } = await params;
@@ -22,6 +24,11 @@ export default async function EducationPage({ params }: { params: Promise<{ loca
   setRequestLocale(locale);
   const t = await getTranslations("education");
   const x = await getTranslations("imm");
+  const sh = await getTranslations("studyHome");
+  const tr = await getTranslations("trust");
+  const cv = await getTranslations("convert");
+
+  const deliverables = [sh("f1"), sh("f2"), sh("f3"), sh("f4")];
 
   // Uzaktan/havadan kampüs gelince otomatik devreye girer; yoksa mevcut kampüs fotosu.
   const campus = existsSync(path.join(process.cwd(), "public", "images", "akdeniz-campus-wide.jpg"))
@@ -64,25 +71,38 @@ export default async function EducationPage({ params }: { params: Promise<{ loca
         </div>
       </section>
 
-      {/* Street View — kampüste ve şehirde yürü */}
+      {/* Senin için neyi hallediyoruz — somut teslimatlar */}
       <section className="py-24 sm:py-28" style={{ backgroundColor: "rgb(var(--background))" }}>
         <div className="container-wide">
           <Reveal className="mx-auto max-w-2xl text-center">
-            <p className="eyebrow justify-center" style={{ color: "rgb(var(--accent))" }}>{x("edu_streetEyebrow")}</p>
-            <h2 className="h-section mt-5 text-balance" style={{ color: "rgb(var(--foreground))" }}>{x("edu_streetTitle")}</h2>
-            <p className="mt-5 text-lg leading-relaxed" style={{ color: "rgb(var(--muted-foreground))" }}>{x("edu_streetIntro")}</p>
+            <p className="eyebrow justify-center" style={{ color: "rgb(var(--accent))" }}>{sh("eyebrow")}</p>
+            <h2 className="h-section mt-5 text-balance" style={{ color: "rgb(var(--foreground))" }}>{cv("eduDeliverTitle")}</h2>
+            <p className="mt-5 text-lg leading-relaxed" style={{ color: "rgb(var(--muted-foreground))" }}>{cv("eduDeliverText")}</p>
           </Reveal>
-          <Reveal delay={120} className="mt-12">
-            <StreetWalk
-              hint={x("ant_streetHint")}
-              spots={[
-                { id: "campus", label: "Akdeniz Üniversitesi", sub: "Dumlupınar Blv", lat: 36.89610, lng: 30.65380, heading: 75 },
-                { id: "konyaalti", label: "Konyaaltı", sub: "Sahil", lat: 36.86430, lng: 30.62830, heading: 240 },
-                { id: "lara", label: "Lara", sub: "Sahil yolu", lat: 36.85700, lng: 30.80930, heading: 60 },
-                { id: "kaleici", label: "Kaleiçi", sub: "Eski şehir", lat: 36.88454, lng: 30.70565, heading: 120 },
-              ]}
-            />
+
+          <div className="mt-12 grid gap-5 sm:grid-cols-2">
+            {deliverables.map((d, i) => (
+              <Reveal key={d} delay={i * 80}>
+                <div className="flex items-center gap-4 rounded-2xl border p-5" style={{ borderColor: "rgb(var(--border))", backgroundColor: "rgb(var(--card))" }}>
+                  <span className="grid h-11 w-11 shrink-0 place-items-center rounded-2xl text-lg font-bold" style={{ backgroundColor: "rgb(var(--primary) / 0.12)", color: "rgb(var(--primary))" }}>
+                    {String(i + 1).padStart(2, "0")}
+                  </span>
+                  <p className="text-[15px] font-semibold leading-snug" style={{ color: "rgb(var(--foreground))" }}>{d}</p>
+                </div>
+              </Reveal>
+            ))}
+          </div>
+
+          {/* Dürüst aciliyet */}
+          <Reveal delay={120} className="mt-10">
+            <p className="mx-auto flex max-w-2xl items-center justify-center gap-2.5 rounded-full border px-5 py-3 text-center text-[14px] font-semibold" style={{ borderColor: "rgb(var(--gold) / 0.5)", backgroundColor: "rgb(var(--gold) / 0.08)", color: "rgb(var(--foreground))" }}>
+              <span aria-hidden>⏳</span>{cv("eduUrgency")}
+            </p>
           </Reveal>
+
+          <div className="mt-14">
+            <TrustStrip points={[tr("p5"), tr("p1"), tr("p4")]} />
+          </div>
         </div>
       </section>
 
@@ -94,10 +114,19 @@ export default async function EducationPage({ params }: { params: Promise<{ loca
           <div className="relative z-10 mx-auto max-w-2xl">
             <h2 className="h-section text-balance">{t("title")}</h2>
             <p className="mx-auto mt-5 max-w-lg text-lg text-white/85">{t("intro")}</p>
-            <Link href="/contact" className="btn-accent mt-9 shadow-xl shadow-black/30">{t("cta")} <IconArrow /></Link>
+            <div className="mt-9 flex flex-wrap items-center justify-center gap-3">
+              <Link href="/contact" className="btn-accent shadow-xl shadow-black/30">{cv("eduCta")} <IconArrow /></Link>
+              {siteConfig.whatsappConfigured ? (
+                <a href={whatsappLink()} target="_blank" rel="noopener" className="inline-flex items-center gap-2 rounded-full border border-white/40 px-6 py-3 text-sm font-semibold text-white transition hover:bg-white/10">
+                  {cv("whatsapp")}
+                </a>
+              ) : null}
+            </div>
           </div>
         </Reveal>
       </section>
+
+      <MobilePlanCta href={`/${locale}/contact`} label={cv("eduCta")} />
     </>
   );
 }

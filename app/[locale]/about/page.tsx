@@ -6,6 +6,9 @@ import { CinematicHero } from "@/components/cinematic-hero";
 import { AutoVideo } from "@/components/auto-video";
 import { Reveal } from "@/components/reveal";
 import { IconArrow } from "@/components/icons";
+import { TrustStrip } from "@/components/trust-strip";
+import { ConversionBand } from "@/components/conversion-band";
+import { siteConfig, whatsappLink } from "@/lib/config";
 
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
   const { locale } = await params;
@@ -19,6 +22,15 @@ export default async function AboutPage({ params }: { params: Promise<{ locale: 
   const t = await getTranslations("about");
   const x = await getTranslations("imm");
   const c = await getTranslations("common");
+  const tr = await getTranslations("trust");
+  const cv = await getTranslations("convert");
+  const nav = await getTranslations("nav");
+
+  const paths = [
+    { href: "/antalya", label: nav("antalya"), desc: x("ant_introEyebrow") },
+    { href: "/lessons", label: nav("lessons"), desc: x("les_processEyebrow") },
+    { href: "/education", label: nav("education"), desc: x("edu_journeyEyebrow") },
+  ];
 
   const stories = [
     { title: x("ab_story1Title"), text: x("ab_story1Text"), img: "/images/harbor-night.jpg", video: "/media/office-consult.mp4", place: "Yazılım & danışmanlık" },
@@ -86,11 +98,44 @@ export default async function AboutPage({ params }: { params: Promise<{ locale: 
               </Reveal>
             ))}
           </div>
-          <div className="mt-14 text-center">
-            <Link href="/contact" className="btn-accent">{c("contactUs")} <IconArrow /></Link>
+        </div>
+      </section>
+
+      {/* Kanıt şeridi — güveni somut maddelere bağla */}
+      <section className="container-wide py-20 sm:py-24">
+        <TrustStrip title={cv("aboutProofTitle")} points={[tr("p5"), tr("p1"), tr("p2"), tr("p3"), tr("p4")]} />
+      </section>
+
+      {/* Yol seçici — güveni belirli bir hizmete çevir */}
+      <section className="py-4 pb-24">
+        <div className="container-wide">
+          <Reveal className="mx-auto max-w-2xl text-center">
+            <h2 className="h-section text-balance" style={{ color: "rgb(var(--foreground))" }}>{cv("aboutNextTitle")}</h2>
+            <p className="mt-5 text-lg leading-relaxed" style={{ color: "rgb(var(--muted-foreground))" }}>{cv("aboutNextText")}</p>
+          </Reveal>
+          <div className="mt-12 grid gap-6 md:grid-cols-3">
+            {paths.map((p, i) => (
+              <Reveal key={p.href} delay={i * 90}>
+                <Link href={p.href} className="card-lift group flex h-full flex-col rounded-3xl border p-7 transition" style={{ borderColor: "rgb(var(--border))", backgroundColor: "rgb(var(--card))" }}>
+                  <span className="serif-italic text-2xl" style={{ color: "rgb(var(--gold))" }}>{String(i + 1).padStart(2, "0")}</span>
+                  <h3 className="font-display mt-3 text-xl font-semibold leading-snug" style={{ color: "rgb(var(--foreground))" }}>{p.label}</h3>
+                  <p className="mt-2 flex-1 text-sm leading-relaxed" style={{ color: "rgb(var(--muted-foreground))" }}>{p.desc}</p>
+                  <span className="mt-5 inline-flex items-center gap-1.5 text-sm font-semibold" style={{ color: "rgb(var(--primary))" }}>{c("learnMore")} <IconArrow /></span>
+                </Link>
+              </Reveal>
+            ))}
           </div>
         </div>
       </section>
+
+      {/* Kapanış dönüşüm bandı */}
+      <ConversionBand
+        title={x("lived_title")}
+        text={x("lived_text")}
+        ctaLabel={c("contactUs")}
+        waLabel={siteConfig.whatsappConfigured ? cv("whatsapp") : undefined}
+        waHref={siteConfig.whatsappConfigured ? whatsappLink() : undefined}
+      />
     </>
   );
 }

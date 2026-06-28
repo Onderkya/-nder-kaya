@@ -250,6 +250,28 @@
     "f4": "Arrival & life support",
     "cta": "Ask about studying in Turkey"
   },
+  "convert": {
+    "lesBook": "Book your first lesson",
+    "lesCapacity": "Limited one-to-one spots each week — reserve early",
+    "lesPopular": "Most chosen",
+    "lesReassure": "Over Zoom · 5 languages · flexible hours · free level check",
+    "lesPick": "Start with this length",
+    "eduDeliverTitle": "What we handle for you",
+    "eduDeliverText": "From choosing a university to your arrival day, we handle every step — you just focus on studying.",
+    "eduUrgency": "Application and scholarship windows are limited — those who plan early win.",
+    "eduCta": "Get a free consultation",
+    "aboutProofTitle": "Why you can trust us",
+    "aboutNextTitle": "Where would you like to start?",
+    "aboutNextText": "Let's start from your dream — we'll handle the rest.",
+    "faqCtaTitle": "Didn't find your answer?",
+    "faqCtaText": "Send one message; we'll reply personally, in your language.",
+    "conAssure1": "Personal reply within 24 hours",
+    "conAssure2": "Free and no commitment",
+    "conAssure3": "Your language, one point of contact",
+    "conQuick": "Fastest way",
+    "conQuickText": "Message us on WhatsApp or Telegram and let's start chatting right away.",
+    "whatsapp": "Message on WhatsApp"
+  },
   "voices": {
     "eyebrow": "Guest voices",
     "title": "What our guests say",

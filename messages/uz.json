@@ -250,6 +250,28 @@
     "f4": "Kelish va hayot qo'llab-quvvatlashi",
     "cta": "Turkiyada o'qish haqida so'rang"
   },
+  "convert": {
+    "lesBook": "Birinchi darsga yoziling",
+    "lesCapacity": "Har hafta individual joylar cheklangan — oldindan band qiling",
+    "lesPopular": "Eng ko'p tanlangan",
+    "lesReassure": "Zoom orqali · 5 til · moslashuvchan vaqt · bepul daraja tekshiruvi",
+    "lesPick": "Shu davomiylik bilan boshlash",
+    "eduDeliverTitle": "Siz uchun nimani hal qilamiz",
+    "eduDeliverText": "Universitet tanlashdan kelish kuningizgacha har bir qadamni o'zimiz hal qilamiz — siz faqat o'qishga e'tibor qarating.",
+    "eduUrgency": "Ariza va stipendiya muddatlari cheklangan — oldindan rejalashtirgan yutadi.",
+    "eduCta": "Bepul maslahat oling",
+    "aboutProofTitle": "Nega bizga ishonish mumkin",
+    "aboutNextTitle": "Qayerdan boshlamoqchisiz?",
+    "aboutNextText": "Orzuingizdan boshlaymiz — qolganini biz hal qilamiz.",
+    "faqCtaTitle": "Javobini topmadingizmi?",
+    "faqCtaText": "Bitta xabar yozing — shaxsan, o'z tilingizda javob beramiz.",
+    "conAssure1": "24 soat ichida shaxsiy javob",
+    "conAssure2": "Bepul va majburiyatsiz",
+    "conAssure3": "O'z tilingizda, yagona aloqa",
+    "conQuick": "Eng tez yo'l",
+    "conQuickText": "WhatsApp yoki Telegram orqali yozing — darhol suhbatni boshlaymiz.",
+    "whatsapp": "WhatsApp orqali yozish"
+  },
   "voices": {
     "eyebrow": "Mehmonlar fikri",
     "title": "Mehmonlarimiz nima deydi",

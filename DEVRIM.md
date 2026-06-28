@@ -4,7 +4,30 @@
 > ↩️ **Geri dönüş (rollback):** eski sürüm dokunulmadı → dal `claude/consulting-site-plan-6k4lix` + etiket `safe/before-redesign-rev9`. Beğenilmezse sunucuda o dala `git reset --hard` + rebuild.
 > Görsel/medya kaynakları: `public/images/CREDITS.txt` (CC / Mixkit / CC0) · oteller: kullanıcının verdiği resmi fotoğraflar (`public/images/hotels/`).
 
-## 🔁 Revizyon 14 — canlı doğrulama + kırık Street View kaldırıldı (GÜNCEL · dal `claude/redesign-conversion`)
+## 🔁 Revizyon 15 — iç sayfalara dönüşüm katmanı (GÜNCEL · dal `claude/redesign-conversion`)
+
+> **Şu an buradayız.** Kullanıcı isteği: ana sayfa + /antalya HARİÇ diğer 5 sayfayı (lessons, education, about, faq, contact) "insanları hayallerine ulaştır ama satın almalarını sağla" amacına göre, mevcut immersive yapıyı **bozmadan** yeniden tasarla. Karar: **dönüşüm katmanı ekle** (yapı korunur) · **sayfaya özel + tek hedefe akan CTA** · **dürüst sosyal kanıt/aciliyet** (uydurma yorum YOK). `/` ve `/antalya` dosyalarına dokunulmadı. `tsc --noEmit` ✓ · `next build` ✓.
+
+### 🎯 Paylaşılan dönüşüm bileşenleri (DRY, yeni)
+- **`components/trust-strip.tsx`** — `trust.p1-p5` gibi zaten 5 dile çevrilmiş maddeleri yatay dürüst güven rozeti şeridine çevirir (about/faq/education/contact).
+- **`components/conversion-band.tsx`** — mevcut "lived" bandıyla aynı turkuaz→deniz gradyan kapanış CTA bandı. Birincil = her zaman çalışan yerelleştirilmiş iç bağlantı (lead). İkincil WhatsApp **yalnız `whatsappConfigured` ise** render edilir → ölü link yok.
+- **`components/mobile-plan-cta.tsx`** — additive `href` prop'u eklendi (varsayılan `#hazir-rotalar` korunur) → her sayfa kendi hedefine sabit mobil CTA.
+- **i18n:** yeni `convert` ad alanı (20 anahtar) **5 dile** eklendi (tr/en/ru/kk/uz). Gerisi mevcut çevrili anahtarlardan (`trust`, `voices`, `studyHome`, `lived`, `nav`).
+
+### 📄 Sayfa sayfa (yalnızca eklenti)
+- **lessons:** hero altı dönüşüm şeridi (dürüst kontenjan microcopy + "İlk dersini ayırt"→`#randevu`) · süreler → "planını seç" (orta kart "En çok seçilen" vurgulu, her kartta CTA→`#randevu`) + güvence satırı · `GuestVoices` dürüst panel (boş, uydurma yok) · randevu bölümü `id="randevu"` + güvence pili · mobil sabit CTA.
+- **education:** **ölü Street View siyah kutusu KALDIRILDI** (`street-walk` import + bölüm) → yerine "senin için neyi hallediyoruz" 4 teslimat kartı (`studyHome.f1-4`) + dürüst aciliyet pili ("başvuru/burs dönemleri sınırlı") + `TrustStrip` · kapanış CTA güçlendi (stronger label + koşullu WhatsApp) · mobil CTA `/contact`.
+- **about:** değerler bandı sonrası `TrustStrip` kanıt şeridi + **yol seçici** (Antalya/lessons/education 3 kart → ilgili rota) + `ConversionBand` kapanış. Eski tekil küçük CTA kaldırıldı.
+- **faq:** akordeon sonrası `TrustStrip` (gizli ücret yok·manuel onay·tek muhatap) + `ConversionBand` ("sorun cevaplanmadı mı? 1 mesajda sor").
+- **contact:** hero altı güvence şeridi (24s yanıt·ücretsiz·tek muhatap) · "En hızlısı" gradyan WhatsApp/Telegram kartı (koşullu, ölü link üretmez) · gönder altı güven mikro-satırı · ödeme/harita korundu.
+
+### ⛔ AÇIK / SIRADAKİ (Rev 15)
+- **Deploy bekliyor:** dalda commit edilip sunucuda `git reset --hard origin/claude/redesign-conversion && docker compose up -d --build`.
+- **WhatsApp koşullu:** `whatsappConfigured` false olduğundan (numara `.env`'de yok) ikincil WhatsApp butonları ve contact "En hızlısı" kartındaki WA satırı **şimdilik gizli**; numara gelince otomatik görünür (NEXT_PUBLIC_* → rebuild).
+- **`components/street-walk.tsx` artık hiçbir yerde kullanılmıyor** (antalya Rev14'te, education Rev15'te kaldırıldı) — dosya duruyor, zararsız; istenirse silinebilir.
+- **GuestVoices** lessons + ana sayfada boş-dürüst; gerçek yorum gelince `reviews[]`'e eklenir.
+
+## 🔁 Revizyon 14 — canlı doğrulama + kırık Street View kaldırıldı (dal `claude/redesign-conversion`)
 
 > **Şu an buradayız.** Bu oturum canlıda (Chrome) doğrulama + tek temiz kod düzeltmesi yaptı. Kalan işler **kullanıcının vereceği değerlere** bağlı (WhatsApp no, gerçek yorum verisi, sunucu sırları). Son commit: **`f75a57d`** (dalda, deploy bekliyor).
 

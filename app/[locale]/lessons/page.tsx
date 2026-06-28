@@ -7,6 +7,8 @@ import { PetLingoShowcase } from "@/components/petlingo-showcase";
 import { JsonLd } from "@/components/json-ld";
 import { IconClock, IconArrow } from "@/components/icons";
 import { Reveal } from "@/components/reveal";
+import { GuestVoices } from "@/components/guest-voices";
+import { MobilePlanCta } from "@/components/mobile-plan-cta";
 import { prisma } from "@/lib/db";
 import { BookingWidget } from "./booking-widget";
 
@@ -23,6 +25,8 @@ export default async function LessonsPage({ params }: { params: Promise<{ locale
   const tb = await getTranslations("booking");
   const x = await getTranslations("imm");
   const lh = await getTranslations("lessonsHome");
+  const cv = await getTranslations("convert");
+  const v = await getTranslations("voices");
 
   const steps = [
     { n: "01", title: x("les_p1Title"), text: x("les_p1Text"), video: "/media/les-spell.mp4", pet: false },
@@ -32,9 +36,9 @@ export default async function LessonsPage({ params }: { params: Promise<{ locale
   ];
 
   const durations = [
-    { title: t("min15"), desc: t("min15Desc") },
-    { title: t("min30"), desc: t("min30Desc") },
-    { title: t("min60"), desc: t("min60Desc") },
+    { title: t("min15"), desc: t("min15Desc"), popular: false },
+    { title: t("min30"), desc: t("min30Desc"), popular: true },
+    { title: t("min60"), desc: t("min60Desc"), popular: false },
   ];
 
   // Yalnızca gelecekteki ve boş slotları göster.
@@ -64,6 +68,16 @@ export default async function LessonsPage({ params }: { params: Promise<{ locale
         videos={["/media/les-notebook.mp4", "/media/les-teacher.mp4", "/media/les-online.mp4", "/media/les-spell.mp4"]}
         flag
       />
+
+      {/* Hero altı dönüşüm şeridi — ilk dersi ayırt + dürüst kontenjan */}
+      <section className="border-b" style={{ borderColor: "rgb(var(--border))", backgroundColor: "rgb(var(--card))" }}>
+        <div className="container-wide flex flex-col items-center justify-between gap-4 py-5 sm:flex-row">
+          <p className="flex items-center gap-2.5 text-center text-[14px] font-semibold sm:text-left" style={{ color: "rgb(var(--foreground))" }}>
+            <span aria-hidden>⏳</span>{cv("lesCapacity")}
+          </p>
+          <a href="#randevu" className="btn-primary shrink-0">{cv("lesBook")} <IconArrow /></a>
+        </div>
+      </section>
 
       {/* Süreç — nasıl öğreniyorsunuz */}
       <section className="container-wide py-24 sm:py-32">
@@ -159,30 +173,66 @@ export default async function LessonsPage({ params }: { params: Promise<{ locale
         <Reveal className="mx-auto max-w-2xl text-center">
           <h2 className="h-section" style={{ color: "rgb(var(--foreground))" }}>{t("durationsTitle")}</h2>
         </Reveal>
-        <div className="mt-12 grid gap-6 md:grid-cols-3">
+        <div className="mt-12 grid items-stretch gap-6 md:grid-cols-3">
           {durations.map((d, i) => (
-            <Reveal key={d.title} delay={i * 90} className="card text-center transition hover:-translate-y-1 hover:shadow-lg">
-              <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl" style={{ backgroundColor: "rgb(var(--primary) / 0.12)", color: "rgb(var(--primary))" }}>
-                <IconClock className="h-7 w-7" />
+            <Reveal key={d.title} delay={i * 90} className="h-full">
+              <div
+                className="card-lift relative flex h-full flex-col rounded-3xl border p-7 text-center"
+                style={{
+                  borderColor: d.popular ? "rgb(var(--primary) / 0.5)" : "rgb(var(--border))",
+                  backgroundColor: "rgb(var(--card))",
+                  ...(d.popular ? { boxShadow: "0 22px 50px -24px rgb(var(--primary) / 0.6)" } : {}),
+                }}
+              >
+                {d.popular ? (
+                  <span className="absolute -top-3 left-1/2 -translate-x-1/2 rounded-full px-3.5 py-1 text-[11px] font-bold uppercase tracking-wide text-white" style={{ backgroundImage: "linear-gradient(135deg, rgb(var(--accent2)), rgb(var(--accent)))" }}>
+                    {cv("lesPopular")}
+                  </span>
+                ) : null}
+                <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl" style={{ backgroundColor: "rgb(var(--primary) / 0.12)", color: "rgb(var(--primary))" }}>
+                  <IconClock className="h-7 w-7" />
+                </div>
+                <h3 className="mt-4 text-xl font-semibold">{d.title}</h3>
+                <p className="mt-2 flex-1 text-sm" style={{ color: "rgb(var(--muted-foreground))" }}>{d.desc}</p>
+                <a href="#randevu" className={`mt-6 w-full justify-center ${d.popular ? "btn-accent" : "btn-primary"}`}>{cv("lesPick")} <IconArrow /></a>
               </div>
-              <h3 className="mt-4 text-xl font-semibold">{d.title}</h3>
-              <p className="mt-2 text-sm" style={{ color: "rgb(var(--muted-foreground))" }}>{d.desc}</p>
             </Reveal>
           ))}
         </div>
-        <div className="mt-10 text-center">
-          <Link href="/contact" className="btn-primary">{t("cta")}</Link>
-        </div>
+
+        {/* Güvence satırı */}
+        <p className="mt-9 text-center text-[14px] font-medium" style={{ color: "rgb(var(--muted-foreground))" }}>
+          {cv("lesReassure")}
+        </p>
       </section>
 
+      {/* Misafir sözleri — dürüst sosyal kanıt (uydurma yok) */}
+      <GuestVoices
+        labels={{
+          eyebrow: v("eyebrow"),
+          title: v("title"),
+          honest: v("honest"),
+          emptyTitle: v("emptyTitle"),
+          emptyText: v("emptyText"),
+          serve: v("serve"),
+          cta: v("cta"),
+        }}
+        reviews={[]}
+      />
+
       {/* Randevu */}
-      <section className="py-20 sm:py-24" style={{ backgroundColor: "rgb(var(--muted) / 0.45)" }}>
+      <section id="randevu" className="scroll-mt-24 py-20 sm:py-24" style={{ backgroundColor: "rgb(var(--muted) / 0.45)" }}>
         <div className="container-page">
           <h2 className="mb-2 text-2xl font-bold">{tb("title")}</h2>
-          <p className="mb-6 text-sm" style={{ color: "rgb(var(--muted-foreground))" }}>{tb("intro")}</p>
+          <p className="mb-3 text-sm" style={{ color: "rgb(var(--muted-foreground))" }}>{tb("intro")}</p>
+          <p className="mb-6 inline-flex items-center gap-2 rounded-full border px-3.5 py-1.5 text-[12px] font-semibold" style={{ borderColor: "rgb(var(--border))", color: "rgb(var(--primary))" }}>
+            <span className="h-1.5 w-1.5 rounded-full" style={{ backgroundColor: "rgb(var(--lagoon))" }} />{cv("lesReassure")}
+          </p>
           <BookingWidget slots={slots} locale={locale} labels={bookingLabels} />
         </div>
       </section>
+
+      <MobilePlanCta href="#randevu" label={cv("lesBook")} />
     </>
   );
 }

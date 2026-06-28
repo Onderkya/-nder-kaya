@@ -547,6 +547,28 @@
     "services": "Hizmetler",
     "contact": "İletişim"
   },
+  "convert": {
+    "lesBook": "İlk dersini ayırt",
+    "lesCapacity": "Haftada sınırlı birebir kontenjan — yerini erken ayır",
+    "lesPopular": "En çok seçilen",
+    "lesReassure": "Zoom üzerinden · 5 dil · esnek saat · ücretsiz seviye tespiti",
+    "lesPick": "Bu süreyle başla",
+    "eduDeliverTitle": "Senin için neyi hallediyoruz",
+    "eduDeliverText": "Üniversite seçiminden geliş gününe kadar her adımı tek tek hallediyoruz — sen sadece okumana odaklan.",
+    "eduUrgency": "Başvuru ve burs dönemleri sınırlı — erken planlayan kazanır.",
+    "eduCta": "Ücretsiz danışmanlık al",
+    "aboutProofTitle": "Neden bize güvenebilirsin",
+    "aboutNextTitle": "Nereden başlamak istersin?",
+    "aboutNextText": "Hayalin neyse oradan başlayalım — gerisini biz hallederiz.",
+    "faqCtaTitle": "Sorun cevaplanmadı mı?",
+    "faqCtaText": "Tek bir mesaj at; kişisel olarak, kendi dilinde yanıtlayalım.",
+    "conAssure1": "24 saat içinde kişisel yanıt",
+    "conAssure2": "Ücretsiz ve taahhütsüz",
+    "conAssure3": "Kendi dilinde, tek muhatap",
+    "conQuick": "En hızlısı",
+    "conQuickText": "WhatsApp ya da Telegram'dan yaz, hemen sohbete başlayalım.",
+    "whatsapp": "WhatsApp'tan yaz"
+  },
   "voices": {
     "eyebrow": "Misafir sözleri",
     "title": "Misafirlerimiz ne diyor?",
