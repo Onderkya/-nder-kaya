@@ -126,12 +126,20 @@ export const BLOCK_DEFS: BlockDef[] = [
   },
   // ★ Premium özel tipler — mevcut sinematik bileşenler. Alan yok; metin Site
   // İçeriği'nden düzenlenir. Render: components/cms/premium-blocks.tsx.
+  { type: "diveHero", label: "★ Ana Sayfa Hero (dalış)", fields: [], props: [], custom: true },
   { type: "routeGallery", label: "★ Hazır Rotalar (sinematik galeri)", fields: [], props: [], custom: true },
   { type: "studyJourney", label: "★ Eğitim Yolculuğu (scroll sahne)", fields: [], props: [], custom: true },
   { type: "hotels", label: "★ Otel Kartları", fields: [], props: [], custom: true },
+  { type: "horizontalPlaces", label: "★ Antalya Bölgeleri (yatay galeri)", fields: [], props: [], custom: true },
+  { type: "zipper", label: "★ Fermuar Deneyimi", fields: [], props: [], custom: true },
   { type: "petlingo", label: "★ PetLingo Vitrini", fields: [], props: [], custom: true },
   { type: "guestVoices", label: "★ Misafir Sözleri", fields: [], props: [], custom: true },
   { type: "quickPlan", label: "★ Hızlı Plan Formu", fields: [], props: [], custom: true },
+  { type: "contactInfo", label: "★ İletişim Formu + Ödeme", fields: [], props: [], custom: true },
+  { type: "booking", label: "★ Ders Rezervasyon", fields: [], props: [], custom: true },
+  { type: "faqAccordion", label: "★ S.S.S. Akordeon", fields: [], props: [], custom: true },
+  { type: "trustStrip", label: "★ Güven Şeridi", fields: [], props: [], custom: true },
+  { type: "conversionBand", label: "★ Dönüşüm Bandı (CTA)", fields: [], props: [], custom: true },
 ];
 
 export function blockDef(type: string): BlockDef | undefined {

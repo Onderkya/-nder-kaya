@@ -27,7 +27,7 @@ function Btn({ href, children, accent = true }: { href: string; children: React.
 function Block({ b, locale }: { b: CmsBlock; locale: string }) {
   // Premium özel tipler kendi (çeviri-okuyan) bileşenlerini render eder.
   if ((PREMIUM_TYPES as readonly string[]).includes(b.type)) {
-    return <PremiumBlock type={b.type} />;
+    return <PremiumBlock type={b.type} locale={locale} />;
   }
   const t = b.text;
   const p = b.props as Record<string, string | undefined>;
