@@ -10,6 +10,8 @@ import { Reveal } from "@/components/reveal";
 import { GuestVoices } from "@/components/guest-voices";
 import { MobilePlanCta } from "@/components/mobile-plan-cta";
 import { prisma } from "@/lib/db";
+import { getManagedPage } from "@/lib/cms";
+import { BlockRenderer } from "@/components/cms/block-renderer";
 import { BookingWidget } from "./booking-widget";
 
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
@@ -21,6 +23,8 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
 export default async function LessonsPage({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params;
   setRequestLocale(locale);
+  const cmsPage = await getManagedPage("lessons", locale);
+  if (cmsPage) return <BlockRenderer page={cmsPage} locale={locale} />;
   const t = await getTranslations("lessons");
   const tb = await getTranslations("booking");
   const x = await getTranslations("imm");

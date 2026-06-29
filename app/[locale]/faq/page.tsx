@@ -6,6 +6,8 @@ import { JsonLd } from "@/components/json-ld";
 import { TrustStrip } from "@/components/trust-strip";
 import { ConversionBand } from "@/components/conversion-band";
 import { siteConfig, whatsappLink } from "@/lib/config";
+import { getManagedPage } from "@/lib/cms";
+import { BlockRenderer } from "@/components/cms/block-renderer";
 
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
   const { locale } = await params;
@@ -16,6 +18,8 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
 export default async function FaqPage({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params;
   setRequestLocale(locale);
+  const cmsPage = await getManagedPage("faq", locale);
+  if (cmsPage) return <BlockRenderer page={cmsPage} locale={locale} />;
   const t = await getTranslations("faq");
   const x = await getTranslations("imm");
   const tr = await getTranslations("trust");

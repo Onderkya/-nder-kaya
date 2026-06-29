@@ -62,10 +62,13 @@ model User {
 // --- İçerik (CMS): sayfa -> bölüm -> blok, çok dilli çeviriler ---
 model Page {
   id        String    @id @default(cuid())
-  slug      String    @unique // home, antalya, lessons, education, about, faq, contact
+  slug      String    @unique // home, antalya, lessons, education, about, faq, contact (veya yeni özel slug)
+  title     String? // admin listesi / sekme başlığı
   order     Int       @default(0)
   published Boolean   @default(true)
+  managed   Boolean   @default(false) // true ise bu rota CMS bloklarıyla render edilir (aksi halde mevcut kodlu tasarım)
   sections  Section[]
+  blocks    ContentBlock[] @relation("PageBlocks")
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
 }
@@ -82,10 +85,13 @@ model Section {
 
 model ContentBlock {
   id        String        @id @default(cuid())
-  section   Section       @relation(fields: [sectionId], references: [id], onDelete: Cascade)
-  sectionId String
-  type      String // text, image, card, faq
+  section   Section?      @relation(fields: [sectionId], references: [id], onDelete: Cascade)
+  sectionId String?
+  page      Page?         @relation("PageBlocks", fields: [pageId], references: [id], onDelete: Cascade)
+  pageId    String?
+  type      String // hero, heading, richtext, image, imageText, cta, cards, quote
   order     Int           @default(0)
+  props     Json? // tipsel, yerelleştirilmeyen ayarlar (image url, href, align, count...)
   mediaId   String?
   media     Media?        @relation(fields: [mediaId], references: [id])
   texts     Translation[]

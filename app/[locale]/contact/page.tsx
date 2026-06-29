@@ -5,6 +5,8 @@ import { ContactForm } from "@/components/contact-form";
 import { PaymentMethods } from "@/components/payment-methods";
 import { Reveal } from "@/components/reveal";
 import { siteConfig, whatsappLink, telegramLink } from "@/lib/config";
+import { getManagedPage } from "@/lib/cms";
+import { BlockRenderer } from "@/components/cms/block-renderer";
 
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
   const { locale } = await params;
@@ -15,6 +17,8 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
 export default async function ContactPage({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params;
   setRequestLocale(locale);
+  const cmsPage = await getManagedPage("contact", locale);
+  if (cmsPage) return <BlockRenderer page={cmsPage} locale={locale} />;
   const t = await getTranslations("contact");
   const p = await getTranslations("payment");
   const cv = await getTranslations("convert");

@@ -4,7 +4,24 @@
 > ↩️ **Geri dönüş (rollback):** eski sürüm dokunulmadı → dal `claude/consulting-site-plan-6k4lix` + etiket `safe/before-redesign-rev9`. Beğenilmezse sunucuda o dala `git reset --hard` + rebuild.
 > Görsel/medya kaynakları: `public/images/CREDITS.txt` (CC / Mixkit / CC0) · oteller: kullanıcının verdiği resmi fotoğraflar (`public/images/hotels/`).
 
-## 🔁 Revizyon 15 — iç sayfalara dönüşüm katmanı (GÜNCEL · dal `claude/redesign-conversion`)
+## 🔁 Revizyon 16 — genel blok CMS (admin'den sayfa kur/düzenle) (GÜNCEL · dal `claude/redesign-conversion`)
+
+> **Şu an buradayız.** Kullanıcı: "admin'de sayfanın her detayına ulaşıp değişiklik yapabileyim, db kur." Karar: **gerçek genel blok CMS** ama **mevcut premium sayfaları kazara yok etmeden** — bir rotayı CMS ile yayınlamak **açık ve geri alınabilir** (`Page.managed`). Sen "CMS ile yayınla" demeden mevcut kodlu tasarım canlı kalır. `tsc` ✓ · `next build` ✓ (12 rota; `[slug]` eklendi).
+
+### 🧱 Mimari
+- **Şema (migration `0003_cms`):** Mevcut boş CMS tabloları kullanıldı. `Page.title`, `Page.managed` eklendi; `ContentBlock`'a `pageId` (doğrudan sayfaya bağlı blok), `props Json?` eklendi, `sectionId` opsiyonel yapıldı. Çeviri `Translation(blockId, field, locale, value)`. Migration sunucuda compose `command`'ındaki `prisma migrate deploy` ile **otomatik uygulanır**.
+- **`lib/cms-blocks.ts`** — blok tip kayıt defteri (admin + renderer ortak, saf config): hero, heading, richtext, image, imageText, cta, quote, cards, faq. `cards/faq` `count` prop'una göre dinamik öğe alanları üretir.
+- **`lib/cms.ts`** — `getManagedPage(slug, locale)` yalnız `managed && published` sayfayı döndürür (yoksa null → kodlu tasarıma düşer); `listPages`, `getPageForAdmin`. DB hatasında null (build güvenli).
+- **`components/cms/block-renderer.tsx`** — blok tiplerini site tasarım token'larıyla (Cormorant başlık, accent buton, container-wide) render eder → "genel" ama markaya uygun.
+- **Public entegrasyon:** Yeni sayfalar için dinamik `app/[locale]/[slug]/page.tsx` (statik rotalar önce gelir, sadece eşleşmeyen slug'ları yakalar). Mevcut 7 sayfanın (home dahil) başına **geri-alınabilir guard**: `const cmsPage = await getManagedPage("<slug>", locale); if (cmsPage) return <BlockRenderer .../>` — managed=false iken inert.
+- **Admin `/admin/pages`** (+nav linki): sayfa listesi + bilinen rota hızlı-oluştur + yeni özel sayfa. Editör `/admin/pages/[id]`: sayfa ayarları (başlık, yayında, **CMS ile yayınla**), blok ekle/sırala(↑↓)/sil, her blok 5 dilde + props (görsel URL = medya datalist), **canlı önizleme iframe** (dil sekmeleri + yeni sekme). Server action'lar `requireAdmin` + `audit` + `revalidatePath("/", "layout")`.
+
+### ⛔ AÇIK / SIRADAKİ (Rev 16)
+- **Faz 2 fikirleri:** gerçek sürükle-bırak sıralama (şimdilik ↑↓), blok kopyalama, medya seçici modal (şimdilik URL datalist), daha çok blok tipi (galeri/video/booking gömme), sayfa SEO alanları (description/OG) CMS'ten.
+- **Mevcut premium bileşenleri CMS'te tip olarak sunma** (RouteGallery, StudyJourney, zipper...) istenirse registry'ye "özel tip" olarak eklenebilir — o zaman bir rota tasarımı kaybetmeden CMS'e taşınır.
+- Çift fotoğrafı (`founders.jpg`) ve domain (`NEXT_PUBLIC_SITE_URL`) hâlâ kullanıcıdan bekleniyor (Rev 15).
+
+## 🔁 Revizyon 15 — iç sayfalara dönüşüm katmanı (dal `claude/redesign-conversion`)
 
 > **Şu an buradayız.** Kullanıcı isteği: ana sayfa + /antalya HARİÇ diğer 5 sayfayı (lessons, education, about, faq, contact) "insanları hayallerine ulaştır ama satın almalarını sağla" amacına göre, mevcut immersive yapıyı **bozmadan** yeniden tasarla. Karar: **dönüşüm katmanı ekle** (yapı korunur) · **sayfaya özel + tek hedefe akan CTA** · **dürüst sosyal kanıt/aciliyet** (uydurma yorum YOK). `/` ve `/antalya` dosyalarına dokunulmadı. `tsc --noEmit` ✓ · `next build` ✓.
 

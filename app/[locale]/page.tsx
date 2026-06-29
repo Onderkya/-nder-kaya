@@ -17,6 +17,8 @@ import { MobilePlanCta } from "@/components/mobile-plan-cta";
 import { QuickPlanForm } from "@/components/quick-plan-form";
 import { IconArrow, IconCheck } from "@/components/icons";
 import { siteConfig } from "@/lib/config";
+import { getManagedPage } from "@/lib/cms";
+import { BlockRenderer } from "@/components/cms/block-renderer";
 
 export default async function HomePage({
   params,
@@ -25,6 +27,8 @@ export default async function HomePage({
 }) {
   const { locale } = await params;
   setRequestLocale(locale);
+  const cmsPage = await getManagedPage("home", locale);
+  if (cmsPage) return <BlockRenderer page={cmsPage} locale={locale} />;
   const t = await getTranslations("home");
   const c = await getTranslations("common");
   const meta = await getTranslations("meta");

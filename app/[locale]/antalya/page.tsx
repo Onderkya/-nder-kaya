@@ -8,6 +8,8 @@ import { CinematicHero } from "@/components/cinematic-hero";
 import { HorizontalPlaces } from "@/components/horizontal-places";
 import { ReadyRoutes } from "@/components/ready-routes";
 import { IconArrow } from "@/components/icons";
+import { getManagedPage } from "@/lib/cms";
+import { BlockRenderer } from "@/components/cms/block-renderer";
 
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
   const { locale } = await params;
@@ -18,6 +20,8 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
 export default async function AntalyaPage({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params;
   setRequestLocale(locale);
+  const cmsPage = await getManagedPage("antalya", locale);
+  if (cmsPage) return <BlockRenderer page={cmsPage} locale={locale} />;
   const t = await getTranslations("antalya");
   const x = await getTranslations("imm");
 
