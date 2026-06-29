@@ -38,6 +38,13 @@ async function getReadonlyClient(): Promise<PrismaClient> {
 const FORBIDDEN =
   /\b(insert|update|delete|drop|alter|truncate|grant|revoke|create|replace|merge|call|do|copy|vacuum|reindex|comment|lock|listen|notify|set|reset)\b/i;
 
+/**
+ * Hassas tablolar AI okumasına KAPALI: "Setting" (API anahtarları/sırlar) ve
+ * "User" (bcrypt parola hash'leri). Prompt injection ile bile sorgulanamaz.
+ * (Asıl güvence yine DB rol grant'leridir; bu uygulama-seviyesi ek savunma.)
+ */
+const SENSITIVE_TABLE = /\b(Setting|User)\b/i;
+
 export type QueryValidation = { ok: true; sql: string } | { ok: false; error: string };
 
 /** SELECT/WITH dışındaki her şeyi reddeder, çoklu statement'i engeller, LIMIT ekler. */
@@ -62,6 +69,11 @@ export function validateSelect(raw: string): QueryValidation {
   // Yazma/DDL anahtar kelimeleri (derinlemesine savunma; asıl engel DB rolü).
   if (FORBIDDEN.test(sql)) {
     return { ok: false, error: "Sorgu yazma/değiştirme ifadesi içeriyor; reddedildi." };
+  }
+
+  // Hassas tablolar (sırlar / parola hash'leri) okumaya kapalı.
+  if (SENSITIVE_TABLE.test(sql)) {
+    return { ok: false, error: "Güvenlik: \"Setting\" ve \"User\" tablolarına erişim kapalı." };
   }
 
   // Otomatik LIMIT: yoksa ekle.

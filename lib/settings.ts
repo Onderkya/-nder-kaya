@@ -1,5 +1,42 @@
+import crypto from "crypto";
 import { cache } from "react";
 import { prisma } from "./db";
+
+/**
+ * Sırların at-rest şifrelenmesi (AES-256-GCM). Anahtar `SETTINGS_KEY` ya da
+ * (yoksa) `AUTH_SECRET`'ten türetilir. Anahtar yoksa düz metin saklanır (geri
+ * uyum). Böylece DB yedeği ele geçse bile şifreli sırlar okunamaz.
+ */
+const ENC_PREFIX = "enc:v1:";
+function encKey(): Buffer | null {
+  const s = process.env.SETTINGS_KEY || process.env.AUTH_SECRET;
+  return s ? crypto.createHash("sha256").update(s).digest() : null;
+}
+function encryptSecret(plain: string): string {
+  const key = encKey();
+  if (!key) return plain;
+  const iv = crypto.randomBytes(12);
+  const c = crypto.createCipheriv("aes-256-gcm", key, iv);
+  const ct = Buffer.concat([c.update(plain, "utf8"), c.final()]);
+  const tag = c.getAuthTag();
+  return ENC_PREFIX + [iv, tag, ct].map((b) => b.toString("base64")).join(":");
+}
+function decryptSecret(stored: string): string {
+  if (!stored?.startsWith(ENC_PREFIX)) return stored;
+  const key = encKey();
+  if (!key) return stored;
+  try {
+    const parts = stored.split(":"); // ["enc","v1",iv,tag,ct]
+    const iv = Buffer.from(parts[2], "base64");
+    const tag = Buffer.from(parts[3], "base64");
+    const ct = Buffer.from(parts[4], "base64");
+    const d = crypto.createDecipheriv("aes-256-gcm", key, iv);
+    d.setAuthTag(tag);
+    return Buffer.concat([d.update(ct), d.final()]).toString("utf8");
+  } catch {
+    return stored;
+  }
+}
 
 /**
  * Site ayarları — admin panelden düzenlenir, DB'de tutulur. Kod önce DB'den,
@@ -37,7 +74,7 @@ const WA_PLACEHOLDER = "905555555555";
 export const getAllSettings = cache(async (): Promise<Record<string, string>> => {
   try {
     const rows = await prisma.setting.findMany();
-    return Object.fromEntries(rows.map((r) => [r.key, r.value]));
+    return Object.fromEntries(rows.map((r) => [r.key, decryptSecret(r.value)]));
   } catch {
     return {};
   }
@@ -57,7 +94,10 @@ export async function setSetting(key: string, value: string): Promise<void> {
   if (value === "") {
     await prisma.setting.deleteMany({ where: { key } });
   } else {
-    await prisma.setting.upsert({ where: { key }, update: { value }, create: { key, value } });
+    // Sır tipindeki ayarlar at-rest şifrelenir; diğerleri düz saklanır.
+    const def = SETTING_DEFS.find((d) => d.key === key);
+    const stored = def?.secret ? encryptSecret(value) : value;
+    await prisma.setting.upsert({ where: { key }, update: { value: stored }, create: { key, value: stored } });
   }
 }
 

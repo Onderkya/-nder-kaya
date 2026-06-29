@@ -17,9 +17,14 @@
 - Sırların DB'de tutulması env'den daha az güvenli (DB yedeği sırları içerir). İstendiği için yapıldı; ADMIN-only + maskeli + audit'te değer yok + client'a asla sızmaz. Daha yüksek güvenlik isteyen sır için env hâlâ kullanılabilir (DB boşsa env okunur).
 - `AI_READONLY_DATABASE_URL` için **salt-okunur** Postgres kullanıcısı önerilir (DB seviyesinde yazma engeli). Ana `DATABASE_URL` yapıştırılırsa uygulama-seviyesi koruma (SELECT-only doğrulama) devrede kalır ama DB-seviyesi garanti olmaz.
 
+### 🔒 Sertleştirme (Rev 19'a eklendi)
+- **AI okuma denylist:** `lib/ai/db-readonly.ts` `validateSelect` artık `"Setting"` ve `"User"` tablolarını reddeder → AI prompt-injection ile bile API anahtarlarını/parola hash'lerini okuyamaz.
+- **Sırlar at-rest şifreli:** `lib/settings.ts` secret tipli ayarları **AES-256-GCM** ile şifreler (`SETTINGS_KEY` ya da `AUTH_SECRET`'ten türetilen anahtar; yoksa düz metin geri-uyum). DB dump'ı ele geçse bile şifreli sırlar okunamaz. Çözme yalnız sunucuda; client'a asla gitmez.
+
 ### ⛔ AÇIK / SIRADAKİ (Rev 19)
-- Kullanıcı panelden girecek: OpenRouter API key (+ model), AI readonly DB URL, WhatsApp numarası, Telegram, SITE_URL. Hepsi `/admin/settings`.
-- Root şifresi hâlâ değiştirilmeli; çift fotoğrafı (`founders.jpg`) bekleniyor.
+- **HTTPS (kullanıcı alıyor):** Sırları panele girmeden önce TLS şart. `docker/nginx.conf` hazır; domain gelince Let's Encrypt ile aç.
+- Kullanıcı panelden girecek: OpenRouter API key (+ model), AI readonly DB URL (salt-okunur Postgres rolü önerilir), WhatsApp, Telegram, SITE_URL → `/admin/settings`.
+- Opsiyonel: admin login 2FA. Root şifresi değiştirilmeli; çift fotoğrafı (`founders.jpg`) bekleniyor.
 
 ## 🔁 Revizyon 18 — CMS: TÜM premium bileşenler özel-tip (dal `claude/redesign-conversion`)
 
