@@ -121,6 +121,15 @@ model SiteText {
   @@unique([key, locale])
 }
 
+// Site ayarları: API anahtarları + iletişim/site değerleri. Admin panelden
+// düzenlenir; kod env yerine önce buradan okur (yoksa env'e düşer). Sırlar
+// asla client'a gönderilmez, panelde maskelenir, değişiklik AuditLog'a yazılır.
+model Setting {
+  key       String   @id // OPENROUTER_API_KEY, WHATSAPP_NUMBER, SITE_URL ...
+  value     String   @db.Text
+  updatedAt DateTime @updatedAt
+}
+
 model Media {
   id        String         @id @default(cuid())
   url       String

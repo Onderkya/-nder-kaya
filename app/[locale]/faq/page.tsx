@@ -5,7 +5,7 @@ import { FaqAccordion } from "@/components/faq-accordion";
 import { JsonLd } from "@/components/json-ld";
 import { TrustStrip } from "@/components/trust-strip";
 import { ConversionBand } from "@/components/conversion-band";
-import { siteConfig, whatsappLink } from "@/lib/config";
+import { getPublicSettings } from "@/lib/settings";
 import { getManagedPage } from "@/lib/cms";
 import { BlockRenderer } from "@/components/cms/block-renderer";
 
@@ -25,6 +25,7 @@ export default async function FaqPage({ params }: { params: Promise<{ locale: st
   const tr = await getTranslations("trust");
   const cv = await getTranslations("convert");
   const c = await getTranslations("common");
+  const site = await getPublicSettings();
 
   const items = [
     { q: t("q1"), a: t("a1") },
@@ -63,8 +64,8 @@ export default async function FaqPage({ params }: { params: Promise<{ locale: st
         title={cv("faqCtaTitle")}
         text={cv("faqCtaText")}
         ctaLabel={c("contactUs")}
-        waLabel={siteConfig.whatsappConfigured ? cv("whatsapp") : undefined}
-        waHref={siteConfig.whatsappConfigured ? whatsappLink() : undefined}
+        waLabel={site.whatsappConfigured ? cv("whatsapp") : undefined}
+        waHref={site.whatsappConfigured ? `https://wa.me/${site.whatsapp}` : undefined}
       />
     </>
   );

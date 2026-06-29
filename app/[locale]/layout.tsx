@@ -10,7 +10,7 @@ import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
 import { FloatingContact } from "@/components/floating-contact";
 import { SmoothScroll } from "@/components/smooth-scroll";
-import { siteConfig } from "@/lib/config";
+import { getPublicSettings } from "@/lib/settings";
 
 // Editoryal Akdeniz tipografisi: yüksek kontrastlı zarif serif (başlıklar) +
 // karakterli modern grotesk (gövde). İkisi de latin-ext (Türkçe) + Kiril (ru/kk)
@@ -40,10 +40,11 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { locale } = await params;
   const t = await getTranslations({ locale, namespace: "meta" });
+  const { url } = await getPublicSettings();
   const ogImage = { url: "/og/antalya-bridge.jpg", width: 1200, height: 630, alt: t("siteName") };
   const ogLocaleMap: Record<string, string> = { tr: "tr_TR", en: "en_US", ru: "ru_RU", kk: "kk_KZ", uz: "uz_UZ" };
   return {
-    metadataBase: new URL(siteConfig.url),
+    metadataBase: new URL(url),
     title: { default: `${t("siteName")} — ${t("tagline")}`, template: `%s · ${t("siteName")}` },
     description: t("description"),
     alternates: {
@@ -81,11 +82,25 @@ export default async function LocaleLayout({
   const { locale } = await params;
   if (!(routing.locales as readonly string[]).includes(locale)) notFound();
   setRequestLocale(locale);
+  const site = await getPublicSettings();
 
   return (
     <html lang={locale} suppressHydrationWarning className={`${sans.variable} ${display.variable}`}>
       <head>
         <ThemeScript />
+        {/* Public iletişim/site değerlerini client'a runtime enjekte et (admin'den; rebuild gerekmez). */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `window.__SITE__=${JSON.stringify({
+              whatsapp: site.whatsapp,
+              telegram: site.telegram,
+              whatsappConfigured: site.whatsappConfigured,
+              telegramConfigured: site.telegramConfigured,
+              email: site.email,
+              url: site.url,
+            })}`,
+          }}
+        />
       </head>
       <body className="grain min-h-screen font-sans antialiased">
         <NextIntlClientProvider>
@@ -93,7 +108,7 @@ export default async function LocaleLayout({
             <SmoothScroll />
             <SiteHeader />
             <main>{children}</main>
-            <SiteFooter />
+            <SiteFooter site={site} />
             <FloatingContact locale={locale} />
           </ThemeProvider>
         </NextIntlClientProvider>

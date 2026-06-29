@@ -11,7 +11,7 @@ import { StudyJourney } from "@/components/study-journey";
 import { TrustStrip } from "@/components/trust-strip";
 import { MobilePlanCta } from "@/components/mobile-plan-cta";
 import { IconArrow } from "@/components/icons";
-import { siteConfig, whatsappLink } from "@/lib/config";
+import { getPublicSettings } from "@/lib/settings";
 import { getManagedPage } from "@/lib/cms";
 import { BlockRenderer } from "@/components/cms/block-renderer";
 
@@ -31,6 +31,7 @@ export default async function EducationPage({ params }: { params: Promise<{ loca
   const sh = await getTranslations("studyHome");
   const tr = await getTranslations("trust");
   const cv = await getTranslations("convert");
+  const site = await getPublicSettings();
 
   const deliverables = [sh("f1"), sh("f2"), sh("f3"), sh("f4")];
 
@@ -122,8 +123,8 @@ export default async function EducationPage({ params }: { params: Promise<{ loca
             <p className="mx-auto mt-5 max-w-lg text-lg text-white/85">{sh("text")}</p>
             <div className="mt-9 flex flex-wrap items-center justify-center gap-3">
               <Link href="/contact" className="btn-accent shadow-xl shadow-black/30">{cv("eduCta")} <IconArrow /></Link>
-              {siteConfig.whatsappConfigured ? (
-                <a href={whatsappLink()} target="_blank" rel="noopener" className="inline-flex items-center gap-2 rounded-full border border-white/40 px-6 py-3 text-sm font-semibold text-white transition hover:bg-white/10">
+              {site.whatsappConfigured ? (
+                <a href={`https://wa.me/${site.whatsapp}`} target="_blank" rel="noopener" className="inline-flex items-center gap-2 rounded-full border border-white/40 px-6 py-3 text-sm font-semibold text-white transition hover:bg-white/10">
                   {cv("whatsapp")}
                 </a>
               ) : null}

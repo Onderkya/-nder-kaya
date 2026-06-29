@@ -1,9 +1,10 @@
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/routing";
-import { siteConfig, whatsappLink, telegramLink } from "@/lib/config";
+import { siteConfig } from "@/lib/config";
+import type { PublicSettings } from "@/lib/settings";
 import { Logo } from "./logo";
 
-export function SiteFooter() {
+export function SiteFooter({ site }: { site: PublicSettings }) {
   const t = useTranslations("footer");
   const nav = useTranslations("nav");
   const meta = useTranslations("meta");
@@ -53,13 +54,13 @@ export function SiteFooter() {
             {t("contact")}
           </h3>
           <ul className="space-y-2 text-sm">
-            <li>{siteConfig.whatsappConfigured
-              ? <a href={whatsappLink()} target="_blank" rel="noopener" className="hover:underline">WhatsApp</a>
+            <li>{site.whatsappConfigured
+              ? <a href={`https://wa.me/${site.whatsapp}`} target="_blank" rel="noopener" className="hover:underline">WhatsApp</a>
               : <Link href="/contact" className="hover:underline">WhatsApp</Link>}</li>
-            <li>{siteConfig.telegramConfigured
-              ? <a href={telegramLink()} target="_blank" rel="noopener" className="hover:underline">Telegram</a>
+            <li>{site.telegramConfigured
+              ? <a href={`https://t.me/${site.telegram}`} target="_blank" rel="noopener" className="hover:underline">Telegram</a>
               : <Link href="/contact" className="hover:underline">Telegram</Link>}</li>
-            <li><a href={`mailto:${siteConfig.email}`} className="hover:underline">{siteConfig.email}</a></li>
+            <li><a href={`mailto:${site.email}`} className="hover:underline">{site.email}</a></li>
           </ul>
           {social.length > 0 && (
             <div className="mt-4">

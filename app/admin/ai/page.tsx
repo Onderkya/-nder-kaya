@@ -6,7 +6,7 @@ export const dynamic = "force-dynamic";
 
 export default async function AiPage() {
   await requireAdmin();
-  const available = assistantAvailable();
+  const available = await assistantAvailable();
   const canWrite = writeEnabled();
 
   return (

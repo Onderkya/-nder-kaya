@@ -4,7 +4,24 @@
 > ↩️ **Geri dönüş (rollback):** eski sürüm dokunulmadı → dal `claude/consulting-site-plan-6k4lix` + etiket `safe/before-redesign-rev9`. Beğenilmezse sunucuda o dala `git reset --hard` + rebuild.
 > Görsel/medya kaynakları: `public/images/CREDITS.txt` (CC / Mixkit / CC0) · oteller: kullanıcının verdiği resmi fotoğraflar (`public/images/hotels/`).
 
-## 🔁 Revizyon 18 — CMS: TÜM premium bileşenler özel-tip (GÜNCEL · dal `claude/redesign-conversion`)
+## 🔁 Revizyon 19 — Ayarlar admin'den (API anahtarları dahil) + AI OpenRouter (home+admin) (GÜNCEL · dal `claude/redesign-conversion`)
+
+> **Şu an buradayız.** "Her şeyi admin'den değiştir, API'ler dahil; AI OpenRouter, hem ana sayfa hem admin." `tsc` ✓ · `next build` ✓ (11/11). Migration `0004_settings` sunucuda otomatik uygulanır.
+
+- **`Setting` modeli (key/value) + `lib/settings.ts`:** Tüm ayarlar DB'de; kod **DB → env** sırasıyla okur (React `cache` ile istek başına). `getSetting`, `getAllSettings`, `setSetting`, `getPublicSettings` (sırsız public değerler), `SETTING_DEFS` kayıt defteri.
+- **`/admin/settings`** (+nav "Ayarlar"): gruplu form (Yapay Zekâ / İletişim / Site). Düzenlenebilir: `OPENROUTER_API_KEY`, `OPENROUTER_MODEL(_SMART)`, `AI_READONLY_DATABASE_URL`, `WHATSAPP_NUMBER`, `TELEGRAM_USERNAME`, `CONTACT_EMAIL`, `SITE_URL`. Sırlar **maskeli** (boş bırakılırsa dokunulmaz), ADMIN-only, audit'e **değer yazılmaz**, "sil → env'e dön". **Rebuild gerekmez.**
+- **AI artık settings'ten (OpenRouter):** `lib/ai/llm.ts` (key/model/referer async, DB→env), `lib/ai/db-readonly.ts` (readonly URL settings'ten, URL değişince client yenilenir), `assistant.ts` (`assistantAvailable` async). **`/api/chat` (ANA SAYFA sohbeti) artık önce OpenRouter** (settings key), Anthropic yalnız env yedek. Admin asistanı da aynı. → OpenRouter anahtarını panele yapıştır, her iki AI **anında** çalışır.
+- **WhatsApp/Telegram/SITE_URL/email runtime (DB, rebuild'siz):** `lib/config.ts` client'ta `window.__SITE__` okur (layout enjekte eder `getPublicSettings`'ten) → tüm client butonları (floating-contact, route-gallery "Bu tatili iste", quick-plan, contact-form) runtime. Server tüketicileri `getPublicSettings` kullanır: layout metadata, footer (prop), contact, ready-routes wa, premium ContactInfo/ConversionBand, faq/about/education wa, sitemap, robots, home+about JSON-LD.
+
+### 🔐 Güvenlik notu
+- Sırların DB'de tutulması env'den daha az güvenli (DB yedeği sırları içerir). İstendiği için yapıldı; ADMIN-only + maskeli + audit'te değer yok + client'a asla sızmaz. Daha yüksek güvenlik isteyen sır için env hâlâ kullanılabilir (DB boşsa env okunur).
+- `AI_READONLY_DATABASE_URL` için **salt-okunur** Postgres kullanıcısı önerilir (DB seviyesinde yazma engeli). Ana `DATABASE_URL` yapıştırılırsa uygulama-seviyesi koruma (SELECT-only doğrulama) devrede kalır ama DB-seviyesi garanti olmaz.
+
+### ⛔ AÇIK / SIRADAKİ (Rev 19)
+- Kullanıcı panelden girecek: OpenRouter API key (+ model), AI readonly DB URL, WhatsApp numarası, Telegram, SITE_URL. Hepsi `/admin/settings`.
+- Root şifresi hâlâ değiştirilmeli; çift fotoğrafı (`founders.jpg`) bekleniyor.
+
+## 🔁 Revizyon 18 — CMS: TÜM premium bileşenler özel-tip (dal `claude/redesign-conversion`)
 
 > **Şu an buradayız.** "Tüm her şeyi bitir" — kalan bespoke bölümler de CMS premium-tipi oldu. Artık **14 premium tip** var → her sayfa (home/antalya/lessons/education/contact/faq) CMS'te tasarım kaybetmeden kurulabilir. `tsc` ✓ · `next build` ✓.
 >

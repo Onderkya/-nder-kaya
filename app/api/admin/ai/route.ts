@@ -40,7 +40,7 @@ export async function POST(req: Request) {
     );
   }
 
-  if (!assistantAvailable()) {
+  if (!(await assistantAvailable())) {
     return NextResponse.json({ disabled: true });
   }
 

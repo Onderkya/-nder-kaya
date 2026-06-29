@@ -2,7 +2,7 @@ import { getTranslations, getLocale } from "next-intl/server";
 import { Reveal } from "@/components/reveal";
 import { IconCheck } from "@/components/icons";
 import { RouteGallery } from "@/components/route-gallery";
-import { siteConfig, whatsappLink } from "@/lib/config";
+import { getPublicSettings } from "@/lib/settings";
 
 /**
  * HAZIR ROTALAR — modern, kompakt paket vitrini. Sade kartlar yan yana (ızgara);
@@ -83,13 +83,14 @@ export async function ReadyRoutes() {
   // Rota → otel (hotelsd) eşlemesi: detay sayfasında otelin gerçek tanıtımı + konumu.
   const hkeyOf: Record<string, string> = { r1: "larabarut", r2: "cullinan", r3: "ngphaselis", r4: "legends", r5: "maxxkemer" };
 
-  const waReady = siteConfig.whatsappConfigured;
+  const site = await getPublicSettings();
+  const waReady = site.whatsappConfigured;
   const routes = baseRoutes.map((rt) => {
     const hk = hkeyOf[rt.key];
     return {
       ...rt,
       steps: rt.steps.map((s) => ({ ...s, dl: r("dayLabel", { n: s.day }) })),
-      wa: waReady ? whatsappLink(r("waMsg", { name: rt.name, days: rt.days, hotel: rt.hotel })) : null,
+      wa: waReady ? `https://wa.me/${site.whatsapp}?text=${encodeURIComponent(r("waMsg", { name: rt.name, days: rt.days, hotel: rt.hotel }))}` : null,
       hotelWhy: hd(`${hk}_why`),
       hotelNote: hd(`${hk}_note`),
       mapQ: encodeURIComponent(`${rt.hotel} ${rt.loc} Antalya`),

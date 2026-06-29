@@ -1,4 +1,5 @@
 import { PrismaClient } from "@prisma/client";
+import { getSetting } from "@/lib/settings";
 
 /**
  * AI asistanı için SALT-OKUNUR sorgu çalıştırıcı.
@@ -17,15 +18,19 @@ import { PrismaClient } from "@prisma/client";
 const MAX_ROWS = 500;
 
 let roClient: PrismaClient | null = null;
+let roUrl: string | null = null;
 
-export function readonlyDbAvailable(): boolean {
-  return !!process.env.AI_READONLY_DATABASE_URL;
+export async function readonlyDbAvailable(): Promise<boolean> {
+  return !!(await getSetting("AI_READONLY_DATABASE_URL"));
 }
 
-function getReadonlyClient(): PrismaClient {
-  const url = process.env.AI_READONLY_DATABASE_URL;
+async function getReadonlyClient(): Promise<PrismaClient> {
+  const url = await getSetting("AI_READONLY_DATABASE_URL");
   if (!url) throw new Error("AI_READONLY_DATABASE_URL is not set");
+  // URL değişirse (admin ayarından) istemciyi yenile.
+  if (roClient && roUrl !== url) { roClient = null; }
   roClient ??= new PrismaClient({ datasources: { db: { url } }, log: ["error"] });
+  roUrl = url;
   return roClient;
 }
 
@@ -90,7 +95,7 @@ export async function runSelect(raw: string): Promise<QueryResult> {
   if (!v.ok) return { ok: false, error: v.error };
 
   try {
-    const client = getReadonlyClient();
+    const client = await getReadonlyClient();
     const rows = (await client.$queryRawUnsafe(v.sql)) as unknown[];
     const limited = rows.slice(0, MAX_ROWS);
     return { ok: true, rows: serialize(limited), rowCount: rows.length, sql: v.sql };

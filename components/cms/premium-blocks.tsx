@@ -15,7 +15,7 @@ import { TrustStrip } from "@/components/trust-strip";
 import { ConversionBand } from "@/components/conversion-band";
 import { ContactForm } from "@/components/contact-form";
 import { PaymentMethods } from "@/components/payment-methods";
-import { siteConfig, whatsappLink, telegramLink } from "@/lib/config";
+import { getPublicSettings } from "@/lib/settings";
 import { prisma } from "@/lib/db";
 import { BookingWidget } from "@/app/[locale]/lessons/booking-widget";
 
@@ -209,13 +209,14 @@ async function ConversionBandBlock() {
   const x = await getTranslations("imm");
   const c = await getTranslations("common");
   const cv = await getTranslations("convert");
+  const site = await getPublicSettings();
   return (
     <ConversionBand
       title={x("lived_title")}
       text={x("lived_text")}
       ctaLabel={c("contactUs")}
-      waLabel={siteConfig.whatsappConfigured ? cv("whatsapp") : undefined}
-      waHref={siteConfig.whatsappConfigured ? whatsappLink() : undefined}
+      waLabel={site.whatsappConfigured ? cv("whatsapp") : undefined}
+      waHref={site.whatsappConfigured ? `https://wa.me/${site.whatsapp}` : undefined}
     />
   );
 }
@@ -224,6 +225,7 @@ async function ContactInfoBlock() {
   const t = await getTranslations("contact");
   const p = await getTranslations("payment");
   const cv = await getTranslations("convert");
+  const site = await getPublicSettings();
   return (
     <section className="container-page grid gap-10 py-16 lg:grid-cols-2">
       <ContactForm
@@ -239,9 +241,9 @@ async function ContactInfoBlock() {
           <p className="relative text-xs font-bold uppercase tracking-[0.18em] text-white/85">{cv("conQuick")}</p>
           <p className="relative mt-2 text-[15px] leading-relaxed text-white/90">{cv("conQuickText")}</p>
           <div className="relative mt-5 flex flex-wrap gap-2.5">
-            {siteConfig.whatsappConfigured ? <a className="inline-flex items-center gap-2 rounded-full bg-white px-4 py-2 text-sm font-bold text-[rgb(var(--primary))] shadow-md" href={whatsappLink()} target="_blank" rel="noopener">📱 WhatsApp</a> : null}
-            {siteConfig.telegramConfigured ? <a className="inline-flex items-center gap-2 rounded-full border border-white/50 px-4 py-2 text-sm font-semibold text-white" href={telegramLink()} target="_blank" rel="noopener">✈️ Telegram</a> : null}
-            <a className="inline-flex items-center gap-2 rounded-full border border-white/50 px-4 py-2 text-sm font-semibold text-white" href={`mailto:${siteConfig.email}`}>✉️ {siteConfig.email}</a>
+            {site.whatsappConfigured ? <a className="inline-flex items-center gap-2 rounded-full bg-white px-4 py-2 text-sm font-bold text-[rgb(var(--primary))] shadow-md" href={`https://wa.me/${site.whatsapp}`} target="_blank" rel="noopener">📱 WhatsApp</a> : null}
+            {site.telegramConfigured ? <a className="inline-flex items-center gap-2 rounded-full border border-white/50 px-4 py-2 text-sm font-semibold text-white" href={`https://t.me/${site.telegram}`} target="_blank" rel="noopener">✈️ Telegram</a> : null}
+            <a className="inline-flex items-center gap-2 rounded-full border border-white/50 px-4 py-2 text-sm font-semibold text-white" href={`mailto:${site.email}`}>✉️ {site.email}</a>
           </div>
         </div>
         <div className="card">

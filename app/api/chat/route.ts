@@ -54,9 +54,10 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: "bad_request" }, { status: 400 });
   }
 
+  // Öncelik: OpenRouter (admin ayarlarından). Anthropic yalnız env'de anahtar varsa yedek.
+  const hasOpenRouter = await openrouterAvailable();
   const hasAnthropic = !!process.env.ANTHROPIC_API_KEY;
-  const hasOpenRouter = openrouterAvailable();
-  if (!hasAnthropic && !hasOpenRouter) {
+  if (!hasOpenRouter && !hasAnthropic) {
     return NextResponse.json({
       answer: "Şu an canlı yazışma için WhatsApp veya Telegram butonunu kullan — gerçek bir danışman hemen dönüyor!",
     });
@@ -66,18 +67,9 @@ export async function POST(req: Request) {
 
   try {
     let answer = "";
-    if (hasAnthropic) {
-      const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
-      const res = await anthropic.messages.create({
-        model: CHAT_MODEL,
-        max_tokens: 600,
-        system: systemPrompt(),
-        messages: [...history, { role: "user" as const, content: body.message }],
-      });
-      answer = res.content.map((b) => (b.type === "text" ? b.text : "")).join("").trim();
-    } else {
+    if (hasOpenRouter) {
       const res = await orChat({
-        model: defaultModel(),
+        model: await defaultModel(),
         messages: [
           { role: "system", content: systemPrompt() },
           ...history,
@@ -86,6 +78,15 @@ export async function POST(req: Request) {
         maxTokens: 600,
       });
       answer = (res.content ?? "").trim();
+    } else {
+      const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
+      const res = await anthropic.messages.create({
+        model: CHAT_MODEL,
+        max_tokens: 600,
+        system: systemPrompt(),
+        messages: [...history, { role: "user" as const, content: body.message }],
+      });
+      answer = res.content.map((b) => (b.type === "text" ? b.text : "")).join("").trim();
     }
     return NextResponse.json({ answer: answer || "Seni dinliyorum — ne için Antalya'dayız? 🌊" });
   } catch {

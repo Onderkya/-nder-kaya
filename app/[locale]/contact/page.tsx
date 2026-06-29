@@ -4,7 +4,7 @@ import { CinematicHero } from "@/components/cinematic-hero";
 import { ContactForm } from "@/components/contact-form";
 import { PaymentMethods } from "@/components/payment-methods";
 import { Reveal } from "@/components/reveal";
-import { siteConfig, whatsappLink, telegramLink } from "@/lib/config";
+import { getPublicSettings } from "@/lib/settings";
 import { getManagedPage } from "@/lib/cms";
 import { BlockRenderer } from "@/components/cms/block-renderer";
 
@@ -23,6 +23,7 @@ export default async function ContactPage({ params }: { params: Promise<{ locale
   const p = await getTranslations("payment");
   const cv = await getTranslations("convert");
   const tr = await getTranslations("trust");
+  const site = await getPublicSettings();
 
   return (
     <>
@@ -76,13 +77,13 @@ export default async function ContactPage({ params }: { params: Promise<{ locale
             <p className="relative text-xs font-bold uppercase tracking-[0.18em] text-white/85">{cv("conQuick")}</p>
             <p className="relative mt-2 text-[15px] leading-relaxed text-white/90">{cv("conQuickText")}</p>
             <div className="relative mt-5 flex flex-wrap gap-2.5">
-              {siteConfig.whatsappConfigured ? (
-                <a className="inline-flex items-center gap-2 rounded-full bg-white px-4 py-2 text-sm font-bold text-[rgb(var(--primary))] shadow-md transition hover:scale-[1.03]" href={whatsappLink()} target="_blank" rel="noopener">📱 WhatsApp</a>
+              {site.whatsappConfigured ? (
+                <a className="inline-flex items-center gap-2 rounded-full bg-white px-4 py-2 text-sm font-bold text-[rgb(var(--primary))] shadow-md transition hover:scale-[1.03]" href={`https://wa.me/${site.whatsapp}`} target="_blank" rel="noopener">📱 WhatsApp</a>
               ) : null}
-              {siteConfig.telegramConfigured ? (
-                <a className="inline-flex items-center gap-2 rounded-full border border-white/50 px-4 py-2 text-sm font-semibold text-white transition hover:bg-white/10" href={telegramLink()} target="_blank" rel="noopener">✈️ Telegram</a>
+              {site.telegramConfigured ? (
+                <a className="inline-flex items-center gap-2 rounded-full border border-white/50 px-4 py-2 text-sm font-semibold text-white transition hover:bg-white/10" href={`https://t.me/${site.telegram}`} target="_blank" rel="noopener">✈️ Telegram</a>
               ) : null}
-              <a className="inline-flex items-center gap-2 rounded-full border border-white/50 px-4 py-2 text-sm font-semibold text-white transition hover:bg-white/10" href={`mailto:${siteConfig.email}`}>✉️ {siteConfig.email}</a>
+              <a className="inline-flex items-center gap-2 rounded-full border border-white/50 px-4 py-2 text-sm font-semibold text-white transition hover:bg-white/10" href={`mailto:${site.email}`}>✉️ {site.email}</a>
             </div>
           </div>
 

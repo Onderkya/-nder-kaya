@@ -10,7 +10,7 @@ import { IconArrow } from "@/components/icons";
 import { TrustStrip } from "@/components/trust-strip";
 import { ConversionBand } from "@/components/conversion-band";
 import { JsonLd } from "@/components/json-ld";
-import { siteConfig, whatsappLink } from "@/lib/config";
+import { getPublicSettings } from "@/lib/settings";
 import { getManagedPage } from "@/lib/cms";
 import { BlockRenderer } from "@/components/cms/block-renderer";
 
@@ -37,6 +37,7 @@ export default async function AboutPage({ params }: { params: Promise<{ locale: 
   const tr = await getTranslations("trust");
   const cv = await getTranslations("convert");
   const sv = await getTranslations("services");
+  const site = await getPublicSettings();
 
   // Gerçek çift fotoğrafı gelince otomatik devreye girer; yoksa markaya uygun
   // zarif yer tutucu (sahte/stok çift fotoğrafı KULLANILMAZ).
@@ -76,8 +77,8 @@ export default async function AboutPage({ params }: { params: Promise<{ locale: 
     mainEntity: {
       "@type": "Organization",
       name: "Antalya Bridge",
-      url: siteConfig.url,
-      email: siteConfig.email,
+      url: site.url,
+      email: site.email,
       description: t("body"),
       areaServed: { "@type": "Place", name: "Antalya, Türkiye" },
       knowsLanguage: ["Turkish", "English", "Russian", "Kazakh", "Uzbek"],
@@ -211,8 +212,8 @@ export default async function AboutPage({ params }: { params: Promise<{ locale: 
         title={x("lived_title")}
         text={x("lived_text")}
         ctaLabel={c("contactUs")}
-        waLabel={siteConfig.whatsappConfigured ? cv("whatsapp") : undefined}
-        waHref={siteConfig.whatsappConfigured ? whatsappLink() : undefined}
+        waLabel={site.whatsappConfigured ? cv("whatsapp") : undefined}
+        waHref={site.whatsappConfigured ? `https://wa.me/${site.whatsapp}` : undefined}
       />
     </>
   );

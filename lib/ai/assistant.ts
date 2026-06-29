@@ -23,8 +23,8 @@ import {
 
 const MAX_TURNS = 6;
 
-export function assistantAvailable(): boolean {
-  return openrouterAvailable() && readonlyDbAvailable();
+export async function assistantAvailable(): Promise<boolean> {
+  return (await openrouterAvailable()) && (await readonlyDbAvailable());
 }
 export function writeEnabled(): boolean {
   return readwriteDbAvailable();
@@ -97,13 +97,13 @@ function tools(): ToolDef[] {
   return t;
 }
 
-function pickModel(text: string) {
+async function pickModel(text: string): Promise<string> {
   const complex =
     text.length > 120 ||
     /\b(kaç|toplam|ortalama|dağılım|analiz|trend|karşılaştır|rapor|grup|group|son\s+\d|geçen|aylık|haftalık|günlük|between|join|en çok|en az|ekle|güncelle|değiştir)\b/i.test(
       text
     );
-  return complex ? smartModel() : defaultModel();
+  return complex ? await smartModel() : await defaultModel();
 }
 
 export type ExecutedQuery = {
@@ -133,11 +133,11 @@ export async function askAssistant(
   userText: string,
   history: { role: "user" | "assistant"; content: string }[] = []
 ): Promise<AssistantReply> {
-  const model = pickModel(userText);
+  const model = await pickModel(userText);
   const queries: ExecutedQuery[] = [];
   const proposedWrites: ProposedWrite[] = [];
 
-  if (!assistantAvailable()) {
+  if (!(await assistantAvailable())) {
     return {
       answer:
         "AI asistanı yapılandırılmamış. `OPENROUTER_API_KEY` ve `AI_READONLY_DATABASE_URL` ayarlandığında etkinleşir.",

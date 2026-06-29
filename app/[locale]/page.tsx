@@ -16,7 +16,7 @@ import { FaqAccordion } from "@/components/faq-accordion";
 import { MobilePlanCta } from "@/components/mobile-plan-cta";
 import { QuickPlanForm } from "@/components/quick-plan-form";
 import { IconArrow, IconCheck } from "@/components/icons";
-import { siteConfig } from "@/lib/config";
+import { getPublicSettings } from "@/lib/settings";
 import { getManagedPage } from "@/lib/cms";
 import { BlockRenderer } from "@/components/cms/block-renderer";
 
@@ -29,6 +29,7 @@ export default async function HomePage({
   setRequestLocale(locale);
   const cmsPage = await getManagedPage("home", locale);
   if (cmsPage) return <BlockRenderer page={cmsPage} locale={locale} />;
+  const site = await getPublicSettings();
   const t = await getTranslations("home");
   const c = await getTranslations("common");
   const meta = await getTranslations("meta");
@@ -132,9 +133,9 @@ export default async function HomePage({
           "@type": "TravelAgency",
           name: meta("siteName"),
           description: meta("description"),
-          url: siteConfig.url,
+          url: site.url,
           areaServed: "Antalya, Türkiye",
-          email: siteConfig.email,
+          email: site.email,
           knowsLanguage: ["tr", "en", "ru", "kk", "uz"],
           makesOffer: [
             { "@type": "Offer", itemOffered: { "@type": "Service", name: t("servicesTitle") } },

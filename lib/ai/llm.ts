@@ -6,6 +6,8 @@
  * Yalnızca `fetch` kullanır, ek bağımlılık yoktur.
  */
 
+import { getSetting } from "@/lib/settings";
+
 const OPENROUTER_URL = "https://openrouter.ai/api/v1/chat/completions";
 
 export type ToolDef = {
@@ -30,16 +32,16 @@ export type ChatResult = {
   finishReason: string | null;
 };
 
-export function openrouterAvailable(): boolean {
-  return !!process.env.OPENROUTER_API_KEY;
+export async function openrouterAvailable(): Promise<boolean> {
+  return !!(await getSetting("OPENROUTER_API_KEY"));
 }
 
-/** Varsayılan (ucuz/hızlı) ve "akıllı" model — ikisi de .env'den ayarlanabilir. */
-export function defaultModel(): string {
-  return process.env.OPENROUTER_MODEL || "openai/gpt-4o-mini";
+/** Varsayılan (ucuz/hızlı) ve "akıllı" model — ikisi de admin ayarlarından (yoksa env). */
+export async function defaultModel(): Promise<string> {
+  return (await getSetting("OPENROUTER_MODEL")) || "openai/gpt-4o-mini";
 }
-export function smartModel(): string {
-  return process.env.OPENROUTER_MODEL_SMART || defaultModel();
+export async function smartModel(): Promise<string> {
+  return (await getSetting("OPENROUTER_MODEL_SMART")) || (await defaultModel());
 }
 
 export async function chat(opts: {
@@ -48,8 +50,9 @@ export async function chat(opts: {
   tools?: ToolDef[];
   maxTokens?: number;
 }): Promise<ChatResult> {
-  const key = process.env.OPENROUTER_API_KEY;
+  const key = await getSetting("OPENROUTER_API_KEY");
   if (!key) throw new Error("OPENROUTER_API_KEY is not set");
+  const referer = (await getSetting("SITE_URL")) || "https://antalyabridge.com";
 
   const res = await fetch(OPENROUTER_URL, {
     method: "POST",
@@ -57,7 +60,7 @@ export async function chat(opts: {
       Authorization: `Bearer ${key}`,
       "Content-Type": "application/json",
       // OpenRouter'ın istediği opsiyonel atıf başlıkları:
-      "HTTP-Referer": process.env.NEXT_PUBLIC_SITE_URL || "https://antalyabridge.com",
+      "HTTP-Referer": referer,
       "X-Title": "Antalya Bridge Admin",
     },
     body: JSON.stringify({
