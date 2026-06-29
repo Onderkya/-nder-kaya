@@ -4,7 +4,19 @@
 > ↩️ **Geri dönüş (rollback):** eski sürüm dokunulmadı → dal `claude/consulting-site-plan-6k4lix` + etiket `safe/before-redesign-rev9`. Beğenilmezse sunucuda o dala `git reset --hard` + rebuild.
 > Görsel/medya kaynakları: `public/images/CREDITS.txt` (CC / Mixkit / CC0) · oteller: kullanıcının verdiği resmi fotoğraflar (`public/images/hotels/`).
 
-## 🔁 Revizyon 16 — genel blok CMS (admin'den sayfa kur/düzenle) (GÜNCEL · dal `claude/redesign-conversion`)
+## 🔁 Revizyon 17 — CMS Faz 2: sürükle-bırak + medya seçici + premium özel tipler (GÜNCEL · dal `claude/redesign-conversion`)
+
+> **Şu an buradayız.** Rev 16'daki "Faz 2" maddeleri tamamlandı. `tsc` ✓ · `next build` ✓.
+
+- **Premium özel tipler (`components/cms/premium-blocks.tsx`):** Mevcut sinematik bileşenler CMS bloğu olarak eklenebilir → bir sayfa CMS'e taşınırken **tasarım kaybolmaz**. Tipler: `routeGallery` (ReadyRoutes, propsuz), `studyJourney`, `hotels`, `petlingo`, `guestVoices`, `quickPlan`. Her biri kendi çevirisini okur (wiring kaynak sayfalarla birebir); metinleri **Site İçeriği**'nden düzenlenir. `lib/cms-blocks.ts`'e `custom:true` tipler eklendi (alan yok); `block-renderer` `PREMIUM_TYPES` için `<PremiumBlock>`'a yönlendirir; editör custom blokta alan yerine bilgi notu gösterir.
+- **Medya seçici modal (`app/admin/pages/[id]/image-field.tsx`, client):** görsel proplarında URL input + "Seç" → yüklenen medya grid'inden seç (önizleme + temizle). Datalist yerine gerçek modal.
+- **Gerçek sürükle-bırak (`app/admin/pages/[id]/block-reorder.tsx`, client):** blok kartları tutamaçtan sürüklenip sıralanır; "Sıralamayı kaydet" → `reorderBlocks` server action (sıralı id listesi → `order` 0..n). ↑↓ butonları da fallback olarak duruyor. Sunucuda render edilen blok kartları client sarmalayıcıya `node` olarak geçer (formlar/inputlar normal çalışır).
+
+### ⛔ AÇIK / SIRADAKİ (Rev 17)
+- Daha çok premium özel tip istenirse eklenebilir (DiveHero, ContactForm+ödeme, lessons booking, zipper). Şu an 6 tip.
+- Çift fotoğrafı (`founders.jpg`), domain (`NEXT_PUBLIC_SITE_URL`), WhatsApp numarası, root şifre değişikliği hâlâ kullanıcıdan bekleniyor.
+
+## 🔁 Revizyon 16 — genel blok CMS (admin'den sayfa kur/düzenle) (dal `claude/redesign-conversion`)
 
 > **Şu an buradayız.** Kullanıcı: "admin'de sayfanın her detayına ulaşıp değişiklik yapabileyim, db kur." Karar: **gerçek genel blok CMS** ama **mevcut premium sayfaları kazara yok etmeden** — bir rotayı CMS ile yayınlamak **açık ve geri alınabilir** (`Page.managed`). Sen "CMS ile yayınla" demeden mevcut kodlu tasarım canlı kalır. `tsc` ✓ · `next build` ✓ (12 rota; `[slug]` eklendi).
 

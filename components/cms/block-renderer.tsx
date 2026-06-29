@@ -2,6 +2,7 @@ import Image from "next/image";
 import { Reveal } from "@/components/reveal";
 import { IconArrow } from "@/components/icons";
 import { itemCount } from "@/lib/cms-blocks";
+import { PremiumBlock, PREMIUM_TYPES } from "@/components/cms/premium-blocks";
 import type { CmsBlock, CmsPage } from "@/lib/cms";
 
 /** İç bağlantıya locale öneki ekler; dış/anchor bağlantıyı olduğu gibi bırakır. */
@@ -24,6 +25,10 @@ function Btn({ href, children, accent = true }: { href: string; children: React.
 }
 
 function Block({ b, locale }: { b: CmsBlock; locale: string }) {
+  // Premium özel tipler kendi (çeviri-okuyan) bileşenlerini render eder.
+  if ((PREMIUM_TYPES as readonly string[]).includes(b.type)) {
+    return <PremiumBlock type={b.type} />;
+  }
   const t = b.text;
   const p = b.props as Record<string, string | undefined>;
   const img = (p.image as string) || b.media || null;

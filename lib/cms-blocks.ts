@@ -23,6 +23,8 @@ export type BlockDef = {
   props: PropDef[];
   /** cards/faq: her öğe için alan üreticisi. */
   item?: { fields: (i: number) => FieldDef[]; props: (i: number) => PropDef[] };
+  /** Premium "özel tip": kendi çevirisini okur, admin'de alan yoktur (metin Site İçeriği'nden). */
+  custom?: boolean;
 };
 
 export const BLOCK_DEFS: BlockDef[] = [
@@ -122,6 +124,14 @@ export const BLOCK_DEFS: BlockDef[] = [
       props: () => [],
     },
   },
+  // ★ Premium özel tipler — mevcut sinematik bileşenler. Alan yok; metin Site
+  // İçeriği'nden düzenlenir. Render: components/cms/premium-blocks.tsx.
+  { type: "routeGallery", label: "★ Hazır Rotalar (sinematik galeri)", fields: [], props: [], custom: true },
+  { type: "studyJourney", label: "★ Eğitim Yolculuğu (scroll sahne)", fields: [], props: [], custom: true },
+  { type: "hotels", label: "★ Otel Kartları", fields: [], props: [], custom: true },
+  { type: "petlingo", label: "★ PetLingo Vitrini", fields: [], props: [], custom: true },
+  { type: "guestVoices", label: "★ Misafir Sözleri", fields: [], props: [], custom: true },
+  { type: "quickPlan", label: "★ Hızlı Plan Formu", fields: [], props: [], custom: true },
 ];
 
 export function blockDef(type: string): BlockDef | undefined {

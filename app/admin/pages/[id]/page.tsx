@@ -6,6 +6,8 @@ import { getPageForAdmin } from "@/lib/cms";
 import { routing, localeFlags, localeNames, type Locale } from "@/i18n/routing";
 import { BLOCK_DEFS, blockDef, localizedFieldDefs, propDefs } from "@/lib/cms-blocks";
 import { updatePageMeta, deletePage, addBlock, moveBlock, deleteBlock, updateBlock } from "../actions";
+import { ImageField } from "./image-field";
+import { BlockReorder } from "./block-reorder";
 
 export const dynamic = "force-dynamic";
 
@@ -64,7 +66,7 @@ export default async function PageEditor({
       <div className="grid gap-6 xl:grid-cols-[1fr,minmax(380px,560px)]">
         {/* Sol: bloklar */}
         <div className="space-y-5">
-          {page.blocks.map((b, idx) => {
+          <BlockReorder pageId={page.id} items={page.blocks.map((b, idx) => {
             const props = (b.props as Record<string, unknown>) ?? {};
             const fields = localizedFieldDefs(b.type, props);
             const pdefs = propDefs(b.type, props);
@@ -73,7 +75,7 @@ export default async function PageEditor({
             for (const tr of b.texts) (textMap[tr.field] ??= {})[tr.locale] = tr.value;
             const def = blockDef(b.type);
 
-            return (
+            return { id: b.id, node: (
               <section key={b.id} className="rounded-2xl bg-white p-5 shadow-sm">
                 <div className="mb-4 flex items-center justify-between gap-2">
                   <h3 className="text-sm font-bold text-cyan-800">{def?.label ?? b.type} <span className="font-normal text-slate-400">#{idx + 1}</span></h3>
@@ -87,6 +89,14 @@ export default async function PageEditor({
                 <form action={updateBlock} className="space-y-4">
                   <input type="hidden" name="blockId" value={b.id} />
                   <input type="hidden" name="type" value={b.type} />
+
+                  {def?.custom && (
+                    <p className="rounded-xl bg-amber-50 p-3 text-xs text-amber-800">
+                      ★ Hazır premium bölüm — görünümü mevcut sitedeki ile birebir aynıdır. İçindeki
+                      metinler <b>Site İçeriği</b> sayfasından 5 dilde düzenlenir; burada sadece ekleyip
+                      sıralarsın.
+                    </p>
+                  )}
 
                   {/* Yapılandırma (props) */}
                   {pdefs.length > 0 && (
@@ -108,6 +118,13 @@ export default async function PageEditor({
                               </select>
                             </label>
                           );
+                        if (p.kind === "image")
+                          return (
+                            <label key={p.name} className="text-xs text-slate-600">
+                              <span className="mb-1 block">{p.label}</span>
+                              <ImageField name={`p:${p.name}`} defaultValue={(val as string) ?? ""} media={mediaUrls} />
+                            </label>
+                          );
                         return (
                           <label key={p.name} className="text-xs text-slate-600">
                             <span className="mb-1 block">{p.label}</span>
@@ -115,7 +132,6 @@ export default async function PageEditor({
                               name={`p:${p.name}`}
                               type={p.kind === "number" ? "number" : "text"}
                               defaultValue={(val as string) ?? p.default ?? ""}
-                              list={p.kind === "image" ? "cms-media" : undefined}
                               className="w-56 rounded border border-slate-300 px-2 py-1 text-xs"
                             />
                           </label>
@@ -144,11 +160,11 @@ export default async function PageEditor({
                     </div>
                   ))}
 
-                  <button className="rounded-lg bg-cyan-600 px-4 py-2 text-sm font-semibold text-white">Bloğu kaydet</button>
+                  {!def?.custom && <button className="rounded-lg bg-cyan-600 px-4 py-2 text-sm font-semibold text-white">Bloğu kaydet</button>}
                 </form>
               </section>
-            );
-          })}
+            ) };
+          })} />
 
           {page.blocks.length === 0 && (
             <p className="rounded-2xl bg-white p-6 text-center text-sm text-slate-400 shadow-sm">Henüz blok yok. Aşağıdan ekleyin.</p>

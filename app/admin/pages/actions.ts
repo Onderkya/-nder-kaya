@@ -83,6 +83,14 @@ export async function moveBlock(formData: FormData) {
   bust();
 }
 
+export async function reorderBlocks(formData: FormData) {
+  await requireAdmin();
+  const ids = String(formData.get("ids") || "").split(",").filter(Boolean);
+  if (ids.length === 0) return;
+  await prisma.$transaction(ids.map((id, i) => prisma.contentBlock.update({ where: { id }, data: { order: i } })));
+  bust();
+}
+
 export async function deleteBlock(formData: FormData) {
   const session = await requireAdmin();
   const blockId = String(formData.get("blockId"));
