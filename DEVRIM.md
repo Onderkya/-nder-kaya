@@ -4,7 +4,15 @@
 > ↩️ **Geri dönüş (rollback):** eski sürüm dokunulmadı → dal `claude/consulting-site-plan-6k4lix` + etiket `safe/before-redesign-rev9`. Beğenilmezse sunucuda o dala `git reset --hard` + rebuild.
 > Görsel/medya kaynakları: `public/images/CREDITS.txt` (CC / Mixkit / CC0) · oteller: kullanıcının verdiği resmi fotoğraflar (`public/images/hotels/`).
 
-## 🔁 Revizyon 24 — TURLAR yönetimi: sırala/aç-kapat/foto/isim + yeni tur ekle (GÜNCEL · dal `claude/redesign-conversion`)
+## 🔁 Revizyon 25 — Admin yeniden tasarım FAZ 1: temiz & modern kabuk (GÜNCEL · dal `claude/redesign-conversion`)
+
+> Kullanıcı Rev 21-24 admin görünümünü reddetti ("basit değil, şık değil") → onaylı spec: `docs/superpowers/specs/2026-07-02-admin-redesign-design.md` (6 faz). Bu revizyon = Faz 1 (plan: `docs/superpowers/plans/2026-07-02-admin-redesign-1-kabuk.md`). `tsc` ✓ · `next build` ✓ · tüm-dal kod incelemesi temiz.
+- **Tasarım sistemi (`admin.css` baştan):** nötr açık palet **`.adm-body` KAPSAMINDA** override (globals.css'e dokunulmadı → public birebir aynı). Beyaz kartlar, açık gri zemin, ince çizgiler, gölgesiz düz butonlar; turkuaz (`11 122 140`) yalnız etkileşim; Cormorant/altın adminden çıktı (`--font-display→sans`, `--gold→amber`, `--lagoon→primary` alias). 48 eski sınıf korundu + `.adm-topbar/.adm-topbar-title/.adm-btn-ai`.
+- **Kabuk:** AÇIK kenar çubuğu (248px, daralt=72px, localStorage korunur) + **masaüstü üst bar** (`top-bar.tsx`: sayfa adı + Siteyi Gör + AI Asistan→`/admin/ai`). **Onest fontu admin'e İLK KEZ gerçekten yüklendi** (admin kendi `<html>`'ini render ediyor, font değişkenleri hiç gelmiyormuş — başlıklar sistem serif'ine düşüyordu). Mobil alt sekme + drawer korundu (drawer açık temaya uyarlandı).
+- **Menü:** 5→4 grup; "Ana Sayfa & Bölümler"→**Site Editörü**, "Sayfalar"→**Özel Sayfalar**, son grup "Yönetim"; AI menüden çıktı (üst bar butonu). Rotalar değişmedi. AI balonu (FAB) Faz 5'e kadar duruyor.
+- ⏭️ Sıradaki fazlar: 2) bölüm sıralama (7 sayfa) · 3) Site Editörü · 4) tur editörü (FA ikon seçici, kodlu tur adımları) · 5) AI yan panel · 6) kalan ekranlar (login gradyanı `#0c2f39` yerine nötr — bkz. final inceleme Minor #1).
+
+## 🔁 Revizyon 24 — TURLAR yönetimi: sırala/aç-kapat/foto/isim + yeni tur ekle (dal `claude/redesign-conversion`)
 
 > Kullanıcı: "Turlar adında page oluştur, anasayfadaki turları oraya göm; tura tıklayınca fotosunu-içeriğini-sırasını-pasif/aktifini HER ŞEYİNİ değiştireyim." Yapıldı (B aşamasının turlar yarısı). `tsc` ✓ · `next build` ✓.
 - **Depolama:** `Setting` `tours:items` JSON (migrationsız, faq:items kalıbı). Kodlu 5 rota VARSAYILAN kalır; kayıt yoksa site birebir aynı (bozulmaz). `lib/tours.ts` (tipler, getTourCfgs, pickL10n, tourOrder, CODED_TOURS) + `lib/tour-actions.ts` (saveTour/toggleTour/moveTour/deleteTour — hepsi requireAdmin+audit+revalidate).
