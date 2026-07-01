@@ -9,6 +9,7 @@ export const NAV_GROUPS: NavGroup[] = [
     label: "Sitem",
     items: [
       { href: "/admin/content", label: "Ana Sayfa & Bölümler", icon: "content" },
+      { href: "/admin/tours", label: "Turlar", icon: "map" },
       { href: "/admin/pages", label: "Sayfalar", icon: "pages" },
       { href: "/admin/media", label: "Görseller", icon: "image" },
     ],

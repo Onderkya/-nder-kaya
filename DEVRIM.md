@@ -4,7 +4,15 @@
 > ↩️ **Geri dönüş (rollback):** eski sürüm dokunulmadı → dal `claude/consulting-site-plan-6k4lix` + etiket `safe/before-redesign-rev9`. Beğenilmezse sunucuda o dala `git reset --hard` + rebuild.
 > Görsel/medya kaynakları: `public/images/CREDITS.txt` (CC / Mixkit / CC0) · oteller: kullanıcının verdiği resmi fotoğraflar (`public/images/hotels/`).
 
-## 🔁 Revizyon 23 — Admin cila turu: görsel kalite + önizleme fix + switch'ler (GÜNCEL · dal `claude/redesign-conversion`)
+## 🔁 Revizyon 24 — TURLAR yönetimi: sırala/aç-kapat/foto/isim + yeni tur ekle (GÜNCEL · dal `claude/redesign-conversion`)
+
+> Kullanıcı: "Turlar adında page oluştur, anasayfadaki turları oraya göm; tura tıklayınca fotosunu-içeriğini-sırasını-pasif/aktifini HER ŞEYİNİ değiştireyim." Yapıldı (B aşamasının turlar yarısı). `tsc` ✓ · `next build` ✓.
+- **Depolama:** `Setting` `tours:items` JSON (migrationsız, faq:items kalıbı). Kodlu 5 rota VARSAYILAN kalır; kayıt yoksa site birebir aynı (bozulmaz). `lib/tours.ts` (tipler, getTourCfgs, pickL10n, tourOrder, CODED_TOURS) + `lib/tour-actions.ts` (saveTour/toggleTour/moveTour/deleteTour — hepsi requireAdmin+audit+revalidate).
+- **Public:** `components/ready-routes.tsx` merge — override (isim/rozet dil bazlı, gün/yıldız/otel/konum/foto), aktif filtresi, sıraya dizme, **özel turlar** (uçuş+transfer otomatik + admin'in gün-gün durakları, otel neden/not, harita otel+konum aramasıyla).
+- **Admin `/admin/tours` (nav: Sitem > Turlar):** turlar sitedeki kart görünümüyle; ← → sırala, switch aç/kapat, özel turda Sil, "Yeni tur ekle". **`/admin/tours/[key]`** editör: foto (yükle/kütüphane/URL + sıfırla), dil sekmeli isim+rozet (kodluda boş=varsayılan, placeholder gösterir), gün/yıldız/otel/konum, aktif switch; özel turda gün-gün plan (durak ekle/sil) + otel tanıtımı. `yeni` → boş özel tur.
+- Kodlu turların derin metinleri (gün-gün plan) hâlâ Site İçeriği > Antalya sekmesinden (routes.* çevirileri) — editörde not olarak belirtiliyor.
+
+## 🔁 Revizyon 23 — Admin cila turu: görsel kalite + önizleme fix + switch'ler (dal `claude/redesign-conversion`)
 
 > Kullanıcı geri bildirimi: "buton/kart/gölge/font UI-UX zayıf; bölüm bölüm ayır büyüt; önizleme hatalı (üzgün-yüz); aktif/pasif olmalı; dil'e tıklayınca içerik gelmiyor; Kaydet neden en altta; sol menü kapansın." Hepsi yapıldı, deploy edildi. `tsc` ✓ · `next build` ✓.
 - **Görsel sistem (`admin.css`):** derinlikli butonlar (lagoon→primary gradient + hover-lift + gölge), katmanlı kart gölgeleri + daha yumuşak köşe, **editoryal Cormorant bölüm başlığı** (`.adm-section-title` + altın dikey bar), **`.adm-thumb`** (görsel kartı hover-lift), **`.adm-switch`** (aç/kapa anahtarı), rafine inputlar (46px, iç gölge, yumuşak focus).

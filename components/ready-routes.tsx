@@ -4,6 +4,7 @@ import { IconCheck } from "@/components/icons";
 import { RouteGallery } from "@/components/route-gallery";
 import { getPublicSettings } from "@/lib/settings";
 import { getAssetMap, pickAsset } from "@/lib/assets";
+import { getTourCfgs, pickL10n, tourOrder } from "@/lib/tours";
 
 /**
  * HAZIR ROTALAR — modern, kompakt paket vitrini. Sade kartlar yan yana (ızgara);
@@ -85,16 +86,66 @@ export async function ReadyRoutes() {
   // Rota → otel (hotelsd) eşlemesi: detay sayfasında otelin gerçek tanıtımı + konumu.
   const hkeyOf: Record<string, string> = { r1: "larabarut", r2: "cullinan", r3: "ngphaselis", r4: "legends", r5: "maxxkemer" };
 
+  // ADMIN TUR AYARLARI (Turlar sayfası): sıra / aktif-pasif / foto / isim-rozet
+  // override + sıfırdan eklenen özel turlar. Kayıt yoksa kodlu varsayılan aynen.
+  const cfgs = await getTourCfgs();
+  const cfgOf = new Map(cfgs.map((c) => [c.key, c]));
+
+  const mergedBase = baseRoutes
+    .map((rt) => {
+      const c = cfgOf.get(rt.key);
+      if (!c) return rt;
+      return {
+        ...rt,
+        name: pickL10n(c.name, locale) || rt.name,
+        aud: pickL10n(c.aud, locale) || rt.aud,
+        days: c.days ?? rt.days,
+        stars: c.stars ?? rt.stars,
+        hotel: c.hotel?.trim() || rt.hotel,
+        loc: c.loc?.trim() || rt.loc,
+        img: c.img?.trim() || rt.img,
+      };
+    })
+    .filter((rt) => cfgOf.get(rt.key)?.active !== false);
+
+  // Özel (admin'in sıfırdan eklediği) turlar.
+  const customRoutes = cfgs
+    .filter((c) => c.custom && c.active !== false)
+    .map((c) => ({
+      key: c.key,
+      name: pickL10n(c.name, locale),
+      tag: "",
+      best: "",
+      aud: pickL10n(c.aud, locale),
+      days: c.days ?? 5,
+      stars: c.stars ?? 5,
+      hotel: c.hotel?.trim() || "",
+      loc: c.loc?.trim() || "Antalya",
+      img: c.img?.trim() || "/images/kaputas.jpg",
+      steps: [
+        flightStep,
+        transferStep,
+        ...(c.steps ?? []).map((s) => ({ icon: "landmark", day: s.day, t: pickL10n(s.t, locale), d: pickL10n(s.d, locale) })),
+      ],
+      _custom: c,
+    }))
+    .filter((rt) => rt.name);
+
+  const allBase = [...mergedBase, ...customRoutes].sort(
+    (a, b) => tourOrder(cfgOf.get(a.key), a.key) - tourOrder(cfgOf.get(b.key), b.key),
+  );
+
   const site = await getPublicSettings();
   const waReady = site.whatsappConfigured;
-  const routes = baseRoutes.map((rt) => {
+  const routes = allBase.map((rt) => {
     const hk = hkeyOf[rt.key];
+    const cust = (rt as { _custom?: { hotelWhy?: Record<string, string>; hotelNote?: Record<string, string> } })._custom;
     return {
       ...rt,
       steps: rt.steps.map((s) => ({ ...s, dl: r("dayLabel", { n: s.day }) })),
       wa: waReady ? `https://wa.me/${site.whatsapp}?text=${encodeURIComponent(r("waMsg", { name: rt.name, days: rt.days, hotel: rt.hotel }))}` : null,
-      hotelWhy: hd(`${hk}_why`),
-      hotelNote: hd(`${hk}_note`),
+      hotelWhy: hk ? hd(`${hk}_why`) : pickL10n(cust?.hotelWhy, locale),
+      hotelNote: hk ? hd(`${hk}_note`) : pickL10n(cust?.hotelNote, locale),
       mapQ: encodeURIComponent(`${rt.hotel} ${rt.loc} Antalya`),
     };
   });
