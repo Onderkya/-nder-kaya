@@ -1,5 +1,6 @@
 import { existsSync } from "fs";
 import path from "path";
+import { Fragment, type ReactNode } from "react";
 import Image from "next/image";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { Link } from "@/i18n/routing";
@@ -20,7 +21,7 @@ import { getPublicSettings } from "@/lib/settings";
 import { getManagedPage } from "@/lib/cms";
 import { BlockRenderer } from "@/components/cms/block-renderer";
 import { getAssetMap, pickAsset } from "@/lib/assets";
-import { getHiddenSections, sectionVisible } from "@/lib/sections";
+import { getHiddenSections, sectionVisible, getSectionOrders, applySectionOrder } from "@/lib/sections";
 
 export default async function HomePage({
   params,
@@ -33,6 +34,7 @@ export default async function HomePage({
   if (cmsPage) return <BlockRenderer page={cmsPage} locale={locale} />;
   const A = await getAssetMap();
   const hidden = await getHiddenSections();
+  const orders = await getSectionOrders();
   const site = await getPublicSettings();
   const t = await getTranslations("home");
   const c = await getTranslations("common");
@@ -129,48 +131,12 @@ export default async function HomePage({
     msgNote: plan("msgNote"),
   };
 
-  return (
-    <>
-      <JsonLd
-        data={{
-          "@context": "https://schema.org",
-          "@type": "TravelAgency",
-          name: meta("siteName"),
-          description: meta("description"),
-          url: site.url,
-          areaServed: "Antalya, Türkiye",
-          email: site.email,
-          knowsLanguage: ["tr", "en", "ru", "kk", "uz"],
-          makesOffer: [
-            { "@type": "Offer", itemOffered: { "@type": "Service", name: t("servicesTitle") } },
-          ],
-        }}
-      />
-
-      {/* ============ 1 · HERO — Antalya tatili sana özel ============ */}
-      <DiveHero
-        brand={meta("siteName")}
-        title={t("heroTitle")}
-        subtitle={t("heroSubtitle")}
-        ctaPrimary={t("heroCtaPrimary")}
-        ctaSecondary={t("heroCtaSecondary")}
-        deepLine={t("diveDeep")}
-        scrollCue={t("scrollCue")}
-        soundLabel={t("soundWave")}
-        diffLabel={t("heroDiff")}
-        proof={[t("heroProof1"), t("heroProof2"), t("heroProof3"), t("heroProof4")]}
-        aerialVideo={pickAsset(A, "home.hero.aerialVideo", "/media/kaputas-drone.mp4")}
-        poster={pickAsset(A, "home.hero.poster", "/images/kaputas.jpg")}
-        diveFishVideo={pickAsset(A, "home.diveFish.video", "/media/dive-fish.mp4")}
-      />
-
-      {/* ============ 2 · HAZIR ROTALAR — sinematik paket vitrini · ANASAYFANIN KALBİ (paylaşılan ReadyRoutes bileşeni) ============ */}
-      {sectionVisible(hidden, "home.readyRoutes") && (
-        <ReadyRoutes />
-      )}
-
-      {/* ============ 4 · OTELLER ============ */}
-      {sectionVisible(hidden, "home.hotels") && (
+  // Sıraya bağlanan registry bölümleri — koddaki mevcut sırayla, JSX içeriği aynen.
+  const sectionBlocks: [string, ReactNode][] = [
+    ["home.readyRoutes", (
+      <ReadyRoutes />
+    )],
+    ["home.hotels", (
       <section className="py-24 sm:py-28" style={{ backgroundColor: "rgb(var(--muted) / 0.5)" }}>
         <div className="container-wide">
           <Reveal className="mx-auto max-w-2xl text-center">
@@ -185,10 +151,8 @@ export default async function HomePage({
           </p>
         </div>
       </section>
-      )}
-
-      {/* ============ 4.5 · ÖZEL PLAN — hazır paketlerden sonra, "tam uymadıysa sıfırdan kuralım" (form buraya alındı) ============ */}
-      {sectionVisible(hidden, "home.quickPlan") && (
+    )],
+    ["home.quickPlan", (
       <section id="hizli-plan" className="relative scroll-mt-24 py-20 sm:py-24" style={{ backgroundColor: "rgb(var(--background))" }}>
         <div className="container-wide">
           <Reveal className="mx-auto max-w-2xl text-center">
@@ -201,10 +165,8 @@ export default async function HomePage({
           </Reveal>
         </div>
       </section>
-      )}
-
-      {/* ============ 5 · FERMUAR DENEYİMİ (scuba + Antalya — imza animasyon) ============ */}
-      {sectionVisible(hidden, "home.zipper") && (
+    )],
+    ["home.zipper", (
       <ZipperReveal
         eyebrow={t("actTitle")}
         title={x("ant_introTitle")}
@@ -220,10 +182,8 @@ export default async function HomePage({
           { video: pickAsset(A, "home.zipper.legends.video", "/media/lol-aqua.mp4"), img: pickAsset(A, "home.zipper.legends.image", "/images/coaster.jpg"), name: "Land of Legends", sub: "Aqua park · Belek" },
         ]}
       />
-      )}
-
-      {/* ============ 6 · NEDEN ANTALYA BRIDGE (koyu deniz bandı) ============ */}
-      {sectionVisible(hidden, "home.why") && (
+    )],
+    ["home.why", (
       <section className="relative overflow-hidden text-white" style={{ backgroundColor: "#07212b" }}>
         <div className="grid lg:grid-cols-2">
           <div className="relative min-h-[340px] lg:min-h-full">
@@ -265,10 +225,8 @@ export default async function HomePage({
           </div>
         </div>
       </section>
-      )}
-
-      {/* ============ 7 · TÜRKÇE DERSLERİ + PETLINGO (ücretsiz bonus) ============ */}
-      {sectionVisible(hidden, "home.lessons") && (
+    )],
+    ["home.lessons", (
       <section className="py-24 sm:py-28" style={{ backgroundColor: "rgb(var(--background))" }}>
         <div className="container-wide grid items-center gap-12 lg:grid-cols-2 lg:gap-16">
           <Reveal>
@@ -307,10 +265,8 @@ export default async function HomePage({
           </Reveal>
         </div>
       </section>
-      )}
-
-      {/* ============ 8 · TÜRKİYE'DE EĞİTİM (ikincil bölüm) ============ */}
-      {sectionVisible(hidden, "home.education") && (
+    )],
+    ["home.education", (
       <section className="py-20 sm:py-24" style={{ backgroundColor: "rgb(var(--muted) / 0.5)" }}>
         <div className="container-wide">
           <div className="grid items-center gap-10 lg:grid-cols-12 lg:gap-16">
@@ -339,10 +295,8 @@ export default async function HomePage({
           </div>
         </div>
       </section>
-      )}
-
-      {/* ============ 8.5 · MİSAFİR SÖZLERİ (dürüst yorum paneli) ============ */}
-      {sectionVisible(hidden, "home.guestVoices") && (
+    )],
+    ["home.guestVoices", (
       <GuestVoices
         labels={{
           eyebrow: v("eyebrow"),
@@ -355,10 +309,8 @@ export default async function HomePage({
         }}
         reviews={[]}
       />
-      )}
-
-      {/* ============ 9 · ÖDEME & GÜVEN ============ */}
-      {sectionVisible(hidden, "home.payment") && (
+    )],
+    ["home.payment", (
       <section className="py-24 sm:py-28" style={{ backgroundColor: "rgb(var(--background))" }}>
         <div className="container-wide">
           <Reveal className="mx-auto max-w-2xl text-center">
@@ -394,10 +346,8 @@ export default async function HomePage({
           </Reveal>
         </div>
       </section>
-      )}
-
-      {/* ============ 9.5 · MİNİ SSS (itiraz giderme) ============ */}
-      {sectionVisible(hidden, "home.miniFaq") && (
+    )],
+    ["home.miniFaq", (
       <section className="py-24 sm:py-28" style={{ backgroundColor: "rgb(var(--muted) / 0.5)" }}>
         <div className="container-wide">
           <Reveal className="mx-auto max-w-2xl text-center">
@@ -409,7 +359,51 @@ export default async function HomePage({
           </Reveal>
         </div>
       </section>
-      )}
+    )],
+  ];
+  const defaultIds = sectionBlocks.map(([id]) => id);
+  const orderedIds = applySectionOrder(defaultIds, orders["home"]);
+  const byId = new Map(sectionBlocks);
+
+  return (
+    <>
+      <JsonLd
+        data={{
+          "@context": "https://schema.org",
+          "@type": "TravelAgency",
+          name: meta("siteName"),
+          description: meta("description"),
+          url: site.url,
+          areaServed: "Antalya, Türkiye",
+          email: site.email,
+          knowsLanguage: ["tr", "en", "ru", "kk", "uz"],
+          makesOffer: [
+            { "@type": "Offer", itemOffered: { "@type": "Service", name: t("servicesTitle") } },
+          ],
+        }}
+      />
+
+      {/* ============ 1 · HERO — Antalya tatili sana özel ============ */}
+      <DiveHero
+        brand={meta("siteName")}
+        title={t("heroTitle")}
+        subtitle={t("heroSubtitle")}
+        ctaPrimary={t("heroCtaPrimary")}
+        ctaSecondary={t("heroCtaSecondary")}
+        deepLine={t("diveDeep")}
+        scrollCue={t("scrollCue")}
+        soundLabel={t("soundWave")}
+        diffLabel={t("heroDiff")}
+        proof={[t("heroProof1"), t("heroProof2"), t("heroProof3"), t("heroProof4")]}
+        aerialVideo={pickAsset(A, "home.hero.aerialVideo", "/media/kaputas-drone.mp4")}
+        poster={pickAsset(A, "home.hero.poster", "/images/kaputas.jpg")}
+        diveFishVideo={pickAsset(A, "home.diveFish.video", "/media/dive-fish.mp4")}
+      />
+
+      {/* ============ 2–9.5 · SIRAYA BAĞLI BÖLÜMLER (registry sırası; kayıt yoksa birebir aynı) ============ */}
+      {orderedIds.filter((id) => sectionVisible(hidden, id)).map((id) => (
+        <Fragment key={id}>{byId.get(id)}</Fragment>
+      ))}
 
       {/* ============ 10 · SON CTA ============ */}
       <section className="relative">
