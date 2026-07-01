@@ -1,3 +1,4 @@
+import { Fragment, type ReactNode } from "react";
 import Image from "next/image";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import type { Metadata } from "next";
@@ -11,6 +12,7 @@ import { IconArrow } from "@/components/icons";
 import { getManagedPage } from "@/lib/cms";
 import { BlockRenderer } from "@/components/cms/block-renderer";
 import { getAssetMap, pickAsset } from "@/lib/assets";
+import { getHiddenSections, sectionVisible, getSectionOrders, applySectionOrder } from "@/lib/sections";
 
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
   const { locale } = await params;
@@ -26,30 +28,19 @@ export default async function AntalyaPage({ params }: { params: Promise<{ locale
   const t = await getTranslations("antalya");
   const x = await getTranslations("imm");
   const A = await getAssetMap();
+  const hidden = await getHiddenSections();
+  const orders = await getSectionOrders();
 
   const features = [t("feature1"), t("feature2"), t("feature3"), t("feature4")];
 
-  return (
-    <>
-      <JsonLd data={{ "@context": "https://schema.org", "@type": "Service", serviceType: "Travel consulting", name: t("title"), description: t("intro"), areaServed: "Antalya, Türkiye" }} />
-
-      <CinematicHero
-        eyebrow={x("ant_introEyebrow")}
-        title={t("title")}
-        intro={t("intro")}
-        image={pickAsset(A, "antalya.hero.image", "/images/kaputas.jpg")}
-        videos={[
-          pickAsset(A, "antalya.hero.video1", "/media/kaputas-drone.mp4"),
-          pickAsset(A, "antalya.hero.video2", "/media/vid-suluada.mp4"),
-          pickAsset(A, "antalya.hero.video3", "/media/vid-kemer.mp4"),
-          pickAsset(A, "antalya.hero.video4", "/media/vid-kas.mp4"),
-        ]}
-      />
-
-      {/* HAZIR ROTALAR — bu sayfanın kalbi: hayalindeki tatil zaten hazır, seç ve al */}
+  // Sıraya bağlanan registry bölümleri — koddaki mevcut sırayla, JSX içeriği aynen.
+  const sectionBlocks: [string, ReactNode][] = [
+    ["antalya.readyRoutes", (
+      /* HAZIR ROTALAR — bu sayfanın kalbi: hayalindeki tatil zaten hazır, seç ve al */
       <ReadyRoutes />
-
-      {/* Editoryal giriş + özellik listesi */}
+    )],
+    ["antalya.intro", (
+      /* Editoryal giriş + özellik listesi */
       <section className="container-wide py-24 sm:py-32">
         <div className="grid items-start gap-12 lg:grid-cols-12 lg:gap-16">
           <div className="lg:col-span-6">
@@ -75,8 +66,9 @@ export default async function AntalyaPage({ params }: { params: Promise<{ locale
           </div>
         </div>
       </section>
-
-      {/* Bölgeler — yatay gezi */}
+    )],
+    ["antalya.regions", (
+      /* Bölgeler — yatay gezi */
       <HorizontalPlaces
         eyebrow={x("ant_regionsEyebrow")}
         title={x("ant_regionsTitle")}
@@ -93,6 +85,33 @@ export default async function AntalyaPage({ params }: { params: Promise<{ locale
           { img: pickAsset(A, "antalya.place.duden.image", "/images/duden.jpg"), video: pickAsset(A, "antalya.place.duden.video", "/media/vid-duden.mp4"), name: "Düden", sub: "Şelale" },
         ]}
       />
+    )],
+  ];
+  const defaultIds = sectionBlocks.map(([id]) => id);
+  const orderedIds = applySectionOrder(defaultIds, orders["antalya"]);
+  const byId = new Map(sectionBlocks);
+
+  return (
+    <>
+      <JsonLd data={{ "@context": "https://schema.org", "@type": "Service", serviceType: "Travel consulting", name: t("title"), description: t("intro"), areaServed: "Antalya, Türkiye" }} />
+
+      <CinematicHero
+        eyebrow={x("ant_introEyebrow")}
+        title={t("title")}
+        intro={t("intro")}
+        image={pickAsset(A, "antalya.hero.image", "/images/kaputas.jpg")}
+        videos={[
+          pickAsset(A, "antalya.hero.video1", "/media/kaputas-drone.mp4"),
+          pickAsset(A, "antalya.hero.video2", "/media/vid-suluada.mp4"),
+          pickAsset(A, "antalya.hero.video3", "/media/vid-kemer.mp4"),
+          pickAsset(A, "antalya.hero.video4", "/media/vid-kas.mp4"),
+        ]}
+      />
+
+      {/* SIRAYA BAĞLI BÖLÜMLER (registry sırası; kayıt yoksa birebir aynı) */}
+      {orderedIds.filter((id) => sectionVisible(hidden, id)).map((id) => (
+        <Fragment key={id}>{byId.get(id)}</Fragment>
+      ))}
 
       {/* CTA */}
       <section className="container-wide pb-24 pt-4">

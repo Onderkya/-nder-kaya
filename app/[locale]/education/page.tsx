@@ -1,5 +1,6 @@
 import { existsSync } from "fs";
 import path from "path";
+import { Fragment, type ReactNode } from "react";
 import Image from "next/image";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import type { Metadata } from "next";
@@ -15,6 +16,7 @@ import { getPublicSettings } from "@/lib/settings";
 import { getManagedPage } from "@/lib/cms";
 import { BlockRenderer } from "@/components/cms/block-renderer";
 import { getAssetMap, pickAsset } from "@/lib/assets";
+import { getHiddenSections, sectionVisible, getSectionOrders, applySectionOrder } from "@/lib/sections";
 
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
   const { locale } = await params;
@@ -49,19 +51,13 @@ export default async function EducationPage({ params }: { params: Promise<{ loca
       : "/images/campus.jpg"
   );
 
-  return (
-    <>
-      <JsonLd data={{ "@context": "https://schema.org", "@type": "Service", serviceType: "Education consulting", name: t("title"), description: t("intro"), areaServed: "Türkiye" }} />
+  const hidden = await getHiddenSections();
+  const orders = await getSectionOrders();
 
-      <CinematicHero
-        eyebrow={x("edu_journeyEyebrow")}
-        title={t("title")}
-        intro={t("intro")}
-        image={pickAsset(A, "education.hero.image", "/images/turkish-flag-sky.jpg")}
-        emblem
-      />
-
-      {/* Immersive iniş: 4 adım */}
+  // Sıraya bağlanan registry bölümleri — koddaki mevcut sırayla, JSX içeriği aynen.
+  const sectionBlocks: [string, ReactNode][] = [
+    ["education.journey", (
+      /* Immersive iniş: 4 adım */
       <StudyJourney
         eyebrow={x("edu_journeyEyebrow")}
         steps={[
@@ -71,8 +67,9 @@ export default async function EducationPage({ params }: { params: Promise<{ loca
           { n: "04", title: x("edu_s4Title"), place: x("edu_s4Place"), text: x("edu_s4Text"), img: pickAsset(A, "education.step4.image", "/images/dorm.jpg"), points: [x("edu_s4a"), x("edu_s4b")] },
         ]}
       />
-
-      {/* Bunu biz de yaşadık — güven bandı */}
+    )],
+    ["education.lived", (
+      /* Bunu biz de yaşadık — güven bandı */
       <section className="relative overflow-hidden py-20 text-white sm:py-24" style={{ background: "linear-gradient(135deg, #0d94a8 0%, #0e7490 50%, #07303d 130%)" }}>
         <span className="sheen" />
         <div className="container-wide relative">
@@ -84,8 +81,9 @@ export default async function EducationPage({ params }: { params: Promise<{ loca
           </Reveal>
         </div>
       </section>
-
-      {/* Senin için neyi hallediyoruz — somut teslimatlar */}
+    )],
+    ["education.deliverables", (
+      /* Senin için neyi hallediyoruz — somut teslimatlar */
       <section className="py-24 sm:py-28" style={{ backgroundColor: "rgb(var(--background))" }}>
         <div className="container-wide">
           <Reveal className="mx-auto max-w-2xl text-center">
@@ -119,6 +117,28 @@ export default async function EducationPage({ params }: { params: Promise<{ loca
           </div>
         </div>
       </section>
+    )],
+  ];
+  const defaultIds = sectionBlocks.map(([id]) => id);
+  const orderedIds = applySectionOrder(defaultIds, orders["education"]);
+  const byId = new Map(sectionBlocks);
+
+  return (
+    <>
+      <JsonLd data={{ "@context": "https://schema.org", "@type": "Service", serviceType: "Education consulting", name: t("title"), description: t("intro"), areaServed: "Türkiye" }} />
+
+      <CinematicHero
+        eyebrow={x("edu_journeyEyebrow")}
+        title={t("title")}
+        intro={t("intro")}
+        image={pickAsset(A, "education.hero.image", "/images/turkish-flag-sky.jpg")}
+        emblem
+      />
+
+      {/* SIRAYA BAĞLI BÖLÜMLER (registry sırası; kayıt yoksa birebir aynı) */}
+      {orderedIds.filter((id) => sectionVisible(hidden, id)).map((id) => (
+        <Fragment key={id}>{byId.get(id)}</Fragment>
+      ))}
 
       {/* CTA */}
       <section className="container-wide pb-24">

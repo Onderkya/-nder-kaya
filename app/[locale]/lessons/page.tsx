@@ -1,3 +1,4 @@
+import { Fragment, type ReactNode } from "react";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import type { Metadata } from "next";
 import { Link } from "@/i18n/routing";
@@ -13,6 +14,7 @@ import { prisma } from "@/lib/db";
 import { getManagedPage } from "@/lib/cms";
 import { BlockRenderer } from "@/components/cms/block-renderer";
 import { getAssetMap, pickAsset } from "@/lib/assets";
+import { getHiddenSections, sectionVisible, getSectionOrders, applySectionOrder } from "@/lib/sections";
 import { BookingWidget } from "./booking-widget";
 
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
@@ -61,26 +63,13 @@ export default async function LessonsPage({ params }: { params: Promise<{ locale
     phone: tb("phone"), note: tb("note"), submit: tb("submit"), success: tb("success"),
     taken: tb("taken"), error: tb("error"),
   };
+  const hidden = await getHiddenSections();
+  const orders = await getSectionOrders();
 
-  return (
-    <>
-      <JsonLd data={{ "@context": "https://schema.org", "@type": "Course", name: t("title"), description: t("intro"), provider: { "@type": "Organization", name: "Antalya Bridge" } }} />
-
-      <CinematicHero
-        eyebrow={x("les_processEyebrow")}
-        title={t("title")}
-        intro={t("intro")}
-        image={pickAsset(A, "lessons.hero.image", "/images/lessons-meaning.jpg")}
-        videos={[
-          pickAsset(A, "lessons.hero.video1", "/media/les-notebook.mp4"),
-          pickAsset(A, "lessons.hero.video2", "/media/les-teacher.mp4"),
-          pickAsset(A, "lessons.hero.video3", "/media/les-online.mp4"),
-          pickAsset(A, "lessons.hero.video4", "/media/les-spell.mp4"),
-        ]}
-        flag
-      />
-
-      {/* Hero altı dönüşüm şeridi — ilk dersi ayırt + dürüst kontenjan */}
+  // Sıraya bağlanan registry bölümleri — koddaki mevcut sırayla, JSX içeriği aynen.
+  const sectionBlocks: [string, ReactNode][] = [
+    ["lessons.conversionBar", (
+      /* Hero altı dönüşüm şeridi — ilk dersi ayırt + dürüst kontenjan */
       <section className="border-b" style={{ borderColor: "rgb(var(--border))", backgroundColor: "rgb(var(--card))" }}>
         <div className="container-wide flex flex-col items-center justify-between gap-4 py-5 sm:flex-row">
           <p className="flex items-center gap-2.5 text-center text-[14px] font-semibold sm:text-left" style={{ color: "rgb(var(--foreground))" }}>
@@ -89,8 +78,9 @@ export default async function LessonsPage({ params }: { params: Promise<{ locale
           <a href="#randevu" className="btn-primary shrink-0">{cv("lesBook")} <IconArrow /></a>
         </div>
       </section>
-
-      {/* Süreç — nasıl öğreniyorsunuz */}
+    )],
+    ["lessons.process", (
+      /* Süreç — nasıl öğreniyorsunuz */
       <section className="container-wide py-24 sm:py-32">
         <Reveal className="mx-auto max-w-2xl text-center">
           <p className="eyebrow justify-center" style={{ color: "rgb(var(--accent))" }}>{x("les_processEyebrow")}</p>
@@ -126,8 +116,9 @@ export default async function LessonsPage({ params }: { params: Promise<{ locale
           ))}
         </div>
       </section>
-
-      {/* Öğretmenin — kimlik bandı */}
+    )],
+    ["lessons.teacher", (
+      /* Öğretmenin — kimlik bandı */
       <section className="container-wide py-16 sm:py-20">
         <Reveal>
         <div className="grid items-center gap-10 rounded-[2rem] border p-8 sm:p-10 lg:grid-cols-[auto,1fr] lg:gap-14" style={{ borderColor: "rgb(var(--border))", backgroundColor: "rgb(var(--card))" }}>
@@ -150,8 +141,9 @@ export default async function LessonsPage({ params }: { params: Promise<{ locale
         </div>
         </Reveal>
       </section>
-
-      {/* Bunu biz de yaşadık — güven bandı */}
+    )],
+    ["lessons.lived", (
+      /* Bunu biz de yaşadık — güven bandı */
       <section className="relative overflow-hidden py-20 text-white sm:py-24" style={{ background: "linear-gradient(135deg, #0d94a8 0%, #0e7490 50%, #07303d 130%)" }}>
         <span className="sheen" />
         <div className="container-wide relative">
@@ -163,8 +155,9 @@ export default async function LessonsPage({ params }: { params: Promise<{ locale
           </Reveal>
         </div>
       </section>
-
-      {/* PetLingo — her gün pratik aracı */}
+    )],
+    ["lessons.petlingo", (
+      /* PetLingo — her gün pratik aracı */
       <PetLingoShowcase
         labels={{
           eyebrow: x("pl_eyebrow"),
@@ -178,8 +171,9 @@ export default async function LessonsPage({ params }: { params: Promise<{ locale
           ai: x("pl_ai"),
         }}
       />
-
-      {/* Ders süreleri */}
+    )],
+    ["lessons.durations", (
+      /* Ders süreleri */
       <section className="container-wide py-24 sm:py-28">
         <Reveal className="mx-auto max-w-2xl text-center">
           <h2 className="h-section" style={{ color: "rgb(var(--foreground))" }}>{t("durationsTitle")}</h2>
@@ -216,8 +210,9 @@ export default async function LessonsPage({ params }: { params: Promise<{ locale
           {cv("lesReassure")}
         </p>
       </section>
-
-      {/* Misafir sözleri — dürüst sosyal kanıt (uydurma yok) */}
+    )],
+    ["lessons.guestVoices", (
+      /* Misafir sözleri — dürüst sosyal kanıt (uydurma yok) */
       <GuestVoices
         labels={{
           eyebrow: v("eyebrow"),
@@ -230,8 +225,9 @@ export default async function LessonsPage({ params }: { params: Promise<{ locale
         }}
         reviews={[]}
       />
-
-      {/* Randevu */}
+    )],
+    ["lessons.booking", (
+      /* Randevu */
       <section id="randevu" className="scroll-mt-24 py-20 sm:py-24" style={{ backgroundColor: "rgb(var(--muted) / 0.45)" }}>
         <div className="container-page">
           <h2 className="mb-2 text-2xl font-bold">{tb("title")}</h2>
@@ -242,6 +238,34 @@ export default async function LessonsPage({ params }: { params: Promise<{ locale
           <BookingWidget slots={slots} locale={locale} labels={bookingLabels} />
         </div>
       </section>
+    )],
+  ];
+  const defaultIds = sectionBlocks.map(([id]) => id);
+  const orderedIds = applySectionOrder(defaultIds, orders["lessons"]);
+  const byId = new Map(sectionBlocks);
+
+  return (
+    <>
+      <JsonLd data={{ "@context": "https://schema.org", "@type": "Course", name: t("title"), description: t("intro"), provider: { "@type": "Organization", name: "Antalya Bridge" } }} />
+
+      <CinematicHero
+        eyebrow={x("les_processEyebrow")}
+        title={t("title")}
+        intro={t("intro")}
+        image={pickAsset(A, "lessons.hero.image", "/images/lessons-meaning.jpg")}
+        videos={[
+          pickAsset(A, "lessons.hero.video1", "/media/les-notebook.mp4"),
+          pickAsset(A, "lessons.hero.video2", "/media/les-teacher.mp4"),
+          pickAsset(A, "lessons.hero.video3", "/media/les-online.mp4"),
+          pickAsset(A, "lessons.hero.video4", "/media/les-spell.mp4"),
+        ]}
+        flag
+      />
+
+      {/* SIRAYA BAĞLI BÖLÜMLER (registry sırası; kayıt yoksa birebir aynı) */}
+      {orderedIds.filter((id) => sectionVisible(hidden, id)).map((id) => (
+        <Fragment key={id}>{byId.get(id)}</Fragment>
+      ))}
 
       <MobilePlanCta href="#randevu" label={cv("lesBook")} />
     </>
