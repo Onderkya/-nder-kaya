@@ -1,5 +1,6 @@
 import { existsSync } from "fs";
 import path from "path";
+import { Fragment, type ReactNode } from "react";
 import Image from "next/image";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import type { Metadata } from "next";
@@ -14,6 +15,7 @@ import { getPublicSettings } from "@/lib/settings";
 import { getManagedPage } from "@/lib/cms";
 import { BlockRenderer } from "@/components/cms/block-renderer";
 import { getAssetMap, pickAsset } from "@/lib/assets";
+import { getHiddenSections, sectionVisible, getSectionOrders, applySectionOrder } from "@/lib/sections";
 
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
   const { locale } = await params;
@@ -40,6 +42,8 @@ export default async function AboutPage({ params }: { params: Promise<{ locale: 
   const sv = await getTranslations("services");
   const site = await getPublicSettings();
   const A = await getAssetMap();
+  const hidden = await getHiddenSections();
+  const orders = await getSectionOrders();
 
   // Gerçek çift fotoğrafı gelince otomatik devreye girer; yoksa markaya uygun
   // zarif yer tutucu (sahte/stok çift fotoğrafı KULLANILMAZ).
@@ -96,13 +100,10 @@ export default async function AboutPage({ params }: { params: Promise<{ locale: 
     },
   };
 
-  return (
-    <>
-      <JsonLd data={ld} />
-
-      <CinematicHero eyebrow={x("ab_eyebrow")} title={t("title")} image={pickAsset(A, "about.hero.image", "/images/kaleici-harbor.jpg")} video={pickAsset(A, "about.hero.video", "/media/vid-kaleici.mp4")} />
-
-      {/* Manifesto */}
+  // Sıraya bağlanan registry bölümleri — koddaki mevcut sırayla, JSX içeriği aynen.
+  const sectionBlocks: [string, ReactNode][] = [
+    ["about.manifesto", (
+      /* Manifesto */
       <section className="container-wide py-24 sm:py-32">
         <Reveal className="mx-auto max-w-3xl text-center">
           <p className="font-display text-balance leading-snug" style={{ fontSize: "clamp(1.6rem, 3.2vw, 2.6rem)", color: "rgb(var(--foreground))" }}>
@@ -110,8 +111,9 @@ export default async function AboutPage({ params }: { params: Promise<{ locale: 
           </p>
         </Reveal>
       </section>
-
-      {/* Çift fotoğrafı + hayat çizelgesi */}
+    )],
+    ["about.timeline", (
+      /* Çift fotoğrafı + hayat çizelgesi */
       <section className="pb-8">
         <div className="container-wide grid items-start gap-12 md:grid-cols-2 lg:grid-cols-[minmax(0,0.85fr),1fr] lg:gap-16">
           {/* Sol: çift fotoğrafı ya da zarif yer tutucu */}
@@ -166,8 +168,9 @@ export default async function AboutPage({ params }: { params: Promise<{ locale: 
           </div>
         </div>
       </section>
-
-      {/* Değerler — koyu deniz bandı */}
+    )],
+    ["about.values", (
+      /* Değerler — koyu deniz bandı */
       <section className="relative mt-20 overflow-hidden py-24 text-white sm:py-28" style={{ backgroundColor: "#07212b" }}>
         <div className="container-wide">
           <Reveal className="mx-auto max-w-2xl text-center">
@@ -186,8 +189,9 @@ export default async function AboutPage({ params }: { params: Promise<{ locale: 
           </div>
         </div>
       </section>
-
-      {/* Hangi alanlarda hizmet veriyoruz */}
+    )],
+    ["about.services", (
+      /* Hangi alanlarda hizmet veriyoruz */
       <section className="py-24 sm:py-28">
         <div className="container-wide">
           <Reveal className="mx-auto max-w-2xl text-center">
@@ -207,11 +211,28 @@ export default async function AboutPage({ params }: { params: Promise<{ locale: 
           </div>
         </div>
       </section>
-
-      {/* Kanıt şeridi */}
+    )],
+    ["about.proof", (
+      /* Kanıt şeridi */
       <section className="container-wide pb-24">
         <TrustStrip title={cv("aboutProofTitle")} points={[tr("p5"), tr("p1"), tr("p2"), tr("p3"), tr("p4")]} />
       </section>
+    )],
+  ];
+  const defaultIds = sectionBlocks.map(([id]) => id);
+  const orderedIds = applySectionOrder(defaultIds, orders["about"]);
+  const byId = new Map(sectionBlocks);
+
+  return (
+    <>
+      <JsonLd data={ld} />
+
+      <CinematicHero eyebrow={x("ab_eyebrow")} title={t("title")} image={pickAsset(A, "about.hero.image", "/images/kaleici-harbor.jpg")} video={pickAsset(A, "about.hero.video", "/media/vid-kaleici.mp4")} />
+
+      {/* SIRAYA BAĞLI BÖLÜMLER (registry sırası; kayıt yoksa birebir aynı) */}
+      {orderedIds.filter((id) => sectionVisible(hidden, id)).map((id) => (
+        <Fragment key={id}>{byId.get(id)}</Fragment>
+      ))}
 
       {/* Kapanış dönüşüm bandı */}
       <ConversionBand

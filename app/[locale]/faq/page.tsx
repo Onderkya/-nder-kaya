@@ -1,3 +1,4 @@
+import { Fragment, type ReactNode } from "react";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import type { Metadata } from "next";
 import { CinematicHero } from "@/components/cinematic-hero";
@@ -10,6 +11,7 @@ import { getManagedPage } from "@/lib/cms";
 import { BlockRenderer } from "@/components/cms/block-renderer";
 import { getAssetMap, pickAsset } from "@/lib/assets";
 import { getFaqExtrasFor } from "@/lib/faq";
+import { getHiddenSections, sectionVisible, getSectionOrders, applySectionOrder } from "@/lib/sections";
 
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
   const { locale } = await params;
@@ -29,6 +31,8 @@ export default async function FaqPage({ params }: { params: Promise<{ locale: st
   const c = await getTranslations("common");
   const site = await getPublicSettings();
   const A = await getAssetMap();
+  const hidden = await getHiddenSections();
+  const orders = await getSectionOrders();
 
   const extras = await getFaqExtrasFor(locale);
   const items = [
@@ -38,6 +42,26 @@ export default async function FaqPage({ params }: { params: Promise<{ locale: st
     { q: t("q4"), a: t("a4") },
     ...extras,
   ];
+
+  // Sıraya bağlanan registry bölümleri — koddaki mevcut sırayla, JSX içeriği aynen.
+  const sectionBlocks: [string, ReactNode][] = [
+    ["faq.list", (
+      <section className="container-wide py-20 sm:py-28">
+        <FaqAccordion items={items} />
+      </section>
+    )],
+    ["faq.trust", (
+      /* Güven şeridi — itirazları söker */
+      <section className="py-16 sm:py-20" style={{ backgroundColor: "rgb(var(--muted) / 0.45)" }}>
+        <div className="container-wide">
+          <TrustStrip title={tr("title")} points={[tr("p1"), tr("p2"), tr("p3"), tr("p4"), tr("p5")]} />
+        </div>
+      </section>
+    )],
+  ];
+  const defaultIds = sectionBlocks.map(([id]) => id);
+  const orderedIds = applySectionOrder(defaultIds, orders["faq"]);
+  const byId = new Map(sectionBlocks);
 
   return (
     <>
@@ -53,16 +77,11 @@ export default async function FaqPage({ params }: { params: Promise<{ locale: st
         }}
       />
       <CinematicHero eyebrow={x("faq_eyebrow")} title={t("title")} image={pickAsset(A, "faq.hero.image", "/images/kemer.jpg")} video={pickAsset(A, "faq.hero.video", "/media/vid-kemer.mp4")} />
-      <section className="container-wide py-20 sm:py-28">
-        <FaqAccordion items={items} />
-      </section>
 
-      {/* Güven şeridi — itirazları söker */}
-      <section className="py-16 sm:py-20" style={{ backgroundColor: "rgb(var(--muted) / 0.45)" }}>
-        <div className="container-wide">
-          <TrustStrip title={tr("title")} points={[tr("p1"), tr("p2"), tr("p3"), tr("p4"), tr("p5")]} />
-        </div>
-      </section>
+      {/* SIRAYA BAĞLI BÖLÜMLER (registry sırası; kayıt yoksa birebir aynı) */}
+      {orderedIds.filter((id) => sectionVisible(hidden, id)).map((id) => (
+        <Fragment key={id}>{byId.get(id)}</Fragment>
+      ))}
 
       {/* Kapanış CTA — sorusu kalan tek mesajla bize ulaşsın */}
       <ConversionBand

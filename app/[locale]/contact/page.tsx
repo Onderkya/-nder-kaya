@@ -1,3 +1,4 @@
+import { Fragment, type ReactNode } from "react";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import type { Metadata } from "next";
 import { CinematicHero } from "@/components/cinematic-hero";
@@ -8,6 +9,7 @@ import { getPublicSettings } from "@/lib/settings";
 import { getManagedPage } from "@/lib/cms";
 import { BlockRenderer } from "@/components/cms/block-renderer";
 import { getAssetMap, pickAsset } from "@/lib/assets";
+import { getHiddenSections, sectionVisible, getSectionOrders, applySectionOrder } from "@/lib/sections";
 
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
   const { locale } = await params;
@@ -26,12 +28,13 @@ export default async function ContactPage({ params }: { params: Promise<{ locale
   const tr = await getTranslations("trust");
   const site = await getPublicSettings();
   const A = await getAssetMap();
+  const hidden = await getHiddenSections();
+  const orders = await getSectionOrders();
 
-  return (
-    <>
-      <CinematicHero eyebrow={t("orReach")} title={t("title")} intro={t("subtitle")} image={pickAsset(A, "contact.hero.image", "/images/sunset.jpg")} video={pickAsset(A, "contact.hero.video", "/media/vid-kas.mp4")} />
-
-      {/* Güvence şeridi — formdan önce tereddütü kaldır */}
+  // Sıraya bağlanan registry bölümleri — koddaki mevcut sırayla, JSX içeriği aynen.
+  const sectionBlocks: [string, ReactNode][] = [
+    ["contact.assurance", (
+      /* Güvence şeridi — formdan önce tereddütü kaldır */
       <section className="border-b" style={{ borderColor: "rgb(var(--border))", backgroundColor: "rgb(var(--card))" }}>
         <div className="container-wide flex flex-wrap items-center justify-center gap-x-8 gap-y-3 py-5 text-center">
           {[cv("conAssure1"), cv("conAssure2"), cv("conAssure3")].map((a) => (
@@ -42,7 +45,8 @@ export default async function ContactPage({ params }: { params: Promise<{ locale
           ))}
         </div>
       </section>
-
+    )],
+    ["contact.form", (
       <section className="container-page grid gap-10 py-20 md:grid-cols-2">
         <Reveal>
           <ContactForm
@@ -116,6 +120,20 @@ export default async function ContactPage({ params }: { params: Promise<{ locale
           />
         </Reveal>
       </section>
+    )],
+  ];
+  const defaultIds = sectionBlocks.map(([id]) => id);
+  const orderedIds = applySectionOrder(defaultIds, orders["contact"]);
+  const byId = new Map(sectionBlocks);
+
+  return (
+    <>
+      <CinematicHero eyebrow={t("orReach")} title={t("title")} intro={t("subtitle")} image={pickAsset(A, "contact.hero.image", "/images/sunset.jpg")} video={pickAsset(A, "contact.hero.video", "/media/vid-kas.mp4")} />
+
+      {/* SIRAYA BAĞLI BÖLÜMLER (registry sırası; kayıt yoksa birebir aynı) */}
+      {orderedIds.filter((id) => sectionVisible(hidden, id)).map((id) => (
+        <Fragment key={id}>{byId.get(id)}</Fragment>
+      ))}
     </>
   );
 }
