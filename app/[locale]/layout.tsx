@@ -1,5 +1,5 @@
 import type { ReactNode } from "react";
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Cormorant_Garamond, Onest } from "next/font/google";
 import { notFound } from "next/navigation";
 import { NextIntlClientProvider } from "next-intl";
@@ -29,9 +29,28 @@ const sans = Onest({
   display: "swap",
 });
 
-// İçerik admin panelden DB üzerinden düzenlenebildiği için public sayfalar
-// dinamik render edilir (override'lar yeniden derleme gerektirmeden yansır).
-export const dynamic = "force-dynamic";
+// PERF: Eskiden `force-dynamic` idi → her istekte tüm ağaç yeniden render +
+// 3+ Prisma sorgusu. Artık ISR: sayfa HTML'i önbelleğe alınır, arka planda en
+// çok 5 dakikada bir tazelenir. İçerik/ayar/CMS düzenleyen admin aksiyonları
+// zaten `revalidatePath("/", "layout")` çağırdığı için düzenlemeler ANINDA
+// yansır (önbellek anında geçersizleşir); revalidate yalnız güvenlik ağı.
+export const revalidate = 300;
+
+// next-intl statik render için gerekli: her dili build'de üret. Bu olmadan
+// (setRequestLocale mevcut olsa bile) sayfalar dinamik render'a düşer.
+export function generateStaticParams() {
+  return routing.locales.map((locale) => ({ locale }));
+}
+
+// Erişilebilir viewport (maximum-scale/user-scalable YOK) + tarayıcı teması.
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  themeColor: [
+    { media: "(prefers-color-scheme: light)", color: "#faf6ef" },
+    { media: "(prefers-color-scheme: dark)", color: "#071a21" },
+  ],
+};
 
 export async function generateMetadata({
   params,

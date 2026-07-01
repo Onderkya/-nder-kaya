@@ -17,6 +17,7 @@ async function createLessonType(formData: FormData) {
   const created = await prisma.lessonType.create({ data: { minutes, price, currency } });
   await audit(session.email, "create", "LessonType", created.id, `${minutes}dk ${price ?? "-"} ${currency}`);
   revalidatePath("/admin/booking");
+  revalidatePath("/", "layout"); // public /lessons (ISR) anında tazelensin
 }
 
 async function toggleLessonType(formData: FormData) {
@@ -27,6 +28,7 @@ async function toggleLessonType(formData: FormData) {
   await prisma.lessonType.update({ where: { id }, data: { active: !active } });
   await audit(session.email, "toggle", "LessonType", id, `active=${!active}`);
   revalidatePath("/admin/booking");
+  revalidatePath("/", "layout"); // public /lessons (ISR) anında tazelensin
 }
 
 async function deleteLessonType(formData: FormData) {
@@ -36,6 +38,7 @@ async function deleteLessonType(formData: FormData) {
   await prisma.lessonType.delete({ where: { id } });
   await audit(session.email, "delete", "LessonType", id);
   revalidatePath("/admin/booking");
+  revalidatePath("/", "layout"); // public /lessons (ISR) anında tazelensin
 }
 
 // --- Uygunluk slotları ---
@@ -49,6 +52,7 @@ async function createSlot(formData: FormData) {
   const created = await prisma.availabilitySlot.create({ data: { startsAt, minutes } });
   await audit(session.email, "create", "AvailabilitySlot", created.id, `${startsAt.toISOString()} ${minutes}dk`);
   revalidatePath("/admin/booking");
+  revalidatePath("/", "layout"); // public /lessons (ISR) anında tazelensin
 }
 
 async function deleteSlot(formData: FormData) {
@@ -58,6 +62,7 @@ async function deleteSlot(formData: FormData) {
   await prisma.availabilitySlot.delete({ where: { id } });
   await audit(session.email, "delete", "AvailabilitySlot", id);
   revalidatePath("/admin/booking");
+  revalidatePath("/", "layout"); // public /lessons (ISR) anında tazelensin
 }
 
 export default async function BookingPage() {

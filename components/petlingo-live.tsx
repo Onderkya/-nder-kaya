@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import lottie, { type AnimationItem } from "lottie-web";
+import { type AnimationItem } from "lottie-web";
 
 /**
  * PetLingo CANLI mini-oyun — uygulamadaki gerçek Lottie pet animasyonları
@@ -75,15 +75,24 @@ export function PetLingoLive() {
   // Aktif pet animasyonu (önceki imha edilir).
   useEffect(() => {
     if (!box.current) return;
+    let cancelled = false;
     anim.current?.destroy();
-    anim.current = lottie.loadAnimation({
-      container: box.current,
-      renderer: "svg",
-      loop: true,
-      autoplay: true,
-      path: `/lottie/${pet.key}.json`,
+    // lottie-web (~250KB) yalnız bu bileşen mount olunca yüklenir → başlangıç
+    // JS paketinden çıkarılır (kod bölme).
+    import("lottie-web").then(({ default: lottie }) => {
+      if (cancelled || !box.current) return;
+      anim.current = lottie.loadAnimation({
+        container: box.current,
+        renderer: "svg",
+        loop: true,
+        autoplay: true,
+        path: `/lottie/${pet.key}.json`,
+      });
     });
-    return () => anim.current?.destroy();
+    return () => {
+      cancelled = true;
+      anim.current?.destroy();
+    };
   }, [petIdx, pet.key]);
 
   const pickPet = (i: number) => {
