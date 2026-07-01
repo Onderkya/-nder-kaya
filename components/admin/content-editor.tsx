@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, type ReactNode } from "react";
 import Link from "next/link";
 import { Badge } from "./ui";
 import { Icon } from "./icons";
@@ -27,6 +27,7 @@ export function ContentEditor({
   assetsByPage = {},
   assetOverrides = {},
   media = [],
+  faqPanel,
 }: {
   pages: EditPage[];
   locale: string;
@@ -36,6 +37,7 @@ export function ContentEditor({
   assetsByPage?: Record<string, AssetSlot[]>;
   assetOverrides?: Record<string, string>;
   media?: { url: string; alt: string | null }[];
+  faqPanel?: ReactNode;
 }) {
   const [active, setActive] = useState(initialPageId);
   const SEP = "|||";
@@ -80,6 +82,9 @@ export function ContentEditor({
           <AssetManager slots={assetsByPage[active]} overrides={assetOverrides} media={media} />
         </div>
       ) : null}
+
+      {/* SSS sayfasında ekstra madde yöneticisi (kendi kaydeder) */}
+      {active === "faq" && faqPanel ? <div className="mb-4">{faqPanel}</div> : null}
 
       <form action={saveAction}>
         {pages.map((p) => (

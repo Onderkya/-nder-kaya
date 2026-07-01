@@ -4,7 +4,16 @@
 > ↩️ **Geri dönüş (rollback):** eski sürüm dokunulmadı → dal `claude/consulting-site-plan-6k4lix` + etiket `safe/before-redesign-rev9`. Beğenilmezse sunucuda o dala `git reset --hard` + rebuild.
 > Görsel/medya kaynakları: `public/images/CREDITS.txt` (CC / Mixkit / CC0) · oteller: kullanıcının verdiği resmi fotoğraflar (`public/images/hotels/`).
 
-## 🔁 Revizyon 21 — Admin paneli baştan tasarım + perf/güvenlik/mobil turu (GÜNCEL · dal `claude/redesign-conversion`)
+## 🔁 Revizyon 22 — Admin: içerik sayfa-sayfa + görsel yönetimi + SSS/rezervasyon + yüzen AI (GÜNCEL · dal `claude/redesign-conversion`)
+
+> **Şu an buradayız.** Kullanıcı: "içerik editörü saçma (imm/meta/nav ne?), sayfa-sayfa böl üstte sekmeler; sitenin görsel/videolarını sayfadan değiştireyim (ayrı Görseller sayfası gereksiz); SSS'ye madde ekleyeyim; rezervasyon tarih/saat aç-kapa; her sayfada üstte AI yardımcı. Görsel bir site, yazıyla boğma." Onay: "Yap hepsini." 4 parça, her biri deploy edildi. `tsc` ✓ · `next build` ✓.
+
+- **Parça 1 — İçerik sayfa-sayfa + tek dil:** `lib/content-map.ts` (~470 yazı anahtarı → 8 gerçek sayfa × 51 bölüm, görünüm sırasıyla). `components/admin/content-editor.tsx` (client): üstte **sayfa sekmeleri** (Anasayfa/Antalya/…) + **dil seçici**, TEK DİL düzenlenir; başka dilde 🇹🇷 referans metni etiket olur. Sekme değişince düzenleme kaybolmaz. `saveTexts` + `key|||locale` alan adları **birebir korundu**. Eşlenmeyenler "Diğer"de.
+- **Parça 2 — Görsel/video override (tüm sayfalar):** `lib/assets.ts` (`getAssetMap`/`pickAsset`, `Setting` `asset:` öneki, istek-cache) + `lib/asset-actions.ts` (setAsset) + `lib/asset-slots.ts` (**76 isimli slot**). `components/admin/asset-manager.tsx`: her sayfa sekmesinde o sayfanın tüm görsel/videoları önizlemeli; **Değiştir** (yükle / kütüphaneden seç / URL) + **Sıfırla** — content editörüne gömülü (ayrı Görseller sayfasına gerek yok). Public 7 sayfa + bileşenlerdeki tüm sabit yollar `pickAsset(map, slot, def)` ile sarıldı (**varsayılan fallback → override yoksa site birebir aynı**). ISR revalidate ile anında.
+- **Parça 3 — SSS ekleme + rezervasyon aç/kapat:** `lib/faq.ts` + `lib/faq-actions.ts` (`Setting` `faq:items` JSON) + `components/admin/faq-manager.tsx` — SSS sekmesinde madde **ekle/sil/sırala** (seçili dil, diğer diller korunur); public `/faq` bunları koddaki 4 maddenin altına ekler. Booking'e elle **Aç/Kapat** (slot `booked` toggle) — kapalı slot müşteriye görünmez. (Müşteri zaten yalnız `booked:false`+gelecek slotları görüyordu.)
+- **Parça 4 — Yüzen AI yardımcı:** `components/admin/ai-fab.tsx` — **her admin sayfasında sağ altta balon**; açılınca tam AI asistanı paneli (DB sorusu + öneri). Layout'ta `assistantAvailable()` ise gösterilir (mobilde alt sekmenin üstünde).
+
+## 🔁 Revizyon 21 — Admin paneli baştan tasarım + perf/güvenlik/mobil turu (dal `claude/redesign-conversion`)
 
 > **Şu an buradayız.** Kullanıcı admin panelini "berbat, isimler kötü, menü sabit değil, telefondan kullanılamaz" diye tümden reddetti → **bespoke, basit, mobil-öncelikli yönetim paneli** yapıldı (işlev korunarak, yalnız sunum). Ayrıca aynı oturumda performans + ödeme + giriş + mobil düzeltmeleri. `tsc` ✓ · `next build` ✓ (18 admin rotası).
 

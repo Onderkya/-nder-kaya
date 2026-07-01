@@ -9,6 +9,7 @@ import { getPublicSettings } from "@/lib/settings";
 import { getManagedPage } from "@/lib/cms";
 import { BlockRenderer } from "@/components/cms/block-renderer";
 import { getAssetMap, pickAsset } from "@/lib/assets";
+import { getFaqExtrasFor } from "@/lib/faq";
 
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
   const { locale } = await params;
@@ -29,11 +30,13 @@ export default async function FaqPage({ params }: { params: Promise<{ locale: st
   const site = await getPublicSettings();
   const A = await getAssetMap();
 
+  const extras = await getFaqExtrasFor(locale);
   const items = [
     { q: t("q1"), a: t("a1") },
     { q: t("q2"), a: t("a2") },
     { q: t("q3"), a: t("a3") },
     { q: t("q4"), a: t("a4") },
+    ...extras,
   ];
 
   return (

@@ -6,7 +6,9 @@ import { prisma } from "@/lib/db";
 import { getPublicSettings } from "@/lib/settings";
 import { SidebarNav } from "@/components/admin/sidebar-nav";
 import { MobileNav } from "@/components/admin/mobile-nav";
+import { AdminAiFab } from "@/components/admin/ai-fab";
 import { Icon } from "@/components/admin/icons";
+import { assistantAvailable } from "@/lib/ai/assistant";
 
 export const metadata = { title: "Yönetim · Antalya Bridge", robots: { index: false } };
 
@@ -16,11 +18,13 @@ export default async function AdminLayout({ children }: { children: ReactNode })
 
   let inboxCount = 0;
   let siteUrl = "/";
+  let aiAvailable = false;
   if (session) {
     try {
-      [inboxCount, siteUrl] = await Promise.all([
+      [inboxCount, siteUrl, aiAvailable] = await Promise.all([
         prisma.lead.count({ where: { status: "NEW" } }),
         getPublicSettings().then((s) => s.url || "/"),
+        assistantAvailable().catch(() => false),
       ]);
     } catch {
       /* DB yoksa (build) sessizce varsayılan */
@@ -65,6 +69,7 @@ export default async function AdminLayout({ children }: { children: ReactNode })
             </div>
 
             <MobileNav inboxCount={inboxCount} siteUrl={siteUrl} />
+            {aiAvailable ? <AdminAiFab /> : null}
           </div>
         ) : (
           <main>{children}</main>

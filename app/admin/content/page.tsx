@@ -9,6 +9,8 @@ import { ContentEditor, type EditPage } from "@/components/admin/content-editor"
 import { CONTENT_PAGES } from "@/lib/content-map";
 import { ASSET_SLOTS, type AssetSlot } from "@/lib/asset-slots";
 import { getAssetMap } from "@/lib/assets";
+import { getFaqExtras } from "@/lib/faq";
+import { FaqManager } from "@/components/admin/faq-manager";
 
 export const dynamic = "force-dynamic";
 
@@ -52,6 +54,7 @@ export default async function ContentPage({ searchParams }: { searchParams: Prom
     getAssetMap(),
     prisma.media.findMany({ orderBy: { createdAt: "desc" }, take: 60, select: { url: true, alt: true } }).catch(() => []),
   ]);
+  const faqExtras = await getFaqExtras();
   const map = new Map(texts.map((t) => [t.key, t]));
 
   // Görsel/video slotlarını sayfaya göre grupla.
@@ -114,6 +117,7 @@ export default async function ContentPage({ searchParams }: { searchParams: Prom
         assetsByPage={assetsByPage}
         assetOverrides={assetOverrides}
         media={mediaRows}
+        faqPanel={<FaqManager initial={faqExtras} locale={locale} langName={localeNames[locale]} />}
       />
     </div>
   );

@@ -66,6 +66,18 @@ async function deleteSlot(formData: FormData) {
   revalidatePath("/", "layout"); // public /lessons (ISR) anında tazelensin
 }
 
+// Slotu elle aç/kapat: kapalı (booked=true) slot müşteriye gösterilmez.
+async function toggleSlot(formData: FormData) {
+  "use server";
+  const session = await requireAdmin();
+  const id = String(formData.get("id"));
+  const booked = formData.get("booked") === "true";
+  await prisma.availabilitySlot.update({ where: { id }, data: { booked: !booked } });
+  await audit(session.email, "toggle", "AvailabilitySlot", id, `booked=${!booked}`);
+  revalidatePath("/admin/booking");
+  revalidatePath("/", "layout"); // public /lessons (ISR) anında tazelensin
+}
+
 export default async function BookingPage() {
   await requireAdmin();
   const [types, slots] = await Promise.all([
@@ -218,7 +230,12 @@ export default async function BookingPage() {
                           <Badge tone="neutral">Boş</Badge>
                         )}
                       </div>
-                      <div className="mt-3">
+                      <div className="mt-3 flex items-center gap-2">
+                        <form action={toggleSlot}>
+                          <input type="hidden" name="id" value={s.id} />
+                          <input type="hidden" name="booked" value={String(s.booked)} />
+                          <button className="adm-btn adm-btn-ghost adm-btn-sm">{s.booked ? "Aç" : "Kapat"}</button>
+                        </form>
                         <form action={deleteSlot}>
                           <input type="hidden" name="id" value={s.id} />
                           <button className="adm-btn adm-btn-danger adm-btn-sm">Sil</button>
@@ -257,10 +274,17 @@ export default async function BookingPage() {
                             )}
                           </td>
                           <td className="py-3">
-                            <form action={deleteSlot}>
-                              <input type="hidden" name="id" value={s.id} />
-                              <button className="adm-btn adm-btn-danger adm-btn-sm">Sil</button>
-                            </form>
+                            <div className="flex items-center gap-2">
+                              <form action={toggleSlot}>
+                                <input type="hidden" name="id" value={s.id} />
+                                <input type="hidden" name="booked" value={String(s.booked)} />
+                                <button className="adm-btn adm-btn-ghost adm-btn-sm">{s.booked ? "Aç" : "Kapat"}</button>
+                              </form>
+                              <form action={deleteSlot}>
+                                <input type="hidden" name="id" value={s.id} />
+                                <button className="adm-btn adm-btn-danger adm-btn-sm">Sil</button>
+                              </form>
+                            </div>
                           </td>
                         </tr>
                       );
