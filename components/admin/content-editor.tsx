@@ -99,9 +99,9 @@ export function ContentEditor({
             <div className="space-y-4">
               {p.sections.map((s, si) => (
                 <div key={si} className="adm-card adm-card-pad">
-                  <div className="mb-4 flex items-center gap-2">
-                    <span className="adm-gold-rule" />
-                    <h3 className="font-semibold text-[15px]" style={{ color: "rgb(var(--foreground))" }}>{s.title}</h3>
+                  <div className="mb-5 flex items-center gap-3">
+                    <span className="h-7 w-1.5 rounded-full" style={{ background: "rgb(var(--gold))" }} />
+                    <h3 className="adm-section-title">{s.title}</h3>
                   </div>
                   {s.help ? <p className="adm-help mb-4 mt-0">{s.help}</p> : null}
                   <div className="space-y-5">

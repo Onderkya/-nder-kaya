@@ -24,10 +24,11 @@ const csp = [
   "font-src 'self' data:",
   "connect-src 'self' https://challenges.cloudflare.com",
   // Cloudflare Turnstile + Google Maps/Street View gömme (anahtarsız svembed) +
-  // YouTube (Land of Legends tanıtım videosu, nocookie). Yalnız BU site bunları
-  // gömer; frame-ancestors 'none' korunduğu için siteyi başkası iframe'leyemez.
+  // YouTube (Land of Legends tanıtım videosu, nocookie). frame-ancestors 'self':
+  // admin panelindeki canlı önizleme kendi sitesini iframe'leyebilir; DIŞ siteler
+  // yine iframe'leyemez (clickjacking koruması sürer).
   "frame-src https://challenges.cloudflare.com https://www.google.com https://maps.google.com https://www.youtube-nocookie.com https://www.youtube.com",
-  "frame-ancestors 'none'",
+  "frame-ancestors 'self'",
   "object-src 'none'",
   "base-uri 'self'",
   "form-action 'self'",
@@ -36,7 +37,7 @@ const csp = [
 
 const securityHeaders = [
   { key: "Content-Security-Policy", value: csp },
-  { key: "X-Frame-Options", value: "DENY" },
+  { key: "X-Frame-Options", value: "SAMEORIGIN" },
   { key: "X-Content-Type-Options", value: "nosniff" },
   { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
   { key: "Permissions-Policy", value: "camera=(), microphone=(), geolocation=(), payment=()" },

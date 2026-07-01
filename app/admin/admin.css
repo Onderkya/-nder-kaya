@@ -140,18 +140,30 @@
 
 /* ---- Kartlar & yüzeyler ---- */
 .adm-card {
-  border-radius: 1.25rem;
-  border: 1px solid rgb(var(--border));
+  border-radius: 1.4rem;
+  border: 1px solid rgb(var(--border) / 0.85);
   background: rgb(var(--card));
-  box-shadow: 0 1px 2px rgb(13 36 43 / 0.05);
+  box-shadow: 0 1px 2px rgb(13 36 43 / 0.04), 0 12px 32px -20px rgb(13 36 43 / 0.22);
 }
-.adm-card-pad { padding: 1.25rem; }
-@media (min-width: 640px) { .adm-card-pad { padding: 1.5rem; } }
+.adm-card-pad { padding: 1.4rem; }
+@media (min-width: 640px) { .adm-card-pad { padding: 1.75rem; } }
 
-/* Öne çıkan / dikkat kartı — altın halka */
+/* Öne çıkan / dikkat kartı — altın halka + sıcak glow */
 .adm-card-featured {
-  box-shadow: 0 1px 2px rgb(13 36 43 / 0.05), inset 3px 0 0 rgb(var(--gold));
+  border-color: rgb(var(--gold) / 0.4);
+  box-shadow: 0 1px 2px rgb(13 36 43 / 0.04), 0 14px 40px -22px rgb(184 130 64 / 0.4), inset 3px 0 0 rgb(var(--gold));
 }
+
+/* Görsel/medya kart tırnağı — yumuşak gölge + hover lift */
+.adm-thumb {
+  border-radius: 1rem;
+  overflow: hidden;
+  border: 1px solid rgb(var(--border));
+  background: rgb(var(--muted));
+  box-shadow: 0 2px 8px -3px rgb(13 36 43 / 0.16);
+  transition: transform 0.18s ease, box-shadow 0.18s ease;
+}
+.adm-thumb:hover { transform: translateY(-2px); box-shadow: 0 10px 26px -10px rgb(13 36 43 / 0.28); }
 
 /* ---- Tipografi ---- */
 .adm-title { font-family: var(--font-display), serif; font-weight: 600; letter-spacing: -0.01em; line-height: 1.05; color: rgb(var(--foreground)); }
@@ -165,14 +177,15 @@
 
 .adm-input, .adm-textarea, .adm-select {
   width: 100%;
-  min-height: 44px;
-  border-radius: 0.75rem;
+  min-height: 46px;
+  border-radius: 0.85rem;
   border: 1px solid rgb(var(--border));
   background: rgb(var(--card));
-  padding: 10px 14px;
-  font-size: 14px;
+  padding: 11px 15px;
+  font-size: 14.5px;
   color: rgb(var(--foreground));
   outline: none;
+  box-shadow: inset 0 1px 2px rgb(13 36 43 / 0.03);
   transition: border-color 0.15s ease, box-shadow 0.15s ease;
   font-family: inherit;
 }
@@ -180,27 +193,48 @@
 .adm-input::placeholder, .adm-textarea::placeholder { color: rgb(var(--muted-foreground) / 0.55); }
 .adm-input:focus, .adm-textarea:focus, .adm-select:focus {
   border-color: rgb(var(--primary));
-  box-shadow: 0 0 0 3px rgb(var(--primary) / 0.16);
+  box-shadow: 0 0 0 3.5px rgb(var(--primary) / 0.15);
 }
 
 /* ---- Butonlar ---- */
 .adm-btn {
   display: inline-flex; align-items: center; justify-content: center; gap: 8px;
-  min-height: 44px; padding: 10px 18px;
-  border-radius: 0.75rem;
-  font-size: 14px; font-weight: 600;
+  min-height: 46px; padding: 11px 20px;
+  border-radius: 0.85rem;
+  font-size: 14px; font-weight: 600; letter-spacing: 0.005em;
   cursor: pointer; text-decoration: none;
-  transition: filter 0.15s ease, background-color 0.15s ease, border-color 0.15s ease;
+  transition: transform 0.15s ease, box-shadow 0.15s ease, filter 0.15s ease, background-color 0.15s ease, border-color 0.15s ease;
   white-space: nowrap;
 }
 .adm-btn:disabled { opacity: 0.5; cursor: not-allowed; }
-.adm-btn-primary { background: rgb(var(--primary)); color: #fff; box-shadow: 0 1px 2px rgb(13 36 43 / 0.12); }
-.adm-btn-primary:hover:not(:disabled) { filter: brightness(1.08); }
-.adm-btn-ghost { background: rgb(var(--card)); color: rgb(var(--foreground)); border: 1px solid rgb(var(--border)); }
-.adm-btn-ghost:hover:not(:disabled) { background: rgb(var(--muted)); }
-.adm-btn-danger { background: transparent; color: rgb(var(--accent)); border: 1px solid rgb(var(--accent) / 0.35); }
-.adm-btn-danger:hover:not(:disabled) { background: rgb(var(--accent) / 0.08); }
-.adm-btn-sm { min-height: 36px; padding: 6px 12px; font-size: 13px; border-radius: 0.6rem; }
+.adm-btn-primary {
+  background: linear-gradient(180deg, rgb(var(--lagoon)), rgb(var(--primary)));
+  color: #fff;
+  box-shadow: 0 2px 6px -1px rgb(13 148 168 / 0.42), 0 1px 2px rgb(13 36 43 / 0.18);
+}
+.adm-btn-primary:hover:not(:disabled) { transform: translateY(-1px); box-shadow: 0 8px 18px -5px rgb(13 148 168 / 0.55), 0 1px 2px rgb(13 36 43 / 0.18); filter: brightness(1.03); }
+.adm-btn-primary:active:not(:disabled) { transform: translateY(0); }
+.adm-btn-ghost {
+  background: rgb(var(--card)); color: rgb(var(--foreground));
+  border: 1px solid rgb(var(--border));
+  box-shadow: 0 1px 2px rgb(13 36 43 / 0.04);
+}
+.adm-btn-ghost:hover:not(:disabled) { background: rgb(var(--muted)); border-color: rgb(var(--primary) / 0.4); transform: translateY(-1px); }
+.adm-btn-danger { background: rgb(var(--accent) / 0.06); color: rgb(var(--accent)); border: 1px solid rgb(var(--accent) / 0.3); }
+.adm-btn-danger:hover:not(:disabled) { background: rgb(var(--accent) / 0.12); border-color: rgb(var(--accent) / 0.5); }
+.adm-btn-sm { min-height: 38px; padding: 7px 13px; font-size: 13px; border-radius: 0.7rem; }
+
+/* ---- Aç/Kapa anahtarı (aktif/pasif) ---- */
+.adm-switch { position: relative; display: inline-flex; align-items: center; gap: 10px; cursor: pointer; user-select: none; }
+.adm-switch input { position: absolute; opacity: 0; width: 0; height: 0; }
+.adm-switch-track { width: 46px; height: 26px; border-radius: 999px; background: rgb(var(--muted-foreground) / 0.35); transition: background 0.18s ease; position: relative; flex-shrink: 0; }
+.adm-switch-track::after { content: ""; position: absolute; top: 3px; left: 3px; width: 20px; height: 20px; border-radius: 999px; background: #fff; box-shadow: 0 1px 3px rgb(13 36 43 / 0.3); transition: transform 0.18s ease; }
+.adm-switch input:checked + .adm-switch-track { background: rgb(var(--primary)); }
+.adm-switch input:checked + .adm-switch-track::after { transform: translateX(20px); }
+.adm-switch-label { font-size: 14px; font-weight: 600; color: rgb(var(--foreground)); }
+
+/* Bölüm başlığı — daha editoryal (Cormorant) */
+.adm-section-title { font-family: var(--font-display), serif; font-weight: 600; font-size: 1.35rem; line-height: 1.1; letter-spacing: -0.01em; color: rgb(var(--foreground)); }
 
 /* ---- Rozetler / durum çipleri ---- */
 .adm-badge { display: inline-flex; align-items: center; gap: 5px; padding: 3px 10px; border-radius: 999px; font-size: 12px; font-weight: 600; line-height: 1.2; }

@@ -29,9 +29,9 @@ export function AssetManager({ slots, overrides, media }: { slots: AssetSlot[]; 
 
   return (
     <div className="adm-card adm-card-pad">
-      <div className="mb-4 flex items-center gap-2">
-        <span className="adm-gold-rule" />
-        <h3 className="font-semibold text-[15px]" style={{ color: "rgb(var(--foreground))" }}>Görseller & Videolar</h3>
+      <div className="mb-5 flex items-center gap-3">
+        <span className="h-7 w-1.5 rounded-full" style={{ background: "rgb(var(--gold))" }} />
+        <h3 className="adm-section-title">Görseller & Videolar</h3>
       </div>
       <p className="adm-help mb-4 mt-0">Bu sayfada kullanılan görseller/videolar. “Değiştir” ile yenisini yükle veya kütüphaneden seç; “Sıfırla” ile eskisine dön. Değiştirmezsen varsayılan kalır.</p>
 
@@ -40,7 +40,7 @@ export function AssetManager({ slots, overrides, media }: { slots: AssetSlot[]; 
           const cur = overrides[s.id]?.trim() || s.def;
           const changed = !!overrides[s.id]?.trim();
           return (
-            <div key={s.id} className="overflow-hidden rounded-xl border" style={{ borderColor: "rgb(var(--border))" }}>
+            <div key={s.id} className="adm-thumb">
               <div className="relative aspect-video" style={{ background: "rgb(var(--muted))" }}>
                 {s.type === "video" ? (
                   <video src={cur} muted loop playsInline className="h-full w-full object-cover" />

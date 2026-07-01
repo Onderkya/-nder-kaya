@@ -24,11 +24,13 @@ export default async function AdminPagesList() {
 
       {/* Bilinen rotalar için hızlı oluştur */}
       <Card>
-        <div className="mb-1 flex items-center gap-2">
-          <Icon name="pages" size={18} style={{ color: "rgb(var(--primary))" }} />
-          <h2 className="font-semibold text-[15px]" style={{ color: "rgb(var(--foreground))" }}>Mevcut sayfa rotaları</h2>
+        <div className="mb-5">
+          <div className="flex items-center gap-3">
+            <span className="h-7 w-1.5 rounded-full" style={{ background: "rgb(var(--gold))" }} />
+            <h3 className="adm-section-title">Mevcut sayfa rotaları</h3>
+          </div>
+          <p className="adm-help ml-[18px] mt-1">Sitenizdeki hazır sayfalar. Var olana tıklayıp düzenleyin, olmayanı tek dokunuşla oluşturun.</p>
         </div>
-        <p className="adm-help mb-4">Sitenizdeki hazır sayfalar. Var olana tıklayıp düzenleyin, olmayanı tek dokunuşla oluşturun.</p>
         <div className="flex flex-wrap gap-2">
           {KNOWN.map((slug) =>
             existing.has(slug) ? (
@@ -67,7 +69,10 @@ export default async function AdminPagesList() {
 
       {/* Tüm sayfalar */}
       <div>
-        <h2 className="adm-eyebrow mb-3">Tüm sayfalar</h2>
+        <div className="mb-4 flex items-center gap-3">
+          <span className="h-7 w-1.5 rounded-full" style={{ background: "rgb(var(--gold))" }} />
+          <h3 className="adm-section-title">Tüm sayfalar</h3>
+        </div>
 
         {pages.length === 0 ? (
           <EmptyState
