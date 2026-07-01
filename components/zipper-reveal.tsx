@@ -70,17 +70,20 @@ function PlacesCarousel({ eyebrow, title, items }: { eyebrow: string; title: str
   );
 }
 
-/* ------------------------------- MASAÜSTÜ FERMUAR ------------------------------- */
+/* ------------------------------ MASAÜSTÜ: DALIŞ PORTALI ------------------------------ */
+/**
+ * Deniz "örtüsü" ortadan büyüyen bir DAİRE ile açılır → alttaki Antalya sahnesine
+ * dalış hissi. Fermuar dişleri/sürgüsü yerine kenarda ışıltılı su halkası + hafif
+ * dalga (ripple). Perf: yalnız scroll'da tek kare; clip-path bir çember deliği
+ * (evenodd), boştayken sıfır repaint (eski çapraz dikişten de ucuz).
+ */
 function ZipperExperience({ eyebrow, title, items }: { eyebrow: string; title: string; items: ZipItem[] }) {
   const rootRef = useRef<HTMLElement>(null);
   const cover = useRef<HTMLDivElement>(null);
   const svgRef = useRef<SVGSVGElement>(null);
-  const tapeRef = useRef<SVGPathElement>(null);
-  const teethRef = useRef<SVGPathElement>(null);
-  const teeth2Ref = useRef<SVGPathElement>(null);
-  const seamRef = useRef<SVGPathElement>(null);
-  const sliderRef = useRef<SVGGElement>(null);
-  const bodyRef = useRef<SVGGElement>(null);
+  const ringRef = useRef<SVGCircleElement>(null);
+  const glowRef = useRef<SVGCircleElement>(null);
+  const rippleRef = useRef<SVGCircleElement>(null);
   const headRef = useRef<HTMLDivElement>(null);
   const contentRef = useRef<HTMLDivElement>(null);
   const vids = useRef<Array<HTMLVideoElement | null>>([]);
@@ -104,7 +107,8 @@ function ZipperExperience({ eyebrow, title, items }: { eyebrow: string; title: s
     // Tek karelik hesap — yalnız scroll/resize'da çağrılır (boştayken repaint yok).
     const compute = () => {
       scheduled = false;
-      const cy = H / 2;
+      const cx = W / 2;
+      const cy = H * 0.5;
       const total = root.offsetHeight - H;
       const top = root.getBoundingClientRect().top;
       const scrolled = clamp(-top, 0, total);
@@ -114,30 +118,23 @@ function ZipperExperience({ eyebrow, title, items }: { eyebrow: string; title: s
       const cp = clamp((scrolled - introPx) / after);
       const idx = clamp(Math.floor(cp * (N - 0.0001)), 0, N - 1);
 
-      // Çapraz kıvrımlı dikiş (salınım YOK → boştayken sabit, jank yok).
-      const span = W + H;
-      const L = -0.1 * span + open * 1.2 * span;
-      const amp = W * 0.13;
-      const xSeam = (y: number) => L - y * 0.9 + amp * Math.sin((y / H) * Math.PI);
+      // Ortadan büyüyen çember. Rmax köşeye ulaşınca örtü tamamen kalkar.
+      const corner = 0.5 * Math.hypot(W, H);
+      const R = open * corner * 1.06;
 
-      const SAMP = 14;
-      let d = `M${xSeam(0).toFixed(1)} 0`;
-      for (let s = 1; s <= SAMP; s++) {
-        const y = (H * s) / SAMP;
-        d += ` L${xSeam(y).toFixed(1)} ${y.toFixed(1)}`;
-      }
-      const clipD = d + ` L${W} ${H} L${W} 0 Z`;
-      if (cover.current) cover.current.style.clipPath = `path('${clipD}')`;
-      tapeRef.current?.setAttribute("d", d);
-      seamRef.current?.setAttribute("d", d);
-      teethRef.current?.setAttribute("d", d);
-      teeth2Ref.current?.setAttribute("d", d);
+      // Örtü = tam dikdörtgen EKSİ çember deliği (evenodd). Delik büyüdükçe sahne açılır.
+      const clipD =
+        `M0 0 H${W} V${H} H0 Z ` +
+        `M${(cx - R).toFixed(1)} ${cy.toFixed(1)} ` +
+        `a ${R.toFixed(1)} ${R.toFixed(1)} 0 1 0 ${(2 * R).toFixed(1)} 0 ` +
+        `a ${R.toFixed(1)} ${R.toFixed(1)} 0 1 0 ${(-2 * R).toFixed(1)} 0 Z`;
+      if (cover.current) cover.current.style.clipPath = `path(evenodd, '${clipD}')`;
 
-      const sx = xSeam(cy);
-      const slope = -0.9 + amp * (Math.PI / H) * Math.cos((cy / H) * Math.PI);
-      const deg = (Math.atan2(1, slope) * 180) / Math.PI;
-      if (sliderRef.current) sliderRef.current.setAttribute("transform", `translate(${sx.toFixed(1)}, ${cy.toFixed(1)})`);
-      if (bodyRef.current) bodyRef.current.setAttribute("transform", `rotate(${deg.toFixed(1)})`);
+      // Işıltılı su halkası + hafif dış dalga.
+      const rr = R.toFixed(1);
+      if (ringRef.current) { ringRef.current.setAttribute("cx", String(cx)); ringRef.current.setAttribute("cy", String(cy)); ringRef.current.setAttribute("r", rr); }
+      if (glowRef.current) { glowRef.current.setAttribute("cx", String(cx)); glowRef.current.setAttribute("cy", String(cy)); glowRef.current.setAttribute("r", rr); }
+      if (rippleRef.current) { rippleRef.current.setAttribute("cx", String(cx)); rippleRef.current.setAttribute("cy", String(cy)); rippleRef.current.setAttribute("r", (R + 14).toFixed(1)); }
 
       const fade = 1 - clamp((open - 0.92) * 12);
       if (svgRef.current) svgRef.current.style.opacity = String(fade);
@@ -226,40 +223,28 @@ function ZipperExperience({ eyebrow, title, items }: { eyebrow: string; title: s
           <h2 className="h-section mx-auto mt-3 max-w-2xl text-balance px-6">{title}</h2>
         </div>
 
-        <div ref={cover} className="absolute inset-0 z-20 will-change-[clip-path]" style={{ clipPath: "path('M50% 0 L50% 100% L100% 100% L100% 0 Z')" }}>
+        <div ref={cover} className="absolute inset-0 z-20 will-change-[clip-path]" style={{ clipPath: "path(evenodd, 'M0 0 H100 V100 H0 Z')" }}>
           <video className="absolute inset-0 h-full w-full object-cover" src="/media/kaputas-drone.mp4" poster="/images/kaputas.jpg" autoPlay muted loop playsInline preload="none" aria-hidden />
           <div className="absolute inset-0" style={{ background: "linear-gradient(135deg, rgba(13,148,168,0.35), rgba(5,95,123,0.45))" }} />
         </div>
 
         <svg ref={svgRef} className="pointer-events-none absolute inset-0 z-30 h-full w-full" preserveAspectRatio="none" aria-hidden>
           <defs>
-            <linearGradient id="tooth" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0" stopColor="#f2fbff" />
-              <stop offset="0.5" stopColor="#b8dfec" />
-              <stop offset="1" stopColor="#5f93a6" />
+            <linearGradient id="waterRing" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0" stopColor="#ffffff" />
+              <stop offset="0.5" stopColor="#8fe6f2" />
+              <stop offset="1" stopColor="#2aa9c4" />
             </linearGradient>
-            <linearGradient id="zslider" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0" stopColor="#fdf1da" />
-              <stop offset="0.45" stopColor="#e9eef2" />
-              <stop offset="1" stopColor="#9fb0bb" />
-            </linearGradient>
+            <filter id="ringGlow" x="-30%" y="-30%" width="160%" height="160%">
+              <feGaussianBlur stdDeviation="7" />
+            </filter>
           </defs>
-          <path ref={tapeRef} fill="none" stroke="#06303d" strokeWidth="34" strokeLinecap="round" opacity="0.5" />
-          <path ref={teethRef} fill="none" stroke="url(#tooth)" strokeWidth="22" strokeDasharray="7 7" strokeLinecap="butt" />
-          <path ref={teeth2Ref} fill="none" stroke="url(#tooth)" strokeWidth="22" strokeDasharray="7 7" strokeDashoffset="7" strokeLinecap="butt" opacity="0.92" />
-          <path ref={seamRef} fill="none" stroke="#063a49" strokeWidth="2.5" opacity="0.7" />
-          <g ref={sliderRef}>
-            <g ref={bodyRef}>
-              <rect x="-15" y="-30" width="30" height="60" rx="11" fill="url(#zslider)" stroke="#7d8c96" strokeWidth="1.4" />
-              <rect x="-15" y="-7" width="30" height="14" rx="5" fill="#c3d0d8" />
-              <rect x="-6" y="-26" width="12" height="20" rx="5" fill="rgba(255,255,255,0.6)" />
-            </g>
-            <g className="zip-pull">
-              <line x1="0" y1="6" x2="0" y2="22" stroke="#aab8c0" strokeWidth="4.5" strokeLinecap="round" />
-              <rect x="-10" y="20" width="20" height="30" rx="7" fill="url(#zslider)" stroke="#7d8c96" strokeWidth="1.4" />
-              <circle cx="0" cy="32" r="4.5" fill="rgba(120,140,150,0.5)" />
-            </g>
-          </g>
+          {/* dış dalga (ripple) */}
+          <circle ref={rippleRef} cx="0" cy="0" r="0" fill="none" stroke="#bfeef7" strokeWidth="1.5" opacity="0.35" />
+          {/* yumuşak dış parıltı */}
+          <circle ref={glowRef} cx="0" cy="0" r="0" fill="none" stroke="#6fdcec" strokeWidth="10" opacity="0.5" filter="url(#ringGlow)" />
+          {/* keskin su halkası */}
+          <circle ref={ringRef} cx="0" cy="0" r="0" fill="none" stroke="url(#waterRing)" strokeWidth="3.5" />
         </svg>
       </div>
     </section>
