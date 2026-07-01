@@ -5,6 +5,8 @@ import type { PaymentType } from "@prisma/client";
 import { requireAdmin } from "@/lib/auth";
 import { audit } from "@/lib/audit";
 import { validateCryptoAddress } from "@/lib/crypto-address";
+import { PageHeader, Card, Section, Badge, EmptyState, Field, LocationHint } from "@/components/admin/ui";
+import { Icon } from "@/components/admin/icons";
 
 export const dynamic = "force-dynamic";
 
@@ -78,112 +80,133 @@ export default async function PaymentsPage({
   const logs = await prisma.auditLog
     .findMany({ where: { entity: "PaymentMethod" }, orderBy: { createdAt: "desc" }, take: 8 })
     .catch(() => []);
-  const field = "rounded-lg border border-slate-300 px-3 py-2 text-sm";
 
   return (
     <div className="space-y-8">
-      <div>
-        <h1 className="mb-2 text-2xl font-bold">Ödeme Yöntemleri</h1>
-        <p className="text-sm text-slate-500">
-          Kazakistan için Kaspi, diğer ülkeler için kripto (USDT, BTC ve diğerleri).
-          Kripto adresleri kaydedilmeden önce <strong>checksum ile doğrulanır</strong>;
-          yanlış/eksik adres kabul edilmez. Tüm değişiklikler denetim kaydına yazılır.
-        </p>
-      </div>
+      <PageHeader
+        eyebrow="Satış & Para"
+        title="Ödeme Yöntemleri"
+        description="Kazakistan için Kaspi, diğer ülkeler için kripto (USDT, BTC ve diğerleri). Kripto adresleri kaydedilmeden önce checksum ile doğrulanır; yanlış/eksik adres kabul edilmez. Tüm değişiklikler denetim kaydına yazılır."
+      />
 
       {error && (
-        <div className="rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
-          ⚠️ {error}
-        </div>
+        <Card><p className="text-[14px]" style={{ color: "rgb(var(--accent))" }}>⚠️ {error}</p></Card>
       )}
       {ok && (
-        <div className="rounded-lg border border-green-200 bg-green-50 px-4 py-3 text-sm text-green-700">
-          ✓ Ödeme yöntemi doğrulandı ve eklendi.
-        </div>
+        <Card featured><p className="text-[14px]" style={{ color: "rgb(var(--primary))" }}>✓ Ödeme yöntemi doğrulandı ve eklendi.</p></Card>
       )}
 
-      <form action={createMethod} className="grid gap-3 rounded-2xl bg-white p-6 shadow-sm sm:grid-cols-2 lg:grid-cols-4">
-        <div>
-          <label className="mb-1 block text-xs font-medium text-slate-500">Tür</label>
-          <select name="type" className={`${field} w-full`}>
-            <option value="KASPI">Kaspi</option>
-            <option value="CRYPTO">Kripto</option>
-          </select>
-        </div>
-        <div>
-          <label className="mb-1 block text-xs font-medium text-slate-500">Coin (kripto)</label>
-          <input name="coin" placeholder="USDT / BTC" className={`${field} w-full`} />
-        </div>
-        <div>
-          <label className="mb-1 block text-xs font-medium text-slate-500">Ağ</label>
-          <input name="network" placeholder="TRC20 / ERC20 / BTC" className={`${field} w-full`} />
-        </div>
-        <div>
-          <label className="mb-1 block text-xs font-medium text-slate-500">Adres / Kaspi bilgisi</label>
-          <input name="address" className={`${field} w-full font-mono`} autoComplete="off" spellCheck={false} />
-        </div>
-        <div className="flex items-end">
-          <button className="rounded-lg bg-cyan-600 px-4 py-2 text-sm font-semibold text-white">Doğrula & Ekle</button>
-        </div>
-      </form>
+      <Section title="Yeni ödeme yöntemi" description="Kaspi bilgisi veya kripto adresi ekle." icon="card">
+        <form action={createMethod} className="space-y-4">
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+            <Field label="Tür" htmlFor="pm-type">
+              <select id="pm-type" name="type" className="adm-select">
+                <option value="KASPI">Kaspi</option>
+                <option value="CRYPTO">Kripto</option>
+              </select>
+            </Field>
+            <Field label="Coin (kripto)" htmlFor="pm-coin">
+              <input id="pm-coin" name="coin" placeholder="USDT / BTC" className="adm-input" />
+            </Field>
+            <Field label="Ağ" htmlFor="pm-network">
+              <input id="pm-network" name="network" placeholder="TRC20 / ERC20 / BTC" className="adm-input" />
+            </Field>
+            <Field label="Adres / Kaspi bilgisi" htmlFor="pm-address">
+              <input id="pm-address" name="address" className="adm-input font-mono" autoComplete="off" spellCheck={false} />
+            </Field>
+          </div>
+          <LocationHint>Eklediğin adresler sitenizdeki ödeme / iletişim sayfasında müşterilere gösterilir.</LocationHint>
+          <button className="adm-btn adm-btn-primary"><Icon name="check" size={16} /> Doğrula &amp; Ekle</button>
+        </form>
+      </Section>
 
-      <div className="overflow-x-auto rounded-2xl bg-white shadow-sm">
-        <table className="w-full text-left text-sm">
-          <thead className="border-b border-slate-200 text-slate-500">
-            <tr>
-              <th className="p-3">Tür</th>
-              <th className="p-3">Coin</th>
-              <th className="p-3">Ağ</th>
-              <th className="p-3">Adres</th>
-              <th className="p-3">Durum</th>
-              <th className="p-3"></th>
-            </tr>
-          </thead>
-          <tbody>
+      {methods.length === 0 ? (
+        <EmptyState icon="card" title="Henüz ödeme yöntemi yok" description="Yukarıdan bir Kaspi bilgisi veya kripto adresi ekle; ödeme sayfasında görünecek." />
+      ) : (
+        <>
+          {/* Mobil kartlar */}
+          <div className="space-y-3 sm:hidden">
             {methods.map((m) => (
-              <tr key={m.id} className="border-b border-slate-100">
-                <td className="p-3 font-semibold">{m.type}</td>
-                <td className="p-3">{m.coin || "-"}</td>
-                <td className="p-3">{m.network || "-"}</td>
-                <td className="max-w-xs p-3 font-mono text-xs" title={m.address || ""}>{mask(m.address)}</td>
-                <td className="p-3">
+              <Card key={m.id}>
+                <div className="flex items-start justify-between gap-3">
+                  <p className="font-semibold" style={{ color: "rgb(var(--foreground))" }}>{m.type}</p>
+                  <Badge tone={m.active ? "success" : "neutral"}>{m.active ? "Aktif" : "Pasif"}</Badge>
+                </div>
+                <dl className="mt-3 space-y-2 text-[13.5px]">
+                  <div className="flex justify-between gap-3"><dt className="adm-muted text-xs">Coin</dt><dd>{m.coin || "-"}</dd></div>
+                  <div className="flex justify-between gap-3"><dt className="adm-muted text-xs">Ağ</dt><dd>{m.network || "-"}</dd></div>
+                  <div className="flex justify-between gap-3"><dt className="adm-muted text-xs">Adres</dt><dd className="truncate font-mono text-xs" title={m.address || ""}>{mask(m.address)}</dd></div>
+                </dl>
+                <div className="mt-3 flex items-center gap-2 border-t pt-3" style={{ borderColor: "rgb(var(--border))" }}>
                   <form action={toggleMethod}>
                     <input type="hidden" name="id" value={m.id} />
                     <input type="hidden" name="active" value={String(m.active)} />
-                    <button className={`rounded-full px-3 py-1 text-xs font-semibold ${m.active ? "bg-green-100 text-green-700" : "bg-slate-200 text-slate-600"}`}>
-                      {m.active ? "Aktif" : "Pasif"}
-                    </button>
+                    <button className="adm-btn adm-btn-ghost adm-btn-sm">{m.active ? "Pasifleştir" : "Aktifleştir"}</button>
                   </form>
-                </td>
-                <td className="p-3">
                   <form action={deleteMethod}>
                     <input type="hidden" name="id" value={m.id} />
-                    <button className="text-xs text-red-600 hover:underline">Sil</button>
+                    <button className="adm-btn adm-btn-danger adm-btn-sm">Sil</button>
                   </form>
-                </td>
-              </tr>
+                </div>
+              </Card>
             ))}
-            {methods.length === 0 && (
-              <tr><td colSpan={6} className="p-4 text-center text-slate-500">Henüz ödeme yöntemi yok.</td></tr>
-            )}
-          </tbody>
-        </table>
-      </div>
+          </div>
+
+          {/* Masaüstü tablo */}
+          <Card pad={false} className="hidden sm:block">
+            <table className="w-full text-left text-sm">
+              <thead>
+                <tr className="adm-muted text-xs uppercase tracking-wide" style={{ borderBottom: "1px solid rgb(var(--border))" }}>
+                  <th className="px-4 py-3 font-semibold">Tür</th>
+                  <th className="px-4 py-3 font-semibold">Coin</th>
+                  <th className="px-4 py-3 font-semibold">Ağ</th>
+                  <th className="px-4 py-3 font-semibold">Adres</th>
+                  <th className="px-4 py-3 font-semibold">Durum</th>
+                  <th className="px-4 py-3"></th>
+                </tr>
+              </thead>
+              <tbody>
+                {methods.map((m) => (
+                  <tr key={m.id} style={{ borderTop: "1px solid rgb(var(--border))" }}>
+                    <td className="px-4 py-3 font-semibold">{m.type}</td>
+                    <td className="px-4 py-3">{m.coin || "-"}</td>
+                    <td className="px-4 py-3">{m.network || "-"}</td>
+                    <td className="max-w-xs px-4 py-3 font-mono text-xs" title={m.address || ""}>{mask(m.address)}</td>
+                    <td className="px-4 py-3"><Badge tone={m.active ? "success" : "neutral"}>{m.active ? "Aktif" : "Pasif"}</Badge></td>
+                    <td className="px-4 py-3">
+                      <div className="flex items-center justify-end gap-2">
+                        <form action={toggleMethod}>
+                          <input type="hidden" name="id" value={m.id} />
+                          <input type="hidden" name="active" value={String(m.active)} />
+                          <button className="adm-btn adm-btn-ghost adm-btn-sm">{m.active ? "Pasifleştir" : "Aktifleştir"}</button>
+                        </form>
+                        <form action={deleteMethod}>
+                          <input type="hidden" name="id" value={m.id} />
+                          <button className="adm-btn adm-btn-danger adm-btn-sm">Sil</button>
+                        </form>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </Card>
+        </>
+      )}
 
       {logs.length > 0 && (
-        <div className="rounded-2xl bg-white p-6 shadow-sm">
-          <h2 className="mb-3 text-sm font-semibold text-slate-600">Son değişiklikler (denetim kaydı)</h2>
-          <ul className="space-y-2 text-xs text-slate-500">
+        <Section title="Son değişiklikler (denetim kaydı)" description="Ödeme yöntemlerinde yapılan son işlemler." icon="log" defaultOpen={false}>
+          <ul className="space-y-2 text-xs">
             {logs.map((l) => (
-              <li key={l.id} className="flex flex-wrap gap-x-2">
-                <span className="text-slate-400">{l.createdAt.toLocaleString("tr-TR")}</span>
-                <span className="font-semibold text-slate-700">{l.actorEmail}</span>
-                <span className="rounded bg-slate-100 px-1.5">{l.action}</span>
-                <span>{l.details}</span>
+              <li key={l.id} className="flex flex-wrap items-center gap-x-2">
+                <span className="adm-muted">{l.createdAt.toLocaleString("tr-TR")}</span>
+                <span className="font-semibold" style={{ color: "rgb(var(--foreground))" }}>{l.actorEmail}</span>
+                <span className="rounded px-1.5" style={{ background: "rgb(var(--muted))" }}>{l.action}</span>
+                <span className="adm-muted">{l.details}</span>
               </li>
             ))}
           </ul>
-        </div>
+        </Section>
       )}
     </div>
   );

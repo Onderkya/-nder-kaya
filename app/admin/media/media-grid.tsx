@@ -3,6 +3,8 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
+import { Card, Badge, EmptyState } from "@/components/admin/ui";
+import { Icon } from "@/components/admin/icons";
 
 type Item = { id: string; url: string; alt: string | null; inUse: number };
 
@@ -32,16 +34,22 @@ export function MediaGrid({ items }: { items: Item[] }) {
   }
 
   if (items.length === 0) {
-    return <p className="rounded-2xl bg-white p-6 text-sm text-slate-500 shadow-sm">Henüz görsel yok.</p>;
+    return (
+      <EmptyState
+        icon="image"
+        title="Henüz görsel yok"
+        description="Yukarıdaki alandan ilk görselinizi yükleyin. Yüklediğiniz görseller burada listelenir ve sayfaları düzenlerken seçilebilir hâle gelir."
+      />
+    );
   }
 
   return (
     <div>
-      {error && <p className="mb-3 text-sm text-red-600">{error}</p>}
+      {error ? <p className="adm-help mb-3" style={{ color: "rgb(var(--accent))" }}>{error}</p> : null}
       <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
         {items.map((m) => (
-          <div key={m.id} className="overflow-hidden rounded-2xl bg-white shadow-sm">
-            <div className="relative h-36 w-full bg-slate-50">
+          <Card key={m.id} pad={false} className="overflow-hidden">
+            <div className="relative aspect-square w-full" style={{ background: "rgb(var(--muted) / 0.5)" }}>
               <Image
                 src={m.url}
                 alt={m.alt ?? ""}
@@ -50,26 +58,30 @@ export function MediaGrid({ items }: { items: Item[] }) {
                 className="object-contain"
               />
             </div>
-            <div className="space-y-2 p-3">
-              <p className="truncate text-xs text-slate-500" title={m.alt ?? ""}>{m.alt || "—"}</p>
-              <div className="flex items-center justify-between gap-2">
+            <div className="space-y-2.5 p-3">
+              <p className="truncate text-[13px] font-medium" style={{ color: "rgb(var(--foreground))" }} title={m.alt ?? ""}>
+                {m.alt || "Açıklama yok"}
+              </p>
+              <Badge tone={m.inUse > 0 ? "warn" : "neutral"}>{m.inUse > 0 ? "Kullanımda" : "Boşta"}</Badge>
+              <div className="flex items-center gap-2 pt-0.5">
                 <button
                   onClick={() => navigator.clipboard?.writeText(m.url)}
-                  className="rounded-lg border border-slate-300 px-2 py-1 text-xs hover:bg-slate-50"
+                  className="adm-btn adm-btn-ghost adm-btn-sm"
                 >
+                  <Icon name="content" size={14} />
                   URL kopyala
                 </button>
                 <button
                   onClick={() => remove(m.id)}
                   disabled={busy === m.id || m.inUse > 0}
                   title={m.inUse > 0 ? "İçerikte kullanılıyor" : "Sil"}
-                  className="text-xs text-red-600 hover:underline disabled:opacity-40"
+                  className="adm-btn adm-btn-danger adm-btn-sm"
                 >
                   {busy === m.id ? "…" : m.inUse > 0 ? "Kullanımda" : "Sil"}
                 </button>
               </div>
             </div>
-          </div>
+          </Card>
         ))}
       </div>
     </div>

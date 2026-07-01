@@ -2,6 +2,7 @@ import { prisma } from "@/lib/db";
 import { revalidatePath } from "next/cache";
 import { requireAdmin } from "@/lib/auth";
 import { audit } from "@/lib/audit";
+import { PageHeader, Card, Section, Badge, Field, EmptyState, LocationHint } from "@/components/admin/ui";
 
 export const dynamic = "force-dynamic";
 
@@ -72,125 +73,205 @@ export default async function BookingPage() {
     prisma.availabilitySlot.findMany({ orderBy: { startsAt: "asc" } }).catch(() => []),
   ]);
 
-  const field = "rounded-lg border border-slate-300 px-3 py-2 text-sm";
   const now = new Date();
 
   return (
-    <div className="space-y-10">
-      <div>
-        <h1 className="mb-2 text-2xl font-bold">Rezervasyon</h1>
-        <p className="text-sm text-slate-500">
-          Ders tiplerini (süre/fiyat) ve uygun zaman slotlarını yönetin. Boş slotlar
-          dersler sayfasında müşterilere gösterilir.
-        </p>
-      </div>
+    <div className="space-y-6">
+      <PageHeader
+        eyebrow="Gelen Kutusu"
+        title="Rezervasyon"
+        description="Ders tiplerini (süre/fiyat) ve uygun zaman slotlarını yönetin. Boş slotlar dersler sayfasında müşterilere gösterilir."
+      />
 
       {/* Ders tipleri */}
-      <section className="space-y-4">
-        <h2 className="text-lg font-semibold">Ders tipleri</h2>
-        <form action={createLessonType} className="grid gap-3 rounded-2xl bg-white p-6 shadow-sm sm:grid-cols-4">
-          <div>
-            <label className="mb-1 block text-xs font-medium text-slate-500">Süre (dk)</label>
-            <input name="minutes" type="number" min={1} required placeholder="30" className={`${field} w-full`} />
-          </div>
-          <div>
-            <label className="mb-1 block text-xs font-medium text-slate-500">Fiyat (boş = belirtilmemiş)</label>
-            <input name="price" type="number" min={0} className={`${field} w-full`} />
-          </div>
-          <div>
-            <label className="mb-1 block text-xs font-medium text-slate-500">Para birimi</label>
-            <input name="currency" defaultValue="USD" className={`${field} w-full`} />
-          </div>
+      <Section
+        title="Ders tipleri"
+        description="Süre ve fiyat seçenekleri — müşteri bunlardan birini seçerek randevu alır."
+        icon="calendar"
+      >
+        <form action={createLessonType} className="grid gap-4 sm:grid-cols-4">
+          <Field label="Süre (dk)" help="Dersin uzunluğu.">
+            <input name="minutes" type="number" min={1} required placeholder="30" className="adm-input w-full" />
+          </Field>
+          <Field label="Fiyat" help="Boş = belirtilmemiş.">
+            <input name="price" type="number" min={0} className="adm-input w-full" />
+          </Field>
+          <Field label="Para birimi">
+            <input name="currency" defaultValue="USD" className="adm-input w-full" />
+          </Field>
           <div className="flex items-end">
-            <button className="rounded-lg bg-cyan-600 px-4 py-2 text-sm font-semibold text-white">Ekle</button>
+            <button className="adm-btn adm-btn-primary w-full sm:w-auto">Ekle</button>
           </div>
         </form>
 
-        <div className="overflow-x-auto rounded-2xl bg-white shadow-sm">
-          <table className="w-full text-left text-sm">
-            <thead className="border-b border-slate-200 text-slate-500">
-              <tr><th className="p-3">Süre</th><th className="p-3">Fiyat</th><th className="p-3">Durum</th><th className="p-3"></th></tr>
-            </thead>
-            <tbody>
-              {types.map((t) => (
-                <tr key={t.id} className="border-b border-slate-100">
-                  <td className="p-3 font-semibold">{t.minutes} dk</td>
-                  <td className="p-3">{t.price != null ? `${t.price} ${t.currency}` : "—"}</td>
-                  <td className="p-3">
-                    <form action={toggleLessonType}>
-                      <input type="hidden" name="id" value={t.id} />
-                      <input type="hidden" name="active" value={String(t.active)} />
-                      <button className={`rounded-full px-3 py-1 text-xs font-semibold ${t.active ? "bg-green-100 text-green-700" : "bg-slate-200 text-slate-600"}`}>
-                        {t.active ? "Aktif" : "Pasif"}
-                      </button>
-                    </form>
-                  </td>
-                  <td className="p-3">
-                    <form action={deleteLessonType}>
-                      <input type="hidden" name="id" value={t.id} />
-                      <button className="text-xs text-red-600 hover:underline">Sil</button>
-                    </form>
-                  </td>
-                </tr>
-              ))}
-              {types.length === 0 && <tr><td colSpan={4} className="p-4 text-center text-slate-500">Henüz ders tipi yok.</td></tr>}
-            </tbody>
-          </table>
-        </div>
-      </section>
-
-      {/* Slotlar */}
-      <section className="space-y-4">
-        <h2 className="text-lg font-semibold">Uygun zaman slotları</h2>
-        <form action={createSlot} className="grid gap-3 rounded-2xl bg-white p-6 shadow-sm sm:grid-cols-3">
-          <div>
-            <label className="mb-1 block text-xs font-medium text-slate-500">Başlangıç</label>
-            <input name="startsAt" type="datetime-local" required className={`${field} w-full`} />
-          </div>
-          <div>
-            <label className="mb-1 block text-xs font-medium text-slate-500">Süre (dk)</label>
-            <input name="minutes" type="number" min={1} defaultValue={30} className={`${field} w-full`} />
-          </div>
-          <div className="flex items-end">
-            <button className="rounded-lg bg-cyan-600 px-4 py-2 text-sm font-semibold text-white">Slot ekle</button>
-          </div>
-        </form>
-
-        <div className="overflow-x-auto rounded-2xl bg-white shadow-sm">
-          <table className="w-full text-left text-sm">
-            <thead className="border-b border-slate-200 text-slate-500">
-              <tr><th className="p-3">Başlangıç</th><th className="p-3">Süre</th><th className="p-3">Durum</th><th className="p-3"></th></tr>
-            </thead>
-            <tbody>
-              {slots.map((s) => {
-                const past = s.startsAt < now;
-                return (
-                  <tr key={s.id} className="border-b border-slate-100">
-                    <td className="p-3">{s.startsAt.toLocaleString("tr-TR")}</td>
-                    <td className="p-3">{s.minutes} dk</td>
-                    <td className="p-3">
-                      {s.booked ? (
-                        <span className="rounded-full bg-amber-100 px-3 py-1 text-xs font-semibold text-amber-700">Dolu</span>
-                      ) : past ? (
-                        <span className="rounded-full bg-slate-200 px-3 py-1 text-xs font-semibold text-slate-600">Geçmiş</span>
-                      ) : (
-                        <span className="rounded-full bg-green-100 px-3 py-1 text-xs font-semibold text-green-700">Boş</span>
-                      )}
-                    </td>
-                    <td className="p-3">
-                      <form action={deleteSlot}>
-                        <input type="hidden" name="id" value={s.id} />
-                        <button className="text-xs text-red-600 hover:underline">Sil</button>
+        <div className="mt-5">
+          {types.length === 0 ? (
+            <EmptyState icon="calendar" title="Henüz ders tipi yok" description="Yukarıdan süre ve fiyat ekleyin; müşteriler bunlardan seçim yapar." />
+          ) : (
+            <>
+              {/* Mobil — kartlar */}
+              <div className="space-y-3 sm:hidden">
+                {types.map((t) => (
+                  <Card key={t.id}>
+                    <div className="flex items-start justify-between gap-3">
+                      <div>
+                        <p className="font-semibold" style={{ color: "rgb(var(--foreground))" }}>{t.minutes} dk</p>
+                        <p className="adm-muted text-[13.5px]">{t.price != null ? `${t.price} ${t.currency}` : "Fiyat belirtilmemiş"}</p>
+                      </div>
+                      <Badge tone={t.active ? "success" : "neutral"}>{t.active ? "Aktif" : "Pasif"}</Badge>
+                    </div>
+                    <div className="mt-3 flex items-center gap-2">
+                      <form action={toggleLessonType}>
+                        <input type="hidden" name="id" value={t.id} />
+                        <input type="hidden" name="active" value={String(t.active)} />
+                        <button className="adm-btn adm-btn-ghost adm-btn-sm">{t.active ? "Pasif yap" : "Aktif yap"}</button>
                       </form>
-                    </td>
-                  </tr>
-                );
-              })}
-              {slots.length === 0 && <tr><td colSpan={4} className="p-4 text-center text-slate-500">Henüz slot yok.</td></tr>}
-            </tbody>
-          </table>
+                      <form action={deleteLessonType}>
+                        <input type="hidden" name="id" value={t.id} />
+                        <button className="adm-btn adm-btn-danger adm-btn-sm">Sil</button>
+                      </form>
+                    </div>
+                  </Card>
+                ))}
+              </div>
+
+              {/* Masaüstü — tablo */}
+              <div className="hidden sm:block">
+                <table className="hidden w-full text-left text-sm sm:table">
+                  <thead>
+                    <tr className="adm-muted border-b text-xs uppercase tracking-wide" style={{ borderColor: "rgb(var(--border))" }}>
+                      <th className="py-3 pr-4 font-semibold">Süre</th>
+                      <th className="py-3 pr-4 font-semibold">Fiyat</th>
+                      <th className="py-3 pr-4 font-semibold">Durum</th>
+                      <th className="py-3 font-semibold"></th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {types.map((t) => (
+                      <tr key={t.id} className="border-b last:border-0" style={{ borderColor: "rgb(var(--border))" }}>
+                        <td className="py-3 pr-4 font-semibold" style={{ color: "rgb(var(--foreground))" }}>{t.minutes} dk</td>
+                        <td className="py-3 pr-4" style={{ color: "rgb(var(--foreground))" }}>{t.price != null ? `${t.price} ${t.currency}` : "—"}</td>
+                        <td className="py-3 pr-4">
+                          <form action={toggleLessonType} className="flex items-center gap-2">
+                            <input type="hidden" name="id" value={t.id} />
+                            <input type="hidden" name="active" value={String(t.active)} />
+                            <button className="inline-flex"><Badge tone={t.active ? "success" : "neutral"}>{t.active ? "Aktif" : "Pasif"}</Badge></button>
+                          </form>
+                        </td>
+                        <td className="py-3">
+                          <form action={deleteLessonType}>
+                            <input type="hidden" name="id" value={t.id} />
+                            <button className="adm-btn adm-btn-danger adm-btn-sm">Sil</button>
+                          </form>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </>
+          )}
         </div>
-      </section>
+      </Section>
+
+      {/* Uygunluk slotları */}
+      <Section
+        title="Uygunluk (randevu) slotları"
+        description="Bir slot = müsait olduğun bir zaman aralığı. Müşteriler bu boş slotları /lessons sayfasından seçip randevu alır."
+        icon="calendar"
+      >
+        <LocationHint>Boş slotlar sitenizde <strong>/lessons</strong> (Dersler) sayfasında müşterilere gösterilir.</LocationHint>
+
+        <form action={createSlot} className="mt-4 grid gap-4 sm:grid-cols-3">
+          <Field label="Başlangıç" help="Randevunun başlayacağı tarih ve saat.">
+            <input name="startsAt" type="datetime-local" required className="adm-input w-full" />
+          </Field>
+          <Field label="Süre (dk)">
+            <input name="minutes" type="number" min={1} defaultValue={30} className="adm-input w-full" />
+          </Field>
+          <div className="flex items-end">
+            <button className="adm-btn adm-btn-primary w-full sm:w-auto">Slot ekle</button>
+          </div>
+        </form>
+
+        <div className="mt-5">
+          {slots.length === 0 ? (
+            <EmptyState icon="calendar" title="Henüz slot yok" description="Müsait olduğun zamanları ekle; müşteriler /lessons sayfasından bu boş slotlardan randevu alır." />
+          ) : (
+            <>
+              {/* Mobil — kartlar */}
+              <div className="space-y-3 sm:hidden">
+                {slots.map((s) => {
+                  const past = s.startsAt < now;
+                  return (
+                    <Card key={s.id}>
+                      <div className="flex items-start justify-between gap-3">
+                        <div>
+                          <p className="font-semibold" style={{ color: "rgb(var(--foreground))" }}>{s.startsAt.toLocaleString("tr-TR")}</p>
+                          <p className="adm-muted text-[13.5px]">{s.minutes} dk</p>
+                        </div>
+                        {s.booked ? (
+                          <Badge tone="success">Dolu</Badge>
+                        ) : past ? (
+                          <Badge tone="neutral">Geçmiş</Badge>
+                        ) : (
+                          <Badge tone="neutral">Boş</Badge>
+                        )}
+                      </div>
+                      <div className="mt-3">
+                        <form action={deleteSlot}>
+                          <input type="hidden" name="id" value={s.id} />
+                          <button className="adm-btn adm-btn-danger adm-btn-sm">Sil</button>
+                        </form>
+                      </div>
+                    </Card>
+                  );
+                })}
+              </div>
+
+              {/* Masaüstü — tablo */}
+              <div className="hidden sm:block">
+                <table className="hidden w-full text-left text-sm sm:table">
+                  <thead>
+                    <tr className="adm-muted border-b text-xs uppercase tracking-wide" style={{ borderColor: "rgb(var(--border))" }}>
+                      <th className="py-3 pr-4 font-semibold">Başlangıç</th>
+                      <th className="py-3 pr-4 font-semibold">Süre</th>
+                      <th className="py-3 pr-4 font-semibold">Durum</th>
+                      <th className="py-3 font-semibold"></th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {slots.map((s) => {
+                      const past = s.startsAt < now;
+                      return (
+                        <tr key={s.id} className="border-b last:border-0" style={{ borderColor: "rgb(var(--border))" }}>
+                          <td className="py-3 pr-4" style={{ color: "rgb(var(--foreground))" }}>{s.startsAt.toLocaleString("tr-TR")}</td>
+                          <td className="py-3 pr-4" style={{ color: "rgb(var(--foreground))" }}>{s.minutes} dk</td>
+                          <td className="py-3 pr-4">
+                            {s.booked ? (
+                              <Badge tone="success">Dolu</Badge>
+                            ) : past ? (
+                              <Badge tone="neutral">Geçmiş</Badge>
+                            ) : (
+                              <Badge tone="neutral">Boş</Badge>
+                            )}
+                          </td>
+                          <td className="py-3">
+                            <form action={deleteSlot}>
+                              <input type="hidden" name="id" value={s.id} />
+                              <button className="adm-btn adm-btn-danger adm-btn-sm">Sil</button>
+                            </form>
+                          </td>
+                        </tr>
+                      );
+                    })}
+                  </tbody>
+                </table>
+              </div>
+            </>
+          )}
+        </div>
+      </Section>
     </div>
   );
 }

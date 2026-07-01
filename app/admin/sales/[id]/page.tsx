@@ -3,6 +3,8 @@ import { notFound } from "next/navigation";
 import { getTranslations } from "next-intl/server";
 import { requireAdmin } from "@/lib/auth";
 import { prisma } from "@/lib/db";
+import { PageHeader } from "@/components/admin/ui";
+import { Icon } from "@/components/admin/icons";
 import { SaleForm } from "../sale-form";
 import { updateSale } from "../actions";
 
@@ -26,9 +28,11 @@ export default async function EditSalePage({ params }: { params: Promise<{ id: s
   const payRefs = payMethods.map((m) => m.address).filter((a): a is string => !!a);
 
   return (
-    <div>
-      <Link href="/admin/sales" className="text-sm text-cyan-700">← Satışlar</Link>
-      <h1 className="mb-4 mt-1 text-2xl font-bold">Satışı düzenle</h1>
+    <div className="space-y-6">
+      <Link href="/admin/sales" className="adm-muted inline-flex items-center gap-1.5 text-sm font-medium transition hover:opacity-80">
+        <Icon name="chevron" size={16} className="rotate-90" /> Satışlar
+      </Link>
+      <PageHeader eyebrow="Satış & Para" title="Satışı düzenle" description={`${sale.customerName} kaydını güncelle. Alanları düzenleyip aşağıdan kaydet.`} />
       <SaleForm action={updateSale} sale={sale} promos={promos.map((p) => p.code)} payRefs={payRefs} itemSuggestions={itemSuggestions} submitLabel="Değişiklikleri kaydet" />
     </div>
   );

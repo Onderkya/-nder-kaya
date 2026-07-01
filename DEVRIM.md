@@ -4,7 +4,27 @@
 > ↩️ **Geri dönüş (rollback):** eski sürüm dokunulmadı → dal `claude/consulting-site-plan-6k4lix` + etiket `safe/before-redesign-rev9`. Beğenilmezse sunucuda o dala `git reset --hard` + rebuild.
 > Görsel/medya kaynakları: `public/images/CREDITS.txt` (CC / Mixkit / CC0) · oteller: kullanıcının verdiği resmi fotoğraflar (`public/images/hotels/`).
 
-## 🔁 Revizyon 20 — Manuel Satış Defteri (/admin/sales) (GÜNCEL · dal `claude/redesign-conversion`)
+## 🔁 Revizyon 21 — Admin paneli baştan tasarım + perf/güvenlik/mobil turu (GÜNCEL · dal `claude/redesign-conversion`)
+
+> **Şu an buradayız.** Kullanıcı admin panelini "berbat, isimler kötü, menü sabit değil, telefondan kullanılamaz" diye tümden reddetti → **bespoke, basit, mobil-öncelikli yönetim paneli** yapıldı (işlev korunarak, yalnız sunum). Ayrıca aynı oturumda performans + ödeme + giriş + mobil düzeltmeleri. `tsc` ✓ · `next build` ✓ (18 admin rotası).
+
+### 🎛️ Admin yeniden tasarım
+- **Tasarım sistemi (`app/admin/admin.css` + `components/admin/*`):** marka token'ları (cream yüzey · turkuaz primary · altın accent · mercan danger, Cormorant başlık + Onest gövde). Paylaşılan parçalar `components/admin/ui.tsx` (`PageHeader, Card, Section, StatCard, Field, Badge, EmptyState, LocationHint`) + `icons.tsx` (yalın çizgi ikon seti). Eskiden generic slate/cyan idi, sıfır paylaşılan bileşen vardı.
+- **Kabuk (`app/admin/layout.tsx`):** **sabit koyu-deniz kenar çubuğu** (264px, sticky, kendi kaydırması), 15 düz link → **5 anlaşılır grup** (Sitem · Gelen Kutusu · Satış & Para · Yardımcı · Ayarlar) + net Türkçe isimler ("CMS" jargonu kaldırıldı, "Medya"→"Görseller", "Denetim"→"Kayıtlar"). Aktif durum vurgusu (`sidebar-nav.tsx`, usePathname). "Siteyi Gör" butonu.
+- **Mobil (`components/admin/mobile-nav.tsx`):** üst bar + **sabit alt sekme çubuğu** (Panel·Sitem·Gelen·Satış·Daha fazla) + tam-boy drawer, Gelen Kutusu'nda **yeni talep rozeti** (NEW lead sayısı), safe-area. Telefondan yönetim artık kolay.
+- **Dashboard (`app/admin/page.tsx`):** 4 bant — "Bugün ne yapmalıyım?" dikkat kartı (yeni talep/bekleyen fatura/yaklaşan rezervasyon, boşsa "her şey yolunda ☀️") · metrik StatCard'lar (bu ay ciro/yeni talep/rezervasyon/bekleyen fatura) · hızlı işlem kutucukları · son hareketler (audit).
+- **Tüm sayfalar yeniden stillendi** (5 paralel ajanla, işlev/`name`/server-action korunarak): geniş tablolar **telefonda kart-listesi + masaüstünde tablo**; formlar bölümlere ayrıldı + yardım metinleri ("bu, sitede şurada görünür"); durum çipleri `Badge`; boş durumlar `EmptyState`; medyada "Kullanımda" rozeti; premium **giriş sayfası**; AI sohbet ve ayarlar (sırlar maskeli, "boş=değişmez") yeni stille. `key|||locale`, sır input'ları, SaleForm adları vb. **birebir korundu** (0 yasak renk kaldı).
+- ⏭️ Yapılmadı (bilinçli): tam Wix-canvas editörü (aylarca sürer). Mevcut: sayfa editöründe **canlı iframe önizleme** + "sitede gör" linkleri. Medyada gerçek klasör/etiket için şema değişikliği gerekir (şimdilik alt-metin + "Kullanımda" rozeti).
+
+### ⚡ Aynı oturum — perf/güvenlik/mobil (deploy edildi)
+- **ISR:** public sayfalar `force-dynamic` → `revalidate=300` + `generateStaticParams` (● SSG). Canlı: 330ms→117ms, `x-nextjs-cache: HIT`. Admin düzenlemeleri `revalidatePath("/", "layout")` ile anında yansır (booking dahil).
+- **Kod-bölme:** GSAP+Lenis (`smooth-scroll.tsx`) + lottie-web (`petlingo-live.tsx`) dinamik import → başlangıç JS'inden çıktı. Viewport export + theme-color.
+- **Ödeme:** satış defteri PERCENT indirim yuvarlaması faturayla tutarlı (floor); fatura ref 6→12 karakter (IDOR/PII). (AMOUNT `*100` money.ts 2-ondalık konvansiyonuyla tutarlı — bilerek dokunulmadı.)
+- **Giriş bug'ı:** oturum çerezi `secure: NODE_ENV==="production"` idi ama site HTTP → tarayıcı çerezi saklamıyordu → giriş sessizce başarısız. Artık `secure = NEXT_PUBLIC_SITE_URL https` (next.config `isHttps` kuralı). HTTPS'e geçince otomatik Secure.
+- **Fermuar → "Dalış portalı":** ana sayfa deneyim bölümü çapraz fermuar yerine **ortadan büyüyen daire** (clip-path evenodd) + ışıltılı su halkası.
+- **Tablet:** iletişim/hakkımızda `md:` 2-kolon + güven şeridi 3-up.
+
+## 🔁 Revizyon 20 — Manuel Satış Defteri (/admin/sales) (dal `claude/redesign-conversion`)
 
 > **Şu an buradayız.** Admin'den elle satış/sipariş kaydı: kime (ad·telefon·e-posta·kimlik/pasaport·ülke), ne (hizmet + tur/paket — seçili gelir + elle yazılır), tutar+para birimi, indirim (mevcut koddan seç VEYA manuel), **nasıl+hangi adresle ödendi** (Kaspi/Kripto/Nakit + IBAN/txid datalist), durum (Ödendi/Bekliyor/Kısmi), tarih, not. `tsc` ✓ · `next build` ✓. Migration `0005_sales` otomatik uygulanır.
 

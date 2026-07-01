@@ -1,4 +1,6 @@
 import { minorToDecimal } from "@/lib/money";
+import { Card, Field } from "@/components/admin/ui";
+import { Icon } from "@/components/admin/icons";
 
 type SaleLike = {
   id?: string;
@@ -42,9 +44,15 @@ const STATUSES = [
   { v: "PARTIAL", l: "Kısmi" },
 ];
 
-const field = "rounded-lg border border-slate-300 px-3 py-2 text-sm";
-function Label({ children }: { children: React.ReactNode }) {
-  return <span className="mb-1 block text-xs font-medium text-slate-500">{children}</span>;
+function GroupTitle({ icon, children }: { icon: Parameters<typeof Icon>[0]["name"]; children: React.ReactNode }) {
+  return (
+    <div className="mb-4 flex items-center gap-2.5">
+      <span className="grid h-8 w-8 place-items-center rounded-lg" style={{ background: "rgb(var(--muted))", color: "rgb(var(--primary))" }}>
+        <Icon name={icon} size={16} />
+      </span>
+      <h3 className="font-semibold text-[14.5px]" style={{ color: "rgb(var(--foreground))" }}>{children}</h3>
+    </div>
+  );
 }
 
 export function SaleForm({
@@ -67,83 +75,110 @@ export function SaleForm({
   const dateVal = s.soldAt ? new Date(s.soldAt).toISOString().slice(0, 10) : "";
 
   return (
-    <form action={action} className="space-y-5 rounded-2xl bg-white p-6 shadow-sm">
+    <form action={action} className="space-y-5">
       {s.id ? <input type="hidden" name="id" value={s.id} /> : null}
 
       {/* Müşteri */}
-      <div>
-        <h3 className="mb-2 text-sm font-bold text-cyan-800">Müşteri</h3>
-        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-          <label><Label>Ad Soyad *</Label><input name="customerName" required defaultValue={s.customerName ?? ""} className={`${field} w-full`} /></label>
-          <label><Label>Telefon</Label><input name="customerPhone" defaultValue={s.customerPhone ?? ""} className={`${field} w-full`} /></label>
-          <label><Label>E-posta</Label><input name="customerEmail" type="email" defaultValue={s.customerEmail ?? ""} className={`${field} w-full`} /></label>
-          <label><Label>Kimlik / Pasaport no</Label><input name="customerIdNo" defaultValue={s.customerIdNo ?? ""} className={`${field} w-full`} /></label>
-          <label><Label>Ülke</Label><input name="customerCountry" defaultValue={s.customerCountry ?? ""} placeholder="Kazakistan / Rusya..." className={`${field} w-full`} /></label>
-          <label><Label>Satış tarihi</Label><input name="soldAt" type="date" defaultValue={dateVal} className={`${field} w-full`} /></label>
+      <Card>
+        <GroupTitle icon="users">Müşteri</GroupTitle>
+        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          <Field label="Ad Soyad *" htmlFor="customerName">
+            <input id="customerName" name="customerName" required defaultValue={s.customerName ?? ""} className="adm-input" />
+          </Field>
+          <Field label="Telefon" htmlFor="customerPhone">
+            <input id="customerPhone" name="customerPhone" defaultValue={s.customerPhone ?? ""} className="adm-input" />
+          </Field>
+          <Field label="E-posta" htmlFor="customerEmail">
+            <input id="customerEmail" name="customerEmail" type="email" defaultValue={s.customerEmail ?? ""} className="adm-input" />
+          </Field>
+          <Field label="Kimlik / Pasaport no" htmlFor="customerIdNo">
+            <input id="customerIdNo" name="customerIdNo" defaultValue={s.customerIdNo ?? ""} className="adm-input" />
+          </Field>
+          <Field label="Ülke" htmlFor="customerCountry">
+            <input id="customerCountry" name="customerCountry" defaultValue={s.customerCountry ?? ""} placeholder="Kazakistan / Rusya..." className="adm-input" />
+          </Field>
+          <Field label="Satış tarihi" htmlFor="soldAt">
+            <input id="soldAt" name="soldAt" type="date" defaultValue={dateVal} className="adm-input" />
+          </Field>
         </div>
-      </div>
+      </Card>
 
-      {/* Ürün + tutar */}
-      <div>
-        <h3 className="mb-2 text-sm font-bold text-cyan-800">Ürün / Tur</h3>
-        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-          <label><Label>Hizmet</Label>
-            <select name="service" defaultValue={s.service ?? ""} className={`${field} w-full`}>
+      {/* Ürün / tur */}
+      <Card>
+        <GroupTitle icon="wallet">Ürün / tur</GroupTitle>
+        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          <Field label="Hizmet" htmlFor="service">
+            <select id="service" name="service" defaultValue={s.service ?? ""} className="adm-select">
               <option value="">—</option>
               {SERVICES.map((o) => <option key={o.v} value={o.v}>{o.l}</option>)}
             </select>
-          </label>
-          <label className="lg:col-span-2"><Label>Tur / paket adı * (seçili gelir, elle de yazabilirsin)</Label>
-            <input name="itemName" required list="sale-items" defaultValue={s.itemName ?? ""} className={`${field} w-full`} />
-          </label>
-          <label><Label>Tutar (liste fiyatı) *</Label><input name="amount" required type="number" step="0.01" min="0" defaultValue={dec(s.amount)} className={`${field} w-full`} /></label>
-          <label><Label>Para birimi</Label>
-            <select name="currency" defaultValue={s.currency ?? "USD"} className={`${field} w-full`}>
+          </Field>
+          <Field label="Tur / paket adı *" help="Listeden seçebilir veya elle yazabilirsin." htmlFor="itemName" className="lg:col-span-2">
+            <input id="itemName" name="itemName" required list="sale-items" defaultValue={s.itemName ?? ""} className="adm-input" />
+          </Field>
+          <Field label="Tutar (liste fiyatı) *" htmlFor="amount">
+            <input id="amount" name="amount" required type="number" step="0.01" min="0" defaultValue={dec(s.amount)} className="adm-input" />
+          </Field>
+          <Field label="Para birimi" htmlFor="currency">
+            <select id="currency" name="currency" defaultValue={s.currency ?? "USD"} className="adm-select">
               {CURRENCIES.map((c) => <option key={c} value={c}>{c}</option>)}
             </select>
-          </label>
+          </Field>
         </div>
-      </div>
+      </Card>
 
-      {/* İndirim */}
-      <div>
-        <h3 className="mb-2 text-sm font-bold text-cyan-800">İndirim</h3>
-        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-          <label><Label>İndirim kodu (varsa)</Label>
-            <select name="promoCode" defaultValue={s.promoCode ?? ""} className={`${field} w-full`}>
+      {/* Tutar & indirim */}
+      <Card>
+        <GroupTitle icon="tag">Tutar &amp; indirim</GroupTitle>
+        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          <Field label="İndirim kodu (varsa)" htmlFor="promoCode">
+            <select id="promoCode" name="promoCode" defaultValue={s.promoCode ?? ""} className="adm-select">
               <option value="">— yok —</option>
               {promos.map((c) => <option key={c} value={c}>{c}</option>)}
             </select>
-          </label>
-          <label><Label>Manuel indirim (boşsa koddan hesaplanır)</Label><input name="discountAmount" type="number" step="0.01" min="0" defaultValue={dec(s.discountAmount)} className={`${field} w-full`} /></label>
+          </Field>
+          <Field label="Manuel indirim" help="Boş bırakırsan koddan hesaplanır." htmlFor="discountAmount">
+            <input id="discountAmount" name="discountAmount" type="number" step="0.01" min="0" defaultValue={dec(s.discountAmount)} className="adm-input" />
+          </Field>
         </div>
-        <p className="mt-1 text-xs text-slate-400">Net tutar otomatik hesaplanır: liste fiyatı − indirim.</p>
-      </div>
+        <p className="adm-help mt-3">Net tutar otomatik hesaplanır: liste fiyatı − indirim.</p>
+      </Card>
 
       {/* Ödeme */}
-      <div>
-        <h3 className="mb-2 text-sm font-bold text-cyan-800">Ödeme</h3>
-        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-          <label><Label>Ödeme yöntemi</Label>
-            <select name="paymentType" defaultValue={s.paymentType ?? ""} className={`${field} w-full`}>
+      <Card>
+        <GroupTitle icon="card">Ödeme</GroupTitle>
+        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          <Field label="Ödeme yöntemi" htmlFor="paymentType">
+            <select id="paymentType" name="paymentType" defaultValue={s.paymentType ?? ""} className="adm-select">
               {PAY_TYPES.map((o) => <option key={o.v} value={o.v}>{o.l}</option>)}
             </select>
-          </label>
-          <label className="lg:col-span-2"><Label>Hangi adres/IBAN/txid ile ödendi</Label>
-            <input name="paymentRef" list="pay-refs" defaultValue={s.paymentRef ?? ""} className={`${field} w-full font-mono`} />
-          </label>
-          <label><Label>Durum</Label>
-            <select name="status" defaultValue={s.status ?? "PAID"} className={`${field} w-full`}>
+          </Field>
+          <Field label="Ödeme referansı" help="Hangi adres / IBAN / txid ile ödendi." htmlFor="paymentRef" className="lg:col-span-2">
+            <input id="paymentRef" name="paymentRef" list="pay-refs" defaultValue={s.paymentRef ?? ""} className="adm-input font-mono" />
+          </Field>
+          <Field label="Durum" htmlFor="status">
+            <select id="status" name="status" defaultValue={s.status ?? "PAID"} className="adm-select">
               {STATUSES.map((o) => <option key={o.v} value={o.v}>{o.l}</option>)}
             </select>
-          </label>
-          <label><Label>Ödenen (kısmi ise)</Label><input name="paidAmount" type="number" step="0.01" min="0" defaultValue={dec(s.paidAmount)} className={`${field} w-full`} /></label>
+          </Field>
+          <Field label="Ödenen (kısmi ise)" help="Kısmi ödemede şu ana kadar tahsil edilen tutar." htmlFor="paidAmount">
+            <input id="paidAmount" name="paidAmount" type="number" step="0.01" min="0" defaultValue={dec(s.paidAmount)} className="adm-input" />
+          </Field>
         </div>
+        <Field label="Not" htmlFor="note" className="mt-4">
+          <textarea id="note" name="note" rows={2} defaultValue={s.note ?? ""} className="adm-textarea" />
+        </Field>
+      </Card>
+
+      {/* Yapışkan kaydet çubuğu */}
+      <div
+        className="sticky bottom-0 z-10 -mx-1 flex items-center justify-end gap-3 rounded-2xl px-4 py-3"
+        style={{ background: "rgb(var(--card) / 0.92)", backdropFilter: "blur(8px)", border: "1px solid rgb(var(--border))" }}
+      >
+        <button type="submit" className="adm-btn adm-btn-primary">
+          <Icon name="check" size={16} /> {submitLabel}
+        </button>
       </div>
-
-      <label className="block"><Label>Not</Label><textarea name="note" rows={2} defaultValue={s.note ?? ""} className={`${field} w-full`} /></label>
-
-      <button className="rounded-lg bg-cyan-600 px-5 py-2 text-sm font-semibold text-white">{submitLabel}</button>
 
       <datalist id="sale-items">{itemSuggestions.map((i) => <option key={i} value={i} />)}</datalist>
       <datalist id="pay-refs">{payRefs.map((r) => <option key={r} value={r} />)}</datalist>

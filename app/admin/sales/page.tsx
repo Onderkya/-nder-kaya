@@ -3,6 +3,8 @@ import { getTranslations } from "next-intl/server";
 import { requireAdmin } from "@/lib/auth";
 import { prisma } from "@/lib/db";
 import { formatAmount, minorToDecimal } from "@/lib/money";
+import { PageHeader, Card, StatCard, Section, Badge, EmptyState } from "@/components/admin/ui";
+import { Icon } from "@/components/admin/icons";
 import { SaleForm } from "./sale-form";
 import { createSale, deleteSale } from "./actions";
 
@@ -10,7 +12,8 @@ export const dynamic = "force-dynamic";
 
 const HOTELS = ["Cullinan Belek", "Maxx Royal Belek", "Regnum Carya", "Maxx Royal Kemer", "NG Phaselis Bay", "Lara Barut Collection", "Bayou Villas", "Land of Legends Kingdom"];
 const STATUS_LABEL: Record<string, string> = { PAID: "Ödendi", PENDING: "Bekliyor", PARTIAL: "Kısmi" };
-const STATUS_CLS: Record<string, string> = { PAID: "bg-emerald-100 text-emerald-700", PENDING: "bg-amber-100 text-amber-700", PARTIAL: "bg-blue-100 text-blue-700" };
+const STATUS_TONE: Record<string, "success" | "warn" | "neutral"> = { PAID: "success", PENDING: "warn", PARTIAL: "warn" };
+const statusBadge = (st: string) => <Badge tone={STATUS_TONE[st] ?? "neutral"}>{STATUS_LABEL[st] ?? st}</Badge>;
 
 export default async function SalesPage({ searchParams }: { searchParams: Promise<{ ok?: string; error?: string }> }) {
   await requireAdmin();
@@ -33,79 +36,127 @@ export default async function SalesPage({ searchParams }: { searchParams: Promis
     const val = s.status === "PARTIAL" ? (s.paidAmount ?? 0) : s.status === "PAID" ? s.finalAmount : 0;
     revenue.set(s.currency, (revenue.get(s.currency) ?? 0) + val);
   }
+  const revenueRows = [...revenue.entries()];
 
   return (
-    <div>
-      <div className="mb-6 flex items-start justify-between">
-        <div>
-          <h1 className="text-2xl font-bold">Satışlar</h1>
-          <p className="mt-1 text-sm text-slate-500">Elle satış/sipariş kaydı: kime, ne, ücret, indirim, nasıl ödendi. Hepsi düzenlenebilir.</p>
-        </div>
-      </div>
+    <div className="space-y-8">
+      <PageHeader
+        eyebrow="Satış & Para"
+        title="Satışlar"
+        description="Elle satış/sipariş defteri: kime, ne sattın, ne kadar, indirim ve nasıl ödendi. Her kayıt düzenlenebilir."
+      />
 
-      {sp.ok && <p className="mb-4 rounded-lg bg-emerald-50 p-3 text-sm text-emerald-700">Kaydedildi.</p>}
-      {sp.error && <p className="mb-4 rounded-lg bg-red-50 p-3 text-sm text-red-700">{sp.error}</p>}
+      {sp.ok && <Card className="!py-3 !text-[14px]" ><span style={{ color: "rgb(var(--primary))" }}>✓ Kaydedildi.</span></Card>}
+      {sp.error && <Card className="!py-3 !text-[14px]"><span style={{ color: "rgb(var(--accent))" }}>⚠️ {sp.error}</span></Card>}
 
       {/* Ciro özeti */}
-      <div className="mb-6 flex flex-wrap gap-4">
-        <div className="rounded-2xl bg-white px-5 py-4 shadow-sm">
-          <div className="text-xs text-slate-500">Kayıt</div>
-          <div className="text-2xl font-bold">{sales.length}</div>
-        </div>
-        {[...revenue.entries()].map(([cur, minor]) => (
-          <div key={cur} className="rounded-2xl bg-white px-5 py-4 shadow-sm">
-            <div className="text-xs text-slate-500">Tahsilat ({cur})</div>
-            <div className="text-2xl font-bold text-emerald-700">{minorToDecimal(minor)} {cur}</div>
-          </div>
+      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        <StatCard label="Kayıt" value={sales.length} hint="toplam satış" icon="wallet" />
+        {revenueRows.map(([cur, minor]) => (
+          <StatCard key={cur} label={`Tahsilat · ${cur}`} value={`${minorToDecimal(minor)} ${cur}`} hint="ödenen tutar" icon="card" tone="success" />
         ))}
       </div>
 
       {/* Yeni satış */}
-      <details className="mb-8" open={sales.length === 0}>
-        <summary className="mb-3 cursor-pointer text-sm font-semibold text-cyan-700">+ Yeni satış ekle</summary>
+      <Section title="Yeni satış ekle" description="Yeni bir satışı deftere işle." icon="plus" defaultOpen={sales.length === 0}>
         <SaleForm action={createSale} promos={promos.map((p) => p.code)} payRefs={payRefs} itemSuggestions={itemSuggestions} submitLabel="Satışı kaydet" />
-      </details>
+      </Section>
 
       {/* Liste */}
-      <section className="overflow-x-auto rounded-2xl bg-white shadow-sm">
-        <table className="w-full text-sm">
-          <thead className="bg-slate-50 text-left text-xs uppercase text-slate-500">
-            <tr>
-              <th className="px-4 py-3">Tarih</th>
-              <th className="px-4 py-3">Müşteri</th>
-              <th className="px-4 py-3">Ürün</th>
-              <th className="px-4 py-3">Tutar</th>
-              <th className="px-4 py-3">İndirim</th>
-              <th className="px-4 py-3">Net</th>
-              <th className="px-4 py-3">Ödeme</th>
-              <th className="px-4 py-3">Durum</th>
-              <th className="px-4 py-3"></th>
-            </tr>
-          </thead>
-          <tbody>
+      {sales.length === 0 ? (
+        <EmptyState icon="wallet" title="Henüz satış yok" description="İlk satışını yukarıdaki “Yeni satış ekle” bölümünden deftere işleyebilirsin." />
+      ) : (
+        <>
+          {/* Mobil kartlar */}
+          <div className="space-y-3 sm:hidden">
             {sales.map((s) => (
-              <tr key={s.id} className="border-t border-slate-100 align-top">
-                <td className="whitespace-nowrap px-4 py-3 text-xs">{new Date(s.soldAt).toLocaleDateString("tr-TR")}</td>
-                <td className="px-4 py-3">
-                  <div className="font-medium">{s.customerName}</div>
-                  <div className="text-xs text-slate-400">{[s.customerPhone, s.customerCountry].filter(Boolean).join(" · ")}</div>
-                </td>
-                <td className="px-4 py-3">{s.itemName}<div className="text-xs text-slate-400">{s.service ?? ""}</div></td>
-                <td className="whitespace-nowrap px-4 py-3">{formatAmount(s.amount, s.currency)}</td>
-                <td className="whitespace-nowrap px-4 py-3 text-slate-500">{s.discountAmount ? `−${minorToDecimal(s.discountAmount)}${s.promoCode ? ` (${s.promoCode})` : ""}` : "—"}</td>
-                <td className="whitespace-nowrap px-4 py-3 font-semibold">{formatAmount(s.finalAmount, s.currency)}</td>
-                <td className="px-4 py-3 text-xs">{s.paymentType ?? "—"}{s.paymentRef ? <div className="max-w-[10rem] truncate font-mono text-slate-400" title={s.paymentRef}>{s.paymentRef}</div> : null}</td>
-                <td className="px-4 py-3"><span className={`rounded-full px-2 py-0.5 text-xs font-semibold ${STATUS_CLS[s.status] ?? "bg-slate-100 text-slate-600"}`}>{STATUS_LABEL[s.status] ?? s.status}</span></td>
-                <td className="whitespace-nowrap px-4 py-3 text-right">
-                  <Link href={`/admin/sales/${s.id}`} className="font-semibold text-cyan-700">Düzenle</Link>
-                  <form action={deleteSale} className="mt-1"><input type="hidden" name="id" value={s.id} /><button className="text-xs text-red-500 hover:underline">Sil</button></form>
-                </td>
-              </tr>
+              <Card key={s.id}>
+                <div className="flex items-start justify-between gap-3">
+                  <div className="min-w-0">
+                    <p className="truncate font-semibold" style={{ color: "rgb(var(--foreground))" }}>{s.customerName}</p>
+                    <p className="adm-muted text-xs">{[s.customerPhone, s.customerCountry].filter(Boolean).join(" · ") || "—"}</p>
+                  </div>
+                  {statusBadge(s.status)}
+                </div>
+                <dl className="mt-3 space-y-2 text-[13.5px]">
+                  <div className="flex justify-between gap-3">
+                    <dt className="adm-muted text-xs">Ürün</dt>
+                    <dd className="text-right" style={{ color: "rgb(var(--foreground))" }}>{s.itemName}{s.service ? <span className="adm-muted"> · {s.service}</span> : null}</dd>
+                  </div>
+                  <div className="flex justify-between gap-3">
+                    <dt className="adm-muted text-xs">Tutar</dt>
+                    <dd>{formatAmount(s.amount, s.currency)}</dd>
+                  </div>
+                  {s.discountAmount ? (
+                    <div className="flex justify-between gap-3">
+                      <dt className="adm-muted text-xs">İndirim</dt>
+                      <dd className="adm-muted">−{minorToDecimal(s.discountAmount)}{s.promoCode ? ` (${s.promoCode})` : ""}</dd>
+                    </div>
+                  ) : null}
+                  <div className="flex justify-between gap-3">
+                    <dt className="adm-muted text-xs">Net</dt>
+                    <dd className="font-semibold">{formatAmount(s.finalAmount, s.currency)}</dd>
+                  </div>
+                  <div className="flex justify-between gap-3">
+                    <dt className="adm-muted text-xs">Ödeme</dt>
+                    <dd className="text-right">{s.paymentType ?? "—"}</dd>
+                  </div>
+                  <div className="flex justify-between gap-3">
+                    <dt className="adm-muted text-xs">Tarih</dt>
+                    <dd className="adm-muted">{new Date(s.soldAt).toLocaleDateString("tr-TR")}</dd>
+                  </div>
+                </dl>
+                <div className="mt-3 flex items-center gap-2 border-t pt-3" style={{ borderColor: "rgb(var(--border))" }}>
+                  <Link href={`/admin/sales/${s.id}`} className="adm-btn adm-btn-ghost adm-btn-sm">Düzenle</Link>
+                  <form action={deleteSale}><input type="hidden" name="id" value={s.id} /><button className="adm-btn adm-btn-danger adm-btn-sm">Sil</button></form>
+                </div>
+              </Card>
             ))}
-            {sales.length === 0 && <tr><td colSpan={9} className="px-4 py-8 text-center text-slate-400">Henüz satış yok. Yukarıdan ekleyin.</td></tr>}
-          </tbody>
-        </table>
-      </section>
+          </div>
+
+          {/* Masaüstü tablo */}
+          <Card pad={false} className="hidden sm:block">
+            <table className="w-full text-sm">
+              <thead>
+                <tr className="adm-muted text-left text-xs uppercase tracking-wide" style={{ borderBottom: "1px solid rgb(var(--border))" }}>
+                  <th className="px-4 py-3 font-semibold">Tarih</th>
+                  <th className="px-4 py-3 font-semibold">Müşteri</th>
+                  <th className="px-4 py-3 font-semibold">Ürün</th>
+                  <th className="px-4 py-3 font-semibold">Tutar</th>
+                  <th className="px-4 py-3 font-semibold">İndirim</th>
+                  <th className="px-4 py-3 font-semibold">Net</th>
+                  <th className="px-4 py-3 font-semibold">Ödeme</th>
+                  <th className="px-4 py-3 font-semibold">Durum</th>
+                  <th className="px-4 py-3"></th>
+                </tr>
+              </thead>
+              <tbody>
+                {sales.map((s) => (
+                  <tr key={s.id} className="align-top" style={{ borderTop: "1px solid rgb(var(--border))" }}>
+                    <td className="whitespace-nowrap px-4 py-3 text-xs">{new Date(s.soldAt).toLocaleDateString("tr-TR")}</td>
+                    <td className="px-4 py-3">
+                      <div className="font-medium" style={{ color: "rgb(var(--foreground))" }}>{s.customerName}</div>
+                      <div className="adm-muted text-xs">{[s.customerPhone, s.customerCountry].filter(Boolean).join(" · ")}</div>
+                    </td>
+                    <td className="px-4 py-3">{s.itemName}<div className="adm-muted text-xs">{s.service ?? ""}</div></td>
+                    <td className="whitespace-nowrap px-4 py-3">{formatAmount(s.amount, s.currency)}</td>
+                    <td className="adm-muted whitespace-nowrap px-4 py-3">{s.discountAmount ? `−${minorToDecimal(s.discountAmount)}${s.promoCode ? ` (${s.promoCode})` : ""}` : "—"}</td>
+                    <td className="whitespace-nowrap px-4 py-3 font-semibold">{formatAmount(s.finalAmount, s.currency)}</td>
+                    <td className="px-4 py-3 text-xs">{s.paymentType ?? "—"}{s.paymentRef ? <div className="adm-muted max-w-[10rem] truncate font-mono" title={s.paymentRef}>{s.paymentRef}</div> : null}</td>
+                    <td className="px-4 py-3">{statusBadge(s.status)}</td>
+                    <td className="whitespace-nowrap px-4 py-3 text-right">
+                      <div className="flex items-center justify-end gap-2">
+                        <Link href={`/admin/sales/${s.id}`} className="adm-btn adm-btn-ghost adm-btn-sm">Düzenle</Link>
+                        <form action={deleteSale}><input type="hidden" name="id" value={s.id} /><button className="adm-btn adm-btn-danger adm-btn-sm">Sil</button></form>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </Card>
+        </>
+      )}
     </div>
   );
 }

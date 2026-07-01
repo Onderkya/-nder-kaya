@@ -1,5 +1,7 @@
 import { prisma } from "@/lib/db";
 import { requireAdmin } from "@/lib/auth";
+import { PageHeader, Card, Badge, EmptyState } from "@/components/admin/ui";
+import { Icon, type IconName } from "@/components/admin/icons";
 
 export const dynamic = "force-dynamic";
 
@@ -18,19 +20,26 @@ function actionLabel(action: string) {
   }
 }
 
-function actionClass(action: string) {
+type Tone = "success" | "warn" | "danger" | "neutral";
+function actionTone(action: string): Tone {
   switch (action) {
     case "create":
-      return "bg-green-100 text-green-700";
+      return "success";
     case "delete":
-      return "bg-red-100 text-red-700";
+      return "danger";
     case "update":
     case "toggle":
-      return "bg-amber-100 text-amber-700";
+      return "warn";
     default:
-      return "bg-slate-200 text-slate-600";
+      return "neutral";
   }
 }
+
+const ENTITY_ICON: Record<string, IconName> = {
+  Sale: "wallet", Invoice: "invoice", PromoCode: "tag", PaymentMethod: "card",
+  SiteText: "content", Page: "pages", Media: "image", User: "users",
+  LessonType: "calendar", AvailabilitySlot: "calendar", Lead: "inbox", Setting: "settings",
+};
 
 export default async function AuditPage() {
   await requireAdmin();
@@ -39,50 +48,41 @@ export default async function AuditPage() {
     .catch(() => []);
 
   return (
-    <div className="space-y-8">
-      <div>
-        <h1 className="mb-2 text-2xl font-bold">Denetim Kaydı</h1>
-        <p className="text-sm text-slate-500">
-          Son 100 hassas yönetim işlemi (en yeni üstte). Yalnızca görüntüleme amaçlıdır.
-        </p>
-      </div>
+    <div className="space-y-6">
+      <PageHeader
+        eyebrow="Yönetim Paneli"
+        title="Denetim Kaydı"
+        description="Son 100 hassas yönetim işlemi (en yeni üstte). Kim, ne zaman, neyi değiştirdi. Yalnızca görüntüleme amaçlıdır."
+      />
 
-      <div className="overflow-x-auto rounded-2xl bg-white shadow-sm">
-        <table className="w-full text-left text-sm">
-          <thead className="border-b border-slate-200 text-slate-500">
-            <tr>
-              <th className="p-3">Zaman</th>
-              <th className="p-3">İşlemi yapan</th>
-              <th className="p-3">İşlem</th>
-              <th className="p-3">Nesne</th>
-              <th className="p-3">Ayrıntı</th>
-            </tr>
-          </thead>
-          <tbody>
+      {entries.length === 0 ? (
+        <EmptyState icon="log" title="Henüz denetim kaydı yok" description="Panelde yapılan hassas işlemler (ekleme, güncelleme, silme) burada listelenecek." />
+      ) : (
+        <Card pad={false}>
+          <ul className="divide-y" style={{ borderColor: "rgb(var(--border))" }}>
             {entries.map((e) => (
-              <tr key={e.id} className="border-b border-slate-100 align-top">
-                <td className="p-3 whitespace-nowrap text-slate-500">
-                  {new Date(e.createdAt).toLocaleString("tr-TR")}
-                </td>
-                <td className="p-3">{e.actorEmail}</td>
-                <td className="p-3">
-                  <span className={`rounded-full px-3 py-1 text-xs font-semibold ${actionClass(e.action)}`}>
-                    {actionLabel(e.action)}
-                  </span>
-                </td>
-                <td className="p-3">
-                  <span className="font-medium">{e.entity}</span>
-                  {e.entityId && <span className="ml-1 font-mono text-xs text-slate-400">{e.entityId}</span>}
-                </td>
-                <td className="p-3 text-slate-600">{e.details || "—"}</td>
-              </tr>
+              <li key={e.id} className="flex gap-3 px-4 py-4 sm:px-5">
+                <span className="grid h-9 w-9 shrink-0 place-items-center rounded-xl" style={{ background: "rgb(var(--muted))", color: "rgb(var(--muted-foreground))" }}>
+                  <Icon name={ENTITY_ICON[e.entity] ?? "log"} size={16} />
+                </span>
+                <div className="min-w-0 flex-1">
+                  <div className="flex flex-wrap items-center gap-2">
+                    <Badge tone={actionTone(e.action)}>{actionLabel(e.action)}</Badge>
+                    <span className="font-semibold text-[14px]" style={{ color: "rgb(var(--foreground))" }}>{e.entity}</span>
+                    {e.entityId && <span className="adm-muted font-mono text-[11px]">{e.entityId}</span>}
+                  </div>
+                  <p className="adm-muted mt-1 text-[13.5px] leading-relaxed break-words">{e.details || "—"}</p>
+                  <p className="adm-muted mt-1 text-[12px]">
+                    <span className="font-medium" style={{ color: "rgb(var(--foreground))" }}>{e.actorEmail}</span>
+                    {" · "}
+                    {new Date(e.createdAt).toLocaleString("tr-TR")}
+                  </p>
+                </div>
+              </li>
             ))}
-            {entries.length === 0 && (
-              <tr><td colSpan={5} className="p-4 text-center text-slate-500">Henüz denetim kaydı yok.</td></tr>
-            )}
-          </tbody>
-        </table>
-      </div>
+          </ul>
+        </Card>
+      )}
     </div>
   );
 }

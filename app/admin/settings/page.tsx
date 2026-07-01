@@ -2,8 +2,20 @@ import { revalidatePath } from "next/cache";
 import { requireAdmin } from "@/lib/auth";
 import { audit } from "@/lib/audit";
 import { getAllSettings, setSetting, SETTING_DEFS } from "@/lib/settings";
+import { PageHeader, Card, Section, Field, Badge } from "@/components/admin/ui";
+import { Icon, type IconName } from "@/components/admin/icons";
 
 export const dynamic = "force-dynamic";
+
+// Grup adına göre ikon + kısa açıklama (görsel; başka bir şey değişmez).
+const GROUP_META: Record<string, { icon: IconName; description: string }> = {
+  "Yapay Zekâ": { icon: "robot", description: "AI asistanı ve içerik üretimi için sağlayıcı anahtarları ve model ayarları." },
+  "İletişim": { icon: "inbox", description: "Ziyaretçilerin size ulaşacağı e-posta, telefon ve mesajlaşma bilgileri." },
+  "Site": { icon: "settings", description: "Sitenizin adresi ve genel görünen değerleri." },
+};
+function groupMeta(g: string) {
+  return GROUP_META[g] ?? { icon: "settings" as IconName, description: "Bu bölümdeki ayarlar." };
+}
 
 async function saveSettings(formData: FormData) {
   "use server";
@@ -37,62 +49,74 @@ export default async function SettingsPage() {
   const groups = [...new Set(SETTING_DEFS.map((d) => d.group))];
 
   return (
-    <div>
-      <div className="mb-6">
-        <h1 className="text-2xl font-bold">Ayarlar</h1>
-        <p className="mt-1 max-w-3xl text-sm text-slate-500">
-          API anahtarları ve iletişim/site değerleri. Buraya girilen değerler <b>anında</b> (rebuild
-          gerekmeden) devreye girer; kod önce buradan, yoksa sunucu ortam değişkeninden okur.
-        </p>
-        <p className="mt-2 max-w-3xl rounded-lg bg-amber-50 p-3 text-xs text-amber-800">
-          ⚠️ Güvenlik: Sırlar veritabanında saklanır (DB yedeği bunları içerir). Yalnız adminler erişir,
-          panelde maskelenir, denetim kaydına <b>değerleri yazılmaz</b>. Daha yüksek güvenlik için sunucu
-          ortam değişkenlerini tercih edebilirsiniz.
-        </p>
-      </div>
+    <div className="space-y-6">
+      <PageHeader
+        eyebrow="Yönetim Paneli"
+        title="Ayarlar"
+        description="API anahtarları, iletişim ve site değerleri. Buraya girdiğiniz değerler anında (yeniden yayına gerek olmadan) devreye girer; sistem önce buradan, yoksa sunucudaki ortam değişkeninden okur."
+      />
 
-      <form action={saveSettings} className="space-y-6">
-        {groups.map((g) => (
-          <section key={g} className="rounded-2xl bg-white p-6 shadow-sm">
-            <h2 className="mb-4 text-lg font-semibold text-cyan-800">{g}</h2>
-            <div className="space-y-5">
-              {SETTING_DEFS.filter((d) => d.group === g).map((d) => {
-                const stored = all[d.key];
-                const isSet = stored != null && stored !== "";
-                return (
-                  <div key={d.key} className="border-b border-slate-100 pb-4 last:border-0 last:pb-0">
-                    <label className="block">
-                      <span className="flex items-center gap-2 text-sm font-medium">
-                        {d.label}
-                        <code className="rounded bg-slate-100 px-1.5 py-0.5 text-[10px] text-slate-500">{d.key}</code>
-                        {isSet && <span className="rounded-full bg-emerald-100 px-2 py-0.5 text-[10px] font-semibold text-emerald-700">kayıtlı</span>}
-                      </span>
+      <Card>
+        <div className="flex gap-3">
+          <span className="grid h-9 w-9 shrink-0 place-items-center rounded-xl" style={{ background: "rgb(var(--gold) / 0.14)", color: "rgb(var(--gold))" }}>
+            <Icon name="alert" size={18} />
+          </span>
+          <div className="min-w-0">
+            <p className="font-semibold text-[14.5px]" style={{ color: "rgb(var(--foreground))" }}>Güvenlik notu</p>
+            <p className="adm-muted mt-1 text-[13.5px] leading-relaxed">
+              Sır değerleri veritabanında şifreli saklanır (yedekler bunları içerir). Yalnız yöneticiler erişir,
+              panelde maskelenir, denetim kaydına <b>değerleri yazılmaz</b>. Daha yüksek güvenlik isterseniz sunucu
+              ortam değişkenlerini tercih edebilirsiniz.
+            </p>
+          </div>
+        </div>
+      </Card>
+
+      <form action={saveSettings} className="space-y-5">
+        {groups.map((g) => {
+          const meta = groupMeta(g);
+          return (
+            <Section key={g} title={g} description={meta.description} icon={meta.icon}>
+              <div className="space-y-6">
+                {SETTING_DEFS.filter((d) => d.group === g).map((d) => {
+                  const stored = all[d.key];
+                  const isSet = stored != null && stored !== "";
+                  return (
+                    <div key={d.key} className="border-b pb-6 last:border-0 last:pb-0" style={{ borderColor: "rgb(var(--border))" }}>
+                      <div className="mb-1.5 flex flex-wrap items-center gap-2">
+                        <label className="text-[14px] font-semibold" htmlFor={`s:${d.key}`} style={{ color: "rgb(var(--foreground))" }}>{d.label}</label>
+                        <code className="rounded px-1.5 py-0.5 text-[10.5px]" style={{ background: "rgb(var(--muted))", color: "rgb(var(--muted-foreground))" }}>{d.key}</code>
+                        {isSet && <Badge tone="success">kayıtlı</Badge>}
+                      </div>
                       <input
+                        id={`s:${d.key}`}
                         name={`s:${d.key}`}
                         type={d.secret ? "password" : "text"}
                         autoComplete="off"
                         defaultValue={d.secret ? "" : (stored ?? "")}
                         placeholder={d.secret ? (isSet ? "•••• kayıtlı — değiştirmek için yaz" : (d.hint ?? "")) : (d.hint ?? "")}
-                        className="mt-1.5 w-full max-w-xl rounded-lg border border-slate-300 px-3 py-2 text-sm"
+                        className="adm-input max-w-xl"
                       />
-                    </label>
-                    <div className="mt-1 flex items-center justify-between">
-                      {d.hint ? <span className="text-xs text-slate-400">{d.hint}</span> : <span />}
+                      {d.hint && <p className="adm-help">{d.hint}</p>}
+                      {d.secret && <p className="adm-help">Boş bırakırsan mevcut değer korunur.</p>}
                       {isSet && (
-                        <label className="flex items-center gap-1.5 text-xs text-red-500">
-                          <input type="checkbox" name={`clear:${d.key}`} /> sil (env'e dön)
+                        <label className="mt-3 inline-flex items-center gap-2 text-[13px]" style={{ color: "rgb(var(--accent))" }}>
+                          <input type="checkbox" name={`clear:${d.key}`} className="h-4 w-4 accent-current" />
+                          Değeri sil (sunucu ortam değişkenine geri dön)
                         </label>
                       )}
                     </div>
-                  </div>
-                );
-              })}
-            </div>
-          </section>
-        ))}
+                  );
+                })}
+              </div>
+            </Section>
+          );
+        })}
 
-        <div className="pb-10">
-          <button className="rounded-lg bg-cyan-600 px-5 py-2 text-sm font-semibold text-white">Kaydet</button>
+        <div className="adm-sticky-save flex justify-end">
+          <button className="adm-btn adm-btn-primary">
+            <Icon name="check" size={18} /> Kaydet
+          </button>
         </div>
       </form>
     </div>

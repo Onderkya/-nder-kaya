@@ -38,9 +38,13 @@ export function BlockReorder({ pageId, items }: { pageId: string; items: { id: s
   return (
     <div>
       {dirty ? (
-        <div className="sticky top-0 z-20 mb-3 flex items-center gap-3 rounded-xl bg-amber-100 px-4 py-2 text-sm text-amber-900">
-          Sıralama değişti.
-          <button onClick={save} disabled={pending} className="rounded-lg bg-amber-600 px-3 py-1 text-xs font-semibold text-white disabled:opacity-60">
+        <div
+          className="adm-card adm-card-featured sticky top-0 z-20 mb-3 flex flex-wrap items-center gap-3 px-4 py-3"
+        >
+          <span className="text-[13.5px] font-medium" style={{ color: "rgb(var(--foreground))" }}>
+            Sıralama değişti — kaydetmeyi unutmayın.
+          </span>
+          <button onClick={save} disabled={pending} className="adm-btn adm-btn-primary adm-btn-sm">
             {pending ? "Kaydediliyor…" : "Sıralamayı kaydet"}
           </button>
         </div>
@@ -52,13 +56,14 @@ export function BlockReorder({ pageId, items }: { pageId: string; items: { id: s
             key={id}
             onDragOver={(e) => { e.preventDefault(); setOverId(id); }}
             onDrop={() => drop(id)}
-            className={overId === id && dragId !== id ? "rounded-2xl ring-2 ring-cyan-400" : ""}
+            className="rounded-[1.25rem]"
+            style={overId === id && dragId !== id ? { boxShadow: "0 0 0 2px rgb(var(--primary))" } : undefined}
           >
             <div
               draggable
               onDragStart={() => setDragId(id)}
               onDragEnd={() => { setDragId(null); setOverId(null); }}
-              className="mb-1 flex cursor-move items-center gap-2 text-xs font-medium text-slate-400"
+              className="adm-muted mb-1.5 flex cursor-move items-center gap-2 text-xs font-medium"
               title="Sürükleyerek sırala"
             >
               <span className="text-base leading-none">⠿</span> sürükle

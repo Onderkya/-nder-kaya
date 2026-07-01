@@ -28,23 +28,23 @@ type ChatMessage = {
 };
 
 function ResultTable({ rows }: { rows: Record<string, unknown>[] }) {
-  if (!rows.length) return <p className="text-xs text-slate-500">Sonuç yok.</p>;
+  if (!rows.length) return <p className="adm-muted text-xs">Sonuç yok.</p>;
   const cols = Object.keys(rows[0]);
   return (
-    <div className="mt-2 max-h-72 overflow-auto rounded-lg border border-slate-200">
+    <div className="mt-2 max-h-72 overflow-auto rounded-lg border" style={{ borderColor: "rgb(var(--border))" }}>
       <table className="w-full text-left text-xs">
-        <thead className="sticky top-0 bg-slate-50 text-slate-500">
+        <thead className="adm-muted sticky top-0" style={{ background: "rgb(var(--muted))" }}>
           <tr>
             {cols.map((c) => (
-              <th key={c} className="whitespace-nowrap p-2 font-medium">{c}</th>
+              <th key={c} className="whitespace-nowrap p-2 font-semibold">{c}</th>
             ))}
           </tr>
         </thead>
         <tbody>
           {rows.map((r, i) => (
-            <tr key={i} className="border-t border-slate-100">
+            <tr key={i} className="border-t" style={{ borderColor: "rgb(var(--border))" }}>
               {cols.map((c) => (
-                <td key={c} className="whitespace-nowrap p-2 text-slate-700">
+                <td key={c} className="whitespace-nowrap p-2" style={{ color: "rgb(var(--foreground))" }}>
                   {r[c] === null || r[c] === undefined ? "—" : String(r[c])}
                 </td>
               ))}
@@ -140,20 +140,24 @@ export function AiChat() {
   }
 
   return (
-    <div className="rounded-2xl bg-white p-4 shadow-sm">
+    <div className="adm-card adm-card-pad">
       <div className="mb-3 max-h-[55vh] space-y-4 overflow-y-auto">
         {messages.length === 0 && (
-          <p className="px-1 py-6 text-center text-sm text-slate-400">
-            Örnek: “Bu ay kaç talep geldi, dile göre dağılımı nedir?” · “WELCOME10 indirim
-            kodunu pasifleştirmeyi öner.”
-          </p>
+          <div className="adm-empty">
+            <p className="font-semibold" style={{ color: "rgb(var(--foreground))" }}>Bir şey sorun ya da bir değişiklik isteyin</p>
+            <p className="adm-muted mx-auto mt-1 max-w-md text-[13.5px]">
+              Örnek: “Bu ay kaç talep geldi, dile göre dağılımı nedir?” · “WELCOME10 indirim kodunu pasifleştirmeyi öner.”
+            </p>
+          </div>
         )}
         {messages.map((m, i) => (
-          <div key={i} className={m.role === "user" ? "text-right" : "text-left"}>
+          <div key={i} className={m.role === "user" ? "flex justify-end" : "flex justify-start"}>
             <div
-              className={
-                "inline-block max-w-[90%] rounded-2xl px-4 py-2 text-sm " +
-                (m.role === "user" ? "bg-cyan-600 text-white" : "bg-slate-100 text-slate-800")
+              className="max-w-[90%] rounded-2xl px-4 py-2.5 text-sm"
+              style={
+                m.role === "user"
+                  ? { background: "rgb(var(--primary))", color: "#fff" }
+                  : { background: "rgb(var(--muted))", color: "rgb(var(--foreground))" }
               }
             >
               <div className="whitespace-pre-wrap">{m.content}</div>
@@ -161,17 +165,17 @@ export function AiChat() {
               {/* Çalıştırılan okuma sorguları */}
               {m.queries?.map((q, qi) => (
                 <div key={qi} className="mt-2 text-left">
-                  <details className="rounded-lg bg-white/70 p-2">
-                    <summary className="cursor-pointer text-xs text-slate-500">
+                  <details className="rounded-lg p-2" style={{ background: "rgb(var(--card))", border: "1px solid rgb(var(--border))" }}>
+                    <summary className="adm-muted cursor-pointer text-xs">
                       {q.ok ? `SQL · ${q.rowCount ?? 0} satır` : "SQL · hata"}
                     </summary>
-                    <pre className="mt-1 overflow-x-auto rounded bg-slate-900 p-2 text-[11px] text-slate-100">
+                    <pre className="mt-1 overflow-x-auto rounded p-2 text-[11px]" style={{ background: "#071d25", color: "#e6f2f4" }}>
                       {q.sql}
                     </pre>
                     {q.ok && q.rows ? (
                       <ResultTable rows={q.rows} />
                     ) : (
-                      <p className="mt-1 text-xs text-red-600">{q.error}</p>
+                      <p className="mt-1 text-xs" style={{ color: "rgb(var(--accent))" }}>{q.error}</p>
                     )}
                   </details>
                 </div>
@@ -184,26 +188,27 @@ export function AiChat() {
                 return (
                   <div
                     key={wi}
-                    className="mt-2 rounded-lg border border-amber-300 bg-amber-50 p-2 text-left"
+                    className="mt-2 rounded-lg p-2.5 text-left"
+                    style={{ background: "rgb(var(--gold) / 0.12)", border: "1px solid rgb(var(--gold) / 0.4)" }}
                   >
-                    <div className="text-xs font-semibold text-amber-800">
-                      ✍️ Önerilen değişiklik {w.table ? `· "${w.table}"` : ""} — onayın gerekiyor
+                    <div className="text-xs font-semibold" style={{ color: "rgb(var(--gold))" }}>
+                      ✍️ Önerilen değişiklik {w.table ? `· "${w.table}"` : ""} — onayınız gerekiyor
                     </div>
-                    {w.reason && <p className="mt-1 text-xs text-amber-700">{w.reason}</p>}
-                    <pre className="mt-1 overflow-x-auto rounded bg-slate-900 p-2 text-[11px] text-slate-100">
+                    {w.reason && <p className="adm-muted mt-1 text-xs">{w.reason}</p>}
+                    <pre className="mt-1 overflow-x-auto rounded p-2 text-[11px]" style={{ background: "#071d25", color: "#e6f2f4" }}>
                       {w.sql}
                     </pre>
                     {!w.valid ? (
-                      <p className="mt-1 text-xs text-red-600">Geçersiz öneri: {w.error}</p>
+                      <p className="mt-1 text-xs" style={{ color: "rgb(var(--accent))" }}>Geçersiz öneri: {w.error}</p>
                     ) : st.status === "done" ? (
-                      <p className="mt-1 text-xs font-medium text-green-700">✓ {st.message}</p>
+                      <p className="mt-1 text-xs font-medium" style={{ color: "rgb(var(--primary))" }}>✓ {st.message}</p>
                     ) : st.status === "error" ? (
-                      <p className="mt-1 text-xs text-red-600">✗ {st.message}</p>
+                      <p className="mt-1 text-xs" style={{ color: "rgb(var(--accent))" }}>✗ {st.message}</p>
                     ) : (
                       <button
                         onClick={() => applyWrite(key, w.sql)}
                         disabled={st.status === "applying"}
-                        className="mt-2 rounded-lg bg-amber-600 px-3 py-1 text-xs font-semibold text-white disabled:opacity-60"
+                        className="adm-btn adm-btn-primary adm-btn-sm mt-2"
                       >
                         {st.status === "applying" ? "Uygulanıyor…" : "Onayla ve uygula"}
                       </button>
@@ -214,23 +219,31 @@ export function AiChat() {
             </div>
           </div>
         ))}
-        {loading && <p className="text-left text-sm text-slate-400">Düşünüyor…</p>}
+        {loading && (
+          <div className="flex justify-start">
+            <div className="inline-flex items-center gap-1.5 rounded-2xl px-4 py-2.5" style={{ background: "rgb(var(--muted))" }}>
+              <span className="adm-muted text-sm">Düşünüyor</span>
+              <span className="flex gap-1">
+                <span className="h-1.5 w-1.5 animate-bounce rounded-full [animation-delay:-0.3s]" style={{ background: "rgb(var(--muted-foreground))" }} />
+                <span className="h-1.5 w-1.5 animate-bounce rounded-full [animation-delay:-0.15s]" style={{ background: "rgb(var(--muted-foreground))" }} />
+                <span className="h-1.5 w-1.5 animate-bounce rounded-full" style={{ background: "rgb(var(--muted-foreground))" }} />
+              </span>
+            </div>
+          </div>
+        )}
         <div ref={endRef} />
       </div>
 
-      {error && <p className="mb-2 text-sm text-red-600">{error}</p>}
+      {error && <p className="mb-2 text-sm" style={{ color: "rgb(var(--accent))" }}>{error}</p>}
 
       <form onSubmit={send} className="flex gap-2">
         <input
           value={input}
           onChange={(e) => setInput(e.target.value)}
           placeholder="Veritabanına bir soru sor ya da bir değişiklik iste…"
-          className="flex-1 rounded-lg border border-slate-300 px-3 py-2 text-sm"
+          className="adm-input flex-1"
         />
-        <button
-          disabled={loading}
-          className="rounded-lg bg-cyan-600 px-4 py-2 text-sm font-semibold text-white disabled:opacity-60"
-        >
+        <button disabled={loading} className="adm-btn adm-btn-primary">
           Gönder
         </button>
       </form>

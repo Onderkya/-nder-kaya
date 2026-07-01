@@ -4,6 +4,7 @@ import { getEditableTexts, loadBaseFlat } from "@/lib/messages";
 import { routing, localeNames, localeFlags, type Locale } from "@/i18n/routing";
 import { requireAdmin } from "@/lib/auth";
 import { audit } from "@/lib/audit";
+import { PageHeader, Section, Badge, LocationHint } from "@/components/admin/ui";
 
 export const dynamic = "force-dynamic";
 
@@ -50,63 +51,80 @@ export default async function ContentPage() {
     groups.get(ns)!.push(t);
   }
 
+  const entries = [...groups.entries()];
+
   return (
     <div>
-      <div className="mb-6">
-        <h1 className="text-2xl font-bold">Site İçeriği</h1>
-        <p className="mt-1 text-sm text-slate-500">
-          Sitedeki tüm metinleri 5 dilde buradan düzenleyin. Boş bıraktığınız ya
-          da varsayılana eşit alanlar için orijinal metin kullanılır. Kaydedince
-          değişiklikler sitede anında yayınlanır.
-        </p>
-      </div>
+      <PageHeader
+        eyebrow="İçerik & Sayfalar"
+        title="Site Yazıları"
+        description="Sitenin tüm yazıları — 5 dilde düzenle. Boş bıraktığın ya da varsayılana eşit alanlar için orijinal metin kullanılır. Kaydedince değişiklikler sitede anında yayınlanır."
+      />
 
-      <form action={saveTexts} className="space-y-8">
-        <div className="sticky top-0 z-10 -mx-8 mb-2 border-b border-slate-200 bg-slate-100 px-8 py-3">
-          <button className="rounded-lg bg-cyan-600 px-5 py-2 text-sm font-semibold text-white">
-            Tümünü kaydet
-          </button>
+      <form action={saveTexts}>
+        <LocationHint>
+          Buradaki her yazı, sitenizin ilgili sayfasında ziyaretçilere görünür. Aşağıdaki başlıklar (menü, giriş, hakkında…) sitenin bölümlerini temsil eder.
+        </LocationHint>
+
+        <div className="mt-5 space-y-4">
+          {entries.map(([ns, items]) => {
+            const editedCount = items.filter((t) => t.overridden).length;
+            return (
+              <Section
+                key={ns}
+                icon="content"
+                defaultOpen={false}
+                title={ns}
+                description={`${items.length} yazı${editedCount ? ` · ${editedCount} düzenlenmiş` : ""}`}
+              >
+                <div className="space-y-6">
+                  {items.map((t) => (
+                    <div
+                      key={t.key}
+                      className="border-b pb-5 last:border-0 last:pb-0"
+                      style={{ borderColor: "rgb(var(--border))" }}
+                    >
+                      <div className="mb-2 flex flex-wrap items-center gap-2">
+                        <code
+                          className="rounded px-1.5 py-0.5 text-xs"
+                          style={{ background: "rgb(var(--muted))", color: "rgb(var(--muted-foreground))" }}
+                        >
+                          {t.key}
+                        </code>
+                        {t.overridden && <Badge tone="warn">düzenlendi</Badge>}
+                      </div>
+                      <div className="grid gap-2 lg:grid-cols-2">
+                        {routing.locales.map((l: Locale) => (
+                          <label key={l} className="block">
+                            <span className="adm-muted mb-1 flex items-center gap-1 text-xs">
+                              {localeFlags[l]} {localeNames[l]}
+                            </span>
+                            <textarea
+                              name={`${t.key}${SEP}${l}`}
+                              defaultValue={t.values[l]}
+                              rows={t.values[l] && t.values[l].length > 60 ? 3 : 1}
+                              className="adm-textarea"
+                              style={{ minHeight: "44px" }}
+                            />
+                          </label>
+                        ))}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </Section>
+            );
+          })}
         </div>
 
-        {[...groups.entries()].map(([ns, items]) => (
-          <section key={ns} className="rounded-2xl bg-white p-6 shadow-sm">
-            <h2 className="mb-4 text-lg font-semibold capitalize text-cyan-800">{ns}</h2>
-            <div className="space-y-6">
-              {items.map((t) => (
-                <div key={t.key} className="border-b border-slate-100 pb-5 last:border-0 last:pb-0">
-                  <div className="mb-2 flex items-center gap-2">
-                    <code className="rounded bg-slate-100 px-1.5 py-0.5 text-xs text-slate-600">{t.key}</code>
-                    {t.overridden && (
-                      <span className="rounded-full bg-amber-100 px-2 py-0.5 text-[10px] font-semibold text-amber-700">
-                        düzenlendi
-                      </span>
-                    )}
-                  </div>
-                  <div className="grid gap-2 lg:grid-cols-2">
-                    {routing.locales.map((l: Locale) => (
-                      <label key={l} className="block">
-                        <span className="mb-1 flex items-center gap-1 text-xs text-slate-500">
-                          {localeFlags[l]} {localeNames[l]}
-                        </span>
-                        <textarea
-                          name={`${t.key}${SEP}${l}`}
-                          defaultValue={t.values[l]}
-                          rows={t.values[l] && t.values[l].length > 60 ? 3 : 1}
-                          className="w-full resize-y rounded-lg border border-slate-300 px-3 py-2 text-sm"
-                        />
-                      </label>
-                    ))}
-                  </div>
-                </div>
-              ))}
-            </div>
-          </section>
-        ))}
-
-        <div className="pb-10">
-          <button className="rounded-lg bg-cyan-600 px-5 py-2 text-sm font-semibold text-white">
-            Tümünü kaydet
-          </button>
+        {/* Yapışkan kaydet çubuğu — telefonda her zaman ulaşılabilir */}
+        <div className="adm-sticky-save mt-6">
+          <div className="flex items-center justify-between gap-3">
+            <p className="adm-muted hidden text-[13px] sm:block">
+              Değişiklikler kaydedince sitede anında görünür.
+            </p>
+            <button className="adm-btn adm-btn-primary w-full sm:w-auto">Tümünü kaydet</button>
+          </div>
         </div>
       </form>
     </div>

@@ -2,6 +2,8 @@ import Link from "next/link";
 import { requireAdmin } from "@/lib/auth";
 import { listPages } from "@/lib/cms";
 import { createPage } from "./actions";
+import { PageHeader, Card, Section, Field, Badge, EmptyState } from "@/components/admin/ui";
+import { Icon } from "@/components/admin/icons";
 
 export const dynamic = "force-dynamic";
 
@@ -13,26 +15,27 @@ export default async function AdminPagesList() {
   const existing = new Set(pages.map((p) => p.slug));
 
   return (
-    <div>
-      <div className="mb-6">
-        <h1 className="text-2xl font-bold">Sayfalar (CMS)</h1>
-        <p className="mt-1 max-w-3xl text-sm text-slate-500">
-          Bloklarla sayfa kurun/düzenleyin. Bir sayfa <b>“CMS ile yayınla”</b> açık değilse, o
-          rota mevcut tasarımıyla çalışmaya devam eder — yani burada hazırlık yaparken site
-          bozulmaz. Hazır olunca yayına alın; istediğinizde geri kapatabilirsiniz.
-        </p>
-      </div>
+    <div className="space-y-6">
+      <PageHeader
+        eyebrow="İçerik & Sayfalar"
+        title="Sayfalar"
+        description="Bloklarla sayfa kurun ve düzenleyin. Bir sayfayı yayına almadıkça (aşağıdaki “yayında” işareti) o rota mevcut tasarımıyla çalışmaya devam eder — yani burada hazırlık yaparken siteniz bozulmaz. Hazır olunca yayına alın; istediğinizde geri kapatabilirsiniz."
+      />
 
       {/* Bilinen rotalar için hızlı oluştur */}
-      <section className="mb-6 rounded-2xl bg-white p-5 shadow-sm">
-        <h2 className="mb-3 text-sm font-semibold text-slate-700">Mevcut sayfa rotaları</h2>
+      <Card>
+        <div className="mb-1 flex items-center gap-2">
+          <Icon name="pages" size={18} style={{ color: "rgb(var(--primary))" }} />
+          <h2 className="font-semibold text-[15px]" style={{ color: "rgb(var(--foreground))" }}>Mevcut sayfa rotaları</h2>
+        </div>
+        <p className="adm-help mb-4">Sitenizdeki hazır sayfalar. Var olana tıklayıp düzenleyin, olmayanı tek dokunuşla oluşturun.</p>
         <div className="flex flex-wrap gap-2">
           {KNOWN.map((slug) =>
             existing.has(slug) ? (
               <Link
                 key={slug}
                 href={`/admin/pages/${pages.find((p) => p.slug === slug)!.id}`}
-                className="rounded-lg border border-cyan-300 bg-cyan-50 px-3 py-1.5 text-sm font-medium text-cyan-800"
+                className="adm-btn adm-btn-ghost adm-btn-sm"
               >
                 {slug}
               </Link>
@@ -40,69 +43,91 @@ export default async function AdminPagesList() {
               <form key={slug} action={createPage}>
                 <input type="hidden" name="slug" value={slug} />
                 <input type="hidden" name="title" value={slug} />
-                <button className="rounded-lg border border-dashed border-slate-300 px-3 py-1.5 text-sm text-slate-500 hover:bg-slate-50">
-                  + {slug}
+                <button className="adm-btn adm-btn-ghost adm-btn-sm" style={{ borderStyle: "dashed" }}>
+                  <Icon name="plus" size={14} /> {slug}
                 </button>
               </form>
             )
           )}
         </div>
-      </section>
+      </Card>
 
       {/* Yeni özel sayfa */}
-      <section className="mb-6 rounded-2xl bg-white p-5 shadow-sm">
-        <h2 className="mb-3 text-sm font-semibold text-slate-700">Yeni özel sayfa</h2>
-        <form action={createPage} className="flex flex-wrap items-end gap-3">
-          <label className="block">
-            <span className="mb-1 block text-xs text-slate-500">Slug (URL)</span>
-            <input name="slug" placeholder="kampanya" required className="rounded-lg border border-slate-300 px-3 py-2 text-sm" />
-          </label>
-          <label className="block">
-            <span className="mb-1 block text-xs text-slate-500">Başlık</span>
-            <input name="title" placeholder="Kampanya" className="rounded-lg border border-slate-300 px-3 py-2 text-sm" />
-          </label>
-          <button className="rounded-lg bg-cyan-600 px-4 py-2 text-sm font-semibold text-white">Oluştur</button>
+      <Section icon="plus" title="Yeni özel sayfa" description="Kendi rotanızla yeni bir sayfa açın" defaultOpen={false}>
+        <form action={createPage} className="grid gap-4 sm:grid-cols-[1fr_1fr_auto] sm:items-end">
+          <Field label="Slug (URL)" help="Adres çubuğunda görünür — örn. site.com/kampanya" htmlFor="new-slug">
+            <input id="new-slug" name="slug" placeholder="kampanya" required className="adm-input" />
+          </Field>
+          <Field label="Başlık" help="Tarayıcı sekmesinde ve SEO'da görünür" htmlFor="new-title">
+            <input id="new-title" name="title" placeholder="Kampanya" className="adm-input" />
+          </Field>
+          <button className="adm-btn adm-btn-primary">Oluştur</button>
         </form>
-      </section>
+      </Section>
 
       {/* Tüm sayfalar */}
-      <section className="overflow-hidden rounded-2xl bg-white shadow-sm">
-        <table className="w-full text-sm">
-          <thead className="bg-slate-50 text-left text-xs uppercase text-slate-500">
-            <tr>
-              <th className="px-4 py-3">Slug</th>
-              <th className="px-4 py-3">Başlık</th>
-              <th className="px-4 py-3">Blok</th>
-              <th className="px-4 py-3">Durum</th>
-              <th className="px-4 py-3"></th>
-            </tr>
-          </thead>
-          <tbody>
-            {pages.map((p) => (
-              <tr key={p.id} className="border-t border-slate-100">
-                <td className="px-4 py-3 font-mono text-xs">{p.slug}</td>
-                <td className="px-4 py-3">{p.title || "—"}</td>
-                <td className="px-4 py-3">{p._count.blocks}</td>
-                <td className="px-4 py-3">
-                  {p.managed ? (
-                    <span className="rounded-full bg-emerald-100 px-2 py-0.5 text-xs font-semibold text-emerald-700">CMS yayında</span>
-                  ) : (
-                    <span className="rounded-full bg-slate-100 px-2 py-0.5 text-xs font-semibold text-slate-500">kodlu tasarım</span>
-                  )}
-                </td>
-                <td className="px-4 py-3 text-right">
-                  <Link href={`/admin/pages/${p.id}`} className="font-semibold text-cyan-700">Düzenle →</Link>
-                </td>
-              </tr>
-            ))}
-            {pages.length === 0 && (
-              <tr>
-                <td colSpan={5} className="px-4 py-8 text-center text-slate-400">Henüz sayfa yok. Yukarıdan oluşturun.</td>
-              </tr>
-            )}
-          </tbody>
-        </table>
-      </section>
+      <div>
+        <h2 className="adm-eyebrow mb-3">Tüm sayfalar</h2>
+
+        {pages.length === 0 ? (
+          <EmptyState
+            icon="pages"
+            title="Henüz sayfa yok"
+            description="Yukarıdaki hazır rotalardan birini oluşturun ya da kendi özel sayfanızı ekleyin."
+          />
+        ) : (
+          <>
+            {/* Mobil: kartlar */}
+            <div className="space-y-3 sm:hidden">
+              {pages.map((p) => (
+                <Card key={p.id}>
+                  <div className="flex items-start justify-between gap-2">
+                    <div className="min-w-0">
+                      <p className="font-semibold" style={{ color: "rgb(var(--foreground))" }}>{p.title || "—"}</p>
+                      <code className="text-xs" style={{ color: "rgb(var(--muted-foreground))" }}>/{p.slug}</code>
+                    </div>
+                    {p.managed ? <Badge tone="success">yayında</Badge> : <Badge tone="neutral">kodlu tasarım</Badge>}
+                  </div>
+                  <div className="mt-3 flex items-center justify-between">
+                    <span className="adm-muted text-xs">{p._count.blocks} blok</span>
+                    <Link href={`/admin/pages/${p.id}`} className="adm-btn adm-btn-ghost adm-btn-sm">Düzenle</Link>
+                  </div>
+                </Card>
+              ))}
+            </div>
+
+            {/* Masaüstü: tablo */}
+            <Card pad={false} className="hidden sm:block">
+              <table className="hidden w-full text-sm sm:table">
+                <thead>
+                  <tr className="adm-muted text-left text-xs uppercase tracking-wide" style={{ borderBottom: "1px solid rgb(var(--border))" }}>
+                    <th className="px-5 py-3 font-semibold">Slug</th>
+                    <th className="px-5 py-3 font-semibold">Başlık</th>
+                    <th className="px-5 py-3 font-semibold">Blok</th>
+                    <th className="px-5 py-3 font-semibold">Durum</th>
+                    <th className="px-5 py-3"></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {pages.map((p) => (
+                    <tr key={p.id} style={{ borderTop: "1px solid rgb(var(--border))" }}>
+                      <td className="px-5 py-3 font-mono text-xs" style={{ color: "rgb(var(--muted-foreground))" }}>{p.slug}</td>
+                      <td className="px-5 py-3" style={{ color: "rgb(var(--foreground))" }}>{p.title || "—"}</td>
+                      <td className="px-5 py-3" style={{ color: "rgb(var(--foreground))" }}>{p._count.blocks}</td>
+                      <td className="px-5 py-3">
+                        {p.managed ? <Badge tone="success">yayında</Badge> : <Badge tone="neutral">kodlu tasarım</Badge>}
+                      </td>
+                      <td className="px-5 py-3 text-right">
+                        <Link href={`/admin/pages/${p.id}`} className="adm-btn adm-btn-ghost adm-btn-sm">Düzenle</Link>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </Card>
+          </>
+        )}
+      </div>
     </div>
   );
 }

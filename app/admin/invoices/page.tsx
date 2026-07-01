@@ -10,6 +10,8 @@ import { validatePromo } from "@/lib/promo";
 import { decryptPII } from "@/lib/pii";
 import { CopyButton } from "@/components/copy-button";
 import { routing } from "@/i18n/routing";
+import { PageHeader, Card, Section, Badge, EmptyState, Field } from "@/components/admin/ui";
+import { Icon } from "@/components/admin/icons";
 
 export const dynamic = "force-dynamic";
 
@@ -27,14 +29,15 @@ const STATUS_LABEL: Record<string, string> = {
   CANCELLED: "İptal",
   FAILED: "Başarısız",
 };
-const STATUS_CLASS: Record<string, string> = {
-  PENDING: "bg-amber-100 text-amber-700",
-  PAID: "bg-green-100 text-green-700",
-  UNDERPAID: "bg-orange-100 text-orange-700",
-  EXPIRED: "bg-slate-200 text-slate-600",
-  CANCELLED: "bg-slate-200 text-slate-600",
-  FAILED: "bg-red-100 text-red-700",
+const STATUS_TONE: Record<string, "success" | "warn" | "danger" | "neutral"> = {
+  PENDING: "warn",
+  PAID: "success",
+  UNDERPAID: "warn",
+  EXPIRED: "neutral",
+  CANCELLED: "neutral",
+  FAILED: "danger",
 };
+const statusBadge = (st: string) => <Badge tone={STATUS_TONE[st] ?? "neutral"}>{STATUS_LABEL[st] ?? st}</Badge>;
 
 async function createInvoiceAction(formData: FormData) {
   "use server";
@@ -114,140 +117,170 @@ export default async function InvoicesPage({
   const enabled = paymentsEnabled();
   const invoices = await prisma.invoice.findMany({ orderBy: { createdAt: "desc" }, take: 50 }).catch(() => []);
   const createdInv = created ? invoices.find((i) => i.ref === created) : null;
-  const field = "rounded-lg border border-slate-300 px-3 py-2 text-sm";
 
   return (
     <div className="space-y-8">
-      <div>
-        <h1 className="mb-2 text-2xl font-bold">Faturalar (Kripto Ödeme)</h1>
-        <p className="text-sm text-slate-500">
-          Fatura oluştur → otomatik bir ödeme linki üretilir → müşteriye gönder. Müşteri
-          dilediği ağdan (TRC20 / SOL / ARB / ETH / BTC …) öder; ödeme gelince fatura
-          <strong> otomatik &quot;Ödendi&quot;</strong> olur ve sana bildirim gelir. Para doğrudan
-          senin cüzdanına geçer.
-        </p>
-      </div>
+      <PageHeader
+        eyebrow="Satış & Para"
+        title="Faturalar (Kripto Ödeme)"
+        description="Fatura oluştur → otomatik ödeme linki üretilir → müşteriye gönder. Müşteri dilediği ağdan (TRC20 / SOL / ARB / ETH / BTC …) öder; ödeme gelince fatura otomatik “Ödendi” olur ve sana bildirim gelir. Para doğrudan senin cüzdanına geçer."
+      />
 
       {!enabled && (
-        <div className="rounded-lg border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-800">
-          ⚠️ Ödeme sağlayıcısı henüz yapılandırılmadı. Sunucuda <code>CRYPTOMUS_MERCHANT</code> ve{" "}
-          <code>CRYPTOMUS_API_KEY</code> değerlerini <code>.env</code> dosyasına ekleyip yeniden başlat.
-          Kurulum: <code>deploy/ODEME-KURULUM.md</code>.
-        </div>
+        <Card>
+          <p className="text-[14px] leading-relaxed" style={{ color: "rgb(var(--gold))" }}>
+            ⚠️ Ödeme sağlayıcısı henüz yapılandırılmadı. Sunucuda <code>CRYPTOMUS_MERCHANT</code> ve{" "}
+            <code>CRYPTOMUS_API_KEY</code> değerlerini <code>.env</code> dosyasına ekleyip yeniden başlat.
+            Kurulum: <code>deploy/ODEME-KURULUM.md</code>.
+          </p>
+        </Card>
       )}
 
       {error && (
-        <div className="rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">⚠️ {error}</div>
+        <Card><p className="text-[14px]" style={{ color: "rgb(var(--accent))" }}>⚠️ {error}</p></Card>
       )}
 
       {createdInv && (
-        <div className="rounded-lg border border-green-200 bg-green-50 px-4 py-3 text-sm text-green-800">
-          ✓ Fatura oluşturuldu: <strong>{createdInv.ref}</strong>. Bu linki müşteriye gönder:
+        <Card featured>
+          <p className="text-[14px]" style={{ color: "rgb(var(--foreground))" }}>
+            ✓ Fatura oluşturuldu: <strong>{createdInv.ref}</strong>. Bu linki müşteriye gönder:
+          </p>
           <div className="mt-2 flex items-center gap-2">
-            <code className="flex-1 break-all rounded bg-white px-2 py-1 text-xs">{payLink(createdInv.locale, createdInv.ref)}</code>
+            <code className="flex-1 break-all rounded-lg px-2 py-1.5 text-xs" style={{ background: "rgb(var(--muted))" }}>{payLink(createdInv.locale, createdInv.ref)}</code>
             <CopyButton value={payLink(createdInv.locale, createdInv.ref)} />
           </div>
-        </div>
+        </Card>
       )}
 
       {enabled && (
-        <form action={createInvoiceAction} className="grid gap-3 rounded-2xl bg-white p-6 shadow-sm sm:grid-cols-2 lg:grid-cols-3">
-          <div>
-            <label className="mb-1 block text-xs font-medium text-slate-500">Tutar</label>
-            <input name="amount" required placeholder="50.00" className={`${field} w-full`} />
-          </div>
-          <div>
-            <label className="mb-1 block text-xs font-medium text-slate-500">Para birimi</label>
-            <input name="currency" defaultValue="USD" className={`${field} w-full`} />
-          </div>
-          <div>
-            <label className="mb-1 block text-xs font-medium text-slate-500">Hizmet</label>
-            <select name="service" className={`${field} w-full`}>
-              <option value="">—</option>
-              <option value="antalya">Antalya danışmanlık</option>
-              <option value="lessons">Türkçe ders</option>
-              <option value="education">Eğitim</option>
-              <option value="other">Diğer</option>
-            </select>
-          </div>
-          <div className="sm:col-span-2 lg:col-span-3">
-            <label className="mb-1 block text-xs font-medium text-slate-500">Açıklama (müşteri görür)</label>
-            <input name="description" required placeholder="30 dk Türkçe ders" className={`${field} w-full`} />
-          </div>
-          <div>
-            <label className="mb-1 block text-xs font-medium text-slate-500">Müşteri adı</label>
-            <input name="customerName" className={`${field} w-full`} />
-          </div>
-          <div>
-            <label className="mb-1 block text-xs font-medium text-slate-500">Müşteri e-posta</label>
-            <input name="customerEmail" type="email" className={`${field} w-full`} />
-          </div>
-          <div>
-            <label className="mb-1 block text-xs font-medium text-slate-500">Müşteri telefon</label>
-            <input name="customerPhone" className={`${field} w-full`} />
-          </div>
-          <div>
-            <label className="mb-1 block text-xs font-medium text-slate-500">Dil (ödeme sayfası)</label>
-            <select name="locale" defaultValue="tr" className={`${field} w-full`}>
-              {routing.locales.map((l) => (
-                <option key={l} value={l}>{l}</option>
-              ))}
-            </select>
-          </div>
-          <div>
-            <label className="mb-1 block text-xs font-medium text-slate-500">İndirim kodu (ops.)</label>
-            <input name="promoCode" placeholder="WELCOME10" className={`${field} w-full`} />
-          </div>
-          <div className="flex items-end">
-            <button className="rounded-lg bg-cyan-600 px-4 py-2 text-sm font-semibold text-white">Fatura oluştur &amp; link al</button>
-          </div>
-        </form>
+        <Section title="Yeni fatura oluştur" description="Tutarı ve açıklamayı gir; ödeme linki otomatik üretilir." icon="invoice">
+          <form action={createInvoiceAction} className="space-y-4">
+            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+              <Field label="Tutar" help="Örn. 50.00" htmlFor="inv-amount">
+                <input id="inv-amount" name="amount" required placeholder="50.00" className="adm-input" />
+              </Field>
+              <Field label="Para birimi" htmlFor="inv-currency">
+                <input id="inv-currency" name="currency" defaultValue="USD" className="adm-input" />
+              </Field>
+              <Field label="Hizmet" htmlFor="inv-service">
+                <select id="inv-service" name="service" className="adm-select">
+                  <option value="">—</option>
+                  <option value="antalya">Antalya danışmanlık</option>
+                  <option value="lessons">Türkçe ders</option>
+                  <option value="education">Eğitim</option>
+                  <option value="other">Diğer</option>
+                </select>
+              </Field>
+              <Field label="Açıklama" help="Müşteri ödeme sayfasında bunu görür." htmlFor="inv-description" className="sm:col-span-2 lg:col-span-3">
+                <input id="inv-description" name="description" required placeholder="30 dk Türkçe ders" className="adm-input" />
+              </Field>
+              <Field label="Müşteri adı" htmlFor="inv-customerName">
+                <input id="inv-customerName" name="customerName" className="adm-input" />
+              </Field>
+              <Field label="Müşteri e-posta" htmlFor="inv-customerEmail">
+                <input id="inv-customerEmail" name="customerEmail" type="email" className="adm-input" />
+              </Field>
+              <Field label="Müşteri telefon" htmlFor="inv-customerPhone">
+                <input id="inv-customerPhone" name="customerPhone" className="adm-input" />
+              </Field>
+              <Field label="Dil (ödeme sayfası)" help="Ödeme sayfasının gösterileceği dil." htmlFor="inv-locale">
+                <select id="inv-locale" name="locale" defaultValue="tr" className="adm-select">
+                  {routing.locales.map((l) => (
+                    <option key={l} value={l}>{l}</option>
+                  ))}
+                </select>
+              </Field>
+              <Field label="İndirim kodu (ops.)" htmlFor="inv-promoCode">
+                <input id="inv-promoCode" name="promoCode" placeholder="WELCOME10" className="adm-input" />
+              </Field>
+            </div>
+            <button className="adm-btn adm-btn-primary"><Icon name="invoice" size={16} /> Fatura oluştur &amp; link al</button>
+          </form>
+        </Section>
       )}
 
-      <div className="overflow-x-auto rounded-2xl bg-white shadow-sm">
-        <table className="w-full text-left text-sm">
-          <thead className="border-b border-slate-200 text-slate-500">
-            <tr>
-              <th className="p-3">Referans</th>
-              <th className="p-3">Tutar</th>
-              <th className="p-3">Müşteri</th>
-              <th className="p-3">Durum</th>
-              <th className="p-3">Ağ</th>
-              <th className="p-3">Tarih</th>
-              <th className="p-3">Link</th>
-              <th className="p-3"></th>
-            </tr>
-          </thead>
-          <tbody>
+      {invoices.length === 0 ? (
+        <EmptyState icon="invoice" title="Henüz fatura yok" description="Yukarıdaki formdan ilk faturanı oluştur; müşteriye göndereceğin ödeme linki otomatik üretilir." />
+      ) : (
+        <>
+          {/* Mobil kartlar */}
+          <div className="space-y-3 sm:hidden">
             {invoices.map((inv) => (
-              <tr key={inv.id} className="border-b border-slate-100">
-                <td className="p-3 font-mono font-semibold">{inv.ref}</td>
-                <td className="p-3">{formatAmount(inv.amount, inv.currency)}</td>
-                <td className="p-3">{inv.customerName || decryptPII(inv.customerEmail) || "-"}</td>
-                <td className="p-3">
-                  <span className={`rounded-full px-2 py-0.5 text-xs font-semibold ${STATUS_CLASS[inv.status]}`}>
-                    {STATUS_LABEL[inv.status] ?? inv.status}
-                  </span>
-                </td>
-                <td className="p-3 text-xs">{inv.payNetwork ? `${inv.payCurrency ?? ""} ${inv.payNetwork}` : "-"}</td>
-                <td className="p-3 text-xs text-slate-500">{inv.createdAt.toLocaleString("tr-TR")}</td>
-                <td className="p-3">{inv.payUrl ? <CopyButton value={payLink(inv.locale, inv.ref)} /> : "-"}</td>
-                <td className="p-3">
+              <Card key={inv.id}>
+                <div className="flex items-start justify-between gap-3">
+                  <div className="min-w-0">
+                    <p className="truncate font-mono font-semibold" style={{ color: "rgb(var(--foreground))" }}>{inv.ref}</p>
+                    <p className="adm-muted text-xs">{inv.customerName || decryptPII(inv.customerEmail) || "-"}</p>
+                  </div>
+                  {statusBadge(inv.status)}
+                </div>
+                <dl className="mt-3 space-y-2 text-[13.5px]">
+                  <div className="flex justify-between gap-3">
+                    <dt className="adm-muted text-xs">Tutar</dt>
+                    <dd className="font-semibold">{formatAmount(inv.amount, inv.currency)}</dd>
+                  </div>
+                  <div className="flex justify-between gap-3">
+                    <dt className="adm-muted text-xs">Ağ</dt>
+                    <dd className="text-right">{inv.payNetwork ? `${inv.payCurrency ?? ""} ${inv.payNetwork}` : "-"}</dd>
+                  </div>
+                  <div className="flex justify-between gap-3">
+                    <dt className="adm-muted text-xs">Tarih</dt>
+                    <dd className="adm-muted text-right">{inv.createdAt.toLocaleString("tr-TR")}</dd>
+                  </div>
+                </dl>
+                <div className="mt-3 flex items-center gap-2 border-t pt-3" style={{ borderColor: "rgb(var(--border))" }}>
+                  {inv.payUrl ? <CopyButton value={payLink(inv.locale, inv.ref)} /> : null}
                   {inv.status === "PENDING" && (
                     <form action={cancelInvoiceAction}>
                       <input type="hidden" name="id" value={inv.id} />
-                      <button className="text-xs text-red-600 hover:underline">İptal</button>
+                      <button className="adm-btn adm-btn-danger adm-btn-sm">İptal</button>
                     </form>
                   )}
-                </td>
-              </tr>
+                </div>
+              </Card>
             ))}
-            {invoices.length === 0 && (
-              <tr><td colSpan={8} className="p-4 text-center text-slate-500">Henüz fatura yok.</td></tr>
-            )}
-          </tbody>
-        </table>
-      </div>
+          </div>
+
+          {/* Masaüstü tablo */}
+          <Card pad={false} className="hidden sm:block">
+            <table className="w-full text-left text-sm">
+              <thead>
+                <tr className="adm-muted text-xs uppercase tracking-wide" style={{ borderBottom: "1px solid rgb(var(--border))" }}>
+                  <th className="px-4 py-3 font-semibold">Referans</th>
+                  <th className="px-4 py-3 font-semibold">Tutar</th>
+                  <th className="px-4 py-3 font-semibold">Müşteri</th>
+                  <th className="px-4 py-3 font-semibold">Durum</th>
+                  <th className="px-4 py-3 font-semibold">Ağ</th>
+                  <th className="px-4 py-3 font-semibold">Tarih</th>
+                  <th className="px-4 py-3 font-semibold">Link</th>
+                  <th className="px-4 py-3"></th>
+                </tr>
+              </thead>
+              <tbody>
+                {invoices.map((inv) => (
+                  <tr key={inv.id} style={{ borderTop: "1px solid rgb(var(--border))" }}>
+                    <td className="px-4 py-3 font-mono font-semibold">{inv.ref}</td>
+                    <td className="px-4 py-3">{formatAmount(inv.amount, inv.currency)}</td>
+                    <td className="px-4 py-3">{inv.customerName || decryptPII(inv.customerEmail) || "-"}</td>
+                    <td className="px-4 py-3">{statusBadge(inv.status)}</td>
+                    <td className="adm-muted px-4 py-3 text-xs">{inv.payNetwork ? `${inv.payCurrency ?? ""} ${inv.payNetwork}` : "-"}</td>
+                    <td className="adm-muted px-4 py-3 text-xs">{inv.createdAt.toLocaleString("tr-TR")}</td>
+                    <td className="px-4 py-3">{inv.payUrl ? <CopyButton value={payLink(inv.locale, inv.ref)} /> : "-"}</td>
+                    <td className="px-4 py-3">
+                      {inv.status === "PENDING" && (
+                        <form action={cancelInvoiceAction}>
+                          <input type="hidden" name="id" value={inv.id} />
+                          <button className="adm-btn adm-btn-danger adm-btn-sm">İptal</button>
+                        </form>
+                      )}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </Card>
+        </>
+      )}
     </div>
   );
 }

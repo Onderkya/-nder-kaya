@@ -1,0 +1,224 @@
+/*
+ * Antalya Bridge — Yönetim paneli tasarım katmanı.
+ * Public marka token'larını (globals.css :root) kullanır: cream yüzey, turkuaz
+ * primary, altın accent, mercan danger. Cormorant başlıklar + Onest gövde.
+ * Amaç: telefondan bile kolay, ferah, premium ve markaya uygun bir panel.
+ * (Not: panel açık/cream temada; koyu deniz kenar çubuğu imza kontrast.)
+ */
+
+:root {
+  --adm-sidebar-from: #0c2f39;
+  --adm-sidebar-to: #071d25;
+  --adm-nav-h: 64px; /* mobil alt sekme yüksekliği */
+}
+
+/* ---- Kabuk ---- */
+.adm-body {
+  background-color: rgb(var(--background));
+  color: rgb(var(--foreground));
+  font-family: var(--font-sans), ui-sans-serif, system-ui, sans-serif;
+}
+
+.adm-sidebar {
+  background: linear-gradient(180deg, var(--adm-sidebar-from), var(--adm-sidebar-to));
+  color: rgba(255, 255, 255, 0.72);
+}
+.adm-sidebar-scroll { scrollbar-width: thin; scrollbar-color: rgba(255,255,255,0.18) transparent; }
+.adm-sidebar-scroll::-webkit-scrollbar { width: 6px; }
+.adm-sidebar-scroll::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.16); border-radius: 999px; }
+
+.adm-brand { font-family: var(--font-display), serif; }
+
+/* Grup başlığı */
+.adm-group-label {
+  color: rgba(255, 255, 255, 0.42);
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  font-weight: 600;
+}
+
+/* Nav öğesi */
+.adm-nav-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-height: 44px;
+  padding: 9px 12px;
+  border-radius: 12px;
+  color: rgba(255, 255, 255, 0.74);
+  font-size: 14px;
+  font-weight: 500;
+  border-left: 3px solid transparent;
+  transition: background-color 0.16s ease, color 0.16s ease, border-color 0.16s ease;
+}
+.adm-nav-item:hover { background: rgba(255, 255, 255, 0.07); color: #fff; }
+.adm-nav-item[data-active="true"] {
+  background: rgba(45, 212, 222, 0.14);
+  color: #fff;
+  border-left-color: rgb(var(--lagoon));
+}
+.adm-nav-item svg { flex-shrink: 0; }
+.adm-nav-badge {
+  margin-left: auto;
+  min-width: 20px;
+  height: 20px;
+  padding: 0 6px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  background: rgb(var(--accent));
+  color: #fff;
+  font-size: 11px;
+  font-weight: 700;
+}
+
+/* Kenar çubuğu alt aksiyonları */
+.adm-side-btn {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  min-height: 44px;
+  padding: 9px 12px;
+  border-radius: 12px;
+  color: rgba(255, 255, 255, 0.72);
+  font-size: 13.5px;
+  font-weight: 500;
+  transition: background-color 0.16s ease, color 0.16s ease;
+}
+.adm-side-btn:hover { background: rgba(255, 255, 255, 0.08); color: #fff; }
+.adm-side-cta {
+  background: rgb(var(--lagoon));
+  color: #06232b;
+  font-weight: 700;
+}
+.adm-side-cta:hover { filter: brightness(1.06); background: rgb(var(--lagoon)); color: #06232b; }
+
+/* ---- Mobil alt sekme + drawer ---- */
+.adm-bottomnav {
+  background: rgba(255, 253, 250, 0.92);
+  backdrop-filter: blur(12px);
+  border-top: 1px solid rgb(var(--border));
+  padding-bottom: env(safe-area-inset-bottom);
+}
+.adm-tab {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+  flex: 1;
+  min-height: var(--adm-nav-h);
+  color: rgb(var(--muted-foreground));
+  font-size: 10.5px;
+  font-weight: 600;
+  position: relative;
+}
+.adm-tab[data-active="true"] { color: rgb(var(--primary)); }
+.adm-tab .adm-tab-dot {
+  position: absolute;
+  top: 8px; right: calc(50% - 20px);
+  min-width: 16px; height: 16px; padding: 0 4px;
+  border-radius: 999px; background: rgb(var(--accent)); color: #fff;
+  font-size: 9px; font-weight: 700; display: inline-flex; align-items: center; justify-content: center;
+}
+
+/* ---- Kartlar & yüzeyler ---- */
+.adm-card {
+  border-radius: 1.25rem;
+  border: 1px solid rgb(var(--border));
+  background: rgb(var(--card));
+  box-shadow: 0 1px 2px rgb(13 36 43 / 0.05);
+}
+.adm-card-pad { padding: 1.25rem; }
+@media (min-width: 640px) { .adm-card-pad { padding: 1.5rem; } }
+
+/* Öne çıkan / dikkat kartı — altın halka */
+.adm-card-featured {
+  box-shadow: 0 1px 2px rgb(13 36 43 / 0.05), inset 3px 0 0 rgb(var(--gold));
+}
+
+/* ---- Tipografi ---- */
+.adm-title { font-family: var(--font-display), serif; font-weight: 600; letter-spacing: -0.01em; line-height: 1.05; color: rgb(var(--foreground)); }
+.adm-eyebrow { font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; font-weight: 700; color: rgb(var(--gold)); }
+.adm-muted { color: rgb(var(--muted-foreground)); }
+.adm-num { font-family: var(--font-display), serif; font-weight: 600; letter-spacing: -0.02em; line-height: 1; color: rgb(var(--foreground)); }
+
+/* ---- Form kontrolleri ---- */
+.adm-label { display: block; font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.04em; color: rgb(var(--muted-foreground)); margin-bottom: 6px; }
+.adm-help { font-size: 12.5px; line-height: 1.4; color: rgb(var(--muted-foreground)); margin-top: 6px; }
+
+.adm-input, .adm-textarea, .adm-select {
+  width: 100%;
+  min-height: 44px;
+  border-radius: 0.75rem;
+  border: 1px solid rgb(var(--border));
+  background: rgb(var(--card));
+  padding: 10px 14px;
+  font-size: 14px;
+  color: rgb(var(--foreground));
+  outline: none;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+  font-family: inherit;
+}
+.adm-textarea { min-height: 92px; resize: vertical; line-height: 1.5; }
+.adm-input::placeholder, .adm-textarea::placeholder { color: rgb(var(--muted-foreground) / 0.55); }
+.adm-input:focus, .adm-textarea:focus, .adm-select:focus {
+  border-color: rgb(var(--primary));
+  box-shadow: 0 0 0 3px rgb(var(--primary) / 0.16);
+}
+
+/* ---- Butonlar ---- */
+.adm-btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+  min-height: 44px; padding: 10px 18px;
+  border-radius: 0.75rem;
+  font-size: 14px; font-weight: 600;
+  cursor: pointer; text-decoration: none;
+  transition: filter 0.15s ease, background-color 0.15s ease, border-color 0.15s ease;
+  white-space: nowrap;
+}
+.adm-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+.adm-btn-primary { background: rgb(var(--primary)); color: #fff; box-shadow: 0 1px 2px rgb(13 36 43 / 0.12); }
+.adm-btn-primary:hover:not(:disabled) { filter: brightness(1.08); }
+.adm-btn-ghost { background: rgb(var(--card)); color: rgb(var(--foreground)); border: 1px solid rgb(var(--border)); }
+.adm-btn-ghost:hover:not(:disabled) { background: rgb(var(--muted)); }
+.adm-btn-danger { background: transparent; color: rgb(var(--accent)); border: 1px solid rgb(var(--accent) / 0.35); }
+.adm-btn-danger:hover:not(:disabled) { background: rgb(var(--accent) / 0.08); }
+.adm-btn-sm { min-height: 36px; padding: 6px 12px; font-size: 13px; border-radius: 0.6rem; }
+
+/* ---- Rozetler / durum çipleri ---- */
+.adm-badge { display: inline-flex; align-items: center; gap: 5px; padding: 3px 10px; border-radius: 999px; font-size: 12px; font-weight: 600; line-height: 1.2; }
+.adm-badge-neutral { background: rgb(var(--muted)); color: rgb(var(--muted-foreground)); }
+.adm-badge-success { background: rgb(var(--primary) / 0.12); color: rgb(var(--primary)); }
+.adm-badge-warn { background: rgb(var(--gold) / 0.16); color: rgb(var(--gold)); }
+.adm-badge-danger { background: rgb(var(--accent) / 0.12); color: rgb(var(--accent)); }
+
+/* ---- Boş durum ---- */
+.adm-empty { text-align: center; padding: 40px 24px; border: 1.5px dashed rgb(var(--border)); border-radius: 1.25rem; background: rgb(var(--muted) / 0.4); }
+
+/* ---- Yardımcılar ---- */
+.adm-divider { height: 1px; background: rgb(var(--border)); border: 0; }
+.adm-gold-rule { height: 1px; width: 40px; background: rgb(var(--gold)); }
+
+/* Mobil yapışkan kaydet çubuğu */
+.adm-sticky-save {
+  position: sticky; bottom: 0; z-index: 20;
+  background: rgba(255, 253, 250, 0.94);
+  backdrop-filter: blur(10px);
+  border-top: 1px solid rgb(var(--border));
+  padding: 12px 0 calc(12px + env(safe-area-inset-bottom));
+}
+
+/* Yükleniş animasyonu (reduced-motion güvenli) */
+@keyframes adm-rise { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+.adm-rise { animation: adm-rise 0.4s ease both; }
+@media (prefers-reduced-motion: reduce) { .adm-rise { animation: none; } }
+
+/* Detay/accordion (native <details>) */
+.adm-section > summary { list-style: none; cursor: pointer; }
+.adm-section > summary::-webkit-details-marker { display: none; }
+.adm-section[open] > summary .adm-chev { transform: rotate(180deg); }
+.adm-chev { transition: transform 0.2s ease; }

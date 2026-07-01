@@ -3,6 +3,8 @@ import { revalidatePath } from "next/cache";
 import type { Role } from "@prisma/client";
 import { requireAdmin, hashPassword } from "@/lib/auth";
 import { audit } from "@/lib/audit";
+import { PageHeader, Card, Field, Badge, EmptyState } from "@/components/admin/ui";
+import { Icon } from "@/components/admin/icons";
 
 export const dynamic = "force-dynamic";
 
@@ -75,99 +77,143 @@ export default async function UsersPage() {
     .catch(() => []);
   const adminCount = users.filter((u) => u.role === "ADMIN").length;
 
-  const field = "rounded-lg border border-slate-300 px-3 py-2 text-sm";
-
   return (
-    <div className="space-y-8">
-      <div>
-        <h1 className="mb-2 text-2xl font-bold">Kullanıcılar</h1>
-        <p className="text-sm text-slate-500">
-          Yönetim paneline erişebilen kullanıcıları ekleyin, rollerini düzenleyin veya
-          silin. Parolalar güvenli biçimde saklanır ve hiçbir yerde gösterilmez.
+    <div className="space-y-6">
+      <PageHeader
+        eyebrow="Yönetim Paneli"
+        title="Kullanıcılar"
+        description="Yönetim paneline erişebilen kişileri ekleyin, rollerini düzenleyin veya silin. Parolalar güvenli biçimde saklanır ve hiçbir yerde gösterilmez."
+      />
+
+      <Card>
+        <div className="mb-4 flex items-center gap-2">
+          <Icon name="plus" size={18} style={{ color: "rgb(var(--primary))" }} />
+          <h2 className="font-semibold text-[15px]" style={{ color: "rgb(var(--foreground))" }}>Yeni kullanıcı ekle</h2>
+        </div>
+        <form action={createUser} className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+          <Field label="E-posta" htmlFor="new-email">
+            <input id="new-email" name="email" type="email" required placeholder="ad@ornek.com" className="adm-input" />
+          </Field>
+          <Field label="Parola" help="En az 8 karakter." htmlFor="new-password">
+            <input id="new-password" name="password" type="password" required minLength={8} className="adm-input" />
+          </Field>
+          <Field label="Rol" htmlFor="new-role">
+            <select id="new-role" name="role" className="adm-select">
+              <option value="EDITOR">Editör</option>
+              <option value="ADMIN">Yönetici</option>
+            </select>
+          </Field>
+          <div className="flex items-start sm:items-end">
+            <button className="adm-btn adm-btn-primary w-full sm:w-auto">
+              <Icon name="plus" size={18} /> Ekle
+            </button>
+          </div>
+        </form>
+        <p className="adm-help mt-3">
+          <b>Yönetici</b>: tam yetki (kullanıcılar, ayarlar, her şey). <b>Editör</b>: yalnız içerik düzenleme.
+          Son yönetici silinemez veya yetkisi düşürülemez; kendi hesabınızı silemezsiniz.
         </p>
-      </div>
+      </Card>
 
-      <form action={createUser} className="grid gap-3 rounded-2xl bg-white p-6 shadow-sm sm:grid-cols-2 lg:grid-cols-4">
-        <div>
-          <label className="mb-1 block text-xs font-medium text-slate-500">E-posta</label>
-          <input name="email" type="email" required placeholder="ad@ornek.com" className={`${field} w-full`} />
-        </div>
-        <div>
-          <label className="mb-1 block text-xs font-medium text-slate-500">Parola (en az 8 karakter)</label>
-          <input name="password" type="password" required minLength={8} className={`${field} w-full`} />
-        </div>
-        <div>
-          <label className="mb-1 block text-xs font-medium text-slate-500">Rol</label>
-          <select name="role" className={`${field} w-full`}>
-            <option value="EDITOR">Editör</option>
-            <option value="ADMIN">Yönetici</option>
-          </select>
-        </div>
-        <div className="flex items-end">
-          <button className="rounded-lg bg-cyan-600 px-4 py-2 text-sm font-semibold text-white">Ekle</button>
-        </div>
-      </form>
-
-      <div className="overflow-x-auto rounded-2xl bg-white shadow-sm">
-        <table className="w-full text-left text-sm">
-          <thead className="border-b border-slate-200 text-slate-500">
-            <tr>
-              <th className="p-3">E-posta</th>
-              <th className="p-3">Rol</th>
-              <th className="p-3">Oluşturulma</th>
-              <th className="p-3"></th>
-            </tr>
-          </thead>
-          <tbody>
+      {users.length === 0 ? (
+        <EmptyState icon="users" title="Henüz kullanıcı yok" description="Yukarıdaki formdan panele erişecek ilk kullanıcıyı ekleyin." />
+      ) : (
+        <>
+          {/* Mobil — kart yığını */}
+          <div className="space-y-3 sm:hidden">
             {users.map((u) => {
               const isSelf = u.id === session.uid;
               const isLastAdmin = u.role === "ADMIN" && adminCount <= 1;
               return (
-                <tr key={u.id} className="border-b border-slate-100">
-                  <td className="p-3 font-medium">
-                    {u.email}
-                    {isSelf && <span className="ml-2 text-xs text-slate-400">(siz)</span>}
-                  </td>
-                  <td className="p-3">
-                    <form action={updateRole} className="flex items-center gap-2">
+                <Card key={u.id}>
+                  <div className="mb-3 flex items-start justify-between gap-2">
+                    <div className="min-w-0">
+                      <p className="truncate font-semibold text-[14.5px]" style={{ color: "rgb(var(--foreground))" }}>{u.email}</p>
+                      {isSelf && <span className="adm-muted text-xs">(siz)</span>}
+                    </div>
+                    <Badge tone={u.role === "ADMIN" ? "success" : "neutral"}>{roleLabel(u.role)}</Badge>
+                  </div>
+                  <p className="adm-muted mb-3 text-[12.5px]">
+                    Oluşturulma: {new Date(u.createdAt).toLocaleDateString("tr-TR")}
+                  </p>
+                  <div className="flex flex-wrap items-end gap-3">
+                    <form action={updateRole} className="flex flex-1 items-end gap-2">
                       <input type="hidden" name="id" value={u.id} />
-                      <select name="role" defaultValue={u.role} disabled={isLastAdmin} className={field}>
-                        <option value="EDITOR">Editör</option>
-                        <option value="ADMIN">Yönetici</option>
-                      </select>
-                      <button disabled={isLastAdmin} className="text-xs text-cyan-700 hover:underline disabled:text-slate-300 disabled:no-underline">
-                        Kaydet
-                      </button>
+                      <div className="flex-1">
+                        <label className="adm-label" htmlFor={`role-m-${u.id}`}>Rol</label>
+                        <select id={`role-m-${u.id}`} name="role" defaultValue={u.role} disabled={isLastAdmin} className="adm-select">
+                          <option value="EDITOR">Editör</option>
+                          <option value="ADMIN">Yönetici</option>
+                        </select>
+                      </div>
+                      <button disabled={isLastAdmin} className="adm-btn adm-btn-ghost adm-btn-sm">Kaydet</button>
                     </form>
-                  </td>
-                  <td className="p-3 text-slate-500">
-                    {new Date(u.createdAt).toLocaleDateString("tr-TR")}
-                  </td>
-                  <td className="p-3">
                     {isSelf || isLastAdmin ? (
-                      <span className="text-xs text-slate-300" title={isSelf ? "Kendi hesabınızı silemezsiniz" : "Son yöneticiyi silemezsiniz"}>
-                        Sil
-                      </span>
+                      <span className="adm-muted text-xs" title={isSelf ? "Kendi hesabınızı silemezsiniz" : "Son yöneticiyi silemezsiniz"}>Sil</span>
                     ) : (
                       <form action={deleteUser}>
                         <input type="hidden" name="id" value={u.id} />
-                        <button className="text-xs text-red-600 hover:underline">Sil</button>
+                        <button className="adm-btn adm-btn-danger adm-btn-sm">Sil</button>
                       </form>
                     )}
-                  </td>
-                </tr>
+                  </div>
+                </Card>
               );
             })}
-            {users.length === 0 && (
-              <tr><td colSpan={4} className="p-4 text-center text-slate-500">Henüz kullanıcı yok.</td></tr>
-            )}
-          </tbody>
-        </table>
-      </div>
-      <p className="text-xs text-slate-400">
-        {roleLabel("ADMIN")}: tam yetki. {roleLabel("EDITOR")}: içerik düzenleme.
-        Son yönetici silinemez veya yetkisi düşürülemez; kendi hesabınızı silemezsiniz.
-      </p>
+          </div>
+
+          {/* Masaüstü — tablo */}
+          <Card pad={false} className="hidden sm:block">
+            <table className="hidden w-full text-left text-[14px] sm:table">
+              <thead>
+                <tr className="adm-muted border-b text-[12px] font-semibold uppercase tracking-wide" style={{ borderColor: "rgb(var(--border))" }}>
+                  <th className="px-5 py-3">E-posta</th>
+                  <th className="px-5 py-3">Rol</th>
+                  <th className="px-5 py-3">Oluşturulma</th>
+                  <th className="px-5 py-3"></th>
+                </tr>
+              </thead>
+              <tbody>
+                {users.map((u) => {
+                  const isSelf = u.id === session.uid;
+                  const isLastAdmin = u.role === "ADMIN" && adminCount <= 1;
+                  return (
+                    <tr key={u.id} className="border-b last:border-0" style={{ borderColor: "rgb(var(--border))" }}>
+                      <td className="px-5 py-3 font-medium" style={{ color: "rgb(var(--foreground))" }}>
+                        {u.email}
+                        {isSelf && <span className="adm-muted ml-2 text-xs">(siz)</span>}
+                      </td>
+                      <td className="px-5 py-3">
+                        <form action={updateRole} className="flex items-center gap-2">
+                          <input type="hidden" name="id" value={u.id} />
+                          <select name="role" defaultValue={u.role} disabled={isLastAdmin} className="adm-select max-w-[9rem]">
+                            <option value="EDITOR">Editör</option>
+                            <option value="ADMIN">Yönetici</option>
+                          </select>
+                          <button disabled={isLastAdmin} className="adm-btn adm-btn-ghost adm-btn-sm">Kaydet</button>
+                        </form>
+                      </td>
+                      <td className="adm-muted px-5 py-3">
+                        {new Date(u.createdAt).toLocaleDateString("tr-TR")}
+                      </td>
+                      <td className="px-5 py-3 text-right">
+                        {isSelf || isLastAdmin ? (
+                          <span className="adm-muted text-xs" title={isSelf ? "Kendi hesabınızı silemezsiniz" : "Son yöneticiyi silemezsiniz"}>Sil</span>
+                        ) : (
+                          <form action={deleteUser}>
+                            <input type="hidden" name="id" value={u.id} />
+                            <button className="adm-btn adm-btn-danger adm-btn-sm">Sil</button>
+                          </form>
+                        )}
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </Card>
+        </>
+      )}
     </div>
   );
 }

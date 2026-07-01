@@ -3,6 +3,8 @@ import { revalidatePath } from "next/cache";
 import type { PromoType } from "@prisma/client";
 import { requireAdmin } from "@/lib/auth";
 import { audit } from "@/lib/audit";
+import { PageHeader, Card, Section, Badge, EmptyState, Field } from "@/components/admin/ui";
+import { Icon } from "@/components/admin/icons";
 
 export const dynamic = "force-dynamic";
 
@@ -44,94 +46,118 @@ export default async function PromosPage() {
   await requireAdmin();
   const promos = await prisma.promoCode.findMany({ orderBy: { createdAt: "desc" } }).catch(() => []);
 
-  const field = "rounded-lg border border-slate-300 px-3 py-2 text-sm";
-
   return (
     <div className="space-y-8">
-      <div>
-        <h1 className="mb-2 text-2xl font-bold">İndirim Kodları</h1>
-        <p className="text-sm text-slate-500">
-          İndirim kodları içerikten bağımsızdır — kod eklemek için sayfa metni veya
-          görselle uğraşmanız gerekmez.
-        </p>
-      </div>
+      <PageHeader
+        eyebrow="Satış & Para"
+        title="İndirim Kodları"
+        description="İndirim kodları içerikten bağımsızdır — kod eklemek için sayfa metni veya görselle uğraşman gerekmez. Kodlar ödeme/fatura sırasında geçerli olur."
+      />
 
-      <form action={createPromo} className="grid gap-3 rounded-2xl bg-white p-6 shadow-sm sm:grid-cols-2 lg:grid-cols-3">
-        <div>
-          <label className="mb-1 block text-xs font-medium text-slate-500">Kod</label>
-          <input name="code" required placeholder="WELCOME10" className={`${field} w-full`} />
-        </div>
-        <div>
-          <label className="mb-1 block text-xs font-medium text-slate-500">Tür</label>
-          <select name="type" className={`${field} w-full`}>
-            <option value="PERCENT">Yüzde (%)</option>
-            <option value="AMOUNT">Tutar</option>
-          </select>
-        </div>
-        <div>
-          <label className="mb-1 block text-xs font-medium text-slate-500">Değer</label>
-          <input name="value" type="number" required min={1} className={`${field} w-full`} />
-        </div>
-        <div>
-          <label className="mb-1 block text-xs font-medium text-slate-500">Kullanım limiti (boş = sınırsız)</label>
-          <input name="usageLimit" type="number" min={1} className={`${field} w-full`} />
-        </div>
-        <div>
-          <label className="mb-1 block text-xs font-medium text-slate-500">Hedef hizmet (boş = tümü)</label>
-          <select name="targetSlug" className={`${field} w-full`}>
-            <option value="">Tümü</option>
-            <option value="antalya">Antalya</option>
-            <option value="lessons">Türkçe Ders</option>
-            <option value="education">Eğitim</option>
-          </select>
-        </div>
-        <div className="flex items-end">
-          <button className="rounded-lg bg-cyan-600 px-4 py-2 text-sm font-semibold text-white">Ekle</button>
-        </div>
-      </form>
+      <Section title="Yeni indirim kodu" description="Yüzde veya sabit tutar indirim tanımla." icon="tag">
+        <form action={createPromo} className="space-y-4">
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            <Field label="Kod" help="Müşterinin gireceği kod (örn. WELCOME10)." htmlFor="promo-code">
+              <input id="promo-code" name="code" required placeholder="WELCOME10" className="adm-input" />
+            </Field>
+            <Field label="Tür" htmlFor="promo-type">
+              <select id="promo-type" name="type" className="adm-select">
+                <option value="PERCENT">Yüzde (%)</option>
+                <option value="AMOUNT">Tutar</option>
+              </select>
+            </Field>
+            <Field label="Değer" help="Yüzde ise 1–100; tutar ise para birimi tutarı." htmlFor="promo-value">
+              <input id="promo-value" name="value" type="number" required min={1} className="adm-input" />
+            </Field>
+            <Field label="Kullanım limiti" help="Boş bırakırsan sınırsız." htmlFor="promo-usageLimit">
+              <input id="promo-usageLimit" name="usageLimit" type="number" min={1} className="adm-input" />
+            </Field>
+            <Field label="Hedef hizmet" help="Boş bırakırsan tüm hizmetlerde geçerli." htmlFor="promo-targetSlug">
+              <select id="promo-targetSlug" name="targetSlug" className="adm-select">
+                <option value="">Tümü</option>
+                <option value="antalya">Antalya</option>
+                <option value="lessons">Türkçe Ders</option>
+                <option value="education">Eğitim</option>
+              </select>
+            </Field>
+          </div>
+          <button className="adm-btn adm-btn-primary"><Icon name="plus" size={16} /> Ekle</button>
+        </form>
+      </Section>
 
-      <div className="overflow-x-auto rounded-2xl bg-white shadow-sm">
-        <table className="w-full text-left text-sm">
-          <thead className="border-b border-slate-200 text-slate-500">
-            <tr>
-              <th className="p-3">Kod</th>
-              <th className="p-3">İndirim</th>
-              <th className="p-3">Hedef</th>
-              <th className="p-3">Kullanım</th>
-              <th className="p-3">Durum</th>
-              <th className="p-3"></th>
-            </tr>
-          </thead>
-          <tbody>
+      {promos.length === 0 ? (
+        <EmptyState icon="tag" title="Henüz indirim kodu yok" description="Yukarıdan ilk indirim kodunu ekle; müşteriler ödeme sırasında girebilir." />
+      ) : (
+        <>
+          {/* Mobil kartlar */}
+          <div className="space-y-3 sm:hidden">
             {promos.map((p) => (
-              <tr key={p.id} className="border-b border-slate-100">
-                <td className="p-3 font-mono font-semibold">{p.code}</td>
-                <td className="p-3">{p.type === "PERCENT" ? `%${p.value}` : p.value}</td>
-                <td className="p-3">{p.targetSlug || "Tümü"}</td>
-                <td className="p-3">{p.usedCount}{p.usageLimit ? ` / ${p.usageLimit}` : ""}</td>
-                <td className="p-3">
+              <Card key={p.id}>
+                <div className="flex items-start justify-between gap-3">
+                  <p className="truncate font-mono font-semibold" style={{ color: "rgb(var(--foreground))" }}>{p.code}</p>
+                  <Badge tone={p.active ? "success" : "neutral"}>{p.active ? "Aktif" : "Pasif"}</Badge>
+                </div>
+                <dl className="mt-3 space-y-2 text-[13.5px]">
+                  <div className="flex justify-between gap-3"><dt className="adm-muted text-xs">İndirim</dt><dd>{p.type === "PERCENT" ? `%${p.value}` : p.value}</dd></div>
+                  <div className="flex justify-between gap-3"><dt className="adm-muted text-xs">Hedef</dt><dd>{p.targetSlug || "Tümü"}</dd></div>
+                  <div className="flex justify-between gap-3"><dt className="adm-muted text-xs">Kullanım</dt><dd>{p.usedCount}{p.usageLimit ? ` / ${p.usageLimit}` : ""}</dd></div>
+                </dl>
+                <div className="mt-3 flex items-center gap-2 border-t pt-3" style={{ borderColor: "rgb(var(--border))" }}>
                   <form action={togglePromo}>
                     <input type="hidden" name="id" value={p.id} />
                     <input type="hidden" name="active" value={String(p.active)} />
-                    <button className={`rounded-full px-3 py-1 text-xs font-semibold ${p.active ? "bg-green-100 text-green-700" : "bg-slate-200 text-slate-600"}`}>
-                      {p.active ? "Aktif" : "Pasif"}
-                    </button>
+                    <button className="adm-btn adm-btn-ghost adm-btn-sm">{p.active ? "Pasifleştir" : "Aktifleştir"}</button>
                   </form>
-                </td>
-                <td className="p-3">
                   <form action={deletePromo}>
                     <input type="hidden" name="id" value={p.id} />
-                    <button className="text-xs text-red-600 hover:underline">Sil</button>
+                    <button className="adm-btn adm-btn-danger adm-btn-sm">Sil</button>
                   </form>
-                </td>
-              </tr>
+                </div>
+              </Card>
             ))}
-            {promos.length === 0 && (
-              <tr><td colSpan={6} className="p-4 text-center text-slate-500">Henüz indirim kodu yok.</td></tr>
-            )}
-          </tbody>
-        </table>
-      </div>
+          </div>
+
+          {/* Masaüstü tablo */}
+          <Card pad={false} className="hidden sm:block">
+            <table className="w-full text-left text-sm">
+              <thead>
+                <tr className="adm-muted text-xs uppercase tracking-wide" style={{ borderBottom: "1px solid rgb(var(--border))" }}>
+                  <th className="px-4 py-3 font-semibold">Kod</th>
+                  <th className="px-4 py-3 font-semibold">İndirim</th>
+                  <th className="px-4 py-3 font-semibold">Hedef</th>
+                  <th className="px-4 py-3 font-semibold">Kullanım</th>
+                  <th className="px-4 py-3 font-semibold">Durum</th>
+                  <th className="px-4 py-3"></th>
+                </tr>
+              </thead>
+              <tbody>
+                {promos.map((p) => (
+                  <tr key={p.id} style={{ borderTop: "1px solid rgb(var(--border))" }}>
+                    <td className="px-4 py-3 font-mono font-semibold">{p.code}</td>
+                    <td className="px-4 py-3">{p.type === "PERCENT" ? `%${p.value}` : p.value}</td>
+                    <td className="px-4 py-3">{p.targetSlug || "Tümü"}</td>
+                    <td className="px-4 py-3">{p.usedCount}{p.usageLimit ? ` / ${p.usageLimit}` : ""}</td>
+                    <td className="px-4 py-3"><Badge tone={p.active ? "success" : "neutral"}>{p.active ? "Aktif" : "Pasif"}</Badge></td>
+                    <td className="px-4 py-3">
+                      <div className="flex items-center justify-end gap-2">
+                        <form action={togglePromo}>
+                          <input type="hidden" name="id" value={p.id} />
+                          <input type="hidden" name="active" value={String(p.active)} />
+                          <button className="adm-btn adm-btn-ghost adm-btn-sm">{p.active ? "Pasifleştir" : "Aktifleştir"}</button>
+                        </form>
+                        <form action={deletePromo}>
+                          <input type="hidden" name="id" value={p.id} />
+                          <button className="adm-btn adm-btn-danger adm-btn-sm">Sil</button>
+                        </form>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </Card>
+        </>
+      )}
     </div>
   );
 }

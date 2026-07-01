@@ -1,5 +1,7 @@
 import { prisma } from "@/lib/db";
 import { requireAdmin } from "@/lib/auth";
+import { PageHeader, Card } from "@/components/admin/ui";
+import { Icon } from "@/components/admin/icons";
 import { UploadForm } from "./upload-form";
 import { MediaGrid } from "./media-grid";
 
@@ -15,13 +17,21 @@ export default async function MediaPage() {
 
   return (
     <div className="space-y-8">
-      <div>
-        <h1 className="mb-2 text-2xl font-bold">Medya</h1>
-        <p className="text-sm text-slate-500">
-          Görsel yükleyin ve yönetin. Yüklenen görsellerin URL&apos;sini kopyalayıp
-          içeriklerde kullanabilirsiniz. (Yalnızca PNG, JPG, WEBP, GIF.)
+      <PageHeader
+        eyebrow="Görsel Kütüphanesi"
+        title="Görseller"
+        description="Sitede kullandığınız tüm görsellerin toplandığı yerdir. Buraya yüklediğiniz görselleri, bir sayfa ya da bölüm düzenlerken hazır listeden seçebilirsiniz."
+      />
+
+      <Card className="flex items-start gap-3">
+        <span className="grid h-9 w-9 shrink-0 place-items-center rounded-xl" style={{ background: "rgb(var(--muted))", color: "rgb(var(--primary))" }}>
+          <Icon name="eye" size={18} />
+        </span>
+        <p className="adm-muted text-[13.5px] leading-relaxed">
+          <span className="font-semibold" style={{ color: "rgb(var(--foreground))" }}>&ldquo;Kullanımda&rdquo;</span> rozeti, o görselin şu anda sitenizde bir yerde
+          görüntülendiği anlamına gelir. Hangi görselin nerede çıkacağını, ilgili sayfayı ya da bölümü düzenlerken kendiniz seçersiniz.
         </p>
-      </div>
+      </Card>
 
       <UploadForm />
       <MediaGrid items={items} />
