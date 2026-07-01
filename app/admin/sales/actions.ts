@@ -47,7 +47,9 @@ async function parseSale(formData: FormData): Promise<{ error?: string; data?: S
     discountAmount = d;
   } else if (promoCode) {
     const promo = await prisma.promoCode.findUnique({ where: { code: promoCode } }).catch(() => null);
-    if (promo) discountAmount = promo.type === "PERCENT" ? Math.round((amount * promo.value) / 100) : promo.value * 100;
+    // PERCENT yuvarlaması faturayla (lib/promo.ts) BİREBİR aynı olmalı ki
+    // satış defteri gerçek fatura indirimiyle mutabık kalsın → Math.floor.
+    if (promo) discountAmount = promo.type === "PERCENT" ? Math.floor((amount * promo.value) / 100) : promo.value * 100;
   }
   if (discountAmount > amount) discountAmount = amount;
   const finalAmount = amount - discountAmount;

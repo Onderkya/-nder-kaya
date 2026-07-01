@@ -8,12 +8,19 @@ import { consumePromo } from "./promo";
 import { encryptPII, decryptPII } from "./pii";
 import type { NormalizedStatus } from "./payments/types";
 
-/** Karışması zor, insan-okur kısa referans: AB-XXXXXX (Crockford base32, 0/O/1/I yok). */
+/**
+ * Karışması zor, insan-okur referans: AB-XXXXXXXXXXXX (Crockford base32, 0/O/1/I
+ * yok). 12 karakter ≈ 59 bit entropi → public /pay/[ref] ve status endpoint'i
+ * numaralandırılarak başkasının fatura/txid'sine ulaşmak pratikte imkânsız
+ * (eski 6 karakter ~28 bit idi, tahmin edilebilirdi). Eski kısa referanslar
+ * geçerli kalır; yalnız yeni faturalar uzun referans alır.
+ */
 export function generateRef(): string {
   const alphabet = "23456789ABCDEFGHJKMNPQRSTUVWXYZ";
-  const bytes = randomBytes(6);
+  const len = 12;
+  const bytes = randomBytes(len);
   let out = "";
-  for (let i = 0; i < 6; i++) out += alphabet[bytes[i] % alphabet.length];
+  for (let i = 0; i < len; i++) out += alphabet[bytes[i] % alphabet.length];
   return `AB-${out}`;
 }
 
