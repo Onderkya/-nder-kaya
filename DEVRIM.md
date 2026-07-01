@@ -4,7 +4,17 @@
 > ↩️ **Geri dönüş (rollback):** eski sürüm dokunulmadı → dal `claude/consulting-site-plan-6k4lix` + etiket `safe/before-redesign-rev9`. Beğenilmezse sunucuda o dala `git reset --hard` + rebuild.
 > Görsel/medya kaynakları: `public/images/CREDITS.txt` (CC / Mixkit / CC0) · oteller: kullanıcının verdiği resmi fotoğraflar (`public/images/hotels/`).
 
-## 🔁 Revizyon 22 — Admin: içerik sayfa-sayfa + görsel yönetimi + SSS/rezervasyon + yüzen AI (GÜNCEL · dal `claude/redesign-conversion`)
+## 🔁 Revizyon 23 — Admin cila turu: görsel kalite + önizleme fix + switch'ler (GÜNCEL · dal `claude/redesign-conversion`)
+
+> Kullanıcı geri bildirimi: "buton/kart/gölge/font UI-UX zayıf; bölüm bölüm ayır büyüt; önizleme hatalı (üzgün-yüz); aktif/pasif olmalı; dil'e tıklayınca içerik gelmiyor; Kaydet neden en altta; sol menü kapansın." Hepsi yapıldı, deploy edildi. `tsc` ✓ · `next build` ✓.
+- **Görsel sistem (`admin.css`):** derinlikli butonlar (lagoon→primary gradient + hover-lift + gölge), katmanlı kart gölgeleri + daha yumuşak köşe, **editoryal Cormorant bölüm başlığı** (`.adm-section-title` + altın dikey bar), **`.adm-thumb`** (görsel kartı hover-lift), **`.adm-switch`** (aç/kapa anahtarı), rafine inputlar (46px, iç gölge, yumuşak focus).
+- **Önizleme BUG:** site `X-Frame-Options: DENY` + `frame-ancestors 'none'` idi → admin kendi sitesini iframe'de gösteremiyordu. **`SAMEORIGIN` + `'self'`** (dış siteler yine gömemez).
+- **Dil BUG:** dil değişince alanlar yeni dile geçmiyordu (uncontrolled remount) → content-editor `key={locale}`.
+- **UX:** Kaydet + sekmeler + dil ÜSTTE sabit araç çubuğunda (aşağı inme yok); sol menü **daraltılabilir** (localStorage); AI balonu **her sayfada** (anahtar yoksa "nasıl açılır" notu); görsel yöneticisinde kütüphane **sil** eklendi.
+- **CMS sayfa editörü (`pages/[id]`):** PageHeader, gold-bar başlıklar, "Yayında"/"CMS ile yayınla" gerçek **switch**, "Bu sayfayı sil" net **danger buton** (Tehlikeli bölge), BÖLÜMLER büyütülüp kart kart ayrıldı, önizleme uzatıldı + boş-blok notu.
+- Not: "Sayfalar" = sıfırdan blokla ÖZEL sayfa kurma (gelişmiş); normal metin/görsel düzenleme **"Ana Sayfa & Bölümler"**tedir (home kodlu tasarım kullandığı için CMS'te boş görünür — normal).
+
+## 🔁 Revizyon 22 — Admin: içerik sayfa-sayfa + görsel yönetimi + SSS/rezervasyon + yüzen AI (dal `claude/redesign-conversion`)
 
 > **Şu an buradayız.** Kullanıcı: "içerik editörü saçma (imm/meta/nav ne?), sayfa-sayfa böl üstte sekmeler; sitenin görsel/videolarını sayfadan değiştireyim (ayrı Görseller sayfası gereksiz); SSS'ye madde ekleyeyim; rezervasyon tarih/saat aç-kapa; her sayfada üstte AI yardımcı. Görsel bir site, yazıyla boğma." Onay: "Yap hepsini." 4 parça, her biri deploy edildi. `tsc` ✓ · `next build` ✓.
 
