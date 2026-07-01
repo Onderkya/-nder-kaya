@@ -4,7 +4,14 @@
 > ↩️ **Geri dönüş (rollback):** eski sürüm dokunulmadı → dal `claude/consulting-site-plan-6k4lix` + etiket `safe/before-redesign-rev9`. Beğenilmezse sunucuda o dala `git reset --hard` + rebuild.
 > Görsel/medya kaynakları: `public/images/CREDITS.txt` (CC / Mixkit / CC0) · oteller: kullanıcının verdiği resmi fotoğraflar (`public/images/hotels/`).
 
-## 🔁 Revizyon 25 — Admin yeniden tasarım FAZ 1: temiz & modern kabuk (GÜNCEL · dal `claude/redesign-conversion`)
+## 🔁 Revizyon 26 — Admin yeniden tasarım FAZ 2: bölüm sıralama 7 sayfada (GÜNCEL · dal `claude/redesign-conversion`)
+
+> Faz 2 (plan: `docs/superpowers/plans/2026-07-02-admin-redesign-2-siralama.md`). `tsc` ✓ · `next build` ✓ · görev başı bağımsız inceleme temiz · canlıda 7 sayfa 200 doğrulandı.
+- **Altyapı:** `section-registry` 7 sayfaya genişledi (33 bölüm; home 10 id birebir). `lib/sections.ts`: `getSectionOrders` (tek sorgu, `secorder:` öneki) + saf `applySectionOrder` (bilinmeyen id atılır, eksik id varsayılan komşusunun arkasına — kendini onarır; varsayılana eşitse kayıt SİLİNİR → "kayıt yok = bugünkü site" değişmezi). `section-actions`: `saveSectionOrder` + `moveSection` (requireAdmin+audit+revalidatePath).
+- **7 public sayfa** `[id, JSX]` kalıbına geçti (home/antalya/lessons/education/about/faq/contact): bölüm JSX'i VERBATIM taşındı (denetçiler satır-eşleştirmeyle kanıtladı), hero+kapanış CTA sabit; kayıt yoksa çıktı birebir aynı.
+- **Admin:** `components/admin/section-manager.tsx` — `/admin/content`te sayfa seçicili panel: ↑↓ sırala + aç/kapat (optimistic). content-editor'daki eski SectionToggles prop'suz kaldı (render etmiyor); Faz 3 Site Editörü hepsini kart arayüzüne taşıyacak.
+
+## 🔁 Revizyon 25 — Admin yeniden tasarım FAZ 1: temiz & modern kabuk (dal `claude/redesign-conversion`)
 
 > Kullanıcı Rev 21-24 admin görünümünü reddetti ("basit değil, şık değil") → onaylı spec: `docs/superpowers/specs/2026-07-02-admin-redesign-design.md` (6 faz). Bu revizyon = Faz 1 (plan: `docs/superpowers/plans/2026-07-02-admin-redesign-1-kabuk.md`). `tsc` ✓ · `next build` ✓ · tüm-dal kod incelemesi temiz.
 - **Tasarım sistemi (`admin.css` baştan):** nötr açık palet **`.adm-body` KAPSAMINDA** override (globals.css'e dokunulmadı → public birebir aynı). Beyaz kartlar, açık gri zemin, ince çizgiler, gölgesiz düz butonlar; turkuaz (`11 122 140`) yalnız etkileşim; Cormorant/altın adminden çıktı (`--font-display→sans`, `--gold→amber`, `--lagoon→primary` alias). 48 eski sınıf korundu + `.adm-topbar/.adm-topbar-title/.adm-btn-ai`.
