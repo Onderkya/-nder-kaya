@@ -9,11 +9,23 @@ import type { AssetSlot } from "@/lib/asset-slots";
 type MediaItem = { id?: string; url: string; alt: string | null };
 
 /**
- * Sayfa içi görsel/video yöneticisi. Her slot için önizleme + "Değiştir"
- * (yükle / kütüphaneden seç / URL) + "Sıfırla". Kütüphaneden görsel silinebilir.
- * Değişiklik anında kaydedilir (setAsset → ISR tazelenir).
+ * Slot ızgarası (kartsız) — bir dizi görsel/video slotunu önizleme + Değiştir +
+ * Sıfırla ile gösterir. Hem sayfa-geneli `AssetManager` hem de Site Editörü'nün
+ * bölüm kartları (editor-section-card) bunu yeniden kullanır. Kendi picker
+ * modalını taşır; değişiklik anında `setAsset` ile kaydedilir (form submit'e
+ * bağlı DEĞİL — tüm butonlar type="button").
  */
-export function AssetManager({ slots, overrides, media }: { slots: AssetSlot[]; overrides: Record<string, string>; media: MediaItem[] }) {
+export function AssetSlotGrid({
+  slots,
+  overrides,
+  media,
+  cols = "sm:grid-cols-2 lg:grid-cols-3",
+}: {
+  slots: AssetSlot[];
+  overrides: Record<string, string>;
+  media: MediaItem[];
+  cols?: string;
+}) {
   const router = useRouter();
   const [pending, start] = useTransition();
   const [open, setOpen] = useState<AssetSlot | null>(null);
@@ -28,14 +40,8 @@ export function AssetManager({ slots, overrides, media }: { slots: AssetSlot[]; 
   if (slots.length === 0) return null;
 
   return (
-    <div className="adm-card adm-card-pad">
-      <div className="mb-5 flex items-center gap-3">
-        <span className="h-7 w-1.5 rounded-full" style={{ background: "rgb(var(--gold))" }} />
-        <h3 className="adm-section-title">Görseller & Videolar</h3>
-      </div>
-      <p className="adm-help mb-4 mt-0">Bu sayfada kullanılan görseller/videolar. “Değiştir” ile yenisini yükle veya kütüphaneden seç; “Sıfırla” ile eskisine dön. Değiştirmezsen varsayılan kalır.</p>
-
-      <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+    <>
+      <div className={`grid gap-3 ${cols}`}>
         {slots.map((s) => {
           const cur = overrides[s.id]?.trim() || s.def;
           const changed = !!overrides[s.id]?.trim();
@@ -69,6 +75,26 @@ export function AssetManager({ slots, overrides, media }: { slots: AssetSlot[]; 
       </div>
 
       {open ? <PickerModal slot={open} media={media} pending={pending} onClose={() => setOpen(null)} onPick={(url) => apply(open.id, url)} /> : null}
+    </>
+  );
+}
+
+/**
+ * Sayfa içi görsel/video yöneticisi (başlıklı kart). Slot ızgarasını
+ * `AssetSlotGrid`'e devreder. Mevcut kullanım — değişmedi.
+ */
+export function AssetManager({ slots, overrides, media }: { slots: AssetSlot[]; overrides: Record<string, string>; media: MediaItem[] }) {
+  if (slots.length === 0) return null;
+
+  return (
+    <div className="adm-card adm-card-pad">
+      <div className="mb-5 flex items-center gap-3">
+        <span className="h-7 w-1.5 rounded-full" style={{ background: "rgb(var(--gold))" }} />
+        <h3 className="adm-section-title">Görseller & Videolar</h3>
+      </div>
+      <p className="adm-help mb-4 mt-0">Bu sayfada kullanılan görseller/videolar. “Değiştir” ile yenisini yükle veya kütüphaneden seç; “Sıfırla” ile eskisine dön. Değiştirmezsen varsayılan kalır.</p>
+
+      <AssetSlotGrid slots={slots} overrides={overrides} media={media} />
     </div>
   );
 }

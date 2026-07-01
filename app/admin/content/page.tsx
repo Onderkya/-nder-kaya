@@ -5,19 +5,29 @@ import { routing, localeNames, localeFlags, type Locale } from "@/i18n/routing";
 import { requireAdmin } from "@/lib/auth";
 import { audit } from "@/lib/audit";
 import { PageHeader } from "@/components/admin/ui";
-import { ContentEditor, type EditPage } from "@/components/admin/content-editor";
-import { CONTENT_PAGES } from "@/lib/content-map";
+import { ContentEditor, type EditorPageData } from "@/components/admin/content-editor";
+import type { EditorCard, CardField } from "@/components/admin/editor-section-card";
+import { editorSectionsForPage, EDITOR_PAGES } from "@/lib/editor-map";
 import { ASSET_SLOTS, type AssetSlot } from "@/lib/asset-slots";
 import { getAssetMap } from "@/lib/assets";
 import { getFaqExtras } from "@/lib/faq";
 import { FaqManager } from "@/components/admin/faq-manager";
 import { getHiddenSections, getSectionOrders, applySectionOrder } from "@/lib/sections";
-import { SECTIONS } from "@/lib/section-registry";
-import { SectionManager } from "@/components/admin/section-manager";
 
 export const dynamic = "force-dynamic";
 
 const SEP = "|||";
+
+/** Public sayfa rotaları — "Sitede gör →" bağlantısı için (localePrefix: always). */
+const PAGE_ROUTES: Record<string, string> = {
+  home: "",
+  antalya: "/antalya",
+  lessons: "/lessons",
+  education: "/education",
+  about: "/about",
+  faq: "/faq",
+  contact: "/contact",
+};
 
 async function saveTexts(formData: FormData) {
   "use server";
@@ -61,62 +71,72 @@ export default async function ContentPage({ searchParams }: { searchParams: Prom
   const [hiddenSet, orders] = await Promise.all([getHiddenSections(), getSectionOrders()]);
   const hiddenSections = [...hiddenSet];
 
-  // Bölüm yöneticisi: 7 sayfa, her sayfanın bölümleri kayıtlı sıraya göre.
-  const SECTION_PAGES: { key: string; label: string }[] = [
-    { key: "home", label: "Anasayfa" },
-    { key: "antalya", label: "Antalya Danışmanlık" },
-    { key: "lessons", label: "Türkçe Ders" },
-    { key: "education", label: "Eğitim" },
-    { key: "about", label: "Hakkımızda" },
-    { key: "faq", label: "SSS" },
-    { key: "contact", label: "İletişim" },
-  ];
-  const managerSectionsByPage: Record<string, { id: string; label: string }[]> = {};
-  for (const pg of SECTION_PAGES) {
-    const registry = SECTIONS.filter((s) => s.page === pg.key);
-    const defaultIds = registry.map((s) => s.id);
-    const orderedIds = applySectionOrder(defaultIds, orders[pg.key]);
-    const byId = new Map(registry.map((s) => [s.id, s]));
-    managerSectionsByPage[pg.key] = orderedIds
-      .map((id) => byId.get(id))
-      .filter((s): s is (typeof registry)[number] => Boolean(s))
-      .map((s) => ({ id: s.id, label: s.label }));
-  }
-
   const map = new Map(texts.map((t) => [t.key, t]));
+  const slotMap = new Map(ASSET_SLOTS.map((s) => [s.id, s]));
+  const mappedKeys = new Set<string>();
 
-  // Görsel/video slotlarını sayfaya göre grupla.
-  const assetsByPage: Record<string, AssetSlot[]> = {};
-  for (const s of ASSET_SLOTS) (assetsByPage[s.page] ??= []).push(s);
+  const fieldFor = (key: string): CardField | null => {
+    const t = map.get(key);
+    if (!t) return null;
+    mappedKeys.add(key);
+    const value = t.values[locale] ?? "";
+    return { key, value, ref: baseTr[key] ?? "", overridden: value !== (baseLoc[key] ?? "") && value.trim() !== "" };
+  };
 
-  const mapped = new Set<string>();
-  const pages: EditPage[] = CONTENT_PAGES.map((pg) => ({
-    id: pg.id,
-    label: pg.label,
-    description: pg.description,
-    sections: pg.sections.map((sec) => ({
-      title: sec.title,
-      help: sec.help,
-      fields: sec.keys
-        .filter((k) => map.has(k))
-        .map((k) => {
-          mapped.add(k);
-          const t = map.get(k)!;
-          const value = t.values[locale] ?? "";
-          return { key: k, value, ref: baseTr[k] ?? "", overridden: value !== (baseLoc[k] ?? "") && value.trim() !== "" };
-        }),
-    })),
-  }));
+  /**
+   * Kartları gerçek site sırasında sıralar: locked/other kartlar konumlarında
+   * SABİT kalır; registryId'li (sıralanabilir) kartlar KENDİ aralarında,
+   * kayıtlı sıraya (applySectionOrder) göre yeniden dizilir.
+   */
+  const orderCards = (page: string, cards: ReturnType<typeof editorSectionsForPage>) => {
+    const registryDefault = cards.filter((c) => c.registryId && !c.locked).map((c) => c.registryId!);
+    const applied = applySectionOrder(registryDefault, orders[page]);
+    const byRegistry = new Map(cards.filter((c) => c.registryId && !c.locked).map((c) => [c.registryId!, c]));
+    let ptr = 0;
+    return cards.map((c) => {
+      if (c.registryId && !c.locked) {
+        const id = applied[ptr++];
+        return byRegistry.get(id) ?? c;
+      }
+      return c;
+    });
+  };
 
-  const others = texts.filter((t) => !mapped.has(t.key));
+  const pages: EditorPageData[] = EDITOR_PAGES.map((pg) => {
+    const raw = editorSectionsForPage(pg.key);
+    const ordered = orderCards(pg.key, raw);
+    const cards: EditorCard[] = ordered.map((sec) => {
+      const fields = sec.contentKeys.map(fieldFor).filter((f): f is CardField => f !== null);
+      const slots = sec.assetSlots.map((id) => slotMap.get(id)).filter((s): s is AssetSlot => Boolean(s));
+      const card: EditorCard = { key: sec.key, title: sec.title, fields, slots };
+      if (sec.registryId) card.registryId = sec.registryId;
+      if (sec.locked) card.locked = true;
+      return card;
+    });
+    const route = PAGE_ROUTES[pg.key];
+    return {
+      id: pg.key,
+      label: pg.label,
+      cards,
+      publicHref: route !== undefined ? `/${locale}${route}` : null,
+    };
+  });
+
+  // Hiçbir düzenlenebilir metin kaybolmasın: editör haritasında yer almayan
+  // (menü/teknik) anahtarlar tek "Diğer" sayfasında sabit bir kartta toplanır.
+  const others = texts.filter((t) => !mappedKeys.has(t.key));
   if (others.length) {
     pages.push({
       id: "diger",
       label: "Diğer",
       description: "Otomatik sınıflandırılmamış yazılar (menü, teknik alanlar).",
-      sections: [
+      publicHref: null,
+      cards: [
         {
+          key: "other:unmapped",
           title: "Sınıflandırılmamış",
+          locked: true,
+          slots: [],
           fields: others.map((t) => {
             const value = t.values[locale] ?? "";
             return { key: t.key, value, ref: baseTr[t.key] ?? "", overridden: value !== (baseLoc[t.key] ?? "") && value.trim() !== "" };
@@ -133,8 +153,8 @@ export default async function ContentPage({ searchParams }: { searchParams: Prom
     <div>
       <PageHeader
         eyebrow="Sitem"
-        title="Site İçeriği"
-        description="Sitenin yazılarını gerçek sayfalara göre düzenle. Üstten bir sayfa ve bir dil seç; o sayfanın bölümlerini yukarıdan aşağıya gör. Kaydedince sitede anında yayınlanır."
+        title="Site Editörü"
+        description="Sitenin her bölümünü tek yerden düzenle: metin, görsel, sıra ve görünürlük bir arada. Üstten sayfa ve dil seç; bölüm kartlarını yukarıdan aşağıya gerçek site sırasında gör. Kaydedince sitede anında yayınlanır."
       />
       <ContentEditor
         pages={pages}
@@ -142,19 +162,11 @@ export default async function ContentPage({ searchParams }: { searchParams: Prom
         langs={langs}
         initialPageId={initialPageId}
         saveAction={saveTexts}
-        assetsByPage={assetsByPage}
         assetOverrides={assetOverrides}
         media={mediaRows}
+        hiddenSections={hiddenSections}
         faqPanel={<FaqManager initial={faqExtras} locale={locale} langName={localeNames[locale]} />}
       />
-      <div className="mt-6">
-        <SectionManager
-          pages={SECTION_PAGES}
-          sectionsByPage={managerSectionsByPage}
-          hidden={hiddenSections}
-          orders={orders}
-        />
-      </div>
     </div>
   );
 }

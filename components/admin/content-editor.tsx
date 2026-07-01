@@ -2,22 +2,30 @@
 
 import { useState, type ReactNode } from "react";
 import Link from "next/link";
-import { Badge } from "./ui";
-import { AssetManager } from "./asset-manager";
-import { SectionToggles } from "./section-toggles";
+import { EditorSectionCard, type EditorCard } from "./editor-section-card";
 import type { AssetSlot } from "@/lib/asset-slots";
-import type { SectionDef } from "@/lib/section-registry";
 
-export type EditField = { key: string; value: string; ref: string; overridden: boolean };
-export type EditSection = { title: string; help?: string; fields: EditField[] };
-export type EditPage = { id: string; label: string; description?: string; sections: EditSection[] };
+export type EditorPageData = {
+  id: string;
+  label: string;
+  description?: string;
+  cards: EditorCard[];
+  publicHref: string | null;
+};
 export type LangOpt = { code: string; flag: string; name: string };
+type MediaItem = { id?: string; url: string; alt: string | null };
 
 /**
- * Sayfa-sekmeli, TEK DİLLİ içerik editörü. Üstte SABİT araç çubuğu: sayfa
- * sekmeleri + dil + Kaydet (hep görünür, aşağı inmeye gerek yok). Yazılar
- * yukarıdan aşağıya bölümler hâlinde. Tek Kaydet tüm sayfaları (o dil için)
- * kaydeder. `key={locale}` → dil değişince alanlar yeni dilin değeriyle gelir.
+ * SİTE EDİTÖRÜ — sayfa-sekmeli, tek dilli. Üstte SABİT araç çubuğu: sayfa
+ * sekmeleri + dil + Kaydet. Her sayfa, gerçek site sırasında BÖLÜM KARTLARI
+ * hâlinde: her kart o bölümün metinlerini + görsellerini + sıra/gizle kontrolünü
+ * birlikte taşır.
+ *
+ * TEK FORM / DÜZENLEME KAYBI YOK: tüm sayfaların TÜM metin alanları tek
+ * <form id="ce-form"> içinde DOM'da tutulur; aktif olmayan sayfalar `hidden`.
+ * Kartlar native <details> — kapalıyken de alanlar DOM'da kalır. `key={locale}`
+ * → dil değişince alanlar yeni dilin değeriyle yeniden bağlanır. Tek "Kaydet"
+ * tüm sayfaları (o dil için) tek submit'te kaydeder.
  */
 export function ContentEditor({
   pages,
@@ -25,28 +33,24 @@ export function ContentEditor({
   langs,
   initialPageId,
   saveAction,
-  assetsByPage = {},
   assetOverrides = {},
   media = [],
-  faqPanel,
-  sectionsByPage = {},
   hiddenSections = [],
+  faqPanel,
 }: {
-  pages: EditPage[];
+  pages: EditorPageData[];
   locale: string;
   langs: LangOpt[];
   initialPageId: string;
   saveAction: (fd: FormData) => void | Promise<void>;
-  assetsByPage?: Record<string, AssetSlot[]>;
   assetOverrides?: Record<string, string>;
-  media?: { id?: string; url: string; alt: string | null }[];
-  faqPanel?: ReactNode;
-  sectionsByPage?: Record<string, SectionDef[]>;
+  media?: MediaItem[];
   hiddenSections?: string[];
+  faqPanel?: ReactNode;
 }) {
   const [active, setActive] = useState(initialPageId);
-  const SEP = "|||";
   const isTr = locale === "tr";
+  const hiddenSet = new Set(hiddenSections);
 
   return (
     <div>
@@ -87,62 +91,51 @@ export function ContentEditor({
         </div>
       </div>
 
-      {/* Bölüm göster/gizle (kendi kaydeder) */}
-      {sectionsByPage[active]?.length ? (
-        <div className="mb-4">
-          <SectionToggles sections={sectionsByPage[active]} hidden={hiddenSections} />
-        </div>
-      ) : null}
-
-      {/* Aktif sayfanın görselleri/videoları (kendi kaydeder) */}
-      {assetsByPage[active]?.length ? (
-        <div className="mb-4">
-          <AssetManager slots={assetsByPage[active]} overrides={assetOverrides} media={media} />
-        </div>
-      ) : null}
-
-      {/* SSS sayfasında ekstra madde yöneticisi (kendi kaydeder) */}
-      {active === "faq" && faqPanel ? <div className="mb-4">{faqPanel}</div> : null}
-
       {/* key={locale} → dil değişince alanlar yeniden bağlanır (yeni dilin değeri gelir) */}
       <form id="ce-form" action={saveAction} key={locale}>
         {pages.map((p) => (
           <div key={p.id} hidden={p.id !== active}>
             {p.description ? <p className="adm-muted mb-4 text-[14px]">{p.description}</p> : null}
-            <div className="space-y-4">
-              {p.sections.map((s, si) => (
-                <div key={si} className="adm-card adm-card-pad">
-                  <div className="mb-5 flex items-center gap-3">
-                    <span className="h-7 w-1.5 rounded-full" style={{ background: "rgb(var(--gold))" }} />
-                    <h3 className="adm-section-title">{s.title}</h3>
-                  </div>
-                  {s.help ? <p className="adm-help mb-4 mt-0">{s.help}</p> : null}
-                  <div className="space-y-5">
-                    {s.fields.length === 0 ? (
-                      <p className="adm-muted text-[13px]">Bu bölümde düzenlenecek yazı yok.</p>
-                    ) : (
-                      s.fields.map((f) => (
-                        <div key={f.key}>
-                          {!isTr && f.ref ? (
-                            <p className="adm-muted mb-1.5 line-clamp-2 text-[12.5px]" title={f.ref}>🇹🇷 {f.ref}</p>
-                          ) : null}
-                          <div className="relative">
-                            <textarea
-                              name={`${f.key}${SEP}${locale}`}
-                              defaultValue={f.value}
-                              rows={(f.value || f.ref).length > 70 ? 3 : 1}
-                              className="adm-textarea"
-                              style={{ minHeight: "44px" }}
-                            />
-                            {f.overridden ? <Badge tone="warn">düzenlendi</Badge> : null}
-                          </div>
-                        </div>
-                      ))
-                    )}
-                  </div>
-                </div>
-              ))}
+
+            <div className="space-y-3">
+              {p.cards.map((card, i) => {
+                // ↑↓ komşuluk yalnız registryId'li (sıralanabilir) kartlar arasında.
+                const reorderable = p.cards.filter((c) => c.registryId && !c.locked);
+                const ri = card.registryId && !card.locked ? reorderable.findIndex((c) => c.key === card.key) : -1;
+                return (
+                  <EditorSectionCard
+                    key={card.key}
+                    card={card}
+                    locale={locale}
+                    isTr={isTr}
+                    hidden={!!card.registryId && hiddenSet.has(card.registryId)}
+                    first={ri <= 0}
+                    last={ri === reorderable.length - 1}
+                    page={p.id}
+                    overrides={assetOverrides}
+                    media={media}
+                    publicHref={p.publicHref}
+                  />
+                );
+              })}
             </div>
+
+            {/* SSS: madde yöneticisi + Turlar yönlendirme kartı */}
+            {p.id === "faq" ? (
+              <div className="mt-5 space-y-4">
+                {faqPanel}
+                <div className="adm-card adm-card-pad">
+                  <div className="mb-2 flex items-center gap-3">
+                    <span className="h-7 w-1.5 rounded-full" style={{ background: "rgb(var(--gold))" }} />
+                    <h3 className="adm-section-title">Turlar</h3>
+                  </div>
+                  <p className="adm-help mb-3 mt-0">Tur paketleri ayrı bir ekranda yönetilir (fotoğraf, isim, sıra, aç/kapat).</p>
+                  <Link href="/admin/tours" className="adm-btn adm-btn-primary adm-btn-sm">
+                    Turları yönet →
+                  </Link>
+                </div>
+              </div>
+            ) : null}
           </div>
         ))}
       </form>
