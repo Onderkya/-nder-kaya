@@ -25,7 +25,12 @@ export async function createSession(user: { id: string; email: string; role: str
   const store = await cookies();
   store.set(COOKIE, token, {
     httpOnly: true,
-    secure: process.env.NODE_ENV === "production",
+    // Secure çerez YALNIZ site gerçekten HTTPS'te sunuluyorsa (next.config.ts
+    // `isHttps` ile aynı kural). Düz HTTP dağıtımında (domain/SSL yokken)
+    // `Secure` işaretli çerezi tarayıcı SAKLAMAZ → giriş sessizce başarısız
+    // olurdu (hata yok, login'e geri düşer). Domain+SSL gelip
+    // NEXT_PUBLIC_SITE_URL https olunca çerez otomatik Secure'a döner.
+    secure: (process.env.NEXT_PUBLIC_SITE_URL ?? "").startsWith("https://"),
     sameSite: "strict",
     path: "/admin",
     maxAge: 60 * 60 * 24 * 7,
