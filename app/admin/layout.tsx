@@ -43,21 +43,21 @@ export default async function AdminLayout({ children }: { children: ReactNode })
           <div>
             {/* Masaüstü: sabit koyu-deniz kenar çubuğu (daraltılabilir) */}
             <aside className="adm-sidebar adm-sidebar-scroll fixed inset-y-0 left-0 z-30 hidden w-[264px] flex-col overflow-y-auto p-5 lg:flex">
-              <div className="adm-brand mb-6 flex items-center gap-2 text-[1.35rem] font-semibold text-white">
-                <span>🌊</span> <span className="adm-side-text">Antalya Bridge</span>
+              <div className="adm-brandrow mb-6 flex items-center justify-between gap-2">
+                <span className="adm-brand flex items-center gap-2 text-[1.35rem] font-semibold text-white">
+                  <span>🌊</span> <span className="adm-side-text">Antalya Bridge</span>
+                </span>
+                <CollapseToggle />
               </div>
               <a href={siteUrl} target="_blank" rel="noopener" className="adm-side-btn adm-side-cta mb-5" title="Siteyi Gör">
                 <Icon name="external" size={18} /> <span className="adm-side-text">Siteyi Gör</span>
               </a>
               <SidebarNav inboxCount={inboxCount} />
-              <div className="mt-auto border-t border-white/10 pt-4">
-                <CollapseToggle />
-                <form action="/api/admin/logout" method="post">
-                  <button className="adm-side-btn" type="submit" title="Çıkış yap">
-                    <Icon name="logout" size={18} /> <span className="adm-side-text">Çıkış yap</span>
-                  </button>
-                </form>
-              </div>
+              <form action="/api/admin/logout" method="post" className="mt-auto border-t border-white/10 pt-4">
+                <button className="adm-side-btn" type="submit" title="Çıkış yap">
+                  <Icon name="logout" size={18} /> <span className="adm-side-text">Çıkış yap</span>
+                </button>
+              </form>
             </aside>
 
             {/* Mobil: üst bar */}
@@ -73,7 +73,7 @@ export default async function AdminLayout({ children }: { children: ReactNode })
 
             {/* İçerik */}
             <div className="adm-main-wrap lg:pl-[264px]">
-              <main className="mx-auto max-w-6xl px-4 py-6 pb-28 sm:px-6 lg:px-10 lg:py-10 lg:pb-12">{children}</main>
+              <main className="mx-auto max-w-[1560px] px-4 py-6 pb-28 sm:px-6 lg:px-12 lg:py-10 lg:pb-12">{children}</main>
             </div>
 
             <MobileNav inboxCount={inboxCount} siteUrl={siteUrl} />

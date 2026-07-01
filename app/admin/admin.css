@@ -26,11 +26,26 @@
 }
 .adm-main-wrap { transition: padding-left 0.2s ease; }
 
+/* Daraltma butonu — kenar çubuğu üst-sağ */
+.adm-collapse-btn {
+  display: none; /* yalnız masaüstünde göster */
+  align-items: center; justify-content: center;
+  width: 32px; height: 32px; flex-shrink: 0;
+  border-radius: 9px;
+  color: rgba(255, 255, 255, 0.7);
+  background: rgba(255, 255, 255, 0.08);
+  transition: background 0.15s ease, color 0.15s ease;
+}
+.adm-collapse-btn:hover { background: rgba(255, 255, 255, 0.16); color: #fff; }
+@media (min-width: 1024px) { .adm-collapse-btn { display: inline-flex; } }
+
 /* ---- Daraltılabilir kenar çubuğu (yalnız masaüstü) ---- */
 @media (min-width: 1024px) {
   [data-adm-collapsed="1"] .adm-sidebar { width: 76px; padding-left: 10px; padding-right: 10px; }
   [data-adm-collapsed="1"] .adm-sidebar .adm-side-text { display: none; }
   [data-adm-collapsed="1"] .adm-sidebar .adm-group-label { display: none; }
+  [data-adm-collapsed="1"] .adm-sidebar .adm-brandrow { justify-content: center; }
+  [data-adm-collapsed="1"] .adm-sidebar .adm-brand { display: none; }
   [data-adm-collapsed="1"] .adm-sidebar .adm-nav-item,
   [data-adm-collapsed="1"] .adm-sidebar .adm-side-btn { justify-content: center; gap: 0; position: relative; }
   [data-adm-collapsed="1"] .adm-sidebar .adm-nav-badge { position: absolute; top: 3px; right: 6px; margin: 0; min-width: 16px; height: 16px; font-size: 9px; }

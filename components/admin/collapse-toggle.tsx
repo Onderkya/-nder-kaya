@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { Icon } from "./icons";
 
-/** Masaüstü kenar çubuğunu daraltıp genişletir (ikon-only ↔ tam). localStorage'da tutulur. */
+/** Kenar çubuğunu daraltıp genişletir — üst-sağda küçük ikon buton (masaüstü). */
 export function CollapseToggle() {
   const [collapsed, setCollapsed] = useState(false);
 
@@ -23,9 +23,8 @@ export function CollapseToggle() {
   };
 
   return (
-    <button type="button" onClick={toggle} className="adm-side-btn" aria-label="Menüyü daralt/genişlet">
-      <Icon name="menu" size={18} />
-      <span className="adm-side-text">{collapsed ? "Genişlet" : "Menüyü daralt"}</span>
+    <button type="button" onClick={toggle} className="adm-collapse-btn" aria-label={collapsed ? "Menüyü genişlet" : "Menüyü daralt"} title={collapsed ? "Genişlet" : "Daralt"}>
+      <Icon name="chevron" size={18} style={{ transform: collapsed ? "rotate(-90deg)" : "rotate(90deg)" }} />
     </button>
   );
 }
