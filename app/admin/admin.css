@@ -22,6 +22,19 @@
 .adm-sidebar {
   background: linear-gradient(180deg, var(--adm-sidebar-from), var(--adm-sidebar-to));
   color: rgba(255, 255, 255, 0.72);
+  transition: width 0.2s ease, padding 0.2s ease;
+}
+.adm-main-wrap { transition: padding-left 0.2s ease; }
+
+/* ---- Daraltılabilir kenar çubuğu (yalnız masaüstü) ---- */
+@media (min-width: 1024px) {
+  [data-adm-collapsed="1"] .adm-sidebar { width: 76px; padding-left: 10px; padding-right: 10px; }
+  [data-adm-collapsed="1"] .adm-sidebar .adm-side-text { display: none; }
+  [data-adm-collapsed="1"] .adm-sidebar .adm-group-label { display: none; }
+  [data-adm-collapsed="1"] .adm-sidebar .adm-nav-item,
+  [data-adm-collapsed="1"] .adm-sidebar .adm-side-btn { justify-content: center; gap: 0; position: relative; }
+  [data-adm-collapsed="1"] .adm-sidebar .adm-nav-badge { position: absolute; top: 3px; right: 6px; margin: 0; min-width: 16px; height: 16px; font-size: 9px; }
+  [data-adm-collapsed="1"] .adm-main-wrap { padding-left: 76px; }
 }
 .adm-sidebar-scroll { scrollbar-width: thin; scrollbar-color: rgba(255,255,255,0.18) transparent; }
 .adm-sidebar-scroll::-webkit-scrollbar { width: 6px; }

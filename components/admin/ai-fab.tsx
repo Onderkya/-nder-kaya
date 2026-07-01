@@ -9,7 +9,7 @@ import { Icon } from "./icons";
  * açılır; içinde tam AI asistanı (DB sorusu + öneri) çalışır. Mobilde alt sekme
  * çubuğunun üstünde durur.
  */
-export function AdminAiFab() {
+export function AdminAiFab({ available = true }: { available?: boolean }) {
   const [open, setOpen] = useState(false);
 
   return (
@@ -25,7 +25,14 @@ export function AdminAiFab() {
               <button type="button" onClick={() => setOpen(false)} className="adm-btn adm-btn-ghost adm-btn-sm" aria-label="Kapat">✕</button>
             </div>
             <div className="min-h-0 flex-1 overflow-y-auto p-3">
-              <AiChat />
+              {available ? (
+                <AiChat />
+              ) : (
+                <div className="p-2 text-[13.5px] leading-relaxed" style={{ color: "rgb(var(--foreground))" }}>
+                  <p className="font-semibold">AI asistanı henüz açık değil.</p>
+                  <p className="adm-muted mt-1">Sunucuda <code className="rounded px-1" style={{ background: "rgb(var(--muted))" }}>OPENROUTER_API_KEY</code> ve salt-okunur <code className="rounded px-1" style={{ background: "rgb(var(--muted))" }}>AI_READONLY_DATABASE_URL</code> ayarlanınca burada sana yardım eder. Ayarları <b>Ayarlar</b> ekranından da girebilirsin.</p>
+                </div>
+              )}
             </div>
           </div>
         </div>

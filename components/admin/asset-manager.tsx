@@ -6,11 +6,11 @@ import { setAsset } from "@/lib/asset-actions";
 import { Icon } from "./icons";
 import type { AssetSlot } from "@/lib/asset-slots";
 
-type MediaItem = { url: string; alt: string | null };
+type MediaItem = { id?: string; url: string; alt: string | null };
 
 /**
  * Sayfa içi görsel/video yöneticisi. Her slot için önizleme + "Değiştir"
- * (yükle / kütüphaneden seç / URL yapıştır) + "Sıfırla" (varsayılana dön).
+ * (yükle / kütüphaneden seç / URL) + "Sıfırla". Kütüphaneden görsel silinebilir.
  * Değişiklik anında kaydedilir (setAsset → ISR tazelenir).
  */
 export function AssetManager({ slots, overrides, media }: { slots: AssetSlot[]; overrides: Record<string, string>; media: MediaItem[] }) {
@@ -33,7 +33,7 @@ export function AssetManager({ slots, overrides, media }: { slots: AssetSlot[]; 
         <span className="adm-gold-rule" />
         <h3 className="font-semibold text-[15px]" style={{ color: "rgb(var(--foreground))" }}>Görseller & Videolar</h3>
       </div>
-      <p className="adm-help mb-4 mt-0">Bu sayfada kullanılan tüm görsel ve videolar. “Değiştir” ile yenisini yükle veya kütüphaneden seç — sitede anında güncellenir. Değiştirmezsen varsayılan kalır.</p>
+      <p className="adm-help mb-4 mt-0">Bu sayfada kullanılan görseller/videolar. “Değiştir” ile yenisini yükle veya kütüphaneden seç; “Sıfırla” ile eskisine dön. Değiştirmezsen varsayılan kalır.</p>
 
       <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
         {slots.map((s) => {
@@ -41,7 +41,7 @@ export function AssetManager({ slots, overrides, media }: { slots: AssetSlot[]; 
           const changed = !!overrides[s.id]?.trim();
           return (
             <div key={s.id} className="overflow-hidden rounded-xl border" style={{ borderColor: "rgb(var(--border))" }}>
-              <div className="relative aspect-video bg-black/5" style={{ background: "rgb(var(--muted))" }}>
+              <div className="relative aspect-video" style={{ background: "rgb(var(--muted))" }}>
                 {s.type === "video" ? (
                   <video src={cur} muted loop playsInline className="h-full w-full object-cover" />
                 ) : (
@@ -74,6 +74,7 @@ export function AssetManager({ slots, overrides, media }: { slots: AssetSlot[]; 
 }
 
 function PickerModal({ slot, media, pending, onClose, onPick }: { slot: AssetSlot; media: MediaItem[]; pending: boolean; onClose: () => void; onPick: (url: string) => void }) {
+  const router = useRouter();
   const [url, setUrl] = useState("");
   const [uploading, setUploading] = useState(false);
   const [err, setErr] = useState("");
@@ -94,6 +95,18 @@ function PickerModal({ slot, media, pending, onClose, onPick }: { slot: AssetSlo
       setErr(e instanceof Error ? e.message : "Yükleme başarısız");
     } finally {
       setUploading(false);
+    }
+  };
+
+  const removeMedia = async (id: string) => {
+    setErr("");
+    try {
+      const res = await fetch("/api/admin/media", { method: "DELETE", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ id }) });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) throw new Error(data?.error || "Silinemedi");
+      router.refresh();
+    } catch (e) {
+      setErr(e instanceof Error ? e.message : "Silinemedi");
     }
   };
 
@@ -124,16 +137,29 @@ function PickerModal({ slot, media, pending, onClose, onPick }: { slot: AssetSlo
           <button type="button" disabled={!url.trim() || pending} onClick={() => onPick(url.trim())} className="adm-btn adm-btn-primary">Kaydet</button>
         </div>
 
-        {/* Kütüphane (yalnız görseller için anlamlı önizleme) */}
+        {/* Kütüphane */}
         {media.length > 0 ? (
           <>
-            <p className="adm-label">Yüklenen görseller</p>
+            <p className="adm-label">Yüklenen görseller — seç ya da sil</p>
             <div className="grid grid-cols-3 gap-2 sm:grid-cols-4">
               {media.map((m) => (
-                <button key={m.url} type="button" onClick={() => onPick(m.url)} className="overflow-hidden rounded-lg border transition hover:opacity-80" style={{ borderColor: "rgb(var(--border))" }}>
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img src={m.url} alt={m.alt || ""} className="aspect-square w-full object-cover" />
-                </button>
+                <div key={m.url} className="group relative overflow-hidden rounded-lg border" style={{ borderColor: "rgb(var(--border))" }}>
+                  <button type="button" onClick={() => onPick(m.url)} className="block w-full transition hover:opacity-80">
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img src={m.url} alt={m.alt || ""} className="aspect-square w-full object-cover" />
+                  </button>
+                  {m.id ? (
+                    <button
+                      type="button"
+                      onClick={() => removeMedia(m.id!)}
+                      title="Görseli sil"
+                      className="absolute right-1 top-1 grid h-6 w-6 place-items-center rounded-full text-white opacity-0 transition group-hover:opacity-100"
+                      style={{ background: "rgb(var(--accent))" }}
+                    >
+                      ✕
+                    </button>
+                  ) : null}
+                </div>
               ))}
             </div>
           </>

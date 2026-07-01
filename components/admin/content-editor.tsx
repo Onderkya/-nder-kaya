@@ -3,7 +3,6 @@
 import { useState, type ReactNode } from "react";
 import Link from "next/link";
 import { Badge } from "./ui";
-import { Icon } from "./icons";
 import { AssetManager } from "./asset-manager";
 import type { AssetSlot } from "@/lib/asset-slots";
 
@@ -13,10 +12,10 @@ export type EditPage = { id: string; label: string; description?: string; sectio
 export type LangOpt = { code: string; flag: string; name: string };
 
 /**
- * Sayfa-sekmeli, TEK DİLLİ içerik editörü. Üstte gerçek sayfa sekmeleri
- * (Anasayfa/Antalya…), üstte dil seçici. Yazılar yukarıdan aşağıya bölümler
- * hâlinde. Tek `Kaydet` tüm sekmeleri (o dil için) kaydeder — sekme değişince
- * düzenlemeler kaybolmaz (gizli sekmeler de formda kalır).
+ * Sayfa-sekmeli, TEK DİLLİ içerik editörü. Üstte SABİT araç çubuğu: sayfa
+ * sekmeleri + dil + Kaydet (hep görünür, aşağı inmeye gerek yok). Yazılar
+ * yukarıdan aşağıya bölümler hâlinde. Tek Kaydet tüm sayfaları (o dil için)
+ * kaydeder. `key={locale}` → dil değişince alanlar yeni dilin değeriyle gelir.
  */
 export function ContentEditor({
   pages,
@@ -36,7 +35,7 @@ export function ContentEditor({
   saveAction: (fd: FormData) => void | Promise<void>;
   assetsByPage?: Record<string, AssetSlot[]>;
   assetOverrides?: Record<string, string>;
-  media?: { url: string; alt: string | null }[];
+  media?: { id?: string; url: string; alt: string | null }[];
   faqPanel?: ReactNode;
 }) {
   const [active, setActive] = useState(initialPageId);
@@ -45,38 +44,44 @@ export function ContentEditor({
 
   return (
     <div>
-      {/* Dil seçici */}
-      <div className="mb-4 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
-        <div className="flex flex-wrap items-center gap-2">
-          <span className="adm-muted text-[12.5px] font-semibold">Düzenlenen dil:</span>
-          {langs.map((l) => (
-            <Link
-              key={l.code}
-              href={`?lang=${l.code}&sayfa=${active}`}
-              className={`adm-btn adm-btn-sm ${l.code === locale ? "adm-btn-primary" : "adm-btn-ghost"}`}
+      {/* SABİT araç çubuğu — sekmeler + dil + Kaydet hep görünür */}
+      <div
+        className="sticky top-14 z-20 -mx-4 mb-5 border-b px-4 py-2.5 sm:-mx-6 sm:px-6 lg:top-0"
+        style={{ background: "rgb(var(--background) / 0.94)", backdropFilter: "blur(8px)", borderColor: "rgb(var(--border))" }}
+      >
+        <div className="no-scrollbar mb-2 flex gap-1.5 overflow-x-auto pb-0.5">
+          {pages.map((p) => (
+            <button
+              key={p.id}
+              type="button"
+              onClick={() => setActive(p.id)}
+              className={`adm-btn adm-btn-sm whitespace-nowrap ${p.id === active ? "adm-btn-primary" : "adm-btn-ghost"}`}
             >
-              {l.flag} {l.name}
-            </Link>
+              {p.label}
+            </button>
           ))}
         </div>
-        <p className="adm-muted text-[12px]">Dili değiştirmeden önce Kaydet’e bas.</p>
-      </div>
-
-      {/* Sayfa sekmeleri */}
-      <div className="no-scrollbar -mx-1 mb-5 flex gap-2 overflow-x-auto px-1 pb-1">
-        {pages.map((p) => (
-          <button
-            key={p.id}
-            type="button"
-            onClick={() => setActive(p.id)}
-            className={`adm-btn adm-btn-sm whitespace-nowrap ${p.id === active ? "adm-btn-primary" : "adm-btn-ghost"}`}
-          >
-            {p.label}
+        <div className="flex items-center justify-between gap-2">
+          <div className="flex items-center gap-1.5">
+            <span className="adm-muted hidden text-[12px] font-semibold sm:inline">Dil:</span>
+            {langs.map((l) => (
+              <Link
+                key={l.code}
+                href={`?lang=${l.code}&sayfa=${active}`}
+                title={l.name}
+                className={`adm-btn adm-btn-sm ${l.code === locale ? "adm-btn-primary" : "adm-btn-ghost"}`}
+              >
+                {l.flag}<span className="hidden sm:inline"> {l.name}</span>
+              </Link>
+            ))}
+          </div>
+          <button form="ce-form" type="submit" className="adm-btn adm-btn-primary adm-btn-sm">
+            Kaydet
           </button>
-        ))}
+        </div>
       </div>
 
-      {/* Aktif sayfanın görselleri/videoları (metin formunun dışında; kendi kaydeder) */}
+      {/* Aktif sayfanın görselleri/videoları (kendi kaydeder) */}
       {assetsByPage[active]?.length ? (
         <div className="mb-4">
           <AssetManager slots={assetsByPage[active]} overrides={assetOverrides} media={media} />
@@ -86,7 +91,8 @@ export function ContentEditor({
       {/* SSS sayfasında ekstra madde yöneticisi (kendi kaydeder) */}
       {active === "faq" && faqPanel ? <div className="mb-4">{faqPanel}</div> : null}
 
-      <form action={saveAction}>
+      {/* key={locale} → dil değişince alanlar yeniden bağlanır (yeni dilin değeri gelir) */}
+      <form id="ce-form" action={saveAction} key={locale}>
         {pages.map((p) => (
           <div key={p.id} hidden={p.id !== active}>
             {p.description ? <p className="adm-muted mb-4 text-[14px]">{p.description}</p> : null}
@@ -104,23 +110,19 @@ export function ContentEditor({
                     ) : (
                       s.fields.map((f) => (
                         <div key={f.key}>
-                          <div className="mb-1.5 flex items-center justify-between gap-2">
-                            {isTr ? (
-                              <span className="adm-muted text-[11.5px]">{f.overridden ? "Düzenlendi" : ""}</span>
-                            ) : (
-                              <span className="adm-muted line-clamp-2 flex-1 text-[12.5px]" title={f.ref}>
-                                🇹🇷 {f.ref || "—"}
-                              </span>
-                            )}
+                          {!isTr && f.ref ? (
+                            <p className="adm-muted mb-1.5 line-clamp-2 text-[12.5px]" title={f.ref}>🇹🇷 {f.ref}</p>
+                          ) : null}
+                          <div className="relative">
+                            <textarea
+                              name={`${f.key}${SEP}${locale}`}
+                              defaultValue={f.value}
+                              rows={(f.value || f.ref).length > 70 ? 3 : 1}
+                              className="adm-textarea"
+                              style={{ minHeight: "44px" }}
+                            />
                             {f.overridden ? <Badge tone="warn">düzenlendi</Badge> : null}
                           </div>
-                          <textarea
-                            name={`${f.key}${SEP}${locale}`}
-                            defaultValue={f.value}
-                            rows={(f.value || f.ref).length > 70 ? 3 : 1}
-                            className="adm-textarea"
-                            style={{ minHeight: "44px" }}
-                          />
                         </div>
                       ))
                     )}
@@ -130,16 +132,6 @@ export function ContentEditor({
             </div>
           </div>
         ))}
-
-        {/* Yapışkan kaydet */}
-        <div className="adm-sticky-save mt-6">
-          <div className="flex items-center justify-between gap-3">
-            <p className="adm-muted hidden text-[13px] sm:flex sm:items-center sm:gap-1.5">
-              <Icon name="check" size={15} /> Kaydedince sitede anında yayınlanır.
-            </p>
-            <button className="adm-btn adm-btn-primary w-full sm:w-auto" type="submit">Kaydet</button>
-          </div>
-        </div>
       </form>
     </div>
   );

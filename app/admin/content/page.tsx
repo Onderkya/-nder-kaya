@@ -52,7 +52,7 @@ export default async function ContentPage({ searchParams }: { searchParams: Prom
     loadBaseFlat(locale),
     loadBaseFlat("tr"),
     getAssetMap(),
-    prisma.media.findMany({ orderBy: { createdAt: "desc" }, take: 60, select: { url: true, alt: true } }).catch(() => []),
+    prisma.media.findMany({ orderBy: { createdAt: "desc" }, take: 60, select: { id: true, url: true, alt: true } }).catch(() => []),
   ]);
   const faqExtras = await getFaqExtras();
   const map = new Map(texts.map((t) => [t.key, t]));
