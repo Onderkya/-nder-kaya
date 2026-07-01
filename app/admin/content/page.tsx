@@ -11,6 +11,8 @@ import { ASSET_SLOTS, type AssetSlot } from "@/lib/asset-slots";
 import { getAssetMap } from "@/lib/assets";
 import { getFaqExtras } from "@/lib/faq";
 import { FaqManager } from "@/components/admin/faq-manager";
+import { getHiddenSections } from "@/lib/sections";
+import { SECTIONS, type SectionDef } from "@/lib/section-registry";
 
 export const dynamic = "force-dynamic";
 
@@ -55,6 +57,10 @@ export default async function ContentPage({ searchParams }: { searchParams: Prom
     prisma.media.findMany({ orderBy: { createdAt: "desc" }, take: 60, select: { id: true, url: true, alt: true } }).catch(() => []),
   ]);
   const faqExtras = await getFaqExtras();
+  const hiddenSet = await getHiddenSections();
+  const hiddenSections = [...hiddenSet];
+  const sectionsByPage: Record<string, SectionDef[]> = {};
+  for (const s of SECTIONS) (sectionsByPage[s.page] ??= []).push(s);
   const map = new Map(texts.map((t) => [t.key, t]));
 
   // Görsel/video slotlarını sayfaya göre grupla.
@@ -118,6 +124,8 @@ export default async function ContentPage({ searchParams }: { searchParams: Prom
         assetOverrides={assetOverrides}
         media={mediaRows}
         faqPanel={<FaqManager initial={faqExtras} locale={locale} langName={localeNames[locale]} />}
+        sectionsByPage={sectionsByPage}
+        hiddenSections={hiddenSections}
       />
     </div>
   );

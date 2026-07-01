@@ -20,6 +20,7 @@ import { getPublicSettings } from "@/lib/settings";
 import { getManagedPage } from "@/lib/cms";
 import { BlockRenderer } from "@/components/cms/block-renderer";
 import { getAssetMap, pickAsset } from "@/lib/assets";
+import { getHiddenSections, sectionVisible } from "@/lib/sections";
 
 export default async function HomePage({
   params,
@@ -31,6 +32,7 @@ export default async function HomePage({
   const cmsPage = await getManagedPage("home", locale);
   if (cmsPage) return <BlockRenderer page={cmsPage} locale={locale} />;
   const A = await getAssetMap();
+  const hidden = await getHiddenSections();
   const site = await getPublicSettings();
   const t = await getTranslations("home");
   const c = await getTranslations("common");
@@ -163,9 +165,12 @@ export default async function HomePage({
       />
 
       {/* ============ 2 · HAZIR ROTALAR — sinematik paket vitrini · ANASAYFANIN KALBİ (paylaşılan ReadyRoutes bileşeni) ============ */}
-      <ReadyRoutes />
+      {sectionVisible(hidden, "home.readyRoutes") && (
+        <ReadyRoutes />
+      )}
 
       {/* ============ 4 · OTELLER ============ */}
+      {sectionVisible(hidden, "home.hotels") && (
       <section className="py-24 sm:py-28" style={{ backgroundColor: "rgb(var(--muted) / 0.5)" }}>
         <div className="container-wide">
           <Reveal className="mx-auto max-w-2xl text-center">
@@ -180,8 +185,10 @@ export default async function HomePage({
           </p>
         </div>
       </section>
+      )}
 
       {/* ============ 4.5 · ÖZEL PLAN — hazır paketlerden sonra, "tam uymadıysa sıfırdan kuralım" (form buraya alındı) ============ */}
+      {sectionVisible(hidden, "home.quickPlan") && (
       <section id="hizli-plan" className="relative scroll-mt-24 py-20 sm:py-24" style={{ backgroundColor: "rgb(var(--background))" }}>
         <div className="container-wide">
           <Reveal className="mx-auto max-w-2xl text-center">
@@ -194,8 +201,10 @@ export default async function HomePage({
           </Reveal>
         </div>
       </section>
+      )}
 
       {/* ============ 5 · FERMUAR DENEYİMİ (scuba + Antalya — imza animasyon) ============ */}
+      {sectionVisible(hidden, "home.zipper") && (
       <ZipperReveal
         eyebrow={t("actTitle")}
         title={x("ant_introTitle")}
@@ -211,8 +220,10 @@ export default async function HomePage({
           { video: pickAsset(A, "home.zipper.legends.video", "/media/lol-aqua.mp4"), img: pickAsset(A, "home.zipper.legends.image", "/images/coaster.jpg"), name: "Land of Legends", sub: "Aqua park · Belek" },
         ]}
       />
+      )}
 
       {/* ============ 6 · NEDEN ANTALYA BRIDGE (koyu deniz bandı) ============ */}
+      {sectionVisible(hidden, "home.why") && (
       <section className="relative overflow-hidden text-white" style={{ backgroundColor: "#07212b" }}>
         <div className="grid lg:grid-cols-2">
           <div className="relative min-h-[340px] lg:min-h-full">
@@ -254,8 +265,10 @@ export default async function HomePage({
           </div>
         </div>
       </section>
+      )}
 
       {/* ============ 7 · TÜRKÇE DERSLERİ + PETLINGO (ücretsiz bonus) ============ */}
+      {sectionVisible(hidden, "home.lessons") && (
       <section className="py-24 sm:py-28" style={{ backgroundColor: "rgb(var(--background))" }}>
         <div className="container-wide grid items-center gap-12 lg:grid-cols-2 lg:gap-16">
           <Reveal>
@@ -294,8 +307,10 @@ export default async function HomePage({
           </Reveal>
         </div>
       </section>
+      )}
 
       {/* ============ 8 · TÜRKİYE'DE EĞİTİM (ikincil bölüm) ============ */}
+      {sectionVisible(hidden, "home.education") && (
       <section className="py-20 sm:py-24" style={{ backgroundColor: "rgb(var(--muted) / 0.5)" }}>
         <div className="container-wide">
           <div className="grid items-center gap-10 lg:grid-cols-12 lg:gap-16">
@@ -324,8 +339,10 @@ export default async function HomePage({
           </div>
         </div>
       </section>
+      )}
 
       {/* ============ 8.5 · MİSAFİR SÖZLERİ (dürüst yorum paneli) ============ */}
+      {sectionVisible(hidden, "home.guestVoices") && (
       <GuestVoices
         labels={{
           eyebrow: v("eyebrow"),
@@ -338,8 +355,10 @@ export default async function HomePage({
         }}
         reviews={[]}
       />
+      )}
 
       {/* ============ 9 · ÖDEME & GÜVEN ============ */}
+      {sectionVisible(hidden, "home.payment") && (
       <section className="py-24 sm:py-28" style={{ backgroundColor: "rgb(var(--background))" }}>
         <div className="container-wide">
           <Reveal className="mx-auto max-w-2xl text-center">
@@ -375,8 +394,10 @@ export default async function HomePage({
           </Reveal>
         </div>
       </section>
+      )}
 
       {/* ============ 9.5 · MİNİ SSS (itiraz giderme) ============ */}
+      {sectionVisible(hidden, "home.miniFaq") && (
       <section className="py-24 sm:py-28" style={{ backgroundColor: "rgb(var(--muted) / 0.5)" }}>
         <div className="container-wide">
           <Reveal className="mx-auto max-w-2xl text-center">
@@ -388,6 +409,7 @@ export default async function HomePage({
           </Reveal>
         </div>
       </section>
+      )}
 
       {/* ============ 10 · SON CTA ============ */}
       <section className="relative">

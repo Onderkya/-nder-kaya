@@ -4,7 +4,9 @@ import { useState, type ReactNode } from "react";
 import Link from "next/link";
 import { Badge } from "./ui";
 import { AssetManager } from "./asset-manager";
+import { SectionToggles } from "./section-toggles";
 import type { AssetSlot } from "@/lib/asset-slots";
+import type { SectionDef } from "@/lib/section-registry";
 
 export type EditField = { key: string; value: string; ref: string; overridden: boolean };
 export type EditSection = { title: string; help?: string; fields: EditField[] };
@@ -27,6 +29,8 @@ export function ContentEditor({
   assetOverrides = {},
   media = [],
   faqPanel,
+  sectionsByPage = {},
+  hiddenSections = [],
 }: {
   pages: EditPage[];
   locale: string;
@@ -37,6 +41,8 @@ export function ContentEditor({
   assetOverrides?: Record<string, string>;
   media?: { id?: string; url: string; alt: string | null }[];
   faqPanel?: ReactNode;
+  sectionsByPage?: Record<string, SectionDef[]>;
+  hiddenSections?: string[];
 }) {
   const [active, setActive] = useState(initialPageId);
   const SEP = "|||";
@@ -80,6 +86,13 @@ export function ContentEditor({
           </button>
         </div>
       </div>
+
+      {/* Bölüm göster/gizle (kendi kaydeder) */}
+      {sectionsByPage[active]?.length ? (
+        <div className="mb-4">
+          <SectionToggles sections={sectionsByPage[active]} hidden={hiddenSections} />
+        </div>
+      ) : null}
 
       {/* Aktif sayfanın görselleri/videoları (kendi kaydeder) */}
       {assetsByPage[active]?.length ? (
