@@ -1,5 +1,6 @@
 import "../globals.css";
 import "./admin.css";
+import { Onest } from "next/font/google";
 import type { ReactNode } from "react";
 import { getSession } from "@/lib/auth";
 import { prisma } from "@/lib/db";
@@ -8,8 +9,11 @@ import { SidebarNav } from "@/components/admin/sidebar-nav";
 import { MobileNav } from "@/components/admin/mobile-nav";
 import { AdminAiFab } from "@/components/admin/ai-fab";
 import { CollapseToggle } from "@/components/admin/collapse-toggle";
+import { TopBar } from "@/components/admin/top-bar";
 import { Icon } from "@/components/admin/icons";
 import { assistantAvailable } from "@/lib/ai/assistant";
+
+const sans = Onest({ subsets: ["latin", "latin-ext"], variable: "--font-sans", display: "swap" });
 
 // Kenar çubuğu daraltma durumunu boyamadan önce ayarla (titreme olmasın).
 const COLLAPSE_SCRIPT = `try{if(localStorage.getItem('adm-collapsed')==='1')document.documentElement.setAttribute('data-adm-collapsed','1')}catch(e){}`;
@@ -36,24 +40,21 @@ export default async function AdminLayout({ children }: { children: ReactNode })
   }
 
   return (
-    <html lang="tr">
+    <html lang="tr" className={sans.variable}>
       <body className="adm-body min-h-screen antialiased">
         {session ? <script dangerouslySetInnerHTML={{ __html: COLLAPSE_SCRIPT }} /> : null}
         {session ? (
           <div>
-            {/* Masaüstü: sabit koyu-deniz kenar çubuğu (daraltılabilir) */}
-            <aside className="adm-sidebar adm-sidebar-scroll fixed inset-y-0 left-0 z-30 hidden w-[264px] flex-col overflow-y-auto p-5 lg:flex">
-              <div className="adm-brandrow mb-6 flex items-center justify-between gap-2">
-                <span className="adm-brand flex items-center gap-2 text-[1.35rem] font-semibold text-white">
+            {/* Masaüstü: açık renkli kenar çubuğu (daraltılabilir) */}
+            <aside className="adm-sidebar adm-sidebar-scroll fixed inset-y-0 left-0 z-30 hidden w-[248px] flex-col overflow-y-auto p-4 lg:flex">
+              <div className="adm-brandrow mb-5 flex items-center justify-between gap-2">
+                <span className="adm-brand flex items-center gap-2 text-[15px] font-semibold">
                   <span>🌊</span> <span className="adm-side-text">Antalya Bridge</span>
                 </span>
                 <CollapseToggle />
               </div>
-              <a href={siteUrl} target="_blank" rel="noopener" className="adm-side-btn adm-side-cta mb-5" title="Siteyi Gör">
-                <Icon name="external" size={18} /> <span className="adm-side-text">Siteyi Gör</span>
-              </a>
               <SidebarNav inboxCount={inboxCount} />
-              <form action="/api/admin/logout" method="post" className="mt-auto border-t border-white/10 pt-4">
+              <form action="/api/admin/logout" method="post" className="mt-auto pt-4" style={{ borderTop: "1px solid rgb(var(--border))" }}>
                 <button className="adm-side-btn" type="submit" title="Çıkış yap">
                   <Icon name="logout" size={18} /> <span className="adm-side-text">Çıkış yap</span>
                 </button>
@@ -65,15 +66,16 @@ export default async function AdminLayout({ children }: { children: ReactNode })
               className="sticky top-0 z-30 flex items-center justify-between border-b px-4 py-3 lg:hidden"
               style={{ background: "rgb(var(--card) / 0.92)", backdropFilter: "blur(10px)", borderColor: "rgb(var(--border))" }}
             >
-              <span className="adm-brand text-[1.2rem] font-semibold" style={{ color: "rgb(var(--foreground))" }}>🌊 Antalya Bridge</span>
+              <span className="adm-brand text-[15px] font-semibold" style={{ color: "rgb(var(--foreground))" }}>🌊 Antalya Bridge</span>
               <a href={siteUrl} target="_blank" rel="noopener" className="adm-btn adm-btn-ghost adm-btn-sm">
                 <Icon name="external" size={16} /> Site
               </a>
             </header>
 
             {/* İçerik */}
-            <div className="adm-main-wrap lg:pl-[264px]">
-              <main className="mx-auto max-w-[1560px] px-4 py-6 pb-28 sm:px-6 lg:px-12 lg:py-10 lg:pb-12">{children}</main>
+            <div className="adm-main-wrap lg:pl-[248px]">
+              <TopBar siteUrl={siteUrl} />
+              <main className="mx-auto max-w-[1560px] px-4 py-6 pb-28 sm:px-6 lg:px-10 lg:py-8 lg:pb-12">{children}</main>
             </div>
 
             <MobileNav inboxCount={inboxCount} siteUrl={siteUrl} />
