@@ -11,6 +11,7 @@ const navItems = [
   { href: "/admin/pages", label: "Sayfalar (CMS)" },
   { href: "/admin/media", label: "Medya" },
   { href: "/admin/leads", label: "Talepler" },
+  { href: "/admin/sales", label: "Satışlar" },
   { href: "/admin/booking", label: "Rezervasyon" },
   { href: "/admin/conversations", label: "Sohbetler" },
   { href: "/admin/promos", label: "İndirim Kodları" },

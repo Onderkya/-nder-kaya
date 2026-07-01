@@ -256,6 +256,38 @@ model Invoice {
   @@index([status, createdAt])
 }
 
+// --- Manuel satış defteri: admin elle kaydeder (kime, ne, ücret, indirim, ödeme) ---
+model Sale {
+  id              String   @id @default(cuid())
+  soldAt          DateTime @default(now()) // satış tarihi (düzenlenebilir)
+  // Müşteri
+  customerName    String
+  customerPhone   String?
+  customerEmail   String?
+  customerIdNo    String? // kimlik / pasaport no
+  customerCountry String?
+  // Ürün / tur
+  service         String? // antalya | lessons | education | it | other
+  itemName        String // tur/paket adı (seçili veya serbest)
+  // Tutar (en küçük para birimi cinsinden — kuruş/cent)
+  amount          Int // liste fiyatı
+  currency        String   @default("USD")
+  // İndirim
+  promoCode       String? // uygulanan kod (varsa)
+  discountAmount  Int      @default(0)
+  finalAmount     Int // net (amount - discount)
+  // Ödeme
+  paymentType     String? // KASPI | CRYPTO | CASH | OTHER
+  paymentRef      String? // hangi adres/IBAN/txid ile ödendi
+  status          String   @default("PAID") // PAID | PENDING | PARTIAL
+  paidAmount      Int? // kısmi ödemede ödenen
+  note            String?  @db.Text
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  @@index([soldAt])
+}
+
 // --- Denetim kaydı: hassas değişiklikler (özellikle ödeme/cüzdan) izlenir ---
 model AuditLog {
   id         String   @id @default(cuid())

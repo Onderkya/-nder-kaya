@@ -4,7 +4,16 @@
 > ↩️ **Geri dönüş (rollback):** eski sürüm dokunulmadı → dal `claude/consulting-site-plan-6k4lix` + etiket `safe/before-redesign-rev9`. Beğenilmezse sunucuda o dala `git reset --hard` + rebuild.
 > Görsel/medya kaynakları: `public/images/CREDITS.txt` (CC / Mixkit / CC0) · oteller: kullanıcının verdiği resmi fotoğraflar (`public/images/hotels/`).
 
-## 🔁 Revizyon 19 — Ayarlar admin'den (API anahtarları dahil) + AI OpenRouter (home+admin) (GÜNCEL · dal `claude/redesign-conversion`)
+## 🔁 Revizyon 20 — Manuel Satış Defteri (/admin/sales) (GÜNCEL · dal `claude/redesign-conversion`)
+
+> **Şu an buradayız.** Admin'den elle satış/sipariş kaydı: kime (ad·telefon·e-posta·kimlik/pasaport·ülke), ne (hizmet + tur/paket — seçili gelir + elle yazılır), tutar+para birimi, indirim (mevcut koddan seç VEYA manuel), **nasıl+hangi adresle ödendi** (Kaspi/Kripto/Nakit + IBAN/txid datalist), durum (Ödendi/Bekliyor/Kısmi), tarih, not. `tsc` ✓ · `next build` ✓. Migration `0005_sales` otomatik uygulanır.
+
+- **`Sale` modeli** (migration `0005_sales`): tutarlar en küçük birimde (kuruş/cent); `finalAmount = amount − discount` sunucuda hesaplanır. İndirim: manuel girildiyse o; boşsa seçilen `PromoCode`'dan (PERCENT→oran, AMOUNT→×100).
+- **`/admin/sales`** (+nav "Satışlar"): ciro özeti (kayıt sayısı + para birimi bazında tahsilat; PARTIAL'da `paidAmount`), açılır "yeni satış" formu, düzenle/sil tablosu. **`/admin/sales/[id]`** düzenleme. Ortak `sale-form.tsx`. `actions.ts` (create/update/delete) `requireAdmin`+`audit`+revalidate.
+- **Seçili+serbest:** hizmet dropdown; tur/paket adı datalist (5 hazır rota adı + 8 otel) ama serbest yazılır; indirim kodu dropdown (aktif kodlar); ödeme adresi datalist (kayıtlı PaymentMethod adresleri).
+- **AI görebilir:** `Sale` şema bağlamına eklendi → admin asistanı "bu ay kaç satış / toplam ciro" sorabilir (Setting/User hariç, denylist korunur).
+
+## 🔁 Revizyon 19 — Ayarlar admin'den (API anahtarları dahil) + AI OpenRouter (home+admin) (dal `claude/redesign-conversion`)
 
 > **Şu an buradayız.** "Her şeyi admin'den değiştir, API'ler dahil; AI OpenRouter, hem ana sayfa hem admin." `tsc` ✓ · `next build` ✓ (11/11). Migration `0004_settings` sunucuda otomatik uygulanır.
 

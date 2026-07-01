@@ -23,6 +23,7 @@ Tablolar ve kolonlar:
 "LessonType"(id, minutes, price, currency, active, "order")
 "AvailabilitySlot"(id, "startsAt", minutes, booked, "createdAt")
 "Lead"(id, name, email, phone, service, message, locale, channel[WEB|WHATSAPP|TELEGRAM], status[NEW|CONTACTED|CONFIRMED|DONE|ARCHIVED], "createdAt")
+"Sale"(id, "soldAt", "customerName", "customerPhone", "customerEmail", "customerIdNo", "customerCountry", service, "itemName", amount, currency, "promoCode", "discountAmount", "finalAmount", "paymentType"[KASPI|CRYPTO|CASH|OTHER], "paymentRef", status[PAID|PENDING|PARTIAL], "paidAmount", note, "createdAt") — tutarlar en küçük birimde (kuruş/cent); ciro için SUM("finalAmount")/100
 "PromoCode"(id, code, type[PERCENT|AMOUNT], value, active, "validFrom", "validUntil", "usageLimit", "usedCount", "targetSlug", "createdAt")
 "PaymentMethod"(id, type[KASPI|CRYPTO], coin, network, address, "qrUrl", active, "order", "createdAt", "updatedAt")
 "AuditLog"(id, "actorEmail", action, entity, "entityId", details, "createdAt")
