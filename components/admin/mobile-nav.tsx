@@ -37,10 +37,10 @@ export function MobileNav({ inboxCount = 0, siteUrl = "/" }: { inboxCount?: numb
       {/* Drawer */}
       {open ? (
         <div className="fixed inset-0 z-50 lg:hidden" role="dialog" aria-modal="true">
-          <button type="button" aria-label="Kapat" onClick={() => setOpen(false)} className="absolute inset-0" style={{ background: "rgb(7 26 33 / 0.55)" }} />
+          <button type="button" aria-label="Kapat" onClick={() => setOpen(false)} className="absolute inset-0" style={{ background: "rgb(26 32 38 / 0.45)" }} />
           <div className="adm-sidebar adm-sidebar-scroll absolute inset-y-0 right-0 flex w-[86%] max-w-sm flex-col overflow-y-auto p-5">
             <div className="mb-5 flex items-center justify-between">
-              <span className="adm-brand text-xl font-semibold text-white">🌊 Antalya Bridge</span>
+              <span className="adm-brand text-[15px] font-semibold">🌊 Antalya Bridge</span>
               <button type="button" onClick={() => setOpen(false)} className="adm-side-btn" style={{ width: "auto", padding: 8 }} aria-label="Kapat">✕</button>
             </div>
 
@@ -70,7 +70,7 @@ export function MobileNav({ inboxCount = 0, siteUrl = "/" }: { inboxCount?: numb
               ))}
             </div>
 
-            <form action="/api/admin/logout" method="post" className="mt-6 border-t border-white/10 pt-4">
+            <form action="/api/admin/logout" method="post" className="mt-6 pt-4" style={{ borderTop: "1px solid rgb(var(--border))" }}>
               <button className="adm-side-btn" type="submit"><Icon name="logout" size={18} /> Çıkış yap</button>
             </form>
           </div>
