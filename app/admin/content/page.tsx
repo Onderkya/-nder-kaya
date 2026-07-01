@@ -11,8 +11,9 @@ import { ASSET_SLOTS, type AssetSlot } from "@/lib/asset-slots";
 import { getAssetMap } from "@/lib/assets";
 import { getFaqExtras } from "@/lib/faq";
 import { FaqManager } from "@/components/admin/faq-manager";
-import { getHiddenSections } from "@/lib/sections";
-import { SECTIONS, type SectionDef } from "@/lib/section-registry";
+import { getHiddenSections, getSectionOrders, applySectionOrder } from "@/lib/sections";
+import { SECTIONS } from "@/lib/section-registry";
+import { SectionManager } from "@/components/admin/section-manager";
 
 export const dynamic = "force-dynamic";
 
@@ -57,10 +58,31 @@ export default async function ContentPage({ searchParams }: { searchParams: Prom
     prisma.media.findMany({ orderBy: { createdAt: "desc" }, take: 60, select: { id: true, url: true, alt: true } }).catch(() => []),
   ]);
   const faqExtras = await getFaqExtras();
-  const hiddenSet = await getHiddenSections();
+  const [hiddenSet, orders] = await Promise.all([getHiddenSections(), getSectionOrders()]);
   const hiddenSections = [...hiddenSet];
-  const sectionsByPage: Record<string, SectionDef[]> = {};
-  for (const s of SECTIONS) (sectionsByPage[s.page] ??= []).push(s);
+
+  // Bölüm yöneticisi: 7 sayfa, her sayfanın bölümleri kayıtlı sıraya göre.
+  const SECTION_PAGES: { key: string; label: string }[] = [
+    { key: "home", label: "Anasayfa" },
+    { key: "antalya", label: "Antalya Danışmanlık" },
+    { key: "lessons", label: "Türkçe Ders" },
+    { key: "education", label: "Eğitim" },
+    { key: "about", label: "Hakkımızda" },
+    { key: "faq", label: "SSS" },
+    { key: "contact", label: "İletişim" },
+  ];
+  const managerSectionsByPage: Record<string, { id: string; label: string }[]> = {};
+  for (const pg of SECTION_PAGES) {
+    const registry = SECTIONS.filter((s) => s.page === pg.key);
+    const defaultIds = registry.map((s) => s.id);
+    const orderedIds = applySectionOrder(defaultIds, orders[pg.key]);
+    const byId = new Map(registry.map((s) => [s.id, s]));
+    managerSectionsByPage[pg.key] = orderedIds
+      .map((id) => byId.get(id))
+      .filter((s): s is (typeof registry)[number] => Boolean(s))
+      .map((s) => ({ id: s.id, label: s.label }));
+  }
+
   const map = new Map(texts.map((t) => [t.key, t]));
 
   // Görsel/video slotlarını sayfaya göre grupla.
@@ -124,9 +146,15 @@ export default async function ContentPage({ searchParams }: { searchParams: Prom
         assetOverrides={assetOverrides}
         media={mediaRows}
         faqPanel={<FaqManager initial={faqExtras} locale={locale} langName={localeNames[locale]} />}
-        sectionsByPage={sectionsByPage}
-        hiddenSections={hiddenSections}
       />
+      <div className="mt-6">
+        <SectionManager
+          pages={SECTION_PAGES}
+          sectionsByPage={managerSectionsByPage}
+          hidden={hiddenSections}
+          orders={orders}
+        />
+      </div>
     </div>
   );
 }
