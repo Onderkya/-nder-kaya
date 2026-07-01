@@ -107,7 +107,7 @@ export default async function AboutPage({ params }: { params: Promise<{ locale: 
 
       {/* Çift fotoğrafı + hayat çizelgesi */}
       <section className="pb-8">
-        <div className="container-wide grid items-start gap-12 lg:grid-cols-[minmax(0,0.85fr),1fr] lg:gap-16">
+        <div className="container-wide grid items-start gap-12 md:grid-cols-2 lg:grid-cols-[minmax(0,0.85fr),1fr] lg:gap-16">
           {/* Sol: çift fotoğrafı ya da zarif yer tutucu */}
           <Reveal className="lg:sticky lg:top-28">
             <figure className="relative aspect-[4/5] overflow-hidden rounded-[2rem] shadow-xl">

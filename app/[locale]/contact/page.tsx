@@ -41,7 +41,7 @@ export default async function ContactPage({ params }: { params: Promise<{ locale
         </div>
       </section>
 
-      <section className="container-page grid gap-10 py-20 lg:grid-cols-2">
+      <section className="container-page grid gap-10 py-20 md:grid-cols-2">
         <Reveal>
           <ContactForm
             labels={{

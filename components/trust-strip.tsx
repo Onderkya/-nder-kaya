@@ -12,7 +12,7 @@ export function TrustStrip({ title, points }: { title?: string; points: string[]
       {title ? (
         <h2 className="h-section mb-9 text-center text-balance" style={{ color: "rgb(var(--foreground))" }}>{title}</h2>
       ) : null}
-      <ul className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+      <ul className="grid gap-3 sm:grid-cols-2 md:grid-cols-3">
         {points.map((p) => (
           <li
             key={p}
