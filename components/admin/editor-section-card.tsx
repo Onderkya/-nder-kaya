@@ -41,6 +41,12 @@ export function EditorSectionCard({
   overrides,
   media,
   publicHref,
+  dragging = false,
+  dragOver = false,
+  onDragHandleStart,
+  onDragHandleEnd,
+  onCardDragOver,
+  onCardDrop,
 }: {
   card: EditorCard;
   locale: string;
@@ -52,6 +58,12 @@ export function EditorSectionCard({
   overrides: Record<string, string>;
   media: MediaItem[];
   publicHref: string | null;
+  dragging?: boolean;
+  dragOver?: boolean;
+  onDragHandleStart?: () => void;
+  onDragHandleEnd?: () => void;
+  onCardDragOver?: () => void;
+  onCardDrop?: () => void;
 }) {
   const SEP = "|||";
   const router = useRouter();
@@ -77,8 +89,33 @@ export function EditorSectionCard({
   const visible = !hidden;
 
   return (
-    <details className="adm-card" {...(!card.locked && hidden ? {} : { open: true })}>
+    <details
+      className="adm-card"
+      {...(!card.locked && hidden ? {} : { open: true })}
+      onDragOver={onCardDragOver ? (e) => { e.preventDefault(); onCardDragOver(); } : undefined}
+      onDrop={onCardDrop ? (e) => { e.preventDefault(); onCardDrop(); } : undefined}
+      style={{
+        opacity: dragging ? 0.5 : undefined,
+        boxShadow: dragOver ? "0 0 0 2px rgb(var(--primary))" : undefined,
+      }}
+    >
       <summary className="flex items-center gap-2.5 px-4 py-3 sm:px-5" style={{ listStyle: "none", cursor: "pointer" }}>
+        {/* Sürükleme tutamacı (grip) — yalnız sıralanabilir kartlar; dokunmatik
+            için ↑↓ oklar da aşağıda kalır. */}
+        {reorderable && onDragHandleStart ? (
+          <span
+            draggable
+            onDragStart={(e) => { e.stopPropagation(); onDragHandleStart(); }}
+            onDragEnd={() => onDragHandleEnd?.()}
+            onClick={(e) => e.preventDefault()}
+            className="hidden shrink-0 cursor-grab touch-none select-none text-[color:rgb(var(--muted-foreground))] active:cursor-grabbing sm:flex sm:items-center"
+            title="Sürükleyerek sırala"
+            aria-label="Sürükleyerek sırala"
+          >
+            <Icon name="grip" size={18} />
+          </span>
+        ) : null}
+
         {/* Kilit ya da ↑↓ */}
         {reorderable ? (
           <span className="flex flex-col gap-0.5" onClick={(e) => e.preventDefault()}>

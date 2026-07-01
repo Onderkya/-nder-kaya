@@ -1,8 +1,10 @@
 "use client";
 
-import { useState, type ReactNode } from "react";
+import { useState, useTransition, type ReactNode } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { EditorSectionCard, type EditorCard } from "./editor-section-card";
+import { saveSectionOrder } from "@/lib/section-actions";
 import type { AssetSlot } from "@/lib/asset-slots";
 
 export type EditorPageData = {
@@ -50,7 +52,6 @@ export function ContentEditor({
 }) {
   const [active, setActive] = useState(initialPageId);
   const isTr = locale === "tr";
-  const hiddenSet = new Set(hiddenSections);
 
   return (
     <div>
@@ -97,28 +98,14 @@ export function ContentEditor({
           <div key={p.id} hidden={p.id !== active}>
             {p.description ? <p className="adm-muted mb-4 text-[14px]">{p.description}</p> : null}
 
-            <div className="space-y-3">
-              {p.cards.map((card, i) => {
-                // ↑↓ komşuluk yalnız registryId'li (sıralanabilir) kartlar arasında.
-                const reorderable = p.cards.filter((c) => c.registryId && !c.locked);
-                const ri = card.registryId && !card.locked ? reorderable.findIndex((c) => c.key === card.key) : -1;
-                return (
-                  <EditorSectionCard
-                    key={card.key}
-                    card={card}
-                    locale={locale}
-                    isTr={isTr}
-                    hidden={!!card.registryId && hiddenSet.has(card.registryId)}
-                    first={ri <= 0}
-                    last={ri === reorderable.length - 1}
-                    page={p.id}
-                    overrides={assetOverrides}
-                    media={media}
-                    publicHref={p.publicHref}
-                  />
-                );
-              })}
-            </div>
+            <PageCards
+              page={p}
+              locale={locale}
+              isTr={isTr}
+              hiddenSections={hiddenSections}
+              assetOverrides={assetOverrides}
+              media={media}
+            />
 
             {/* SSS: madde yöneticisi + Turlar yönlendirme kartı */}
             {p.id === "faq" ? (
@@ -139,6 +126,139 @@ export function ContentEditor({
           </div>
         ))}
       </form>
+    </div>
+  );
+}
+
+/**
+ * Bir sayfanın bölüm kartları — sürükle-bırak sıralama + ↑↓ oklar.
+ *
+ * SÜRÜKLE-BIRAK yalnız registryId'li (kilitsiz) kartları KENDİ ARALARINDA
+ * yeniden dizer; locked/registryId'siz kartlar sunucu sırasındaki sabit
+ * yuvalarında kalır. Görünüm sırası "pointer-walk" ile kurulur: orijinal
+ * kart listesi gezilir, her sıralanabilir yuvaya iyimser `order` dizisinden
+ * sıradaki kart yerleştirilir.
+ *
+ * DÜZENLEME KAYBI YOK: kartlar tek `<div>` altında `key={card.key}` ile
+ * render edilir. Diziyi yeniden sıralamak React uzlaşımında aynı `key`'e
+ * sahip DOM/bileşen örneklerini TAŞIR (yeniden oluşturmaz); dolayısıyla
+ * kaydedilmemiş <textarea> değerleri korunur. Kartlar konum-bazlı bir
+ * sarmalayıcıya alınmaz ve index-key kullanılmaz.
+ */
+function PageCards({
+  page,
+  locale,
+  isTr,
+  hiddenSections,
+  assetOverrides,
+  media,
+}: {
+  page: EditorPageData;
+  locale: string;
+  isTr: boolean;
+  hiddenSections: string[];
+  assetOverrides: Record<string, string>;
+  media: MediaItem[];
+}) {
+  const router = useRouter();
+  const [pending, start] = useTransition();
+  const hiddenSet = new Set(hiddenSections);
+
+  // Sıralanabilir kartların sunucu (varsayılan) sırası — key dizisi.
+  const serverOrder = page.cards.filter((c) => c.registryId && !c.locked).map((c) => c.key);
+  const serverSig = serverOrder.join(",");
+
+  // İyimser yerel sıra. Sunucu sırası değişince (router.refresh sonrası) senkronla.
+  const [order, setOrder] = useState<string[]>(serverOrder);
+  const [syncedSig, setSyncedSig] = useState(serverSig);
+  if (serverSig !== syncedSig) {
+    setOrder(serverOrder);
+    setSyncedSig(serverSig);
+  }
+
+  const [dragKey, setDragKey] = useState<string | null>(null);
+  const [overKey, setOverKey] = useState<string | null>(null);
+
+  const cardByKey = new Map(page.cards.map((c) => [c.key, c]));
+  const registryIdByKey = (key: string) => cardByKey.get(key)?.registryId;
+
+  // Pointer-walk: orijinal listeyi gez; sıralanabilir yuvaları iyimser `order`
+  // dizisinden doldur, diğer kartları yerinde bırak.
+  const orderQueue = [...order];
+  const displayCards = page.cards.map((c) =>
+    c.registryId && !c.locked ? cardByKey.get(orderQueue.shift()!)! : c,
+  );
+
+  function reorder(targetKey: string) {
+    if (!dragKey || dragKey === targetKey) return;
+    if (registryIdByKey(targetKey) === undefined) return; // sadece sıralanabilir hedef
+    setOrder((o) => {
+      const a = [...o];
+      const from = a.indexOf(dragKey);
+      const to = a.indexOf(targetKey);
+      if (from < 0 || to < 0) return o;
+      a.splice(to, 0, ...a.splice(from, 1));
+      return a;
+    });
+  }
+
+  function persist(nextOrder: string[]) {
+    const ids = nextOrder.map((k) => registryIdByKey(k)).filter((x): x is string => !!x);
+    start(async () => {
+      await saveSectionOrder(page.id, ids);
+      router.refresh();
+    });
+  }
+
+  function onDropCard(targetKey: string) {
+    // dragover sırasında `order` zaten canlı olarak güncellendi; yalnız hedef
+    // gerçekten değiştiyse mevcut sırayı kalıcı yap.
+    if (dragKey && dragKey !== targetKey && registryIdByKey(targetKey) !== undefined) {
+      persist(order);
+    }
+    setDragKey(null);
+    setOverKey(null);
+  }
+
+  const reorderableCount = order.length;
+
+  return (
+    <div className="space-y-3">
+      {displayCards.map((card) => {
+        const draggable = !!card.registryId && !card.locked;
+        const ri = draggable ? order.indexOf(card.key) : -1;
+        return (
+          <EditorSectionCard
+            key={card.key}
+            card={card}
+            locale={locale}
+            isTr={isTr}
+            hidden={!!card.registryId && hiddenSet.has(card.registryId)}
+            first={ri <= 0}
+            last={ri === reorderableCount - 1}
+            page={page.id}
+            overrides={assetOverrides}
+            media={media}
+            publicHref={page.publicHref}
+            dragging={dragKey === card.key}
+            dragOver={draggable && overKey === card.key && dragKey !== card.key}
+            onDragHandleStart={draggable ? () => setDragKey(card.key) : undefined}
+            onCardDragOver={
+              draggable
+                ? () => {
+                    setOverKey(card.key);
+                    reorder(card.key);
+                  }
+                : undefined
+            }
+            onCardDrop={draggable ? () => onDropCard(card.key) : undefined}
+            onDragHandleEnd={() => {
+              setDragKey(null);
+              setOverKey(null);
+            }}
+          />
+        );
+      })}
     </div>
   );
 }
