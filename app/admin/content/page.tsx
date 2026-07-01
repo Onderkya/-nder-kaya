@@ -7,6 +7,8 @@ import { audit } from "@/lib/audit";
 import { PageHeader } from "@/components/admin/ui";
 import { ContentEditor, type EditPage } from "@/components/admin/content-editor";
 import { CONTENT_PAGES } from "@/lib/content-map";
+import { ASSET_SLOTS, type AssetSlot } from "@/lib/asset-slots";
+import { getAssetMap } from "@/lib/assets";
 
 export const dynamic = "force-dynamic";
 
@@ -43,8 +45,18 @@ export default async function ContentPage({ searchParams }: { searchParams: Prom
   const sp = await searchParams;
   const locale = (routing.locales as readonly string[]).includes(sp.lang ?? "") ? (sp.lang as Locale) : ("tr" as Locale);
 
-  const [texts, baseLoc, baseTr] = await Promise.all([getEditableTexts(), loadBaseFlat(locale), loadBaseFlat("tr")]);
+  const [texts, baseLoc, baseTr, assetOverrides, mediaRows] = await Promise.all([
+    getEditableTexts(),
+    loadBaseFlat(locale),
+    loadBaseFlat("tr"),
+    getAssetMap(),
+    prisma.media.findMany({ orderBy: { createdAt: "desc" }, take: 60, select: { url: true, alt: true } }).catch(() => []),
+  ]);
   const map = new Map(texts.map((t) => [t.key, t]));
+
+  // Görsel/video slotlarını sayfaya göre grupla.
+  const assetsByPage: Record<string, AssetSlot[]> = {};
+  for (const s of ASSET_SLOTS) (assetsByPage[s.page] ??= []).push(s);
 
   const mapped = new Set<string>();
   const pages: EditPage[] = CONTENT_PAGES.map((pg) => ({
@@ -93,7 +105,16 @@ export default async function ContentPage({ searchParams }: { searchParams: Prom
         title="Site İçeriği"
         description="Sitenin yazılarını gerçek sayfalara göre düzenle. Üstten bir sayfa ve bir dil seç; o sayfanın bölümlerini yukarıdan aşağıya gör. Kaydedince sitede anında yayınlanır."
       />
-      <ContentEditor pages={pages} locale={locale} langs={langs} initialPageId={initialPageId} saveAction={saveTexts} />
+      <ContentEditor
+        pages={pages}
+        locale={locale}
+        langs={langs}
+        initialPageId={initialPageId}
+        saveAction={saveTexts}
+        assetsByPage={assetsByPage}
+        assetOverrides={assetOverrides}
+        media={mediaRows}
+      />
     </div>
   );
 }

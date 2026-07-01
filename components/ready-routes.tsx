@@ -3,6 +3,7 @@ import { Reveal } from "@/components/reveal";
 import { IconCheck } from "@/components/icons";
 import { RouteGallery } from "@/components/route-gallery";
 import { getPublicSettings } from "@/lib/settings";
+import { getAssetMap, pickAsset } from "@/lib/assets";
 
 /**
  * HAZIR ROTALAR — modern, kompakt paket vitrini. Sade kartlar yan yana (ızgara);
@@ -14,6 +15,7 @@ export async function ReadyRoutes() {
   const r = await getTranslations("routes");
   const hd = await getTranslations("hotelsd");
   const locale = await getLocale();
+  const A = await getAssetMap();
 
   const flightStep = { icon: "plane", day: 1, t: r("st_flight_t"), d: r("st_flight_d") };
   const transferStep = { icon: "car", day: 1, t: r("st_transfer_t"), d: r("st_transfer_d") };
@@ -22,7 +24,7 @@ export async function ReadyRoutes() {
   const baseRoutes = [
     {
       key: "r1", name: r("r1_name"), tag: r("r1_tag"), best: r("r1_best"), aud: r("aud_classic"),
-      days: 3, stars: 5, hotel: "Lara Barut Collection", loc: hd("larabarut_loc"), img: "/images/hotels/lara-barut.jpg",
+      days: 3, stars: 5, hotel: "Lara Barut Collection", loc: hd("larabarut_loc"), img: pickAsset(A, "route.r1.image", "/images/hotels/lara-barut.jpg"),
       steps: [
         flightStep, transferStep, checkin("r1_ck"),
         { icon: "landmark", day: 2, t: r("r1_s1_t"), d: r("r1_s1_d") },
@@ -32,7 +34,7 @@ export async function ReadyRoutes() {
     },
     {
       key: "r2", name: r("r2_name"), tag: r("r2_tag"), best: r("r2_best"), aud: r("aud_classic"),
-      days: 5, stars: 5, hotel: "Cullinan Belek", loc: hd("cullinan_loc"), img: "/images/hotels/cullinan-belek.jpg",
+      days: 5, stars: 5, hotel: "Cullinan Belek", loc: hd("cullinan_loc"), img: pickAsset(A, "route.r2.image", "/images/hotels/cullinan-belek.jpg"),
       steps: [
         flightStep, transferStep, checkin("r2_ck"),
         { icon: "landmark", day: 2, t: r("r2_s1_t"), d: r("r2_s1_d") },
@@ -43,7 +45,7 @@ export async function ReadyRoutes() {
     },
     {
       key: "r3", name: r("r3_name"), tag: r("r3_tag"), best: r("r3_best"), aud: r("aud_honeymoon"),
-      days: 5, stars: 5, hotel: "NG Phaselis Bay", loc: hd("ngphaselis_loc"), img: "/images/hotels/ng-phaselis-bay.jpg",
+      days: 5, stars: 5, hotel: "NG Phaselis Bay", loc: hd("ngphaselis_loc"), img: pickAsset(A, "route.r3.image", "/images/hotels/ng-phaselis-bay.jpg"),
       steps: [
         flightStep, transferStep, { icon: "heart", day: 1, t: r("st_checkin_t"), d: r("r3_ck") },
         { icon: "landmark", day: 2, t: r("r3_s1_t"), d: r("r3_s1_d") },
@@ -54,7 +56,7 @@ export async function ReadyRoutes() {
     },
     {
       key: "r4", name: r("r4_name"), tag: r("r4_tag"), best: r("r4_best"), aud: r("aud_family"),
-      days: 7, stars: 5, hotel: "Land of Legends Kingdom", loc: hd("legends_loc"), img: "/images/hotels/land-of-legends-kingdom.jpg",
+      days: 7, stars: 5, hotel: "Land of Legends Kingdom", loc: hd("legends_loc"), img: pickAsset(A, "route.r4.image", "/images/hotels/land-of-legends-kingdom.jpg"),
       steps: [
         flightStep, transferStep, checkin("r4_ck"),
         { icon: "ferris", day: 2, t: r("r4_s1_t"), d: r("r4_s1_d") },
@@ -67,7 +69,7 @@ export async function ReadyRoutes() {
     },
     {
       key: "r5", name: r("r5_name"), tag: r("r5_tag"), best: r("r5_best"), aud: r("aud_luxury"),
-      days: 7, stars: 5, hotel: "Maxx Royal Kemer", loc: hd("maxxkemer_loc"), img: "/images/hotels/maxx-royal-kemer.jpg",
+      days: 7, stars: 5, hotel: "Maxx Royal Kemer", loc: hd("maxxkemer_loc"), img: pickAsset(A, "route.r5.image", "/images/hotels/maxx-royal-kemer.jpg"),
       steps: [
         flightStep, transferStep, checkin("r5_ck"),
         { icon: "mountain", day: 2, t: r("r5_s1_t"), d: r("r5_s1_d") },

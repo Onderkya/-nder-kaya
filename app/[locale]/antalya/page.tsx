@@ -10,6 +10,7 @@ import { ReadyRoutes } from "@/components/ready-routes";
 import { IconArrow } from "@/components/icons";
 import { getManagedPage } from "@/lib/cms";
 import { BlockRenderer } from "@/components/cms/block-renderer";
+import { getAssetMap, pickAsset } from "@/lib/assets";
 
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
   const { locale } = await params;
@@ -24,6 +25,7 @@ export default async function AntalyaPage({ params }: { params: Promise<{ locale
   if (cmsPage) return <BlockRenderer page={cmsPage} locale={locale} />;
   const t = await getTranslations("antalya");
   const x = await getTranslations("imm");
+  const A = await getAssetMap();
 
   const features = [t("feature1"), t("feature2"), t("feature3"), t("feature4")];
 
@@ -35,8 +37,13 @@ export default async function AntalyaPage({ params }: { params: Promise<{ locale
         eyebrow={x("ant_introEyebrow")}
         title={t("title")}
         intro={t("intro")}
-        image="/images/kaputas.jpg"
-        videos={["/media/kaputas-drone.mp4", "/media/vid-suluada.mp4", "/media/vid-kemer.mp4", "/media/vid-kas.mp4"]}
+        image={pickAsset(A, "antalya.hero.image", "/images/kaputas.jpg")}
+        videos={[
+          pickAsset(A, "antalya.hero.video1", "/media/kaputas-drone.mp4"),
+          pickAsset(A, "antalya.hero.video2", "/media/vid-suluada.mp4"),
+          pickAsset(A, "antalya.hero.video3", "/media/vid-kemer.mp4"),
+          pickAsset(A, "antalya.hero.video4", "/media/vid-kas.mp4"),
+        ]}
       />
 
       {/* HAZIR ROTALAR — bu sayfanın kalbi: hayalindeki tatil zaten hazır, seç ve al */}
@@ -74,23 +81,23 @@ export default async function AntalyaPage({ params }: { params: Promise<{ locale
         eyebrow={x("ant_regionsEyebrow")}
         title={x("ant_regionsTitle")}
         places={[
-          { img: "/images/kaputas.jpg", video: "/media/kaputas-drone.mp4", name: "Kaputaş", sub: "Kaş" },
-          { img: "/images/suluada.jpg", video: "/media/vid-suluada.mp4", name: "Suluada", sub: "Adrasan" },
-          { img: "/images/kemer.jpg", video: "/media/vid-kemer.mp4", name: "Kemer", sub: "Marina" },
-          { img: "/images/olympos.jpg", video: "/media/vid-olympos.mp4", name: "Olympos", sub: "Çıralı" },
-          { img: "/images/alanya.jpg", video: "/media/vid-alanya-castle.mp4", name: "Alanya", sub: "Kızıl Kule" },
-          { img: "/images/beachpark.jpg", name: "Beach Park", sub: "Konyaaltı" },
-          { img: "/images/lara.jpg", name: "Lara", sub: "Falezler" },
-          { img: "/images/kaleici-harbor.jpg", video: "/media/vid-kaleici.mp4", name: "Kaleiçi", sub: "Yat Limanı" },
-          { img: "/images/side.jpg", name: "Side", sub: "Antik kent" },
-          { img: "/images/duden.jpg", video: "/media/vid-duden.mp4", name: "Düden", sub: "Şelale" },
+          { img: pickAsset(A, "antalya.place.kaputas.image", "/images/kaputas.jpg"), video: pickAsset(A, "antalya.place.kaputas.video", "/media/kaputas-drone.mp4"), name: "Kaputaş", sub: "Kaş" },
+          { img: pickAsset(A, "antalya.place.suluada.image", "/images/suluada.jpg"), video: pickAsset(A, "antalya.place.suluada.video", "/media/vid-suluada.mp4"), name: "Suluada", sub: "Adrasan" },
+          { img: pickAsset(A, "antalya.place.kemer.image", "/images/kemer.jpg"), video: pickAsset(A, "antalya.place.kemer.video", "/media/vid-kemer.mp4"), name: "Kemer", sub: "Marina" },
+          { img: pickAsset(A, "antalya.place.olympos.image", "/images/olympos.jpg"), video: pickAsset(A, "antalya.place.olympos.video", "/media/vid-olympos.mp4"), name: "Olympos", sub: "Çıralı" },
+          { img: pickAsset(A, "antalya.place.alanya.image", "/images/alanya.jpg"), video: pickAsset(A, "antalya.place.alanya.video", "/media/vid-alanya-castle.mp4"), name: "Alanya", sub: "Kızıl Kule" },
+          { img: pickAsset(A, "antalya.place.beachpark.image", "/images/beachpark.jpg"), name: "Beach Park", sub: "Konyaaltı" },
+          { img: pickAsset(A, "antalya.place.lara.image", "/images/lara.jpg"), name: "Lara", sub: "Falezler" },
+          { img: pickAsset(A, "antalya.place.kaleici.image", "/images/kaleici-harbor.jpg"), video: pickAsset(A, "antalya.place.kaleici.video", "/media/vid-kaleici.mp4"), name: "Kaleiçi", sub: "Yat Limanı" },
+          { img: pickAsset(A, "antalya.place.side.image", "/images/side.jpg"), name: "Side", sub: "Antik kent" },
+          { img: pickAsset(A, "antalya.place.duden.image", "/images/duden.jpg"), video: pickAsset(A, "antalya.place.duden.video", "/media/vid-duden.mp4"), name: "Düden", sub: "Şelale" },
         ]}
       />
 
       {/* CTA */}
       <section className="container-wide pb-24 pt-4">
         <Reveal className="relative flex min-h-[380px] items-center justify-center overflow-hidden rounded-[2rem] px-6 py-20 text-center text-white">
-          <Image src="/images/kaputas.jpg" alt="Kaputaş Plajı, Kaş — turkuaz Akdeniz" fill sizes="(max-width:1280px) 100vw, 1200px" className="object-cover" />
+          <Image src={pickAsset(A, "antalya.cta.image", "/images/kaputas.jpg")} alt="Kaputaş Plajı, Kaş — turkuaz Akdeniz" fill sizes="(max-width:1280px) 100vw, 1200px" className="object-cover" />
           <div className="absolute inset-0" style={{ background: "linear-gradient(180deg, rgb(4 18 24 / 0.35), rgb(4 18 24 / 0.7))" }} />
           <div className="relative z-10 mx-auto max-w-2xl">
             <h2 className="h-section text-balance">{x("ant_ctaTitle")}</h2>

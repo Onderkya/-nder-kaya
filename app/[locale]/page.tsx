@@ -19,6 +19,7 @@ import { IconArrow, IconCheck } from "@/components/icons";
 import { getPublicSettings } from "@/lib/settings";
 import { getManagedPage } from "@/lib/cms";
 import { BlockRenderer } from "@/components/cms/block-renderer";
+import { getAssetMap, pickAsset } from "@/lib/assets";
 
 export default async function HomePage({
   params,
@@ -29,6 +30,7 @@ export default async function HomePage({
   setRequestLocale(locale);
   const cmsPage = await getManagedPage("home", locale);
   if (cmsPage) return <BlockRenderer page={cmsPage} locale={locale} />;
+  const A = await getAssetMap();
   const site = await getPublicSettings();
   const t = await getTranslations("home");
   const c = await getTranslations("common");
@@ -57,20 +59,20 @@ export default async function HomePage({
   // Öne çıkan Antalya otelleri — gerçek görseller public/images/hotels/ içinde.
   // Eksik görsel olursa o kart otomatik listeden düşer (existsSync).
   const allHotels = [
-    { key: "cullinan", name: "Cullinan Belek", file: "cullinan-belek.jpg" },
-    { key: "maxxbelek", name: "Maxx Royal Belek", file: "maxx-royal-belek.jpg" },
-    { key: "regnum", name: "Regnum Carya", file: "regnum-carya.jpg" },
-    { key: "maxxkemer", name: "Maxx Royal Kemer", file: "maxx-royal-kemer.jpg" },
-    { key: "ngphaselis", name: "NG Phaselis Bay", file: "ng-phaselis-bay.jpg" },
-    { key: "larabarut", name: "Lara Barut Collection", file: "lara-barut.jpg" },
-    { key: "bayou", name: "Bayou Villas", file: "bayou-villas.jpg" },
-    { key: "legends", name: "Land of Legends Kingdom", file: "land-of-legends-kingdom.jpg" },
+    { key: "cullinan", name: "Cullinan Belek", file: "cullinan-belek.jpg", slot: "hotel.cullinan.image" },
+    { key: "maxxbelek", name: "Maxx Royal Belek", file: "maxx-royal-belek.jpg", slot: "hotel.maxxbelek.image" },
+    { key: "regnum", name: "Regnum Carya", file: "regnum-carya.jpg", slot: "hotel.regnum.image" },
+    { key: "maxxkemer", name: "Maxx Royal Kemer", file: "maxx-royal-kemer.jpg", slot: "hotel.maxxkemer.image" },
+    { key: "ngphaselis", name: "NG Phaselis Bay", file: "ng-phaselis-bay.jpg", slot: "hotel.ngphaselis.image" },
+    { key: "larabarut", name: "Lara Barut Collection", file: "lara-barut.jpg", slot: "hotel.larabarut.image" },
+    { key: "bayou", name: "Bayou Villas", file: "bayou-villas.jpg", slot: "hotel.bayou.image" },
+    { key: "legends", name: "Land of Legends Kingdom", file: "land-of-legends-kingdom.jpg", slot: "hotel.legends.image" },
   ];
   const hotels = allHotels
     .filter((h) => has(path.join("hotels", h.file)))
     .map((h) => ({
       name: h.name,
-      img: `/images/hotels/${h.file}`,
+      img: pickAsset(A, h.slot, `/images/hotels/${h.file}`),
       location: hd(`${h.key}_loc`),
       best: hd(`${h.key}_best`),
       why: hd(`${h.key}_why`),
@@ -155,7 +157,9 @@ export default async function HomePage({
         soundLabel={t("soundWave")}
         diffLabel={t("heroDiff")}
         proof={[t("heroProof1"), t("heroProof2"), t("heroProof3"), t("heroProof4")]}
-        aerialVideo="/media/kaputas-drone.mp4"
+        aerialVideo={pickAsset(A, "home.hero.aerialVideo", "/media/kaputas-drone.mp4")}
+        poster={pickAsset(A, "home.hero.poster", "/images/kaputas.jpg")}
+        diveFishVideo={pickAsset(A, "home.diveFish.video", "/media/dive-fish.mp4")}
       />
 
       {/* ============ 2 · HAZIR ROTALAR — sinematik paket vitrini · ANASAYFANIN KALBİ (paylaşılan ReadyRoutes bileşeni) ============ */}
@@ -196,15 +200,15 @@ export default async function HomePage({
         eyebrow={t("actTitle")}
         title={x("ant_introTitle")}
         items={[
-          { video: "/media/act-scuba2.mp4", img: "/images/kaputas-deep.jpg", name: t("actScuba"), sub: "Akdeniz'in altı" },
-          { video: "/media/kaputas-drone.mp4", img: "/images/kaputas.jpg", name: "Kaputaş Plajı", sub: "Kaş" },
-          { video: "/media/vid-kas.mp4", img: "/images/sunset.jpg", name: "Kaş", sub: "Gün batımı" },
-          { video: "/media/vid-suluada.mp4", img: "/images/suluada.jpg", name: "Suluada", sub: "Adrasan" },
-          { video: "/media/vid-olympos.mp4", img: "/images/olympos.jpg", name: "Olympos", sub: "Çıralı" },
-          { video: "/media/vid-kemer.mp4", img: "/images/kemer.jpg", name: "Kemer", sub: "Marina" },
-          { video: "/media/vid-alanya-castle.mp4", img: "/images/alanya.jpg", name: "Alanya Kalesi", sub: "Kızıl Kule" },
-          { video: "/media/vid-alanya-kleopatra.mp4", img: "/images/alanya.jpg", name: "Kleopatra", sub: "Alanya sahili" },
-          { video: "/media/lol-aqua.mp4", img: "/images/coaster.jpg", name: "Land of Legends", sub: "Aqua park · Belek" },
+          { video: pickAsset(A, "home.zipper.scuba.video", "/media/act-scuba2.mp4"), img: pickAsset(A, "home.zipper.scuba.image", "/images/kaputas-deep.jpg"), name: t("actScuba"), sub: "Akdeniz'in altı" },
+          { video: pickAsset(A, "home.zipper.kaputas.video", "/media/kaputas-drone.mp4"), img: pickAsset(A, "home.zipper.kaputas.image", "/images/kaputas.jpg"), name: "Kaputaş Plajı", sub: "Kaş" },
+          { video: pickAsset(A, "home.zipper.kas.video", "/media/vid-kas.mp4"), img: pickAsset(A, "home.zipper.kas.image", "/images/sunset.jpg"), name: "Kaş", sub: "Gün batımı" },
+          { video: pickAsset(A, "home.zipper.suluada.video", "/media/vid-suluada.mp4"), img: pickAsset(A, "home.zipper.suluada.image", "/images/suluada.jpg"), name: "Suluada", sub: "Adrasan" },
+          { video: pickAsset(A, "home.zipper.olympos.video", "/media/vid-olympos.mp4"), img: pickAsset(A, "home.zipper.olympos.image", "/images/olympos.jpg"), name: "Olympos", sub: "Çıralı" },
+          { video: pickAsset(A, "home.zipper.kemer.video", "/media/vid-kemer.mp4"), img: pickAsset(A, "home.zipper.kemer.image", "/images/kemer.jpg"), name: "Kemer", sub: "Marina" },
+          { video: pickAsset(A, "home.zipper.alanyaCastle.video", "/media/vid-alanya-castle.mp4"), img: pickAsset(A, "home.zipper.alanyaCastle.image", "/images/alanya.jpg"), name: "Alanya Kalesi", sub: "Kızıl Kule" },
+          { video: pickAsset(A, "home.zipper.kleopatra.video", "/media/vid-alanya-kleopatra.mp4"), img: pickAsset(A, "home.zipper.kleopatra.image", "/images/alanya.jpg"), name: "Kleopatra", sub: "Alanya sahili" },
+          { video: pickAsset(A, "home.zipper.legends.video", "/media/lol-aqua.mp4"), img: pickAsset(A, "home.zipper.legends.image", "/images/coaster.jpg"), name: "Land of Legends", sub: "Aqua park · Belek" },
         ]}
       />
 
@@ -213,7 +217,7 @@ export default async function HomePage({
         <div className="grid lg:grid-cols-2">
           <div className="relative min-h-[340px] lg:min-h-full">
             <Image
-              src="/images/sunset.jpg"
+              src={pickAsset(A, "home.whyBand.image", "/images/sunset.jpg")}
               alt="Kaş'ta Akdeniz gün batımı, Antalya"
               fill
               sizes="(max-width: 1024px) 100vw, 50vw"
@@ -297,7 +301,7 @@ export default async function HomePage({
           <div className="grid items-center gap-10 lg:grid-cols-12 lg:gap-16">
             <Reveal className="lg:col-span-5">
               <figure className="relative aspect-[4/3] overflow-hidden rounded-[2rem] shadow-xl">
-                <AutoVideo className="absolute inset-0 h-full w-full object-cover" src="/media/turkish-flag-boat.mp4" poster="/images/turkish-flag.jpg" />
+                <AutoVideo className="absolute inset-0 h-full w-full object-cover" src={pickAsset(A, "home.study.video", "/media/turkish-flag-boat.mp4")} poster={pickAsset(A, "home.study.poster", "/images/turkish-flag.jpg")} />
                 <div className="absolute inset-0" style={{ background: "linear-gradient(180deg, transparent 55%, rgba(4,18,24,0.45) 100%)" }} />
               </figure>
             </Reveal>
@@ -389,7 +393,7 @@ export default async function HomePage({
       <section className="relative">
         <Reveal className="relative flex min-h-[460px] items-center justify-center overflow-hidden px-6 py-24 text-center text-white sm:min-h-[540px]">
           <Image
-            src="/images/lagoon.jpg"
+            src={pickAsset(A, "home.finalCta.image", "/images/lagoon.jpg")}
             alt="Ölüdeniz Mavi Lagün — turkuaz deniz ve yamaç paraşütü"
             fill
             sizes="100vw"

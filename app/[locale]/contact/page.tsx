@@ -7,6 +7,7 @@ import { Reveal } from "@/components/reveal";
 import { getPublicSettings } from "@/lib/settings";
 import { getManagedPage } from "@/lib/cms";
 import { BlockRenderer } from "@/components/cms/block-renderer";
+import { getAssetMap, pickAsset } from "@/lib/assets";
 
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
   const { locale } = await params;
@@ -24,10 +25,11 @@ export default async function ContactPage({ params }: { params: Promise<{ locale
   const cv = await getTranslations("convert");
   const tr = await getTranslations("trust");
   const site = await getPublicSettings();
+  const A = await getAssetMap();
 
   return (
     <>
-      <CinematicHero eyebrow={t("orReach")} title={t("title")} intro={t("subtitle")} image="/images/sunset.jpg" video="/media/vid-kas.mp4" />
+      <CinematicHero eyebrow={t("orReach")} title={t("title")} intro={t("subtitle")} image={pickAsset(A, "contact.hero.image", "/images/sunset.jpg")} video={pickAsset(A, "contact.hero.video", "/media/vid-kas.mp4")} />
 
       {/* Güvence şeridi — formdan önce tereddütü kaldır */}
       <section className="border-b" style={{ borderColor: "rgb(var(--border))", backgroundColor: "rgb(var(--card))" }}>

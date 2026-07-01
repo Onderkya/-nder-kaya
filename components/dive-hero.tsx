@@ -18,6 +18,10 @@ type Props = {
   proof: string[];
   /** Varsa havadan Kaputaş dron VİDEOSU (poster = kaputas.jpg fallback). */
   aerialVideo?: string;
+  /** Hero poster / fallback görseli (varsayılan kaputas.jpg). */
+  poster?: string;
+  /** Sualtı balık videosu (varsayılan dive-fish.mp4). */
+  diveFishVideo?: string;
 };
 
 const BUBBLES = Array.from({ length: 14 }, (_, i) => {
@@ -35,7 +39,7 @@ const BUBBLES = Array.from({ length: 14 }, (_, i) => {
 
 const seg = (p: number, a: number, b: number) => Math.min(1, Math.max(0, (p - a) / (b - a)));
 
-export function DiveHero({ title, subtitle, ctaPrimary, ctaSecondary, deepLine, scrollCue, brand, soundLabel, diffLabel, proof, aerialVideo }: Props) {
+export function DiveHero({ title, subtitle, ctaPrimary, ctaSecondary, deepLine, scrollCue, brand, soundLabel, diffLabel, proof, aerialVideo, poster = "/images/kaputas.jpg", diveFishVideo = "/media/dive-fish.mp4" }: Props) {
   const rootRef = useRef<HTMLElement>(null);
   const audioRef = useRef<HTMLAudioElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
@@ -171,7 +175,7 @@ export function DiveHero({ title, subtitle, ctaPrimary, ctaSecondary, deepLine, 
               <video
                 className="absolute inset-0 h-full w-full object-cover"
                 src={aerialVideo}
-                poster="/images/kaputas.jpg"
+                poster={poster}
                 autoPlay
                 muted
                 loop
@@ -181,7 +185,7 @@ export function DiveHero({ title, subtitle, ctaPrimary, ctaSecondary, deepLine, 
               />
             ) : (
               <Image
-                src="/images/kaputas.jpg"
+                src={poster}
                 alt="Kaputaş Plajı — turkuaz Akdeniz, Antalya"
                 fill
                 priority
@@ -202,7 +206,7 @@ export function DiveHero({ title, subtitle, ctaPrimary, ctaSecondary, deepLine, 
           <video
             ref={videoRef}
             className="absolute inset-0 h-full w-full object-cover"
-            src="/media/dive-fish.mp4"
+            src={diveFishVideo}
             autoPlay
             muted
             loop

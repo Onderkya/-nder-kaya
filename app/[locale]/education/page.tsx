@@ -14,6 +14,7 @@ import { IconArrow } from "@/components/icons";
 import { getPublicSettings } from "@/lib/settings";
 import { getManagedPage } from "@/lib/cms";
 import { BlockRenderer } from "@/components/cms/block-renderer";
+import { getAssetMap, pickAsset } from "@/lib/assets";
 
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
   const { locale } = await params;
@@ -32,15 +33,21 @@ export default async function EducationPage({ params }: { params: Promise<{ loca
   const tr = await getTranslations("trust");
   const cv = await getTranslations("convert");
   const site = await getPublicSettings();
+  const A = await getAssetMap();
 
   const deliverables = [sh("f1"), sh("f2"), sh("f3"), sh("f4")];
 
   // Uzaktan/havadan kampüs gelince otomatik devreye girer; yoksa gerçek kampüs fotosu.
   // NOT: akdeniz-campus.jpg bir kurul/komite toplantısı fotosuydu (bizi yansıtmıyordu) →
   // artık kullanılmıyor; gerçek Akdeniz Üniversitesi kampüsü (campus.jpg) kullanılıyor.
-  const campus = existsSync(path.join(process.cwd(), "public", "images", "akdeniz-campus-wide.jpg"))
-    ? "/images/akdeniz-campus-wide.jpg"
-    : "/images/campus.jpg";
+  // Admin override varsa o kazanır; yoksa mevcut existsSync mantığı korunur.
+  const campus = pickAsset(
+    A,
+    "education.campus.image",
+    existsSync(path.join(process.cwd(), "public", "images", "akdeniz-campus-wide.jpg"))
+      ? "/images/akdeniz-campus-wide.jpg"
+      : "/images/campus.jpg"
+  );
 
   return (
     <>
@@ -50,7 +57,7 @@ export default async function EducationPage({ params }: { params: Promise<{ loca
         eyebrow={x("edu_journeyEyebrow")}
         title={t("title")}
         intro={t("intro")}
-        image="/images/turkish-flag-sky.jpg"
+        image={pickAsset(A, "education.hero.image", "/images/turkish-flag-sky.jpg")}
         emblem
       />
 
@@ -58,10 +65,10 @@ export default async function EducationPage({ params }: { params: Promise<{ loca
       <StudyJourney
         eyebrow={x("edu_journeyEyebrow")}
         steps={[
-          { n: "01", title: x("edu_s1Title"), place: x("edu_s1Place"), text: x("edu_s1Text"), img: campus, video: "/media/campus-aerial.mp4", points: [x("edu_s1a"), x("edu_s1b")] },
-          { n: "02", title: x("edu_s2Title"), place: x("edu_s2Place"), text: x("edu_s2Text"), img: "/images/campus.jpg", video: "/media/office-consult.mp4", points: [x("edu_s2a"), x("edu_s2b")] },
-          { n: "03", title: x("edu_s3Title"), place: x("edu_s3Place"), text: x("edu_s3Text"), img: "/images/kaleici-inside.jpg", video: "/media/edu-street.mp4", points: [x("edu_s3a"), x("edu_s3b")] },
-          { n: "04", title: x("edu_s4Title"), place: x("edu_s4Place"), text: x("edu_s4Text"), img: "/images/dorm.jpg", points: [x("edu_s4a"), x("edu_s4b")] },
+          { n: "01", title: x("edu_s1Title"), place: x("edu_s1Place"), text: x("edu_s1Text"), img: campus, video: pickAsset(A, "education.step1.video", "/media/campus-aerial.mp4"), points: [x("edu_s1a"), x("edu_s1b")] },
+          { n: "02", title: x("edu_s2Title"), place: x("edu_s2Place"), text: x("edu_s2Text"), img: pickAsset(A, "education.step2.image", "/images/campus.jpg"), video: pickAsset(A, "education.step2.video", "/media/office-consult.mp4"), points: [x("edu_s2a"), x("edu_s2b")] },
+          { n: "03", title: x("edu_s3Title"), place: x("edu_s3Place"), text: x("edu_s3Text"), img: pickAsset(A, "education.step3.image", "/images/kaleici-inside.jpg"), video: pickAsset(A, "education.step3.video", "/media/edu-street.mp4"), points: [x("edu_s3a"), x("edu_s3b")] },
+          { n: "04", title: x("edu_s4Title"), place: x("edu_s4Place"), text: x("edu_s4Text"), img: pickAsset(A, "education.step4.image", "/images/dorm.jpg"), points: [x("edu_s4a"), x("edu_s4b")] },
         ]}
       />
 

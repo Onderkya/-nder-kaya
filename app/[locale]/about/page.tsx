@@ -13,6 +13,7 @@ import { JsonLd } from "@/components/json-ld";
 import { getPublicSettings } from "@/lib/settings";
 import { getManagedPage } from "@/lib/cms";
 import { BlockRenderer } from "@/components/cms/block-renderer";
+import { getAssetMap, pickAsset } from "@/lib/assets";
 
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
   const { locale } = await params;
@@ -38,12 +39,17 @@ export default async function AboutPage({ params }: { params: Promise<{ locale: 
   const cv = await getTranslations("convert");
   const sv = await getTranslations("services");
   const site = await getPublicSettings();
+  const A = await getAssetMap();
 
   // Gerçek çift fotoğrafı gelince otomatik devreye girer; yoksa markaya uygun
   // zarif yer tutucu (sahte/stok çift fotoğrafı KULLANILMAZ).
-  const couple = existsSync(path.join(process.cwd(), "public", "images", "founders.jpg"))
-    ? "/images/founders.jpg"
-    : null;
+  // Admin override varsa o kazanır; yoksa mevcut existsSync mantığı (fallback null → yer tutucu).
+  const coupleOverride = A["about.founders.image"];
+  const couple = coupleOverride && coupleOverride.trim()
+    ? coupleOverride
+    : existsSync(path.join(process.cwd(), "public", "images", "founders.jpg"))
+      ? "/images/founders.jpg"
+      : null;
 
   // Hayat çizelgesi — uydurma tarih/isim yok; mevcut gerçek bilgilerden.
   const timeline = [
@@ -94,7 +100,7 @@ export default async function AboutPage({ params }: { params: Promise<{ locale: 
     <>
       <JsonLd data={ld} />
 
-      <CinematicHero eyebrow={x("ab_eyebrow")} title={t("title")} image="/images/kaleici-harbor.jpg" video="/media/vid-kaleici.mp4" />
+      <CinematicHero eyebrow={x("ab_eyebrow")} title={t("title")} image={pickAsset(A, "about.hero.image", "/images/kaleici-harbor.jpg")} video={pickAsset(A, "about.hero.video", "/media/vid-kaleici.mp4")} />
 
       {/* Manifesto */}
       <section className="container-wide py-24 sm:py-32">

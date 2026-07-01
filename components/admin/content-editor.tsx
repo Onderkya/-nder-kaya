@@ -4,6 +4,8 @@ import { useState } from "react";
 import Link from "next/link";
 import { Badge } from "./ui";
 import { Icon } from "./icons";
+import { AssetManager } from "./asset-manager";
+import type { AssetSlot } from "@/lib/asset-slots";
 
 export type EditField = { key: string; value: string; ref: string; overridden: boolean };
 export type EditSection = { title: string; help?: string; fields: EditField[] };
@@ -22,12 +24,18 @@ export function ContentEditor({
   langs,
   initialPageId,
   saveAction,
+  assetsByPage = {},
+  assetOverrides = {},
+  media = [],
 }: {
   pages: EditPage[];
   locale: string;
   langs: LangOpt[];
   initialPageId: string;
   saveAction: (fd: FormData) => void | Promise<void>;
+  assetsByPage?: Record<string, AssetSlot[]>;
+  assetOverrides?: Record<string, string>;
+  media?: { url: string; alt: string | null }[];
 }) {
   const [active, setActive] = useState(initialPageId);
   const SEP = "|||";
@@ -65,6 +73,13 @@ export function ContentEditor({
           </button>
         ))}
       </div>
+
+      {/* Aktif sayfanın görselleri/videoları (metin formunun dışında; kendi kaydeder) */}
+      {assetsByPage[active]?.length ? (
+        <div className="mb-4">
+          <AssetManager slots={assetsByPage[active]} overrides={assetOverrides} media={media} />
+        </div>
+      ) : null}
 
       <form action={saveAction}>
         {pages.map((p) => (

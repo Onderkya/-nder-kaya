@@ -8,6 +8,7 @@ import { ConversionBand } from "@/components/conversion-band";
 import { getPublicSettings } from "@/lib/settings";
 import { getManagedPage } from "@/lib/cms";
 import { BlockRenderer } from "@/components/cms/block-renderer";
+import { getAssetMap, pickAsset } from "@/lib/assets";
 
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
   const { locale } = await params;
@@ -26,6 +27,7 @@ export default async function FaqPage({ params }: { params: Promise<{ locale: st
   const cv = await getTranslations("convert");
   const c = await getTranslations("common");
   const site = await getPublicSettings();
+  const A = await getAssetMap();
 
   const items = [
     { q: t("q1"), a: t("a1") },
@@ -47,7 +49,7 @@ export default async function FaqPage({ params }: { params: Promise<{ locale: st
           })),
         }}
       />
-      <CinematicHero eyebrow={x("faq_eyebrow")} title={t("title")} image="/images/kemer.jpg" video="/media/vid-kemer.mp4" />
+      <CinematicHero eyebrow={x("faq_eyebrow")} title={t("title")} image={pickAsset(A, "faq.hero.image", "/images/kemer.jpg")} video={pickAsset(A, "faq.hero.video", "/media/vid-kemer.mp4")} />
       <section className="container-wide py-20 sm:py-28">
         <FaqAccordion items={items} />
       </section>
