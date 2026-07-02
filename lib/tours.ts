@@ -11,7 +11,7 @@ export const TOURS_KEY = "tours:items";
 
 export type L10n = Record<string, string>; // locale -> metin
 
-export type TourStepCfg = { day: number; t: L10n; d: L10n };
+export type TourStepCfg = { day: number; t: L10n; d: L10n; icon?: string; active?: boolean };
 
 export type TourCfg = {
   key: string; // r1..r5 (kodlu) | c... (özel)
@@ -28,6 +28,7 @@ export type TourCfg = {
   steps?: TourStepCfg[]; // yalnız özel turlar
   hotelWhy?: L10n;
   hotelNote?: L10n;
+  included?: { icon: string; label: L10n; active?: boolean }[]; // "Pakete dahil" override
 };
 
 /** Kodlu turların değişmez varsayılanları (admin prefill + sıra tabanı). */

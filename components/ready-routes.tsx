@@ -5,6 +5,7 @@ import { RouteGallery } from "@/components/route-gallery";
 import { getPublicSettings } from "@/lib/settings";
 import { getAssetMap, pickAsset } from "@/lib/assets";
 import { getTourCfgs, pickL10n, tourOrder } from "@/lib/tours";
+import { DEFAULT_STEPS, DEFAULT_INCLUDED } from "@/lib/tour-defaults";
 
 /**
  * HAZIR ROTALAR — modern, kompakt paket vitrini. Sade kartlar yan yana (ızgara);
@@ -18,68 +19,40 @@ export async function ReadyRoutes() {
   const locale = await getLocale();
   const A = await getAssetMap();
 
+  // Özel turlarda kullanılan ortak baş adımlar (uçuş/transfer) — kodlu turların
+  // adımları artık tek kaynaktan (DEFAULT_STEPS) gelir.
   const flightStep = { icon: "plane", day: 1, t: r("st_flight_t"), d: r("st_flight_d") };
   const transferStep = { icon: "car", day: 1, t: r("st_transfer_t"), d: r("st_transfer_d") };
-  const checkin = (ckKey: string) => ({ icon: "bed", day: 1, t: r("st_checkin_t"), d: r(ckKey) });
+
+  // Kodlu tur adımları: tek kaynaktan (lib/tour-defaults) çeviri anahtarlarını çözerek.
+  const stepsOf = (key: string) =>
+    DEFAULT_STEPS[key].map((s) => ({ icon: s.icon, day: s.day, t: r(s.tKey), d: r(s.dKey) }));
 
   const baseRoutes = [
     {
       key: "r1", name: r("r1_name"), tag: r("r1_tag"), best: r("r1_best"), aud: r("aud_classic"),
       days: 3, stars: 5, hotel: "Lara Barut Collection", loc: hd("larabarut_loc"), img: pickAsset(A, "route.r1.image", "/images/hotels/lara-barut.jpg"),
-      steps: [
-        flightStep, transferStep, checkin("r1_ck"),
-        { icon: "landmark", day: 2, t: r("r1_s1_t"), d: r("r1_s1_d") },
-        { icon: "droplet", day: 2, t: r("r1_s2_t"), d: r("r1_s2_d") },
-        { icon: "sunset", day: 3, t: r("r1_s3_t"), d: r("r1_s3_d") },
-      ],
+      steps: stepsOf("r1"),
     },
     {
       key: "r2", name: r("r2_name"), tag: r("r2_tag"), best: r("r2_best"), aud: r("aud_classic"),
       days: 5, stars: 5, hotel: "Cullinan Belek", loc: hd("cullinan_loc"), img: pickAsset(A, "route.r2.image", "/images/hotels/cullinan-belek.jpg"),
-      steps: [
-        flightStep, transferStep, checkin("r2_ck"),
-        { icon: "landmark", day: 2, t: r("r2_s1_t"), d: r("r2_s1_d") },
-        { icon: "landmark", day: 3, t: r("r2_s2_t"), d: r("r2_s2_d") },
-        { icon: "droplet", day: 4, t: r("r2_s3_t"), d: r("r2_s3_d") },
-        { icon: "bag", day: 5, t: r("r2_s4_t"), d: r("r2_s4_d") },
-      ],
+      steps: stepsOf("r2"),
     },
     {
       key: "r3", name: r("r3_name"), tag: r("r3_tag"), best: r("r3_best"), aud: r("aud_honeymoon"),
       days: 5, stars: 5, hotel: "NG Phaselis Bay", loc: hd("ngphaselis_loc"), img: pickAsset(A, "route.r3.image", "/images/hotels/ng-phaselis-bay.jpg"),
-      steps: [
-        flightStep, transferStep, { icon: "heart", day: 1, t: r("st_checkin_t"), d: r("r3_ck") },
-        { icon: "landmark", day: 2, t: r("r3_s1_t"), d: r("r3_s1_d") },
-        { icon: "cablecar", day: 3, t: r("r3_s2_t"), d: r("r3_s2_d") },
-        { icon: "sailboat", day: 4, t: r("r3_s3_t"), d: r("r3_s3_d") },
-        { icon: "flower", day: 5, t: r("r3_s4_t"), d: r("r3_s4_d") },
-      ],
+      steps: stepsOf("r3"),
     },
     {
       key: "r4", name: r("r4_name"), tag: r("r4_tag"), best: r("r4_best"), aud: r("aud_family"),
       days: 7, stars: 5, hotel: "Land of Legends Kingdom", loc: hd("legends_loc"), img: pickAsset(A, "route.r4.image", "/images/hotels/land-of-legends-kingdom.jpg"),
-      steps: [
-        flightStep, transferStep, checkin("r4_ck"),
-        { icon: "ferris", day: 2, t: r("r4_s1_t"), d: r("r4_s1_d") },
-        { icon: "waves", day: 3, t: r("r4_s2_t"), d: r("r4_s2_d") },
-        { icon: "fish", day: 4, t: r("r4_s3_t"), d: r("r4_s3_d") },
-        { icon: "sailboat", day: 5, t: r("r4_s4_t"), d: r("r4_s4_d") },
-        { icon: "landmark", day: 6, t: r("r4_s5_t"), d: r("r4_s5_d") },
-        { icon: "bag", day: 7, t: r("r4_s6_t"), d: r("r4_s6_d") },
-      ],
+      steps: stepsOf("r4"),
     },
     {
       key: "r5", name: r("r5_name"), tag: r("r5_tag"), best: r("r5_best"), aud: r("aud_luxury"),
       days: 7, stars: 5, hotel: "Maxx Royal Kemer", loc: hd("maxxkemer_loc"), img: pickAsset(A, "route.r5.image", "/images/hotels/maxx-royal-kemer.jpg"),
-      steps: [
-        flightStep, transferStep, checkin("r5_ck"),
-        { icon: "mountain", day: 2, t: r("r5_s1_t"), d: r("r5_s1_d") },
-        { icon: "anchor", day: 3, t: r("r5_s2_t"), d: r("r5_s2_d") },
-        { icon: "sailboat", day: 4, t: r("r5_s3_t"), d: r("r5_s3_d") },
-        { icon: "cablecar", day: 5, t: r("r5_s4_t"), d: r("r5_s4_d") },
-        { icon: "flag", day: 6, t: r("r5_s5_t"), d: r("r5_s5_d") },
-        { icon: "bag", day: 7, t: r("r5_s6_t"), d: r("r5_s6_d") },
-      ],
+      steps: stepsOf("r5"),
     },
   ];
 
@@ -150,14 +123,7 @@ export async function ReadyRoutes() {
     };
   });
 
-  const inclusions = [
-    { icon: "plane", label: r("inc_flight") },
-    { icon: "car", label: r("inc_transfer") },
-    { icon: "bed", label: r("inc_hotel") },
-    { icon: "utensils", label: r("inc_board") },
-    { icon: "landmark", label: r("inc_tours") },
-    { icon: "headset", label: r("inc_support") },
-  ];
+  const inclusions = DEFAULT_INCLUDED.map((i) => ({ icon: i.icon, label: r(i.labelKey) }));
 
   const addons = [
     { key: "boat", label: r("a_boat") },
