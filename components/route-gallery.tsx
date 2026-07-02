@@ -6,7 +6,7 @@ import Image from "next/image";
 import { TourIcon, type TourIconData } from "@/components/tour-icon";
 import { Pin3D } from "@/components/hotel-cards";
 import { IconArrow, IconCheck } from "@/components/icons";
-import { whatsappLink, siteConfig } from "@/lib/config";
+import { whatsappLink, telegramLink, siteConfig } from "@/lib/config";
 
 type Step = { icon: TourIconData; day: number; t: string; d: string; dl: string };
 type Inclusion = { icon: TourIconData; label: string };
@@ -24,6 +24,7 @@ type Labels = {
   priceLabel: string; whyHotel: string; mapTitle: string; noteLabel: string;
   custTitle: string; custHint: string; addonsTitle: string; addNotePh: string;
   mIntro2: string; mKept: string; mRemoved: string; mAddons: string; mNote: string;
+  tgPick: string; tgCopied: string;
 };
 
 const CORE_STEPS = 3; // uçuş + transfer + giriş her zaman dahil (çıkarılamaz)
@@ -39,6 +40,7 @@ export function RouteGallery({ routes, addons, labels }: { routes: Route[]; addo
   const [excluded, setExcluded] = useState<Set<number>>(new Set());
   const [picked, setPicked] = useState<Set<string>>(new Set());
   const [note, setNote] = useState("");
+  const [tgCopied, setTgCopied] = useState(false);
   const railRef = useRef<HTMLDivElement>(null);
   const pausedRef = useRef(false);
   const activeRef = useRef(false);
@@ -93,7 +95,7 @@ export function RouteGallery({ routes, addons, labels }: { routes: Route[]; addo
   };
 
   // Modal her açıldığında kişiselleştirme seçimleri sıfırlanır.
-  useEffect(() => { setExcluded(new Set()); setPicked(new Set()); setNote(""); }, [openKey]);
+  useEffect(() => { setExcluded(new Set()); setPicked(new Set()); setNote(""); setTgCopied(false); }, [openKey]);
 
   useEffect(() => {
     if (!active) return;
@@ -109,9 +111,11 @@ export function RouteGallery({ routes, addons, labels }: { routes: Route[]; addo
   const toggleAddon = (k: string) =>
     setPicked((prev) => { const n = new Set(prev); n.has(k) ? n.delete(k) : n.add(k); return n; });
 
-  // Kişiselleştirilmiş paketi WhatsApp mesajına çevirir (numara yoksa /contact).
-  function sendRequest() {
-    if (!active) return;
+  // Kişiselleştirilmiş paketi mesaja çevirir; kanalı müşteri seçer.
+  // WhatsApp: mesaj önyazılı açılır. Telegram: t.me önyazmayı desteklemediği için
+  // özet panoya kopyalanır, müşteri yapıştırıp gönderir. Hiçbiri yoksa /contact.
+  function buildMessage(): string | null {
+    if (!active) return null;
     const program = active.steps.filter((_, i) => i < CORE_STEPS || !excluded.has(i)).map((s) => `• ${s.t}`);
     const removed = active.steps.filter((s, i) => i >= CORE_STEPS && excluded.has(i)).map((s) => s.t);
     const wantedAddons = addons.filter((a) => picked.has(a.key)).map((a) => a.label);
@@ -124,7 +128,12 @@ export function RouteGallery({ routes, addons, labels }: { routes: Route[]; addo
     if (removed.length) lines.push(`${labels.mRemoved}: ${removed.join(", ")}`);
     if (wantedAddons.length) lines.push(`${labels.mAddons}: ${wantedAddons.join(", ")}`);
     if (note.trim()) lines.push(`${labels.mNote}: ${note.trim()}`);
-    const msg = lines.join("\n");
+    return lines.join("\n");
+  }
+
+  function sendRequest() {
+    const msg = buildMessage();
+    if (msg == null) return;
     if (siteConfig.whatsappConfigured) {
       window.open(whatsappLink(msg), "_blank", "noopener");
     } else {
@@ -132,6 +141,15 @@ export function RouteGallery({ routes, addons, labels }: { routes: Route[]; addo
       try { sessionStorage.setItem("pkgRequest", msg); } catch { /* yok say */ }
       window.location.href = labels.contactHref;
     }
+  }
+
+  function sendViaTelegram() {
+    const msg = buildMessage();
+    if (msg == null) return;
+    // Panoya kopyala (başarısız olsa da Telegram yine açılır).
+    try { void navigator.clipboard?.writeText(msg); } catch { /* yok say */ }
+    setTgCopied(true);
+    window.open(telegramLink(), "_blank", "noopener");
   }
 
   return (
@@ -361,10 +379,23 @@ export function RouteGallery({ routes, addons, labels }: { routes: Route[]; addo
                 style={{ borderColor: "rgb(var(--border))", color: "rgb(var(--foreground))" }}
               />
 
-              {/* Kişiselleştirilmiş paketi gönder */}
+              {/* Kişiselleştirilmiş paketi gönder — kanal seçimi müşteride */}
               <button type="button" onClick={sendRequest} className="btn-accent mt-6 w-full justify-center py-4 text-base shadow-xl shadow-black/15">
                 {labels.ctaPick} <IconArrow />
               </button>
+              {siteConfig.telegramConfigured ? (
+                <button
+                  type="button"
+                  onClick={sendViaTelegram}
+                  className="mt-2.5 inline-flex w-full items-center justify-center gap-2 rounded-full border px-5 py-3 text-sm font-semibold transition hover:brightness-110"
+                  style={{ borderColor: "rgb(34 158 217 / 0.55)", backgroundColor: "rgb(34 158 217 / 0.10)", color: "#229ED9" }}
+                >
+                  {labels.tgPick}
+                </button>
+              ) : null}
+              {tgCopied ? (
+                <p className="mt-2 text-center text-[12px] font-semibold" style={{ color: "#229ED9" }}>{labels.tgCopied}</p>
+              ) : null}
               <p className="mt-3 text-center text-[12.5px]" style={{ color: "rgb(var(--muted-foreground))" }}>{labels.oneMessage}</p>
               <p className="mx-auto mt-1 max-w-sm text-center text-[11.5px] leading-relaxed" style={{ color: "rgb(var(--muted-foreground))" }}>{labels.flightsNote} · {labels.custom}</p>
             </div>

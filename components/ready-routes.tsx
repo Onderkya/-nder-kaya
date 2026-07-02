@@ -197,6 +197,8 @@ export async function ReadyRoutes() {
     mRemoved: r("mRemoved"),
     mAddons: r("mAddons"),
     mNote: r("mNote"),
+    tgPick: r("tgPick"),
+    tgCopied: r("tgCopied"),
     contactHref: `/${locale}/contact`,
   };
 

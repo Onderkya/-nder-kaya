@@ -11,9 +11,11 @@ export type HotelCard = {
   note: string;
   /** Önceden doldurulmuş wa.me linki; WhatsApp ayarlı değilse null/undefined. */
   wa?: string | null;
+  /** t.me linki; Telegram ayarlı değilse null/undefined. Müşteri kanalı kendi seçer. */
+  tg?: string | null;
 };
 
-type Labels = { cta: string; bestFor: string; why: string; note: string; waAsk?: string };
+type Labels = { cta: string; bestFor: string; why: string; note: string; waAsk?: string; tgAsk?: string };
 
 /** 3D görünümlü konum pini — katmanlı gradient + iç parlama + yumuşak gölge. */
 export function Pin3D() {
@@ -92,16 +94,31 @@ export function HotelCards({ hotels, labels }: { hotels: HotelCard[]; labels: La
               <Link href="/contact" className="btn-accent w-full justify-center shadow-lg shadow-black/10">
                 {labels.cta} <IconArrow />
               </Link>
-              {h.wa && labels.waAsk ? (
-                <a
-                  href={h.wa}
-                  target="_blank"
-                  rel="noopener"
-                  className="mt-2.5 inline-flex w-full items-center justify-center gap-2 rounded-full border px-5 py-2.5 text-sm font-semibold transition hover:brightness-110"
-                  style={{ borderColor: "rgb(37 211 102 / 0.55)", backgroundColor: "rgb(37 211 102 / 0.10)", color: "#1da851" }}
-                >
-                  {labels.waAsk}
-                </a>
+              {(h.wa && labels.waAsk) || (h.tg && labels.tgAsk) ? (
+                <div className="mt-2.5 flex gap-2">
+                  {h.wa && labels.waAsk ? (
+                    <a
+                      href={h.wa}
+                      target="_blank"
+                      rel="noopener"
+                      className="inline-flex flex-1 items-center justify-center gap-2 rounded-full border px-4 py-2.5 text-sm font-semibold transition hover:brightness-110"
+                      style={{ borderColor: "rgb(37 211 102 / 0.55)", backgroundColor: "rgb(37 211 102 / 0.10)", color: "#1da851" }}
+                    >
+                      {labels.waAsk}
+                    </a>
+                  ) : null}
+                  {h.tg && labels.tgAsk ? (
+                    <a
+                      href={h.tg}
+                      target="_blank"
+                      rel="noopener"
+                      className="inline-flex flex-1 items-center justify-center gap-2 rounded-full border px-4 py-2.5 text-sm font-semibold transition hover:brightness-110"
+                      style={{ borderColor: "rgb(34 158 217 / 0.55)", backgroundColor: "rgb(34 158 217 / 0.10)", color: "#229ED9" }}
+                    >
+                      {labels.tgAsk}
+                    </a>
+                  ) : null}
+                </div>
               ) : null}
             </div>
           </div>

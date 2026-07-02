@@ -89,6 +89,8 @@ export default async function FaqPage({ params }: { params: Promise<{ locale: st
         ctaLabel={c("contactUs")}
         waLabel={site.whatsappConfigured ? cv("whatsapp") : undefined}
         waHref={site.whatsappConfigured ? `https://wa.me/${site.whatsapp}` : undefined}
+        tgLabel={site.telegramConfigured ? cv("telegram") : undefined}
+        tgHref={site.telegramConfigured ? `https://t.me/${site.telegram}` : undefined}
       />
     </>
   );

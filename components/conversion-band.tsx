@@ -16,6 +16,8 @@ export function ConversionBand({
   ctaHref = "/contact",
   waLabel,
   waHref,
+  tgLabel,
+  tgHref,
 }: {
   eyebrow?: string;
   title: string;
@@ -24,6 +26,8 @@ export function ConversionBand({
   ctaHref?: string;
   waLabel?: string;
   waHref?: string;
+  tgLabel?: string;
+  tgHref?: string;
 }) {
   return (
     <section className="relative overflow-hidden py-20 text-white sm:py-24" style={{ background: "linear-gradient(135deg, #0d94a8 0%, #0e7490 50%, #07303d 130%)" }}>
@@ -38,6 +42,11 @@ export function ConversionBand({
             {waLabel && waHref ? (
               <a href={waHref} target="_blank" rel="noopener" className="inline-flex items-center gap-2 rounded-full border border-white/40 px-6 py-3 text-sm font-semibold text-white transition hover:bg-white/10">
                 {waLabel}
+              </a>
+            ) : null}
+            {tgLabel && tgHref ? (
+              <a href={tgHref} target="_blank" rel="noopener" className="inline-flex items-center gap-2 rounded-full border border-white/40 px-6 py-3 text-sm font-semibold text-white transition hover:bg-white/10">
+                {tgLabel}
               </a>
             ) : null}
           </div>
