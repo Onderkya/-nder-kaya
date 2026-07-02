@@ -4,7 +4,15 @@
 > ↩️ **Geri dönüş (rollback):** eski sürüm dokunulmadı → dal `claude/consulting-site-plan-6k4lix` + etiket `safe/before-redesign-rev9`. Beğenilmezse sunucuda o dala `git reset --hard` + rebuild.
 > Görsel/medya kaynakları: `public/images/CREDITS.txt` (CC / Mixkit / CC0) · oteller: kullanıcının verdiği resmi fotoğraflar (`public/images/hotels/`).
 
-## 🔁 Revizyon 27 — Admin yeniden tasarım FAZ 3: Site Editörü (GÜNCEL · dal `claude/redesign-conversion`)
+## 🔁 Revizyon 28 — Admin yeniden tasarım FAZ 4: tur editörü — her şey düzenlenebilir (GÜNCEL · dal `claude/redesign-conversion`)
+
+> Faz 4 (plan: `docs/superpowers/plans/2026-07-02-admin-redesign-4-tur-editoru.md`). `tsc` ✓ · `next build` ✓ · incelemeler temiz (1 Important bulgu düzeltildi) · canlı 200.
+- **Tek kaynak:** kodlu 5 turun adımları `lib/tour-defaults.ts`'e çıkarıldı (public render + admin prefill aynı veri; ready-routes çıktısı bayt-bayt aynı, script'le kanıtlı). Tipler: `TourStepCfg.icon?/active?`, `TourCfg.included?`.
+- **Font Awesome altyapısı:** `@fortawesome/free-solid-svg-icons` YALNIZ sunucuda; public'te kullanılan ikon inline SVG gömülür (`fa-icon.tsx` + client `tour-icon.tsx` — client bundle'da FA yok, grep'le kanıtlı). Admin seçici: `/api/admin/icons` (requireAdmin, 1422 ikon ~796KB, lazy+cache) + `lib/icon-search-tr.ts` (~180 Türkçe takma ad: tekne, müze, plaj...).
+- **Tur editörü:** gün-gün plan artık KODLU turlarda da düzenlenebilir (4 dilli çeviri prefill'i); "Pakete dahil" tur başına özelleşir (varsayılan 6 madde); tek `EditableRow` kalıbı: sürükle+↑↓, ikon seç, dil sekmeli başlık/açıklama, gün, aktif/pasif, sil, satır ekle. `saveTour` geriye uyumlu genişledi (`sanitizeCfg` doğrulama).
+- **Önemli düzeltme (cb03889):** kodlu tura dokunmadan Kaydet, çeviri anlık görüntüsünü override olarak YAZMAZ (dirty-tracking; 16 mutasyon yolu tek setter hunisinden — bypass imkânsız, yeniden incelemeyle kanıtlı). Kaydedersen metinler o anki halleriyle donar — editörde not var.
+
+## 🔁 Revizyon 27 — Admin yeniden tasarım FAZ 3: Site Editörü (dal `claude/redesign-conversion`)
 
 > Faz 3 (plan: `docs/superpowers/plans/2026-07-02-admin-redesign-3-site-editoru.md`). `tsc` ✓ · `next build` ✓ · görev başı inceleme temiz · canlı 200.
 - **`lib/editor-map.ts`:** content-map (~470 anahtar) + section-registry (33 bölüm) + asset-slots (76 slot) TEK modelde (`EditorSection`); statik eşleme tablosu; invariant'lar bağımsız script'le kanıtlı (hiç anahtar kaybolmaz, her registry id tam bir kartta).
