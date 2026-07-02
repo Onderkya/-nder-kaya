@@ -13,6 +13,24 @@ import { fas } from "@fortawesome/free-solid-svg-icons";
  */
 export const isFaName = (s: string) => s.startsWith("fa:");
 
+/** Serileştirilebilir FA ikon verisi (client'a güvenle geçer; @fortawesome sızmaz). */
+export type FaIconData = { viewBox: string; paths: string[] };
+
+/**
+ * FA veri paketinden bir ikonu SERİLEŞTİRİLEBİLİR biçime çıkarır (server-only).
+ * `fa:` önekli değilse veya ikon bulunamazsa null döner. Böylece client bileşeni
+ * (`TourIcon`) yalnız düz `{viewBox, paths}` alır; @fortawesome client'a girmez.
+ */
+export function faIconData(name: string): FaIconData | null {
+  if (!isFaName(name)) return null;
+  const key = name.slice(3);
+  const def = (fas as Record<string, { icon?: unknown }>)[key];
+  const icon = def?.icon as [number, number, unknown, unknown, string | string[]] | undefined;
+  if (!icon) return null;
+  const [width, height, , , pathData] = icon;
+  return { viewBox: `0 0 ${width} ${height}`, paths: Array.isArray(pathData) ? pathData : [pathData] };
+}
+
 export function FaIcon({
   name,
   size = 18,

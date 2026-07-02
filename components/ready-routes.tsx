@@ -6,6 +6,19 @@ import { getPublicSettings } from "@/lib/settings";
 import { getAssetMap, pickAsset } from "@/lib/assets";
 import { getTourCfgs, pickL10n, tourOrder } from "@/lib/tours";
 import { DEFAULT_STEPS, DEFAULT_INCLUDED } from "@/lib/tour-defaults";
+import { faIconData } from "@/components/fa-icon";
+import type { TourIconData } from "@/components/tour-icon";
+
+/**
+ * İkon adını client'a güvenle geçen SERİLEŞTİRİLEBİLİR biçime çözer:
+ * `fa:faXxx` → `{fa:{viewBox,paths}}` (server-side veri çıkarımı), aksi hâlde
+ * legacy `{name}` (client RouteIcon çizer). Böylece @fortawesome client'a girmez.
+ * NOT: `fa:` önekli bir ikon bulunamazsa legacy'ye düşer (RouteIcon fallback).
+ */
+const resolveIcon = (name: string): TourIconData => {
+  const fa = faIconData(name);
+  return fa ? { fa } : { name };
+};
 
 /**
  * HAZIR ROTALAR — modern, kompakt paket vitrini. Sade kartlar yan yana (ızgara);
@@ -68,6 +81,13 @@ export async function ReadyRoutes() {
     .map((rt) => {
       const c = cfgOf.get(rt.key);
       if (!c) return rt;
+      // Kodlu turda adım override'ı: cfg.steps varsa adımlar oradan gelir
+      // (active===false atlanır; L10n pickL10n; icon yoksa "landmark"); yoksa DEFAULT_STEPS.
+      const steps = c.steps?.length
+        ? c.steps
+            .filter((s) => s.active !== false)
+            .map((s) => ({ icon: s.icon ?? "landmark", day: s.day, t: pickL10n(s.t, locale), d: pickL10n(s.d, locale) }))
+        : rt.steps;
       return {
         ...rt,
         name: pickL10n(c.name, locale) || rt.name,
@@ -77,6 +97,7 @@ export async function ReadyRoutes() {
         hotel: c.hotel?.trim() || rt.hotel,
         loc: c.loc?.trim() || rt.loc,
         img: c.img?.trim() || rt.img,
+        steps,
       };
     })
     .filter((rt) => cfgOf.get(rt.key)?.active !== false);
@@ -98,7 +119,9 @@ export async function ReadyRoutes() {
       steps: [
         flightStep,
         transferStep,
-        ...(c.steps ?? []).map((s) => ({ icon: "landmark", day: s.day, t: pickL10n(s.t, locale), d: pickL10n(s.d, locale) })),
+        ...(c.steps ?? [])
+          .filter((s) => s.active !== false)
+          .map((s) => ({ icon: s.icon ?? "landmark", day: s.day, t: pickL10n(s.t, locale), d: pickL10n(s.d, locale) })),
       ],
       _custom: c,
     }))
@@ -108,22 +131,33 @@ export async function ReadyRoutes() {
     (a, b) => tourOrder(cfgOf.get(a.key), a.key) - tourOrder(cfgOf.get(b.key), b.key),
   );
 
+  // "Pakete dahil" varsayılan liste — cfg.included yoksa her rota bunu taşır
+  // (bugünkü tek-liste davranışıyla birebir aynı çıktı).
+  const defaultInclusions = DEFAULT_INCLUDED.map((i) => ({ icon: resolveIcon(i.icon), label: r(i.labelKey) }));
+
   const site = await getPublicSettings();
   const waReady = site.whatsappConfigured;
   const routes = allBase.map((rt) => {
     const hk = hkeyOf[rt.key];
+    const c = cfgOf.get(rt.key);
     const cust = (rt as { _custom?: { hotelWhy?: Record<string, string>; hotelNote?: Record<string, string> } })._custom;
+    // Included override: cfg.included varsa oradan (active!==false filtre, pickL10n label);
+    // yoksa varsayılan liste. İkonlar server-side serileştirilebilir biçime çözülür.
+    const inclusions = c?.included?.length
+      ? c.included
+          .filter((inc) => inc.active !== false)
+          .map((inc) => ({ icon: resolveIcon(inc.icon), label: pickL10n(inc.label, locale) }))
+      : defaultInclusions;
     return {
       ...rt,
-      steps: rt.steps.map((s) => ({ ...s, dl: r("dayLabel", { n: s.day }) })),
+      steps: rt.steps.map((s) => ({ icon: resolveIcon(s.icon), day: s.day, t: s.t, d: s.d, dl: r("dayLabel", { n: s.day }) })),
+      inclusions,
       wa: waReady ? `https://wa.me/${site.whatsapp}?text=${encodeURIComponent(r("waMsg", { name: rt.name, days: rt.days, hotel: rt.hotel }))}` : null,
       hotelWhy: hk ? hd(`${hk}_why`) : pickL10n(cust?.hotelWhy, locale),
       hotelNote: hk ? hd(`${hk}_note`) : pickL10n(cust?.hotelNote, locale),
       mapQ: encodeURIComponent(`${rt.hotel} ${rt.loc} Antalya`),
     };
   });
-
-  const inclusions = DEFAULT_INCLUDED.map((i) => ({ icon: i.icon, label: r(i.labelKey) }));
 
   const addons = [
     { key: "boat", label: r("a_boat") },
@@ -186,7 +220,7 @@ export async function ReadyRoutes() {
       </div>
 
       {/* Tam ekran sonsuz marquee — container DIŞINDA, kenara kadar */}
-      <RouteGallery routes={routes} inclusions={inclusions} addons={addons} labels={labels} />
+      <RouteGallery routes={routes} addons={addons} labels={labels} />
     </section>
   );
 }

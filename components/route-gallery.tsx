@@ -3,19 +3,19 @@
 import { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import Image from "next/image";
-import { RouteIcon } from "@/components/route-icons";
+import { TourIcon, type TourIconData } from "@/components/tour-icon";
 import { Pin3D } from "@/components/hotel-cards";
 import { IconArrow, IconCheck } from "@/components/icons";
 import { whatsappLink, siteConfig } from "@/lib/config";
 
-type Step = { icon: string; day: number; t: string; d: string; dl: string };
+type Step = { icon: TourIconData; day: number; t: string; d: string; dl: string };
+type Inclusion = { icon: TourIconData; label: string };
 type Route = {
   key: string; name: string; tag: string; best: string; aud: string;
   days: number; stars: number; hotel: string; loc: string; img: string;
-  steps: Step[]; wa: string | null;
+  steps: Step[]; inclusions: Inclusion[]; wa: string | null;
   hotelWhy: string; hotelNote: string; mapQ: string;
 };
-type Inclusion = { icon: string; label: string };
 type Addon = { key: string; label: string };
 type Labels = {
   daysWord: string; routeLabel: string; bestForLabel: string; allInLabel: string;
@@ -33,7 +33,7 @@ const CORE_STEPS = 3; // uçuş + transfer + giriş her zaman dahil (çıkarıla
  * detay modalı ("içine gir"). Kart sade kalır; gün gün plan + tüm dahiller
  * modalda. Tek baskın aksiyon: "Bu tatili iste".
  */
-export function RouteGallery({ routes, inclusions, addons, labels }: { routes: Route[]; inclusions: Inclusion[]; addons: Addon[]; labels: Labels }) {
+export function RouteGallery({ routes, addons, labels }: { routes: Route[]; addons: Addon[]; labels: Labels }) {
   const [openKey, setOpenKey] = useState<string | null>(null);
   const [mounted, setMounted] = useState(false);
   const [excluded, setExcluded] = useState<Set<number>>(new Set());
@@ -187,9 +187,9 @@ export function RouteGallery({ routes, inclusions, addons, labels }: { routes: R
                   </div>
                   <p className="mt-3.5 flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-wide text-white/85"><IconCheck className="h-3 w-3" /> {labels.allInLabel}</p>
                   <div className="mt-2 flex flex-wrap gap-1.5">
-                    {inclusions.map((inc) => (
-                      <span key={inc.icon} title={inc.label} aria-label={inc.label} className="grid h-7 w-7 place-items-center rounded-lg text-white" style={{ backgroundColor: "rgb(255 255 255 / 0.16)" }}>
-                        <RouteIcon name={inc.icon} className="h-[14px] w-[14px]" />
+                    {rt.inclusions.map((inc, ii) => (
+                      <span key={ii} title={inc.label} aria-label={inc.label} className="grid h-7 w-7 place-items-center rounded-lg text-white" style={{ backgroundColor: "rgb(255 255 255 / 0.16)" }}>
+                        <TourIcon icon={inc.icon} className="h-[14px] w-[14px]" />
                       </span>
                     ))}
                   </div>
@@ -268,10 +268,10 @@ export function RouteGallery({ routes, inclusions, addons, labels }: { routes: R
                   {labels.allInLabel}
                 </p>
                 <ul className="mt-3.5 grid grid-cols-1 gap-x-4 gap-y-2.5 sm:grid-cols-2">
-                  {inclusions.map((inc) => (
-                    <li key={inc.icon} className="flex items-center gap-2.5">
+                  {active.inclusions.map((inc, ii) => (
+                    <li key={ii} className="flex items-center gap-2.5">
                       <span className="grid h-7 w-7 shrink-0 place-items-center rounded-lg" style={{ backgroundColor: "rgb(var(--primary) / 0.1)", color: "rgb(var(--primary))" }}>
-                        <RouteIcon name={inc.icon} className="h-[15px] w-[15px]" />
+                        <TourIcon icon={inc.icon} className="h-[15px] w-[15px]" />
                       </span>
                       <span className="text-[13.5px] font-medium leading-tight" style={{ color: "rgb(var(--foreground))" }}>{inc.label}</span>
                     </li>
@@ -295,7 +295,7 @@ export function RouteGallery({ routes, inclusions, addons, labels }: { routes: R
                     <li key={si} className={`flex gap-4 transition-opacity ${off ? "opacity-40" : ""}`}>
                       <div className="flex flex-col items-center">
                         <span className="grid h-9 w-9 shrink-0 place-items-center rounded-full text-white shadow-md" style={{ backgroundImage: "linear-gradient(135deg, rgb(var(--lagoon)), rgb(var(--primary)))" }}>
-                          <RouteIcon name={s.icon} className="h-[18px] w-[18px]" />
+                          <TourIcon icon={s.icon} className="h-[18px] w-[18px]" />
                         </span>
                         {!last && <span className="my-1 w-0.5 flex-1 rounded-full" style={{ backgroundColor: "rgb(var(--border))" }} />}
                       </div>
