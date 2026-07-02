@@ -4,7 +4,14 @@
 > ↩️ **Geri dönüş (rollback):** eski sürüm dokunulmadı → dal `claude/consulting-site-plan-6k4lix` + etiket `safe/before-redesign-rev9`. Beğenilmezse sunucuda o dala `git reset --hard` + rebuild.
 > Görsel/medya kaynakları: `public/images/CREDITS.txt` (CC / Mixkit / CC0) · oteller: kullanıcının verdiği resmi fotoğraflar (`public/images/hotels/`).
 
-## 🔁 Revizyon 31 — FAZ 7: dinamik medya galerileri (GÜNCEL · dal `claude/redesign-conversion`)
+## 🔁 Revizyon 32 — FAZ 8: tekil medyalar gizlenebilir (GÜNCEL · dal `claude/redesign-conversion`)
+
+> Kullanıcı: "hero medyalarında da kaldırma/pasif olsun." Tekil pozisyon silinemez ama medya artık GİZLENEBİLİR. `tsc` ✓ · `next build` ✓ · incelemeler temiz.
+- **Veri:** `Setting` `assetoff:<slotId>`="1" (`sec:` kalıbı; URL override'dan BAĞIMSIZ → gizle/göster arasında özel URL kaybolmaz). `lib/assets.ts`: `getHiddenAssetSet` + `pickAssetVisible(map, hidden, slot, def): string|null`. Aksiyon `setAssetHidden` (requireAdmin+audit+revalidate).
+- **Site Editörü:** her tekil medya kartında Görünür/Gizli switch (optimistic); gizliyken soluk + "Gizli" rozeti; Değiştir/Sıfırla aynen.
+- **Public:** 8 dosyada **78 çağrı noktası** görünürlük-duyarlı (denetçi tam sayımla doğruladı): bağımsız medya → yalnız kendi öğesi atlanır; video+poster → poster'a düşer (ikisi gizliyse boş koyu hero, çökmez); arka plan → yalnız görsel katmanı atlanır, degrade kalır; Faz 7 galeri VARSAYILAN listelerindeki gizli slot öğesi filtrelenir (override listeleri etkilenmez). 3 bileşene opsiyonel prop (CinematicHero.image?, StudyJourney.img?, RouteGallery.img?) — boş sette no-op. **Hiçbir slot gizli değilken çıktı bayt-eşdeğer (kanıtlı).**
+
+## 🔁 Revizyon 31 — FAZ 7: dinamik medya galerileri (dal `claude/redesign-conversion`)
 
 > Kullanıcı isteği (spec Ek 1): Site Editörü'nde medyalar yalnız değiştirilebilir değil, EKLENEBİLİR/ÇIKARILABİLİR/AKTİF-PASİF/SIRALANABİLİR olmalı. `tsc` ✓ · `next build` ✓ · 3 görev, incelemeler temiz.
 - **İki sınıf medya:** tekil slotlar (hero vb.) Değiştir/Sıfırla'da kaldı; **galeri bölümleri** dinamik: `home.zipper` (Fermuar, 9 öğe) + `antalya.regions` (Antalya incileri, 10 öğe). Eğitim yolculuğu/ders adımları bilinçli galeri-dışı (medyaları tekil slotlardan değişiyor).
