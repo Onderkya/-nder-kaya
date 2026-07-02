@@ -4,7 +4,15 @@
 > ↩️ **Geri dönüş (rollback):** eski sürüm dokunulmadı → dal `claude/consulting-site-plan-6k4lix` + etiket `safe/before-redesign-rev9`. Beğenilmezse sunucuda o dala `git reset --hard` + rebuild.
 > Görsel/medya kaynakları: `public/images/CREDITS.txt` (CC / Mixkit / CC0) · oteller: kullanıcının verdiği resmi fotoğraflar (`public/images/hotels/`).
 
-## 🔁 Revizyon 30 — Admin yeniden tasarım FAZ 6: kalan ekranlar + PROJE TAMAMLANDI (GÜNCEL · dal `claude/redesign-conversion`)
+## 🔁 Revizyon 31 — FAZ 7: dinamik medya galerileri (GÜNCEL · dal `claude/redesign-conversion`)
+
+> Kullanıcı isteği (spec Ek 1): Site Editörü'nde medyalar yalnız değiştirilebilir değil, EKLENEBİLİR/ÇIKARILABİLİR/AKTİF-PASİF/SIRALANABİLİR olmalı. `tsc` ✓ · `next build` ✓ · 3 görev, incelemeler temiz.
+- **İki sınıf medya:** tekil slotlar (hero vb.) Değiştir/Sıfırla'da kaldı; **galeri bölümleri** dinamik: `home.zipper` (Fermuar, 9 öğe) + `antalya.regions` (Antalya incileri, 10 öğe). Eğitim yolculuğu/ders adımları bilinçli galeri-dışı (medyaları tekil slotlardan değişiyor).
+- **Veri:** `Setting` `gallery:<bölümId>` JSON (`lib/gallery.ts` + `gallery-defaults.ts` + `gallery-actions.ts`, tours kalıbı). **Öncelik: galeri override > asset-slot override > kod varsayılanı** (denetçi hakemliğiyle: tek byte-güvenli sıra). Kayıt yoksa site birebir aynı (bağımsız script'le kanıtlı).
+- **Site Editörü:** galeri bölümünün kartında satır yöneticisi: önizleme + VİDEO/GÖRSEL rozeti + sürükle/↑↓ + aktif switch + Değiştir (yükle/kütüphane/URL) + Sil + "Medya ekle" + dil sekmeli başlık/açıklama + bağımsız "Galeriyi kaydet" (tek-form sözleşmesi bozulmadı: inputlarda name yok, FormData'ya sızmaz). **Dirty-tracking:** dokunulmadan kaydetme no-op; "Varsayılana dön" yalnız override varken. Donma notu + asset-slot asimetri notu editörde.
+- Minor (ertelendi): boş src'li satır kayıtta sessiz düşer (uyarı eklenebilir), satır key={i}.
+
+## 🔁 Revizyon 30 — Admin yeniden tasarım FAZ 6: kalan ekranlar + PROJE TAMAMLANDI (dal `claude/redesign-conversion`)
 
 > Faz 6 (plan: `docs/superpowers/plans/2026-07-02-admin-redesign-6-kalan-ekranlar.md`) + tüm-proje final incelemesi. 6 fazlık admin yeniden tasarımı (Rev 25-30, spec: `docs/superpowers/specs/2026-07-02-admin-redesign-design.md`) **BİTTİ**. `tsc` ✓ · `next build` ✓ · final inceleme: 0 kritik/önemli, tüm minor'lar ertelenebilir.
 - **Dashboard:** metrikler → AI kartı → "Bugün ne yapmalıyım?" (satır satır Git →) → son hareketler; hızlı işlem kutucukları kalktı. **Giriş:** `#0c2f39` gradyan gitti, nötr zemin + beyaz kart (submit akışı bayt-eşdeğer).
