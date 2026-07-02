@@ -156,6 +156,22 @@ export default async function HomePage({
 
   // Sıraya bağlanan registry bölümleri — koddaki mevcut sırayla, JSX içeriği aynen.
   const sectionBlocks: [string, ReactNode][] = [
+    ["home.diffStrip", (
+      /* Fark şeridi — kimlik cümlesi + 3 mikro-kanıt (hero'ya dokunmadan, hemen altına) */
+      <section className="border-b" style={{ borderColor: "rgb(var(--border))", backgroundColor: "rgb(var(--card))" }}>
+        <div className="container-wide flex flex-col items-center justify-between gap-3 py-5 text-center sm:flex-row sm:text-left">
+          <p className="font-display text-[17px] font-semibold leading-snug" style={{ color: "rgb(var(--foreground))" }}>{t("diffLine")}</p>
+          <ul className="flex flex-wrap items-center justify-center gap-x-5 gap-y-2 text-[13px] font-medium" style={{ color: "rgb(var(--muted-foreground))" }}>
+            {[t("heroProof2"), trust("p1"), t("diffHuman")].map((p) => (
+              <li key={p} className="inline-flex items-center gap-2">
+                <span className="grid h-5 w-5 shrink-0 place-items-center rounded-full text-white" style={{ backgroundColor: "rgb(var(--primary))" }}><IconCheck className="h-3 w-3" /></span>
+                {p}
+              </li>
+            ))}
+          </ul>
+        </div>
+      </section>
+    )],
     ["home.readyRoutes", (
       <ReadyRoutes />
     )],
