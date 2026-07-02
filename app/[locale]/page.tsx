@@ -21,6 +21,7 @@ import { getPublicSettings } from "@/lib/settings";
 import { getManagedPage } from "@/lib/cms";
 import { BlockRenderer } from "@/components/cms/block-renderer";
 import { getAssetMap, pickAsset } from "@/lib/assets";
+import { resolveGallery } from "@/lib/gallery";
 import { getHiddenSections, sectionVisible, getSectionOrders, applySectionOrder } from "@/lib/sections";
 
 export default async function HomePage({
@@ -131,6 +132,20 @@ export default async function HomePage({
     msgNote: plan("msgNote"),
   };
 
+  // Fermuar deneyimi (home.zipper): admin override varsa dinamik liste, yoksa
+  // koddaki satır içi varsayılan (pickAsset ile — bugünkü çıktı birebir).
+  const zipperItems = await resolveGallery("home.zipper", locale, [
+    { video: pickAsset(A, "home.zipper.scuba.video", "/media/act-scuba2.mp4"), img: pickAsset(A, "home.zipper.scuba.image", "/images/kaputas-deep.jpg"), name: t("actScuba"), sub: "Akdeniz'in altı" },
+    { video: pickAsset(A, "home.zipper.kaputas.video", "/media/kaputas-drone.mp4"), img: pickAsset(A, "home.zipper.kaputas.image", "/images/kaputas.jpg"), name: "Kaputaş Plajı", sub: "Kaş" },
+    { video: pickAsset(A, "home.zipper.kas.video", "/media/vid-kas.mp4"), img: pickAsset(A, "home.zipper.kas.image", "/images/sunset.jpg"), name: "Kaş", sub: "Gün batımı" },
+    { video: pickAsset(A, "home.zipper.suluada.video", "/media/vid-suluada.mp4"), img: pickAsset(A, "home.zipper.suluada.image", "/images/suluada.jpg"), name: "Suluada", sub: "Adrasan" },
+    { video: pickAsset(A, "home.zipper.olympos.video", "/media/vid-olympos.mp4"), img: pickAsset(A, "home.zipper.olympos.image", "/images/olympos.jpg"), name: "Olympos", sub: "Çıralı" },
+    { video: pickAsset(A, "home.zipper.kemer.video", "/media/vid-kemer.mp4"), img: pickAsset(A, "home.zipper.kemer.image", "/images/kemer.jpg"), name: "Kemer", sub: "Marina" },
+    { video: pickAsset(A, "home.zipper.alanyaCastle.video", "/media/vid-alanya-castle.mp4"), img: pickAsset(A, "home.zipper.alanyaCastle.image", "/images/alanya.jpg"), name: "Alanya Kalesi", sub: "Kızıl Kule" },
+    { video: pickAsset(A, "home.zipper.kleopatra.video", "/media/vid-alanya-kleopatra.mp4"), img: pickAsset(A, "home.zipper.kleopatra.image", "/images/alanya.jpg"), name: "Kleopatra", sub: "Alanya sahili" },
+    { video: pickAsset(A, "home.zipper.legends.video", "/media/lol-aqua.mp4"), img: pickAsset(A, "home.zipper.legends.image", "/images/coaster.jpg"), name: "Land of Legends", sub: "Aqua park · Belek" },
+  ]);
+
   // Sıraya bağlanan registry bölümleri — koddaki mevcut sırayla, JSX içeriği aynen.
   const sectionBlocks: [string, ReactNode][] = [
     ["home.readyRoutes", (
@@ -170,17 +185,7 @@ export default async function HomePage({
       <ZipperReveal
         eyebrow={t("actTitle")}
         title={x("ant_introTitle")}
-        items={[
-          { video: pickAsset(A, "home.zipper.scuba.video", "/media/act-scuba2.mp4"), img: pickAsset(A, "home.zipper.scuba.image", "/images/kaputas-deep.jpg"), name: t("actScuba"), sub: "Akdeniz'in altı" },
-          { video: pickAsset(A, "home.zipper.kaputas.video", "/media/kaputas-drone.mp4"), img: pickAsset(A, "home.zipper.kaputas.image", "/images/kaputas.jpg"), name: "Kaputaş Plajı", sub: "Kaş" },
-          { video: pickAsset(A, "home.zipper.kas.video", "/media/vid-kas.mp4"), img: pickAsset(A, "home.zipper.kas.image", "/images/sunset.jpg"), name: "Kaş", sub: "Gün batımı" },
-          { video: pickAsset(A, "home.zipper.suluada.video", "/media/vid-suluada.mp4"), img: pickAsset(A, "home.zipper.suluada.image", "/images/suluada.jpg"), name: "Suluada", sub: "Adrasan" },
-          { video: pickAsset(A, "home.zipper.olympos.video", "/media/vid-olympos.mp4"), img: pickAsset(A, "home.zipper.olympos.image", "/images/olympos.jpg"), name: "Olympos", sub: "Çıralı" },
-          { video: pickAsset(A, "home.zipper.kemer.video", "/media/vid-kemer.mp4"), img: pickAsset(A, "home.zipper.kemer.image", "/images/kemer.jpg"), name: "Kemer", sub: "Marina" },
-          { video: pickAsset(A, "home.zipper.alanyaCastle.video", "/media/vid-alanya-castle.mp4"), img: pickAsset(A, "home.zipper.alanyaCastle.image", "/images/alanya.jpg"), name: "Alanya Kalesi", sub: "Kızıl Kule" },
-          { video: pickAsset(A, "home.zipper.kleopatra.video", "/media/vid-alanya-kleopatra.mp4"), img: pickAsset(A, "home.zipper.kleopatra.image", "/images/alanya.jpg"), name: "Kleopatra", sub: "Alanya sahili" },
-          { video: pickAsset(A, "home.zipper.legends.video", "/media/lol-aqua.mp4"), img: pickAsset(A, "home.zipper.legends.image", "/images/coaster.jpg"), name: "Land of Legends", sub: "Aqua park · Belek" },
-        ]}
+        items={zipperItems}
       />
     )],
     ["home.why", (

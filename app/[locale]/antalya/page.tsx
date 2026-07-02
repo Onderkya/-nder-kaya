@@ -12,6 +12,7 @@ import { IconArrow } from "@/components/icons";
 import { getManagedPage } from "@/lib/cms";
 import { BlockRenderer } from "@/components/cms/block-renderer";
 import { getAssetMap, pickAsset } from "@/lib/assets";
+import { resolveGallery } from "@/lib/gallery";
 import { getHiddenSections, sectionVisible, getSectionOrders, applySectionOrder } from "@/lib/sections";
 
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
@@ -32,6 +33,21 @@ export default async function AntalyaPage({ params }: { params: Promise<{ locale
   const orders = await getSectionOrders();
 
   const features = [t("feature1"), t("feature2"), t("feature3"), t("feature4")];
+
+  // Bölgeler (antalya.regions): admin override varsa dinamik liste, yoksa koddaki
+  // satır içi varsayılan (pickAsset ile — bugünkü çıktı birebir).
+  const regionPlaces = await resolveGallery("antalya.regions", locale, [
+    { img: pickAsset(A, "antalya.place.kaputas.image", "/images/kaputas.jpg"), video: pickAsset(A, "antalya.place.kaputas.video", "/media/kaputas-drone.mp4"), name: "Kaputaş", sub: "Kaş" },
+    { img: pickAsset(A, "antalya.place.suluada.image", "/images/suluada.jpg"), video: pickAsset(A, "antalya.place.suluada.video", "/media/vid-suluada.mp4"), name: "Suluada", sub: "Adrasan" },
+    { img: pickAsset(A, "antalya.place.kemer.image", "/images/kemer.jpg"), video: pickAsset(A, "antalya.place.kemer.video", "/media/vid-kemer.mp4"), name: "Kemer", sub: "Marina" },
+    { img: pickAsset(A, "antalya.place.olympos.image", "/images/olympos.jpg"), video: pickAsset(A, "antalya.place.olympos.video", "/media/vid-olympos.mp4"), name: "Olympos", sub: "Çıralı" },
+    { img: pickAsset(A, "antalya.place.alanya.image", "/images/alanya.jpg"), video: pickAsset(A, "antalya.place.alanya.video", "/media/vid-alanya-castle.mp4"), name: "Alanya", sub: "Kızıl Kule" },
+    { img: pickAsset(A, "antalya.place.beachpark.image", "/images/beachpark.jpg"), name: "Beach Park", sub: "Konyaaltı" },
+    { img: pickAsset(A, "antalya.place.lara.image", "/images/lara.jpg"), name: "Lara", sub: "Falezler" },
+    { img: pickAsset(A, "antalya.place.kaleici.image", "/images/kaleici-harbor.jpg"), video: pickAsset(A, "antalya.place.kaleici.video", "/media/vid-kaleici.mp4"), name: "Kaleiçi", sub: "Yat Limanı" },
+    { img: pickAsset(A, "antalya.place.side.image", "/images/side.jpg"), name: "Side", sub: "Antik kent" },
+    { img: pickAsset(A, "antalya.place.duden.image", "/images/duden.jpg"), video: pickAsset(A, "antalya.place.duden.video", "/media/vid-duden.mp4"), name: "Düden", sub: "Şelale" },
+  ]);
 
   // Sıraya bağlanan registry bölümleri — koddaki mevcut sırayla, JSX içeriği aynen.
   const sectionBlocks: [string, ReactNode][] = [
@@ -72,18 +88,7 @@ export default async function AntalyaPage({ params }: { params: Promise<{ locale
       <HorizontalPlaces
         eyebrow={x("ant_regionsEyebrow")}
         title={x("ant_regionsTitle")}
-        places={[
-          { img: pickAsset(A, "antalya.place.kaputas.image", "/images/kaputas.jpg"), video: pickAsset(A, "antalya.place.kaputas.video", "/media/kaputas-drone.mp4"), name: "Kaputaş", sub: "Kaş" },
-          { img: pickAsset(A, "antalya.place.suluada.image", "/images/suluada.jpg"), video: pickAsset(A, "antalya.place.suluada.video", "/media/vid-suluada.mp4"), name: "Suluada", sub: "Adrasan" },
-          { img: pickAsset(A, "antalya.place.kemer.image", "/images/kemer.jpg"), video: pickAsset(A, "antalya.place.kemer.video", "/media/vid-kemer.mp4"), name: "Kemer", sub: "Marina" },
-          { img: pickAsset(A, "antalya.place.olympos.image", "/images/olympos.jpg"), video: pickAsset(A, "antalya.place.olympos.video", "/media/vid-olympos.mp4"), name: "Olympos", sub: "Çıralı" },
-          { img: pickAsset(A, "antalya.place.alanya.image", "/images/alanya.jpg"), video: pickAsset(A, "antalya.place.alanya.video", "/media/vid-alanya-castle.mp4"), name: "Alanya", sub: "Kızıl Kule" },
-          { img: pickAsset(A, "antalya.place.beachpark.image", "/images/beachpark.jpg"), name: "Beach Park", sub: "Konyaaltı" },
-          { img: pickAsset(A, "antalya.place.lara.image", "/images/lara.jpg"), name: "Lara", sub: "Falezler" },
-          { img: pickAsset(A, "antalya.place.kaleici.image", "/images/kaleici-harbor.jpg"), video: pickAsset(A, "antalya.place.kaleici.video", "/media/vid-kaleici.mp4"), name: "Kaleiçi", sub: "Yat Limanı" },
-          { img: pickAsset(A, "antalya.place.side.image", "/images/side.jpg"), name: "Side", sub: "Antik kent" },
-          { img: pickAsset(A, "antalya.place.duden.image", "/images/duden.jpg"), video: pickAsset(A, "antalya.place.duden.video", "/media/vid-duden.mp4"), name: "Düden", sub: "Şelale" },
-        ]}
+        places={regionPlaces}
       />
     )],
   ];

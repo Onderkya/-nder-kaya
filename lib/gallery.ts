@@ -1,6 +1,6 @@
 import { cache } from "react";
 import { prisma } from "./db";
-import type { L10n } from "./tours";
+import { pickL10n, type L10n } from "./tours";
 
 /**
  * DİNAMİK MEDYA GALERİSİ. Sitedeki "medya + başlık" listeleri (ör. anasayfa
@@ -50,3 +50,29 @@ export const getGalleries = cache(async (): Promise<Record<string, GalleryItemCf
     return {};
   }
 });
+
+/** Render tarafının ortak öğe şekli (fermuar + Antalya incileri). */
+export type GalleryRenderItem = { img: string; name: string; sub: string; video?: string };
+
+/**
+ * Bir bölümün render listesini çözer: admin override'ı VARSA (uzunluk>0) onu
+ * kullanır (`active !== false` filtre; medya `poster ?? src`, video type "video"
+ * ise `src`; başlık/alt-başlık `pickL10n`), YOKSA çağıranın verdiği `fallback`
+ * (koddaki satır içi varsayılan — bugünkü çıktı birebir) döner.
+ */
+export async function resolveGallery(
+  sectionId: string,
+  locale: string,
+  fallback: GalleryRenderItem[],
+): Promise<GalleryRenderItem[]> {
+  const g = (await getGalleries())[sectionId];
+  if (!g?.length) return fallback;
+  const items = g.filter((it) => it.active !== false);
+  if (!items.length) return fallback;
+  return items.map((it) => ({
+    img: it.poster ?? it.src,
+    video: it.type === "video" ? it.src : undefined,
+    name: pickL10n(it.title, locale),
+    sub: pickL10n(it.desc, locale),
+  }));
+}
