@@ -4,7 +4,13 @@
 > ↩️ **Geri dönüş (rollback):** eski sürüm dokunulmadı → dal `claude/consulting-site-plan-6k4lix` + etiket `safe/before-redesign-rev9`. Beğenilmezse sunucuda o dala `git reset --hard` + rebuild.
 > Görsel/medya kaynakları: `public/images/CREDITS.txt` (CC / Mixkit / CC0) · oteller: kullanıcının verdiği resmi fotoğraflar (`public/images/hotels/`).
 
-## 🔁 Revizyon 28 — Admin yeniden tasarım FAZ 4: tur editörü — her şey düzenlenebilir (GÜNCEL · dal `claude/redesign-conversion`)
+## 🔁 Revizyon 29 — Admin yeniden tasarım FAZ 5: AI yan paneli (GÜNCEL · dal `claude/redesign-conversion`)
+
+> Faz 5 (plan: `docs/superpowers/plans/2026-07-02-admin-redesign-5-ai-panel.md`). `tsc` ✓ · `next build` ✓ · incelemeler temiz · canlı 200.
+- **AI yan paneli:** sağ-alt balon (FAB) KALKTI → üst bardaki "AI Asistan" butonu her sayfada sağdan ~400px panel açar (mobilde alttan sheet + mobil üst barda buton). Sohbet mantığı `components/admin/ai-chat-core.tsx`'e taşındı — **`/admin/ai` tam sayfa da aynı çekirdeği kullanır**; API rotalarına dokunulmadı, onaylı işlem kartı + anahtarsız rehber birebir. Panel layout'ta mount → **sohbet sayfa geçişinde kaybolmaz**; sayfaya duyarlı öneri çipleri (satış/tur/talep).
+- **Dashboard AI kartı:** metrik bandının altında; yazıp gönderince yan panel açılıp soruyu iletir (`useAiPanel().openWith`); anahtar yoksa Ayarlar'a yönlendirir.
+
+## 🔁 Revizyon 28 — Admin yeniden tasarım FAZ 4: tur editörü — her şey düzenlenebilir (dal `claude/redesign-conversion`)
 
 > Faz 4 (plan: `docs/superpowers/plans/2026-07-02-admin-redesign-4-tur-editoru.md`). `tsc` ✓ · `next build` ✓ · incelemeler temiz (1 Important bulgu düzeltildi) · canlı 200.
 - **Tek kaynak:** kodlu 5 turun adımları `lib/tour-defaults.ts`'e çıkarıldı (public render + admin prefill aynı veri; ready-routes çıktısı bayt-bayt aynı, script'le kanıtlı). Tipler: `TourStepCfg.icon?/active?`, `TourCfg.included?`.
