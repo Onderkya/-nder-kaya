@@ -127,6 +127,8 @@ export const ASSET_SLOTS: AssetSlot[] = [
   { id: "education.step3.image", label: "Eğitim · Adım 03 görseli (Kaleiçi iç)", type: "image", page: "education", def: "/images/kaleici-inside.jpg" },
   { id: "education.step3.video", label: "Eğitim · Adım 03 videosu (sokak)", type: "video", page: "education", def: "/media/edu-street.mp4" },
   { id: "education.step4.image", label: "Eğitim · Adım 04 görseli (yurt)", type: "image", page: "education", def: "/images/dorm.jpg" },
+  { id: "education.step5.image", label: "Eğitim · Adım 05 görseli (kabul mektubu)", type: "image", page: "education", def: "/images/turkish-flag-sky.jpg" },
+  { id: "education.step6.image", label: "Eğitim · Adım 06 görseli (mezuniyet & yeni hayat)", type: "image", page: "education", def: "/images/kaleici-harbor.jpg" },
 
   // ============ ABOUT (app/[locale]/about/page.tsx) ============
   { id: "about.hero.image", label: "Hakkımızda · Hero poster görseli (Kaleiçi liman)", type: "image", page: "about", def: "/images/kaleici-harbor.jpg" },

@@ -59,7 +59,7 @@ export default async function EducationPage({ params }: { params: Promise<{ loca
   // Sıraya bağlanan registry bölümleri — koddaki mevcut sırayla, JSX içeriği aynen.
   const sectionBlocks: [string, ReactNode][] = [
     ["education.journey", (
-      /* Immersive iniş: 4 adım */
+      /* Immersive iniş: 6 adım */
       <StudyJourney
         eyebrow={x("edu_journeyEyebrow")}
         weDoLabel={x("edu_weDo")}

@@ -75,17 +75,23 @@ const CARD_MAP: Record<string, CardSpec[]> = {
       slots: ["home.hero.aerialVideo", "home.hero.poster", "home.diveFish.video"],
     },
     {
+      key: "home.diffStrip",
+      registryId: "home.diffStrip",
+      title: "Fark şeridi (hero altı kimlik cümlesi)",
+      content: [1], // Fark şeridi (hero altı kimlik cümlesi)
+    },
+    {
       key: "home.readyRoutes",
       registryId: "home.readyRoutes",
       title: "Hazır Rotalar (paket vitrini)",
-      content: [1], // Hizmetler / nasıl yardımcı oluyoruz (rota vitrini girişi)
+      content: [2], // Hizmetler / nasıl yardımcı oluyoruz (rota vitrini girişi)
       slots: ["route.r1.image", "route.r2.image", "route.r3.image", "route.r4.image", "route.r5.image"],
     },
     {
       key: "home.zipper",
       registryId: "home.zipper",
       title: "Fermuar deneyimi (Antalya aktiviteleri)",
-      content: [2, 3], // aktiviteler + Land of Legends
+      content: [3, 4], // aktiviteler + Land of Legends
       slots: [
         "home.zipper.scuba.video", "home.zipper.scuba.image",
         "home.zipper.kaputas.video", "home.zipper.kaputas.image",
@@ -102,7 +108,7 @@ const CARD_MAP: Record<string, CardSpec[]> = {
       key: "home.hotels",
       registryId: "home.hotels",
       title: "Oteller",
-      content: [4],
+      content: [5],
       slots: [
         "hotel.cullinan.image", "hotel.maxxbelek.image", "hotel.regnum.image", "hotel.maxxkemer.image",
         "hotel.ngphaselis.image", "hotel.larabarut.image", "hotel.bayou.image", "hotel.legends.image",
@@ -112,46 +118,46 @@ const CARD_MAP: Record<string, CardSpec[]> = {
       key: "home.quickPlan",
       registryId: "home.quickPlan",
       title: "Özel Plan formu",
-      content: [6], // Sana özel plan formu (son CTA alanı)
+      content: [7], // Sana özel plan formu (son CTA alanı)
       slots: ["home.finalCta.image"],
     },
     {
       key: "home.why",
       registryId: "home.why",
       title: "Neden Antalya Bridge",
-      content: [5],
+      content: [6],
       slots: ["home.whyBand.image"],
     },
     {
       key: "home.lessons",
       registryId: "home.lessons",
       title: "Türkçe Dersleri + PetLingo",
-      content: [7],
+      content: [8],
     },
     {
       key: "home.education",
       registryId: "home.education",
       title: "Türkiye'de Eğitim",
-      content: [8],
+      content: [9],
       slots: ["home.study.video", "home.study.poster"],
     },
     {
       key: "home.guestVoices",
       registryId: "home.guestVoices",
       title: "Misafir Sözleri",
-      content: [9],
+      content: [10],
     },
     {
       key: "home.payment",
       registryId: "home.payment",
       title: "Ödeme & Güven",
-      content: [10],
+      content: [11],
     },
     {
       key: "home.miniFaq",
       registryId: "home.miniFaq",
       title: "Mini SSS",
-      content: [11],
+      content: [12],
     },
   ],
 
@@ -224,7 +230,7 @@ const CARD_MAP: Record<string, CardSpec[]> = {
       key: "lessons.conversionBar",
       registryId: "lessons.conversionBar",
       title: "Kontenjan şeridi (hero altı)",
-      content: [4], // Ders dönüşüm bölümü (rezervasyon çağrısı)
+      content: [5], // Ders dönüşüm bölümü (rezervasyon çağrısı)
     },
     {
       key: "lessons.process",
@@ -241,6 +247,12 @@ const CARD_MAP: Record<string, CardSpec[]> = {
       slots: ["lessons.teacher.video"],
     },
     {
+      key: "lessons.levelPath",
+      registryId: "lessons.levelPath",
+      title: "0'dan C2'ye seviye yolu",
+      content: [3], // 0'dan C2'ye seviye yolu
+    },
+    {
       key: "lessons.lived",
       registryId: "lessons.lived",
       title: "Bunu biz de yaşadık (güven bandı)",
@@ -250,13 +262,13 @@ const CARD_MAP: Record<string, CardSpec[]> = {
       key: "lessons.petlingo",
       registryId: "lessons.petlingo",
       title: "PetLingo",
-      content: [5, 6], // PetLingo uygulaması + Türkçe kelime yapbozu (oyun)
+      content: [6, 7], // PetLingo uygulaması + Türkçe kelime yapbozu (oyun)
     },
     {
       key: "lessons.durations",
       registryId: "lessons.durations",
       title: "Ders süreleri",
-      content: [3],
+      content: [4],
     },
     {
       key: "lessons.guestVoices",
@@ -268,7 +280,7 @@ const CARD_MAP: Record<string, CardSpec[]> = {
       key: "lessons.booking",
       registryId: "lessons.booking",
       title: "Randevu",
-      content: [7], // Randevu / rezervasyon formu
+      content: [8], // Randevu / rezervasyon formu
     },
   ],
 
@@ -284,12 +296,13 @@ const CARD_MAP: Record<string, CardSpec[]> = {
     {
       key: "education.journey",
       registryId: "education.journey",
-      title: "Yolculuk (4 adım)",
+      title: "Yolculuk (6 adım)",
       content: [2, 3], // Eğitim yolculuğu adımlar + Kampüste yürü (360°)
       slots: [
         "education.campus.image", "education.campus.imageFallback",
         "education.step1.video", "education.step2.image", "education.step2.video",
         "education.step3.image", "education.step3.video", "education.step4.image",
+        "education.step5.image", "education.step6.image",
       ],
     },
     {
