@@ -1,5 +1,5 @@
 import { minorToDecimal } from "@/lib/money";
-import { Card, Field } from "@/components/admin/ui";
+import { Section, Field } from "@/components/admin/ui";
 import { Icon } from "@/components/admin/icons";
 
 type SaleLike = {
@@ -44,17 +44,6 @@ const STATUSES = [
   { v: "PARTIAL", l: "Kısmi" },
 ];
 
-function GroupTitle({ icon, children }: { icon: Parameters<typeof Icon>[0]["name"]; children: React.ReactNode }) {
-  return (
-    <div className="mb-4 flex items-center gap-2.5">
-      <span className="grid h-8 w-8 place-items-center rounded-lg" style={{ background: "rgb(var(--muted))", color: "rgb(var(--primary))" }}>
-        <Icon name={icon} size={16} />
-      </span>
-      <h3 className="font-semibold text-[14.5px]" style={{ color: "rgb(var(--foreground))" }}>{children}</h3>
-    </div>
-  );
-}
-
 export function SaleForm({
   action,
   sale,
@@ -79,8 +68,7 @@ export function SaleForm({
       {s.id ? <input type="hidden" name="id" value={s.id} /> : null}
 
       {/* Müşteri */}
-      <Card>
-        <GroupTitle icon="users">Müşteri</GroupTitle>
+      <Section title="Müşteri" icon="users">
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           <Field label="Ad Soyad *" htmlFor="customerName">
             <input id="customerName" name="customerName" required defaultValue={s.customerName ?? ""} className="adm-input" />
@@ -101,11 +89,10 @@ export function SaleForm({
             <input id="soldAt" name="soldAt" type="date" defaultValue={dateVal} className="adm-input" />
           </Field>
         </div>
-      </Card>
+      </Section>
 
       {/* Ürün / tur */}
-      <Card>
-        <GroupTitle icon="wallet">Ürün / tur</GroupTitle>
+      <Section title="Ürün / tur" icon="wallet">
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           <Field label="Hizmet" htmlFor="service">
             <select id="service" name="service" defaultValue={s.service ?? ""} className="adm-select">
@@ -125,11 +112,10 @@ export function SaleForm({
             </select>
           </Field>
         </div>
-      </Card>
+      </Section>
 
       {/* Tutar & indirim */}
-      <Card>
-        <GroupTitle icon="tag">Tutar &amp; indirim</GroupTitle>
+      <Section title="Tutar & indirim" icon="tag">
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           <Field label="İndirim kodu (varsa)" htmlFor="promoCode">
             <select id="promoCode" name="promoCode" defaultValue={s.promoCode ?? ""} className="adm-select">
@@ -142,11 +128,10 @@ export function SaleForm({
           </Field>
         </div>
         <p className="adm-help mt-3">Net tutar otomatik hesaplanır: liste fiyatı − indirim.</p>
-      </Card>
+      </Section>
 
       {/* Ödeme */}
-      <Card>
-        <GroupTitle icon="card">Ödeme</GroupTitle>
+      <Section title="Ödeme" icon="card">
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           <Field label="Ödeme yöntemi" htmlFor="paymentType">
             <select id="paymentType" name="paymentType" defaultValue={s.paymentType ?? ""} className="adm-select">
@@ -168,13 +153,10 @@ export function SaleForm({
         <Field label="Not" htmlFor="note" className="mt-4">
           <textarea id="note" name="note" rows={2} defaultValue={s.note ?? ""} className="adm-textarea" />
         </Field>
-      </Card>
+      </Section>
 
       {/* Yapışkan kaydet çubuğu */}
-      <div
-        className="sticky bottom-0 z-10 -mx-1 flex items-center justify-end gap-3 rounded-2xl px-4 py-3"
-        style={{ background: "rgb(var(--card) / 0.92)", backdropFilter: "blur(8px)", border: "1px solid rgb(var(--border))" }}
-      >
+      <div className="adm-sticky-save flex items-center justify-end gap-3">
         <button type="submit" className="adm-btn adm-btn-primary">
           <Icon name="check" size={16} /> {submitLabel}
         </button>

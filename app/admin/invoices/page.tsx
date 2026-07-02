@@ -119,9 +119,8 @@ export default async function InvoicesPage({
   const createdInv = created ? invoices.find((i) => i.ref === created) : null;
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-6">
       <PageHeader
-        eyebrow="Satış & Para"
         title="Faturalar (Kripto Ödeme)"
         description="Fatura oluştur → otomatik ödeme linki üretilir → müşteriye gönder. Müşteri dilediği ağdan (TRC20 / SOL / ARB / ETH / BTC …) öder; ödeme gelince fatura otomatik “Ödendi” olur ve sana bildirim gelir. Para doğrudan senin cüzdanına geçer."
       />

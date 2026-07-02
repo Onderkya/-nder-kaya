@@ -82,9 +82,8 @@ export default async function PaymentsPage({
     .catch(() => []);
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-6">
       <PageHeader
-        eyebrow="Satış & Para"
         title="Ödeme Yöntemleri"
         description="Kazakistan için Kaspi, diğer ülkeler için kripto (USDT, BTC ve diğerleri). Kripto adresleri kaydedilmeden önce checksum ile doğrulanır; yanlış/eksik adres kabul edilmez. Tüm değişiklikler denetim kaydına yazılır."
       />

@@ -32,7 +32,7 @@ export default async function EditSalePage({ params }: { params: Promise<{ id: s
       <Link href="/admin/sales" className="adm-muted inline-flex items-center gap-1.5 text-sm font-medium transition hover:opacity-80">
         <Icon name="chevron" size={16} className="rotate-90" /> Satışlar
       </Link>
-      <PageHeader eyebrow="Satış & Para" title="Satışı düzenle" description={`${sale.customerName} kaydını güncelle. Alanları düzenleyip aşağıdan kaydet.`} />
+      <PageHeader title="Satışı düzenle" description={`${sale.customerName} kaydını güncelle. Alanları düzenleyip aşağıdan kaydet.`} />
       <SaleForm action={updateSale} sale={sale} promos={promos.map((p) => p.code)} payRefs={payRefs} itemSuggestions={itemSuggestions} submitLabel="Değişiklikleri kaydet" />
     </div>
   );

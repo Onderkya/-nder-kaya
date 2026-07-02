@@ -47,9 +47,8 @@ export default async function PromosPage() {
   const promos = await prisma.promoCode.findMany({ orderBy: { createdAt: "desc" } }).catch(() => []);
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-6">
       <PageHeader
-        eyebrow="Satış & Para"
         title="İndirim Kodları"
         description="İndirim kodları içerikten bağımsızdır — kod eklemek için sayfa metni veya görselle uğraşman gerekmez. Kodlar ödeme/fatura sırasında geçerli olur."
       />

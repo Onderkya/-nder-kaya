@@ -39,9 +39,8 @@ export default async function SalesPage({ searchParams }: { searchParams: Promis
   const revenueRows = [...revenue.entries()];
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-6">
       <PageHeader
-        eyebrow="Satış & Para"
         title="Satışlar"
         description="Elle satış/sipariş defteri: kime, ne sattın, ne kadar, indirim ve nasıl ödendi. Her kayıt düzenlenebilir."
       />
