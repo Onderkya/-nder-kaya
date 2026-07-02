@@ -4,10 +4,19 @@ import { useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { moveSection, setSectionVisible } from "@/lib/section-actions";
 import { AssetSlotGrid } from "./asset-manager";
+import { GalleryManager } from "./gallery-manager";
 import { Icon } from "./icons";
 import type { AssetSlot } from "@/lib/asset-slots";
+import type { GalleryItemCfg } from "@/lib/gallery";
 
 export type CardField = { key: string; value: string; ref: string; overridden: boolean };
+
+/** Galeri bölümü için editör verisi (prefill + override sahipliği). */
+export type GalleryData = {
+  sectionId: string;
+  items: GalleryItemCfg[];
+  hasOverride: boolean;
+};
 
 export type EditorCard = {
   key: string;
@@ -16,9 +25,12 @@ export type EditorCard = {
   locked?: boolean;
   fields: CardField[];
   slots: AssetSlot[];
+  /** Varsa bu kart bir galeri bölümü — AssetSlotGrid yerine GalleryManager render edilir. */
+  gallery?: GalleryData;
 };
 
 type MediaItem = { id?: string; url: string; alt: string | null };
+type LangOpt = { code: string; flag: string; name: string };
 
 /**
  * Site Editörü'nün tek bölüm kartı. Başlık: (kilitliyse kilit, değilse ↑↓) +
@@ -40,6 +52,7 @@ export function EditorSectionCard({
   page,
   overrides,
   media,
+  langs,
   publicHref,
   dragging = false,
   dragOver = false,
@@ -57,6 +70,7 @@ export function EditorSectionCard({
   page: string;
   overrides: Record<string, string>;
   media: MediaItem[];
+  langs: LangOpt[];
   publicHref: string | null;
   dragging?: boolean;
   dragOver?: boolean;
@@ -207,15 +221,33 @@ export function EditorSectionCard({
           </div>
         ) : null}
 
-        {/* Görsel / video slotları */}
-        {card.slots.length > 0 ? (
+        {/* Galeri yöneticisi (medya + başlık listesi) — galeri bölümlerinde
+            AssetSlotGrid YERİNE. #ce-form içinde ama form ÖĞESİ İÇERMEZ ve tüm
+            butonları type="button" → metin formunu submit etmez / iç içe form
+            oluşturmaz; saveGallery'yi kendi useTransition'ıyla çağırır. */}
+        {card.gallery ? (
+          <div className={card.fields.length > 0 ? "mt-5" : ""}>
+            <p className="adm-label mb-2">Galeri — medya & başlıklar</p>
+            <GalleryManager
+              sectionId={card.gallery.sectionId}
+              initialItems={card.gallery.items}
+              hasOverride={card.gallery.hasOverride}
+              langs={langs}
+              media={media}
+            />
+          </div>
+        ) : null}
+
+        {/* Görsel / video slotları (galeri bölümünde bunlar galeriye taşındı;
+            galeri OLMAYAN bölümlerde tekil slotlar aynen kalır). */}
+        {!card.gallery && card.slots.length > 0 ? (
           <div className={card.fields.length > 0 ? "mt-5" : ""}>
             <p className="adm-label mb-2">Görseller & videolar</p>
             <AssetSlotGrid slots={card.slots} overrides={overrides} media={media} cols="sm:grid-cols-2" />
           </div>
         ) : null}
 
-        {card.fields.length === 0 && card.slots.length === 0 ? (
+        {card.fields.length === 0 && card.slots.length === 0 && !card.gallery ? (
           <p className="adm-muted text-[13px]">Bu bölümde düzenlenecek yazı veya görsel yok — yalnızca sıra/gizle kontrolü.</p>
         ) : null}
 

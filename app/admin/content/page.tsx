@@ -1,18 +1,21 @@
 import { revalidatePath } from "next/cache";
 import { prisma } from "@/lib/db";
-import { getEditableTexts, loadBaseFlat } from "@/lib/messages";
+import { getEditableTexts, loadBaseFlat, getMergedMessages, flatten } from "@/lib/messages";
 import { routing, localeNames, localeFlags, type Locale } from "@/i18n/routing";
 import { requireAdmin } from "@/lib/auth";
 import { audit } from "@/lib/audit";
 import { PageHeader } from "@/components/admin/ui";
 import { ContentEditor, type EditorPageData } from "@/components/admin/content-editor";
-import type { EditorCard, CardField } from "@/components/admin/editor-section-card";
+import type { EditorCard, CardField, GalleryData } from "@/components/admin/editor-section-card";
 import { editorSectionsForPage, EDITOR_PAGES } from "@/lib/editor-map";
 import { ASSET_SLOTS, type AssetSlot } from "@/lib/asset-slots";
 import { getAssetMap } from "@/lib/assets";
 import { getFaqExtras } from "@/lib/faq";
 import { FaqManager } from "@/components/admin/faq-manager";
 import { getHiddenSections, getSectionOrders, applySectionOrder } from "@/lib/sections";
+import { getGalleries, type GalleryItemCfg } from "@/lib/gallery";
+import { GALLERY_DEFAULTS } from "@/lib/gallery-defaults";
+import type { L10n } from "@/lib/tours";
 
 export const dynamic = "force-dynamic";
 
@@ -68,8 +71,48 @@ export default async function ContentPage({ searchParams }: { searchParams: Prom
     prisma.media.findMany({ orderBy: { createdAt: "desc" }, take: 60, select: { id: true, url: true, alt: true } }).catch(() => []),
   ]);
   const faqExtras = await getFaqExtras();
-  const [hiddenSet, orders] = await Promise.all([getHiddenSections(), getSectionOrders()]);
+  const [hiddenSet, orders, galleries] = await Promise.all([getHiddenSections(), getSectionOrders(), getGalleries()]);
   const hiddenSections = [...hiddenSet];
+
+  // Galeri prefill: tüm dillerin düzleştirilmiş mesajları (ns'li başlıkları
+  // 4 dile çevirmek için). Kayıtlı override varsa satırlar birebir; yoksa
+  // varsayılanlar L10n'e materyalize edilir (tur editörü kalıbı).
+  const galFlatByLocale: Record<string, Record<string, string>> = {};
+  for (const l of routing.locales) galFlatByLocale[l] = flatten((await getMergedMessages(l)) as never);
+  // Bir başlık/alt başlık alanını 4 dilde L10n'e çevirir. ns VARSA `${ns}.${key}`
+  // i18n anahtarıdır; ns YOKSA key koddaki DÜZ metindir (tüm dillerde aynı).
+  const captionL10n = (key: string | undefined, ns: string | undefined): L10n => {
+    if (!key) return {};
+    if (!ns) return Object.fromEntries(routing.locales.map((l) => [l, key]));
+    return Object.fromEntries(routing.locales.map((l) => [l, galFlatByLocale[l][`${ns}.${key}`] ?? key]));
+  };
+
+  /** Bir galeri bölümü için editör verisi (prefill + override sahipliği). */
+  const galleryDataFor = (sectionId: string): GalleryData => {
+    const override = galleries[sectionId];
+    if (override?.length) {
+      // Kayıtlı override → satırlar birebir; eksik başlık alanları için {} bırak.
+      const items: GalleryItemCfg[] = override.map((it) => ({
+        src: it.src,
+        type: it.type,
+        ...(it.poster ? { poster: it.poster } : {}),
+        title: it.title ?? {},
+        desc: it.desc ?? {},
+        active: it.active !== false,
+      }));
+      return { sectionId, items, hasOverride: true };
+    }
+    // Override yok → varsayılanlar 4 dile materyalize.
+    const items: GalleryItemCfg[] = (GALLERY_DEFAULTS[sectionId] ?? []).map((d) => ({
+      src: d.src,
+      type: d.type,
+      ...(d.poster ? { poster: d.poster } : {}),
+      title: captionL10n(d.tKey, d.ns),
+      desc: captionL10n(d.dKey, d.ns),
+      active: true,
+    }));
+    return { sectionId, items, hasOverride: false };
+  };
 
   const map = new Map(texts.map((t) => [t.key, t]));
   const slotMap = new Map(ASSET_SLOTS.map((s) => [s.id, s]));
@@ -111,6 +154,11 @@ export default async function ContentPage({ searchParams }: { searchParams: Prom
       const card: EditorCard = { key: sec.key, title: sec.title, fields, slots };
       if (sec.registryId) card.registryId = sec.registryId;
       if (sec.locked) card.locked = true;
+      // registryId bir GALLERY_DEFAULTS anahtarıysa → galeri yöneticisi verisi
+      // (bu bölümün slotları galeriye taşınır, AssetSlotGrid gösterilmez).
+      if (sec.registryId && Object.prototype.hasOwnProperty.call(GALLERY_DEFAULTS, sec.registryId)) {
+        card.gallery = galleryDataFor(sec.registryId);
+      }
       return card;
     });
     const route = PAGE_ROUTES[pg.key];

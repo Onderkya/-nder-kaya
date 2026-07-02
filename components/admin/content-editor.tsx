@@ -105,6 +105,7 @@ export function ContentEditor({
               hiddenSections={hiddenSections}
               assetOverrides={assetOverrides}
               media={media}
+              langs={langs}
             />
 
             {/* SSS: madde yöneticisi + Turlar yönlendirme kartı */}
@@ -152,6 +153,7 @@ function PageCards({
   hiddenSections,
   assetOverrides,
   media,
+  langs,
 }: {
   page: EditorPageData;
   locale: string;
@@ -159,6 +161,7 @@ function PageCards({
   hiddenSections: string[];
   assetOverrides: Record<string, string>;
   media: MediaItem[];
+  langs: LangOpt[];
 }) {
   const router = useRouter();
   const [pending, start] = useTransition();
@@ -239,6 +242,7 @@ function PageCards({
             page={page.id}
             overrides={assetOverrides}
             media={media}
+            langs={langs}
             publicHref={page.publicHref}
             dragging={dragKey === card.key}
             dragOver={draggable && overKey === card.key && dragKey !== card.key}
