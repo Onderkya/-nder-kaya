@@ -4,7 +4,15 @@
 > ↩️ **Geri dönüş (rollback):** eski sürüm dokunulmadı → dal `claude/consulting-site-plan-6k4lix` + etiket `safe/before-redesign-rev9`. Beğenilmezse sunucuda o dala `git reset --hard` + rebuild.
 > Görsel/medya kaynakları: `public/images/CREDITS.txt` (CC / Mixkit / CC0) · oteller: kullanıcının verdiği resmi fotoğraflar (`public/images/hotels/`).
 
-## 🔁 Revizyon 29 — Admin yeniden tasarım FAZ 5: AI yan paneli (GÜNCEL · dal `claude/redesign-conversion`)
+## 🔁 Revizyon 30 — Admin yeniden tasarım FAZ 6: kalan ekranlar + PROJE TAMAMLANDI (GÜNCEL · dal `claude/redesign-conversion`)
+
+> Faz 6 (plan: `docs/superpowers/plans/2026-07-02-admin-redesign-6-kalan-ekranlar.md`) + tüm-proje final incelemesi. 6 fazlık admin yeniden tasarımı (Rev 25-30, spec: `docs/superpowers/specs/2026-07-02-admin-redesign-design.md`) **BİTTİ**. `tsc` ✓ · `next build` ✓ · final inceleme: 0 kritik/önemli, tüm minor'lar ertelenebilir.
+- **Dashboard:** metrikler → AI kartı → "Bugün ne yapmalıyım?" (satır satır Git →) → son hareketler; hızlı işlem kutucukları kalktı. **Giriş:** `#0c2f39` gradyan gitti, nötr zemin + beyaz kart (submit akışı bayt-eşdeğer).
+- **Listeler** (talepler/rezervasyon/sohbet/kayıtlar + satış/fatura/kod/ödeme): tek kart + ince çizgili satırlar, sakin durum çipleri, Türkçe durum etiketleri (enum value'lar birebir). **Formlar:** `Section`/`Field` bölümlü; SaleForm 19 alan adı bayt-eşdeğer. **Ayarlar/Kullanıcılar/Görseller/Özel Sayfalar:** dekor kalıntıları temizlendi; sır maskeleme, son-admin koruması, blok editörü birebir.
+- **Final inceleme (tüm dal, 33 commit):** bölüm id üçlüsü (registry ↔ public sayfalar ↔ editor-map) programatik tutarlı; z-index katmanları (TopBar 25 < AI panel 45 < modallar 50 < ikon seçici 60) doğru; tur steps/included round-trip sağlam; public dosya değişimleri yalnız onaylı kapsam. Ertelenen minor'lar: FaIcon ölü export, AI panel focus yönetimi (a11y), drag dışa-bırakma optimistic sapması (refresh'te düzelir).
+- ⚠️ Kullanıcıya not: admin'e girip görsel tur atılmalı (lokalde DB/hesap yok, oturumlu ekranlar canlıda doğrulanmadı); root şifresi değiştirilmeli.
+
+## 🔁 Revizyon 29 — Admin yeniden tasarım FAZ 5: AI yan paneli (dal `claude/redesign-conversion`)
 
 > Faz 5 (plan: `docs/superpowers/plans/2026-07-02-admin-redesign-5-ai-panel.md`). `tsc` ✓ · `next build` ✓ · incelemeler temiz · canlı 200.
 - **AI yan paneli:** sağ-alt balon (FAB) KALKTI → üst bardaki "AI Asistan" butonu her sayfada sağdan ~400px panel açar (mobilde alttan sheet + mobil üst barda buton). Sohbet mantığı `components/admin/ai-chat-core.tsx`'e taşındı — **`/admin/ai` tam sayfa da aynı çekirdeği kullanır**; API rotalarına dokunulmadı, onaylı işlem kartı + anahtarsız rehber birebir. Panel layout'ta mount → **sohbet sayfa geçişinde kaybolmaz**; sayfaya duyarlı öneri çipleri (satış/tur/talep).
