@@ -7,7 +7,8 @@ import { prisma } from "@/lib/db";
 import { getPublicSettings } from "@/lib/settings";
 import { SidebarNav } from "@/components/admin/sidebar-nav";
 import { MobileNav } from "@/components/admin/mobile-nav";
-import { AdminAiFab } from "@/components/admin/ai-fab";
+import { AiPanelProvider } from "@/components/admin/ai-panel-context";
+import { AiPanel, AiPanelMobileButton } from "@/components/admin/ai-panel";
 import { CollapseToggle } from "@/components/admin/collapse-toggle";
 import { TopBar } from "@/components/admin/top-bar";
 import { Icon } from "@/components/admin/icons";
@@ -44,6 +45,7 @@ export default async function AdminLayout({ children }: { children: ReactNode })
       <body className="adm-body min-h-screen antialiased">
         {session ? <script dangerouslySetInnerHTML={{ __html: COLLAPSE_SCRIPT }} /> : null}
         {session ? (
+          <AiPanelProvider available={aiAvailable}>
           <div>
             {/* Masaüstü: açık renkli kenar çubuğu (daraltılabilir) */}
             <aside className="adm-sidebar adm-sidebar-scroll fixed inset-y-0 left-0 z-30 hidden w-[248px] flex-col overflow-y-auto p-4 lg:flex">
@@ -67,9 +69,12 @@ export default async function AdminLayout({ children }: { children: ReactNode })
               style={{ background: "rgb(var(--card) / 0.92)", backdropFilter: "blur(10px)", borderColor: "rgb(var(--border))" }}
             >
               <span className="adm-brand text-[15px] font-semibold" style={{ color: "rgb(var(--foreground))" }}>🌊 Antalya Bridge</span>
-              <a href={siteUrl} target="_blank" rel="noopener" className="adm-btn adm-btn-ghost adm-btn-sm">
-                <Icon name="external" size={16} /> Site
-              </a>
+              <span className="flex items-center gap-2">
+                <a href={siteUrl} target="_blank" rel="noopener" className="adm-btn adm-btn-ghost adm-btn-sm">
+                  <Icon name="external" size={16} /> Site
+                </a>
+                <AiPanelMobileButton />
+              </span>
             </header>
 
             {/* İçerik */}
@@ -79,8 +84,9 @@ export default async function AdminLayout({ children }: { children: ReactNode })
             </div>
 
             <MobileNav inboxCount={inboxCount} siteUrl={siteUrl} />
-            <AdminAiFab available={aiAvailable} />
+            <AiPanel />
           </div>
+          </AiPanelProvider>
         ) : (
           <main>{children}</main>
         )}

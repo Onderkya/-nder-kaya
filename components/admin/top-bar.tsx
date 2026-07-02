@@ -1,9 +1,9 @@
 "use client";
 
-import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Icon } from "./icons";
 import { NAV_GROUPS, HOME_ITEM } from "./nav-config";
+import { useAiPanel } from "./ai-panel-context";
 
 const ALL_ITEMS = [HOME_ITEM, ...NAV_GROUPS.flatMap((g) => g.items)];
 
@@ -27,6 +27,7 @@ function titleFor(pathname: string): string {
 /** Masaüstü üst barı: solda sayfa adı, sağda Siteyi Gör + AI Asistan. */
 export function TopBar({ siteUrl }: { siteUrl: string }) {
   const pathname = usePathname() || "";
+  const { open } = useAiPanel();
   return (
     <header className="adm-topbar">
       <span className="adm-topbar-title">{titleFor(pathname)}</span>
@@ -34,9 +35,9 @@ export function TopBar({ siteUrl }: { siteUrl: string }) {
         <a href={siteUrl} target="_blank" rel="noopener" className="adm-btn adm-btn-ghost adm-btn-sm">
           <Icon name="external" size={15} /> Siteyi Gör
         </a>
-        <Link href="/admin/ai" className="adm-btn adm-btn-sm adm-btn-ai" title="AI Asistan">
+        <button type="button" onClick={open} className="adm-btn adm-btn-sm adm-btn-ai" title="AI Asistan">
           <Icon name="bolt" size={15} /> AI Asistan
-        </Link>
+        </button>
       </span>
     </header>
   );
