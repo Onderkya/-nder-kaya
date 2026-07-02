@@ -9,7 +9,7 @@ import { ContentEditor, type EditorPageData } from "@/components/admin/content-e
 import type { EditorCard, CardField, GalleryData } from "@/components/admin/editor-section-card";
 import { editorSectionsForPage, EDITOR_PAGES } from "@/lib/editor-map";
 import { ASSET_SLOTS, type AssetSlot } from "@/lib/asset-slots";
-import { getAssetMap } from "@/lib/assets";
+import { getAssetMap, getHiddenAssetSet } from "@/lib/assets";
 import { getFaqExtras } from "@/lib/faq";
 import { FaqManager } from "@/components/admin/faq-manager";
 import { getHiddenSections, getSectionOrders, applySectionOrder } from "@/lib/sections";
@@ -71,8 +71,9 @@ export default async function ContentPage({ searchParams }: { searchParams: Prom
     prisma.media.findMany({ orderBy: { createdAt: "desc" }, take: 60, select: { id: true, url: true, alt: true } }).catch(() => []),
   ]);
   const faqExtras = await getFaqExtras();
-  const [hiddenSet, orders, galleries] = await Promise.all([getHiddenSections(), getSectionOrders(), getGalleries()]);
+  const [hiddenSet, orders, galleries, hiddenAssetSet] = await Promise.all([getHiddenSections(), getSectionOrders(), getGalleries(), getHiddenAssetSet()]);
   const hiddenSections = [...hiddenSet];
+  const hiddenAssets = [...hiddenAssetSet];
 
   // Galeri prefill: tüm dillerin düzleştirilmiş mesajları (ns'li başlıkları
   // 4 dile çevirmek için). Kayıtlı override varsa satırlar birebir; yoksa
@@ -213,6 +214,7 @@ export default async function ContentPage({ searchParams }: { searchParams: Prom
         assetOverrides={assetOverrides}
         media={mediaRows}
         hiddenSections={hiddenSections}
+        hiddenAssets={hiddenAssets}
         faqPanel={<FaqManager initial={faqExtras} locale={locale} langName={localeNames[locale]} />}
       />
     </div>

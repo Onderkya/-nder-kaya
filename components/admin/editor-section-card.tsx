@@ -47,6 +47,7 @@ export function EditorSectionCard({
   locale,
   isTr,
   hidden,
+  hiddenAssets = [],
   first,
   last,
   page,
@@ -65,6 +66,7 @@ export function EditorSectionCard({
   locale: string;
   isTr: boolean;
   hidden: boolean;
+  hiddenAssets?: string[];
   first: boolean;
   last: boolean;
   page: string;
@@ -243,7 +245,7 @@ export function EditorSectionCard({
         {!card.gallery && card.slots.length > 0 ? (
           <div className={card.fields.length > 0 ? "mt-5" : ""}>
             <p className="adm-label mb-2">Görseller & videolar</p>
-            <AssetSlotGrid slots={card.slots} overrides={overrides} media={media} cols="sm:grid-cols-2" />
+            <AssetSlotGrid slots={card.slots} overrides={overrides} media={media} hidden={hiddenAssets} cols="sm:grid-cols-2" />
           </div>
         ) : null}
 

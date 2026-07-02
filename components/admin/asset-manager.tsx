@@ -2,7 +2,7 @@
 
 import { useRef, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
-import { setAsset } from "@/lib/asset-actions";
+import { setAsset, setAssetHidden } from "@/lib/asset-actions";
 import { Icon } from "./icons";
 import type { AssetSlot } from "@/lib/asset-slots";
 
@@ -19,21 +19,30 @@ export function AssetSlotGrid({
   slots,
   overrides,
   media,
+  hidden = [],
   cols = "sm:grid-cols-2 lg:grid-cols-3",
 }: {
   slots: AssetSlot[];
   overrides: Record<string, string>;
   media: MediaItem[];
+  hidden?: string[];
   cols?: string;
 }) {
   const router = useRouter();
   const [pending, start] = useTransition();
   const [open, setOpen] = useState<AssetSlot | null>(null);
+  const hiddenSet = new Set(hidden);
 
   const apply = (slotId: string, url: string) =>
     start(async () => {
       await setAsset(slotId, url);
       setOpen(null);
+      router.refresh();
+    });
+
+  const toggleHidden = (slotId: string, visible: boolean) =>
+    start(async () => {
+      await setAssetHidden(slotId, !visible);
       router.refresh();
     });
 
@@ -45,19 +54,25 @@ export function AssetSlotGrid({
         {slots.map((s) => {
           const cur = overrides[s.id]?.trim() || s.def;
           const changed = !!overrides[s.id]?.trim();
+          const isHidden = hiddenSet.has(s.id);
+          const visible = !isHidden;
           return (
             <div key={s.id} className="adm-thumb">
               <div className="relative aspect-video" style={{ background: "rgb(var(--muted))" }}>
                 {s.type === "video" ? (
-                  <video src={cur} muted loop playsInline className="h-full w-full object-cover" />
+                  <video src={cur} muted loop playsInline className="h-full w-full object-cover" style={{ opacity: isHidden ? 0.4 : undefined }} />
                 ) : (
                   // eslint-disable-next-line @next/next/no-img-element
-                  <img src={cur} alt={s.label} className="h-full w-full object-cover" />
+                  <img src={cur} alt={s.label} className="h-full w-full object-cover" style={{ opacity: isHidden ? 0.4 : undefined }} />
                 )}
                 <span className="absolute left-2 top-2 rounded-md px-1.5 py-0.5 text-[10px] font-bold uppercase" style={{ background: "rgb(7 26 33 / 0.7)", color: "#fff" }}>
                   {s.type === "video" ? "video" : "görsel"}
                 </span>
-                {changed ? <span className="adm-badge adm-badge-warn absolute right-2 top-2">değişti</span> : null}
+                {isHidden ? (
+                  <span className="adm-badge adm-badge-neutral absolute right-2 top-2">Gizli</span>
+                ) : changed ? (
+                  <span className="adm-badge adm-badge-warn absolute right-2 top-2">değişti</span>
+                ) : null}
               </div>
               <div className="p-3">
                 <p className="text-[13px] font-semibold leading-snug" style={{ color: "rgb(var(--foreground))" }}>{s.label}</p>
@@ -67,6 +82,10 @@ export function AssetSlotGrid({
                   {changed ? (
                     <button type="button" disabled={pending} onClick={() => apply(s.id, "")} className="adm-btn adm-btn-ghost adm-btn-sm">Sıfırla</button>
                   ) : null}
+                  <label className="adm-switch ml-auto flex-shrink-0" title={visible ? "Görünür — sitede gösterilir" : "Gizli — sitede gösterilmez"}>
+                    <input type="checkbox" checked={visible} disabled={pending} onChange={(e) => toggleHidden(s.id, e.target.checked)} />
+                    <span className="adm-switch-track" />
+                  </label>
                 </div>
               </div>
             </div>

@@ -38,6 +38,7 @@ export function ContentEditor({
   assetOverrides = {},
   media = [],
   hiddenSections = [],
+  hiddenAssets = [],
   faqPanel,
 }: {
   pages: EditorPageData[];
@@ -48,6 +49,7 @@ export function ContentEditor({
   assetOverrides?: Record<string, string>;
   media?: MediaItem[];
   hiddenSections?: string[];
+  hiddenAssets?: string[];
   faqPanel?: ReactNode;
 }) {
   const [active, setActive] = useState(initialPageId);
@@ -103,6 +105,7 @@ export function ContentEditor({
               locale={locale}
               isTr={isTr}
               hiddenSections={hiddenSections}
+              hiddenAssets={hiddenAssets}
               assetOverrides={assetOverrides}
               media={media}
               langs={langs}
@@ -151,6 +154,7 @@ function PageCards({
   locale,
   isTr,
   hiddenSections,
+  hiddenAssets,
   assetOverrides,
   media,
   langs,
@@ -159,6 +163,7 @@ function PageCards({
   locale: string;
   isTr: boolean;
   hiddenSections: string[];
+  hiddenAssets: string[];
   assetOverrides: Record<string, string>;
   media: MediaItem[];
   langs: LangOpt[];
@@ -237,6 +242,7 @@ function PageCards({
             locale={locale}
             isTr={isTr}
             hidden={!!card.registryId && hiddenSet.has(card.registryId)}
+            hiddenAssets={hiddenAssets}
             first={ri <= 0}
             last={ri === reorderableCount - 1}
             page={page.id}
