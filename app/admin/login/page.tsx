@@ -27,10 +27,10 @@ export default function AdminLoginPage() {
   return (
     <div
       className="flex min-h-screen items-center justify-center p-4"
-      style={{ background: "linear-gradient(160deg, rgb(var(--background)) 0%, #0c2f39 100%)" }}
+      style={{ background: "rgb(var(--background))" }}
     >
       <div className="adm-rise w-full max-w-sm">
-        <div className="adm-card p-8 sm:p-10" style={{ boxShadow: "0 24px 60px -20px rgb(6 35 43 / 0.5)" }}>
+        <div className="adm-card p-8 sm:p-10">
           <div className="mb-7 text-center">
             <div
               className="font-display text-[2rem] font-semibold leading-none"
@@ -38,7 +38,6 @@ export default function AdminLoginPage() {
             >
               🌊 Antalya Bridge
             </div>
-            <div className="mx-auto mt-3 h-px w-10" style={{ background: "rgb(var(--gold))" }} />
             <p className="adm-muted mt-3 text-[14px] leading-relaxed">
               Yönetim paneline hoş geldiniz.<br />Devam etmek için giriş yapın.
             </p>
