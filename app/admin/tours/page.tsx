@@ -54,7 +54,6 @@ export default async function ToursPage() {
   return (
     <div>
       <PageHeader
-        eyebrow="Sitem"
         title="Turlar"
         description="Anasayfa ve Antalya Danışmanlık'taki tur paketleri. Sürükle yerine ← → ile sırala, anahtar ile aç/kapat, karta tıklayıp her şeyini düzenle — foto, isim, gün, otel. Yeni tur da ekleyebilirsin."
       />

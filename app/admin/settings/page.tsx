@@ -51,7 +51,6 @@ export default async function SettingsPage() {
   return (
     <div className="space-y-6">
       <PageHeader
-        eyebrow="Yönetim Paneli"
         title="Ayarlar"
         description="API anahtarları, iletişim ve site değerleri. Buraya girdiğiniz değerler anında (yeniden yayına gerek olmadan) devreye girer; sistem önce buradan, yoksa sunucudaki ortam değişkeninden okur."
       />

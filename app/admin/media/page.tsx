@@ -16,9 +16,8 @@ export default async function MediaPage() {
   const items = media.map((m) => ({ id: m.id, url: m.url, alt: m.alt, inUse: m._count.blocks }));
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-6">
       <PageHeader
-        eyebrow="Görsel Kütüphanesi"
         title="Görseller"
         description="Sitede kullandığınız tüm görsellerin toplandığı yerdir. Buraya yüklediğiniz görselleri, bir sayfa ya da bölüm düzenlerken hazır listeden seçebilirsiniz."
       />

@@ -13,15 +13,12 @@ import { Icon } from "@/components/admin/icons";
 
 export const dynamic = "force-dynamic";
 
-/** Altın dikey çubuk + editoryal başlık — bölüm başlığı deseni. */
+/** Sade bölüm başlığı — başlık + ipucu. */
 function SectionHead({ title, hint }: { title: string; hint?: string }) {
   return (
     <div className="mb-5">
-      <div className="flex items-center gap-3">
-        <span className="h-7 w-1.5 rounded-full" style={{ background: "rgb(var(--gold))" }} />
-        <h3 className="adm-section-title">{title}</h3>
-      </div>
-      {hint ? <p className="adm-help ml-[18px] mt-1">{hint}</p> : null}
+      <h3 className="adm-section-title">{title}</h3>
+      {hint ? <p className="adm-help mt-1">{hint}</p> : null}
     </div>
   );
 }
@@ -46,7 +43,6 @@ export default async function PageEditor({
   return (
     <div className="space-y-6">
       <PageHeader
-        eyebrow="İçerik & Sayfalar"
         title={page.title ? page.title : `/${page.slug}`}
         description={`Bu sayfayı bölüm bölüm düzenleyin. Rota: /${page.slug}`}
       >

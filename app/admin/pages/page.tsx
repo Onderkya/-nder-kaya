@@ -17,7 +17,6 @@ export default async function AdminPagesList() {
   return (
     <div className="space-y-6">
       <PageHeader
-        eyebrow="İçerik & Sayfalar"
         title="Sayfalar"
         description="Bloklarla sayfa kurun ve düzenleyin. Bir sayfayı yayına almadıkça (aşağıdaki “yayında” işareti) o rota mevcut tasarımıyla çalışmaya devam eder — yani burada hazırlık yaparken siteniz bozulmaz. Hazır olunca yayına alın; istediğinizde geri kapatabilirsiniz."
       />
@@ -25,11 +24,8 @@ export default async function AdminPagesList() {
       {/* Bilinen rotalar için hızlı oluştur */}
       <Card>
         <div className="mb-5">
-          <div className="flex items-center gap-3">
-            <span className="h-7 w-1.5 rounded-full" style={{ background: "rgb(var(--gold))" }} />
-            <h3 className="adm-section-title">Mevcut sayfa rotaları</h3>
-          </div>
-          <p className="adm-help ml-[18px] mt-1">Sitenizdeki hazır sayfalar. Var olana tıklayıp düzenleyin, olmayanı tek dokunuşla oluşturun.</p>
+          <h3 className="adm-section-title">Mevcut sayfa rotaları</h3>
+          <p className="adm-help mt-1">Sitenizdeki hazır sayfalar. Var olana tıklayıp düzenleyin, olmayanı tek dokunuşla oluşturun.</p>
         </div>
         <div className="flex flex-wrap gap-2">
           {KNOWN.map((slug) =>
@@ -69,8 +65,7 @@ export default async function AdminPagesList() {
 
       {/* Tüm sayfalar */}
       <div>
-        <div className="mb-4 flex items-center gap-3">
-          <span className="h-7 w-1.5 rounded-full" style={{ background: "rgb(var(--gold))" }} />
+        <div className="mb-4">
           <h3 className="adm-section-title">Tüm sayfalar</h3>
         </div>
 

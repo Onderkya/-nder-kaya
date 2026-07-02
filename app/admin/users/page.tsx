@@ -80,7 +80,6 @@ export default async function UsersPage() {
   return (
     <div className="space-y-6">
       <PageHeader
-        eyebrow="Yönetim Paneli"
         title="Kullanıcılar"
         description="Yönetim paneline erişebilen kişileri ekleyin, rollerini düzenleyin veya silin. Parolalar güvenli biçimde saklanır ve hiçbir yerde gösterilmez."
       />
