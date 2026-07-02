@@ -3,6 +3,7 @@ export type SectionDef = { page: string; id: string; label: string };
 
 export const SECTIONS: SectionDef[] = [
   // Anasayfa (hero ve son CTA zorunlu → listede yok)
+  { page: "home", id: "home.diffStrip", label: "Fark şeridi (hero altı kimlik cümlesi)" },
   { page: "home", id: "home.readyRoutes", label: "Hazır Rotalar (paket vitrini)" },
   { page: "home", id: "home.hotels", label: "Oteller" },
   { page: "home", id: "home.quickPlan", label: "Özel Plan formu" },
@@ -23,6 +24,7 @@ export const SECTIONS: SectionDef[] = [
   { page: "lessons", id: "lessons.conversionBar", label: "Kontenjan şeridi (hero altı)" },
   { page: "lessons", id: "lessons.process", label: "Süreç — nasıl öğreniyorsunuz" },
   { page: "lessons", id: "lessons.teacher", label: "Öğretmen kimlik bandı" },
+  { page: "lessons", id: "lessons.levelPath", label: "0'dan C2'ye seviye yolu" },
   { page: "lessons", id: "lessons.lived", label: "Bunu biz de yaşadık (güven bandı)" },
   { page: "lessons", id: "lessons.petlingo", label: "PetLingo" },
   { page: "lessons", id: "lessons.durations", label: "Ders süreleri" },
@@ -30,7 +32,7 @@ export const SECTIONS: SectionDef[] = [
   { page: "lessons", id: "lessons.booking", label: "Randevu" },
 
   // Türkiye'de Eğitim (hero ve son CTA zorunlu → listede yok)
-  { page: "education", id: "education.journey", label: "Yolculuk (4 adım)" },
+  { page: "education", id: "education.journey", label: "Yolculuk (6 adım)" },
   { page: "education", id: "education.lived", label: "Bunu biz de yaşadık (güven bandı)" },
   { page: "education", id: "education.deliverables", label: "Neyi hallediyoruz (teslimatlar)" },
 
