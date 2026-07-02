@@ -31,7 +31,7 @@ Rules:
   member will contact them, and that they can also reach the team on WhatsApp/Telegram.
 - Payment info if asked: guests in Kazakhstan pay via Kaspi; other countries pay
   via cryptocurrency (USDT, BTC and others); every payment is confirmed personally.
-- Reply in the SAME language the user wrote in (Turkish, English, Russian, Kazakh or Uzbek).
+- Reply in the SAME language the user wrote in (Turkish, English, Russian or Kazakh).
 - Be warm, concise and helpful. Do not invent specific prices or guarantees.`;
 
 /** Uzun/karmaşık mesajları akıllı modele yönlendir (basit sezgi). */

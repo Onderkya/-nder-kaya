@@ -77,7 +77,7 @@
     "ab_v1Title": "Yuzi bor maslahatchi",
     "ab_v1Text": "Nomsiz agentlik emas, haqiqiy odam bilan gaplashasiz.",
     "ab_v2Title": "Sizning tilingizda",
-    "ab_v2Text": "Turkcha, inglizcha, ruscha, qozoqcha va o'zbekcha.",
+    "ab_v2Text": "Turkcha, inglizcha, ruscha va qozoqcha.",
     "ab_v3Title": "Boshdan kechirilgan tajriba",
     "ab_v3Text": "Siz qilmoqchi bo'lgan ishni haqiqatan qilgan odamdan yo'riqnoma.",
     "con_findTitle": "Bizni Antalyada toping",
@@ -127,7 +127,7 @@
     "sell_text": "Siz yozing — biz tinglaymiz. Rejani sanalaringiz, byudjetingiz, orzuingizdagi dam olish yoki ta'lim maqsadingizga qarab noldan, sizga maxsus tuzamiz — nusxa-ko'chirma paket yo'q. Antalyada yashaydigan, Turkiyada o'qigan haqiqiy odamlar bilan, o'z tilingizda.",
     "sell_b1": "Sizga maxsus tayyorlangan reja — nusxa emas",
     "sell_b2": "Yagona aloqa: boshidan oxirigacha bitta odam",
-    "sell_b3": "O'z tilingizda: TR · EN · RU · KK · UZ",
+    "sell_b3": "O'z tilingizda: TR · EN · RU · KK",
     "sell_cta": "Shaxsiy rejani boshlash",
     "lived_badge": "Buni biz ham boshdan kechirdik",
     "lived_title": "Taklif qiladigan har bir xizmatni avval o'zimiz amalga oshirdik",
@@ -148,7 +148,7 @@
   "meta": {
     "siteName": "Antalya Bridge",
     "tagline": "Mahalliy mutaxassislar bilan Antalya dam olishini shaxsiy rejalashtirish",
-    "description": "Antalya dam olishingizni shu yerda yashaydigan haqiqiy odamlar bilan rejalashtiring. Mehmonxona, transfer, kunlik marshrut va faoliyatlar — sanalaringiz, byudjetingiz va dam olish uslubingizga moslab. O'zbek, turk, ingliz, rus va qozoq tillarida qo'llab-quvvatlash."
+    "description": "Antalya dam olishingizni shu yerda yashaydigan haqiqiy odamlar bilan rejalashtiring. Mehmonxona, transfer, kunlik marshrut va faoliyatlar — sanalaringiz, byudjetingiz va dam olish uslubingizga moslab. Turk, ingliz, rus va qozoq tillarida qo'llab-quvvatlash."
   },
   "nav": {
     "home": "Bosh sahifa",
@@ -178,7 +178,7 @@
     "heroTitle": "Antaliyadagi orzuingizdagi dam olish. Allaqachon tayyor.",
     "heroSubtitle": "Parvoz, transfer, mehmonxona, dengiz va ekskursiyalar — hammasi siz uchun oʼylangan. Faqat birini tanlang, qolganini biz hal qilamiz.",
     "heroProof1": "Biz Antalyada yashaymiz",
-    "heroProof2": "5 tilda qo'llab-quvvatlash",
+    "heroProof2": "4 tilda qo'llab-quvvatlash",
     "heroProof3": "Mehmonxona + transfer + faoliyat",
     "heroProof4": "Boshidan oxirigacha bitta haqiqiy odam",
     "heroDiff": "Mahalliy giding",
@@ -194,7 +194,7 @@
     "why2Title": "Biz o'zimiz Turkiyada o'qiganmiz",
     "why2Text": "Ariza topshirish va ta'lim jarayonini ichdan biladigan sobiq grant talabasi.",
     "why3Title": "Sizning tilingizda, sizga qulay tarzda",
-    "why3Text": "Turk, ingliz, rus, qozoq va o'zbek tillarida xizmat — bizga WhatsApp yoki Telegram orqali yozing.",
+    "why3Text": "Turk, ingliz, rus va qozoq tillarida xizmat — bizga WhatsApp yoki Telegram orqali yozing.",
     "ctaTitle": "Antalya safaringizni birga rejalashtiramiz",
     "ctaText": "Sanalaringizni, necha kishi ekaningizni va dam olish uslubingizni yuboring. Byudjetingiz va o'zingiz xohlagan dam olish tarziga qarab shaxsiy marshrut tayyorlaymiz.",
     "ctaCta": "Shaxsiy rejani boshlash",
@@ -284,7 +284,7 @@
     "lesBook": "Birinchi darsga yoziling",
     "lesCapacity": "Har hafta individual joylar cheklangan — oldindan band qiling",
     "lesPopular": "Eng ko'p tanlangan",
-    "lesReassure": "Zoom orqali · 5 til · moslashuvchan vaqt · bepul daraja tekshiruvi",
+    "lesReassure": "Zoom orqali · 4 til · moslashuvchan vaqt · bepul daraja tekshiruvi",
     "lesPick": "Shu davomiylik bilan boshlash",
     "eduDeliverTitle": "Siz uchun nimani hal qilamiz",
     "eduDeliverText": "Universitet tanlashdan kelish kuningizgacha har bir qadamni o'zimiz hal qilamiz — siz faqat o'qishga e'tibor qarating.",
@@ -569,7 +569,7 @@
   },
   "contact": {
     "title": "Bog'lanish",
-    "subtitle": "Bizga yozing, biz shaxsan javob beramiz. Biz turk, ingliz, rus, qozoq va o'zbek tillarida gaplashamiz.",
+    "subtitle": "Bizga yozing, biz shaxsan javob beramiz. Biz turk, ingliz, rus va qozoq tillarida gaplashamiz.",
     "name": "Ismingiz",
     "email": "Elektron pochta",
     "phone": "Telefon (ixtiyoriy)",
@@ -587,7 +587,7 @@
   "faq": {
     "title": "Ko'p beriladigan savollar",
     "q1": "Qaysi tillarda xizmat ko'rsatasiz?",
-    "a1": "Turk, ingliz, rus, qozoq va o'zbek tillarida.",
+    "a1": "Turk, ingliz, rus va qozoq tillarida.",
     "q2": "Qanday to'layman?",
     "a2": "Qozog'istondagi mehmonlar Kaspi orqali to'lashlari mumkin. Boshqa barcha mamlakatlar uchun biz kriptovalyutani (USDT, BTC va boshqalar) qabul qilamiz. Har bir to'lovni shaxsan tasdiqlaymiz.",
     "q3": "Darslar qanday o'tkaziladi?",

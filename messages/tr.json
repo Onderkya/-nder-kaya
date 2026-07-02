@@ -77,7 +77,7 @@
     "ab_v1Title": "Yüzü olan danışman",
     "ab_v1Text": "İsimsiz bir acente değil, gerçek bir kişiyle konuşursun.",
     "ab_v2Title": "Senin dilinde",
-    "ab_v2Text": "Türkçe, İngilizce, Rusça, Kazakça ve Özbekçe.",
+    "ab_v2Text": "Türkçe, İngilizce, Rusça ve Kazakça.",
     "ab_v3Title": "Yaşanmış tecrübe",
     "ab_v3Text": "Yapacağın şeyi gerçekten yaşamış birinden rehberlik.",
     "con_findTitle": "Bizi Antalya'da bul",
@@ -127,7 +127,7 @@
     "sell_text": "Sen yaz, biz dinleyelim. Tarihlerine, bütçene, hayalindeki tatile ya da eğitim hedefine göre planı sıfırdan, sana özel kuruyoruz — kopyala-yapıştır paket yok. Antalya'da yaşayan, Türkiye'de okumuş gerçek insanlarla, kendi dilinde.",
     "sell_b1": "Sana özel hazırlanan plan — kopyala-yapıştır değil",
     "sell_b2": "Tek muhatap: baştan sona aynı kişi",
-    "sell_b3": "Kendi dilinde: TR · EN · RU · KK · UZ",
+    "sell_b3": "Kendi dilinde: TR · EN · RU · KK",
     "sell_cta": "Sana özel planı başlat",
     "lived_badge": "Bunu biz de yaşadık",
     "lived_title": "Verdiğimiz her danışmanlığı önce kendimiz başardık",
@@ -148,7 +148,7 @@
   "meta": {
     "siteName": "Antalya Bridge",
     "tagline": "Antalya Tatilini Yerel Uzmanlarla Sana Özel Planla",
-    "description": "Antalya tatilini burada yaşayan gerçek kişilerle planla. Otel, transfer, günlük rota ve aktiviteler; tarihine, bütçene ve tatil tarzına göre hazırlanır. Türkçe, İngilizce, Rusça, Kazakça ve Özbekçe destek."
+    "description": "Antalya tatilini burada yaşayan gerçek kişilerle planla. Otel, transfer, günlük rota ve aktiviteler; tarihine, bütçene ve tatil tarzına göre hazırlanır. Türkçe, İngilizce, Rusça ve Kazakça destek."
   },
   "nav": {
     "home": "Ana Sayfa",
@@ -178,7 +178,7 @@
     "heroTitle": "Hayalindeki Antalya tatili. Zaten hazır.",
     "heroSubtitle": "Uçak, transfer, otel, deniz ve geziler — hepsi senin için düşünüldü. Sen sadece birini seç; gerisini biz halledelim.",
     "heroProof1": "Antalya'da yaşıyoruz",
-    "heroProof2": "5 dilde destek",
+    "heroProof2": "4 dilde destek",
     "heroProof3": "Otel + transfer + aktivite",
     "heroProof4": "Baştan sona tek muhatap",
     "heroDiff": "Yerel rehberin",
@@ -194,7 +194,7 @@
     "why2Title": "Türkiye'de biz de okuduk",
     "why2Text": "Başvuru ve eğitim sürecini içeriden bilen eski bir burslu öğrenci.",
     "why3Title": "Sizin dilinizde",
-    "why3Text": "Türkçe, İngilizce, Rusça, Kazakça ve Özbekçe hizmet — WhatsApp veya Telegram'dan yazın.",
+    "why3Text": "Türkçe, İngilizce, Rusça ve Kazakça hizmet — WhatsApp veya Telegram'dan yazın.",
     "ctaTitle": "Antalya planını birlikte kuralım",
     "ctaText": "Tarihini, kişi sayını ve tatil tarzını yaz. Bütçene ve seyahat etme şekline göre sana özel bir rota hazırlayalım.",
     "ctaCta": "Sana özel planı başlat",
@@ -518,7 +518,7 @@
   },
   "contact": {
     "title": "İletişime geçin",
-    "subtitle": "Bize yazın, kişisel olarak dönelim. Türkçe, İngilizce, Rusça, Kazakça ve Özbekçe konuşuyoruz.",
+    "subtitle": "Bize yazın, kişisel olarak dönelim. Türkçe, İngilizce, Rusça ve Kazakça konuşuyoruz.",
     "name": "Adınız",
     "email": "E-posta",
     "phone": "Telefon (isteğe bağlı)",
@@ -536,7 +536,7 @@
   "faq": {
     "title": "Sıkça sorulan sorular",
     "q1": "Hangi dillerde hizmet veriyorsunuz?",
-    "a1": "Türkçe, İngilizce, Rusça, Kazakça ve Özbekçe.",
+    "a1": "Türkçe, İngilizce, Rusça ve Kazakça.",
     "q2": "Nasıl ödeme yapabilirim?",
     "a2": "Kazakistan'daki misafirler Kaspi ile ödeyebilir. Diğer tüm ülkeler için kripto para (USDT, BTC ve diğerleri) kabul ediyoruz. Her ödemeyi kişisel olarak onaylıyoruz.",
     "q3": "Dersler nasıl yapılıyor?",
@@ -612,7 +612,7 @@
     "lesBook": "İlk dersini ayırt",
     "lesCapacity": "Haftada sınırlı birebir kontenjan — yerini erken ayır",
     "lesPopular": "En çok seçilen",
-    "lesReassure": "Zoom üzerinden · 5 dil · esnek saat · ücretsiz seviye tespiti",
+    "lesReassure": "Zoom üzerinden · 4 dil · esnek saat · ücretsiz seviye tespiti",
     "lesPick": "Bu süreyle başla",
     "eduDeliverTitle": "Senin için neyi hallediyoruz",
     "eduDeliverText": "Üniversite seçiminden geliş gününe kadar her adımı tek tek hallediyoruz — sen sadece okumana odaklan.",

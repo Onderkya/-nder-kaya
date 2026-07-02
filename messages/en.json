@@ -77,7 +77,7 @@
     "ab_v1Title": "A consultant with a face",
     "ab_v1Text": "You talk to a real person, not a faceless agency.",
     "ab_v2Title": "In your language",
-    "ab_v2Text": "Turkish, English, Russian, Kazakh and Uzbek.",
+    "ab_v2Text": "Turkish, English, Russian and Kazakh.",
     "ab_v3Title": "Lived experience",
     "ab_v3Text": "Guidance from someone who has truly done what you're about to do.",
     "con_findTitle": "Find us in Antalya",
@@ -127,7 +127,7 @@
     "sell_text": "You write, we listen. We build the plan from scratch around your dates, budget, dream holiday or study goal — no copy-paste packages. With real people who live in Antalya and studied in Turkey, in your own language.",
     "sell_b1": "A plan prepared just for you — not copy-paste",
     "sell_b2": "One contact: the same person start to finish",
-    "sell_b3": "In your language: TR · EN · RU · KK · UZ",
+    "sell_b3": "In your language: TR · EN · RU · KK",
     "sell_cta": "Start your personal plan",
     "lived_badge": "We've lived this too",
     "lived_title": "We achieved every service we offer ourselves first",
@@ -148,7 +148,7 @@
   "meta": {
     "siteName": "Antalya Bridge",
     "tagline": "Personalized Antalya Travel Planning with Local Experts",
-    "description": "Plan your Antalya holiday with real local people. Hotels, transfers, daily routes and activities, tailored to your dates, budget and travel style. Support in English, Turkish, Russian, Kazakh and Uzbek."
+    "description": "Plan your Antalya holiday with real local people. Hotels, transfers, daily routes and activities, tailored to your dates, budget and travel style. Support in English, Turkish, Russian and Kazakh."
   },
   "nav": {
     "home": "Home",
@@ -178,7 +178,7 @@
     "heroTitle": "Your dream Antalya holiday. Already done.",
     "heroSubtitle": "Flights, transfers, hotel, sea and tours — all thought out for you. Just pick one; we handle the rest.",
     "heroProof1": "We live in Antalya",
-    "heroProof2": "Support in 5 languages",
+    "heroProof2": "Support in 4 languages",
     "heroProof3": "Hotel + transfer + activities",
     "heroProof4": "One real contact from start to finish",
     "heroDiff": "Your local guide",
@@ -194,7 +194,7 @@
     "why2Title": "We studied in Turkey ourselves",
     "why2Text": "A former scholarship student who knows the application and education process from the inside.",
     "why3Title": "Your language, your way",
-    "why3Text": "Service in Turkish, English, Russian, Kazakh and Uzbek — message us on WhatsApp or Telegram.",
+    "why3Text": "Service in Turkish, English, Russian and Kazakh — message us on WhatsApp or Telegram.",
     "ctaTitle": "Let's plan your Antalya trip together",
     "ctaText": "Send your dates, group size and travel style. We'll prepare a personal route around your budget and the way you want to travel.",
     "ctaCta": "Start my personal plan",
@@ -284,7 +284,7 @@
     "lesBook": "Book your first lesson",
     "lesCapacity": "Limited one-to-one spots each week — reserve early",
     "lesPopular": "Most chosen",
-    "lesReassure": "Over Zoom · 5 languages · flexible hours · free level check",
+    "lesReassure": "Over Zoom · 4 languages · flexible hours · free level check",
     "lesPick": "Start with this length",
     "eduDeliverTitle": "What we handle for you",
     "eduDeliverText": "From choosing a university to your arrival day, we handle every step — you just focus on studying.",
@@ -569,7 +569,7 @@
   },
   "contact": {
     "title": "Get in touch",
-    "subtitle": "Message us and we'll reply personally. We speak Turkish, English, Russian, Kazakh and Uzbek.",
+    "subtitle": "Message us and we'll reply personally. We speak Turkish, English, Russian and Kazakh.",
     "name": "Your name",
     "email": "Email",
     "phone": "Phone (optional)",
@@ -587,7 +587,7 @@
   "faq": {
     "title": "Frequently asked questions",
     "q1": "What languages do you offer service in?",
-    "a1": "Turkish, English, Russian, Kazakh and Uzbek.",
+    "a1": "Turkish, English, Russian and Kazakh.",
     "q2": "How do I pay?",
     "a2": "Guests in Kazakhstan can pay via Kaspi. For all other countries we accept cryptocurrency (USDT, BTC and others). We confirm every payment personally.",
     "q3": "How are lessons held?",

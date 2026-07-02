@@ -92,7 +92,7 @@ export default async function AboutPage({ params }: { params: Promise<{ locale: 
       email: site.email,
       description: t("body"),
       areaServed: { "@type": "Place", name: "Antalya, Türkiye" },
-      knowsLanguage: ["Turkish", "English", "Russian", "Kazakh", "Uzbek"],
+      knowsLanguage: ["Turkish", "English", "Russian", "Kazakh"],
       founder: [
         { "@type": "Person", jobTitle: cv("founderEng"), knowsLanguage: ["Turkish", "English", "Russian"] },
         { "@type": "Person", jobTitle: cv("founderTeacher"), knowsLanguage: ["Kazakh", "Russian", "Turkish", "English"] },

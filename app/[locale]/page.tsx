@@ -422,7 +422,7 @@ export default async function HomePage({
           url: site.url,
           areaServed: "Antalya, Türkiye",
           email: site.email,
-          knowsLanguage: ["tr", "en", "ru", "kk", "uz"],
+          knowsLanguage: ["tr", "en", "ru", "kk"],
           makesOffer: [
             { "@type": "Offer", itemOffered: { "@type": "Service", name: t("servicesTitle") } },
           ],
