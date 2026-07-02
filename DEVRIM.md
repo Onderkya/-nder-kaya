@@ -4,7 +4,15 @@
 > ↩️ **Geri dönüş (rollback):** eski sürüm dokunulmadı → dal `claude/consulting-site-plan-6k4lix` + etiket `safe/before-redesign-rev9`. Beğenilmezse sunucuda o dala `git reset --hard` + rebuild.
 > Görsel/medya kaynakları: `public/images/CREDITS.txt` (CC / Mixkit / CC0) · oteller: kullanıcının verdiği resmi fotoğraflar (`public/images/hotels/`).
 
-## 🔁 Revizyon 26 — Admin yeniden tasarım FAZ 2: bölüm sıralama 7 sayfada (GÜNCEL · dal `claude/redesign-conversion`)
+## 🔁 Revizyon 27 — Admin yeniden tasarım FAZ 3: Site Editörü (GÜNCEL · dal `claude/redesign-conversion`)
+
+> Faz 3 (plan: `docs/superpowers/plans/2026-07-02-admin-redesign-3-site-editoru.md`). `tsc` ✓ · `next build` ✓ · görev başı inceleme temiz · canlı 200.
+- **`lib/editor-map.ts`:** content-map (~470 anahtar) + section-registry (33 bölüm) + asset-slots (76 slot) TEK modelde (`EditorSection`); statik eşleme tablosu; invariant'lar bağımsız script'le kanıtlı (hiç anahtar kaybolmaz, her registry id tam bir kartta).
+- **Site Editörü (`/admin/content`):** sayfa sekmeleri + dil + Kaydet araç çubuğu KORUNDU (`saveTexts`, `key|||locale`, tek form `#ce-form`, sekme geçişinde kayıp yok — alanlar DOM'da hidden kalır); her sayfa BÖLÜM KARTLARI sitedeki gerçek sırayla: kilit/tutamaç + ↑↓ + aç-kapat switch + Yayında/Gizli + kart içinde o bölümün metinleri VE görsel/video slotları (`AssetSlotGrid`) + "Sitede gör →". SSS sekmesi faq-manager + Turlar yönlendirme kartı.
+- **Sürükle-bırak:** kart tutamacından (block-reorder kalıbı), yalnız registry kartları; bırakınca `saveSectionOrder`; stable-key sayesinde form girdileri kaybolmaz. `section-toggles.tsx` + `section-manager.tsx` + ölü `AssetManager` sarmalayıcı SİLİNDİ.
+- Bilinen minor'lar (final incelemede): dışa-bırakmada geçici optimistic sapma (refresh'te düzelir), global pending.
+
+## 🔁 Revizyon 26 — Admin yeniden tasarım FAZ 2: bölüm sıralama 7 sayfada (dal `claude/redesign-conversion`)
 
 > Faz 2 (plan: `docs/superpowers/plans/2026-07-02-admin-redesign-2-siralama.md`). `tsc` ✓ · `next build` ✓ · görev başı bağımsız inceleme temiz · canlıda 7 sayfa 200 doğrulandı.
 - **Altyapı:** `section-registry` 7 sayfaya genişledi (33 bölüm; home 10 id birebir). `lib/sections.ts`: `getSectionOrders` (tek sorgu, `secorder:` öneki) + saf `applySectionOrder` (bilinmeyen id atılır, eksik id varsayılan komşusunun arkasına — kendini onarır; varsayılana eşitse kayıt SİLİNİR → "kayıt yok = bugünkü site" değişmezi). `section-actions`: `saveSectionOrder` + `moveSection` (requireAdmin+audit+revalidatePath).
