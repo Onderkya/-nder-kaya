@@ -199,6 +199,7 @@ export async function ReadyRoutes() {
     mNote: r("mNote"),
     tgPick: r("tgPick"),
     tgCopied: r("tgCopied"),
+    emailPick: r("emailPick"),
     contactHref: `/${locale}/contact`,
   };
 

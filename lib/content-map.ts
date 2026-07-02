@@ -267,6 +267,7 @@ export const CONTENT_PAGES: ContentPageDef[] = [
           "routes.waMsg",
           "routes.tgPick",
           "routes.tgCopied",
+          "routes.emailPick",
           "routes.aud_classic",
           "routes.aud_honeymoon",
           "routes.aud_family",
@@ -423,6 +424,7 @@ export const CONTENT_PAGES: ContentPageDef[] = [
           "hotelsd.waAsk",
           "hotelsd.waMsg",
           "hotelsd.tgAsk",
+          "hotelsd.emailAsk",
           "hotelsd.cullinan_loc",
           "hotelsd.cullinan_best",
           "hotelsd.cullinan_why",
@@ -585,6 +587,8 @@ export const CONTENT_PAGES: ContentPageDef[] = [
         keys: [
           "booking.title",
           "booking.intro",
+          "convert.orDirect",
+          "convert.lesMsg",
           "booking.pickSlot",
           "booking.noSlots",
           "booking.name",
@@ -820,7 +824,7 @@ export const CONTENT_PAGES: ContentPageDef[] = [
       },
       {
         title: "Kapanış CTA",
-        keys: ["convert.faqCtaTitle", "convert.faqCtaText", "convert.whatsapp", "convert.telegram"],
+        keys: ["convert.faqCtaTitle", "convert.faqCtaText", "convert.whatsapp", "convert.telegram", "convert.emailWrite"],
       },
     ],
   },

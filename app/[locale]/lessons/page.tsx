@@ -16,6 +16,7 @@ import { getManagedPage } from "@/lib/cms";
 import { BlockRenderer } from "@/components/cms/block-renderer";
 import { getAssetMap, getHiddenAssetSet, pickAssetVisible } from "@/lib/assets";
 import { getHiddenSections, sectionVisible, getSectionOrders, applySectionOrder } from "@/lib/sections";
+import { getPublicSettings } from "@/lib/settings";
 import { BookingWidget } from "./booking-widget";
 
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
@@ -35,6 +36,7 @@ export default async function LessonsPage({ params }: { params: Promise<{ locale
   const lh = await getTranslations("lessonsHome");
   const cv = await getTranslations("convert");
   const v = await getTranslations("voices");
+  const site = await getPublicSettings();
   const A = await getAssetMap();
   const H = await getHiddenAssetSet();
 
@@ -259,6 +261,42 @@ export default async function LessonsPage({ params }: { params: Promise<{ locale
             <span className="h-1.5 w-1.5 rounded-full" style={{ backgroundColor: "rgb(var(--lagoon))" }} />{cv("lesReassure")}
           </p>
           <BookingWidget slots={slots} locale={locale} labels={bookingLabels} />
+
+          {/* Randevusuz doğrudan kanal — WhatsApp · Telegram · E-posta (müşteri seçer) */}
+          <div className="mt-8">
+            <p className="text-sm font-semibold" style={{ color: "rgb(var(--foreground))" }}>{cv("orDirect")}</p>
+            <div className="mt-3 flex flex-wrap gap-2.5">
+              {site.whatsappConfigured ? (
+                <a
+                  href={`https://wa.me/${site.whatsapp}?text=${encodeURIComponent(cv("lesMsg"))}`}
+                  target="_blank"
+                  rel="noopener"
+                  className="inline-flex items-center gap-2 rounded-full border px-5 py-2.5 text-sm font-semibold transition hover:brightness-110"
+                  style={{ borderColor: "rgb(37 211 102 / 0.55)", backgroundColor: "rgb(37 211 102 / 0.10)", color: "#1da851" }}
+                >
+                  {cv("whatsapp")}
+                </a>
+              ) : null}
+              {site.telegramConfigured ? (
+                <a
+                  href={`https://t.me/${site.telegram}`}
+                  target="_blank"
+                  rel="noopener"
+                  className="inline-flex items-center gap-2 rounded-full border px-5 py-2.5 text-sm font-semibold transition hover:brightness-110"
+                  style={{ borderColor: "rgb(34 158 217 / 0.55)", backgroundColor: "rgb(34 158 217 / 0.10)", color: "#229ED9" }}
+                >
+                  {cv("telegram")}
+                </a>
+              ) : null}
+              <a
+                href={`mailto:${site.email}?body=${encodeURIComponent(cv("lesMsg"))}`}
+                className="inline-flex items-center gap-2 rounded-full border px-5 py-2.5 text-sm font-semibold transition hover:brightness-110"
+                style={{ borderColor: "rgb(var(--border))", backgroundColor: "rgb(var(--card))", color: "rgb(var(--foreground))" }}
+              >
+                {cv("emailWrite")}
+              </a>
+            </div>
+          </div>
         </div>
       </section>
     )],

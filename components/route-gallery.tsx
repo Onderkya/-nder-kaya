@@ -24,7 +24,7 @@ type Labels = {
   priceLabel: string; whyHotel: string; mapTitle: string; noteLabel: string;
   custTitle: string; custHint: string; addonsTitle: string; addNotePh: string;
   mIntro2: string; mKept: string; mRemoved: string; mAddons: string; mNote: string;
-  tgPick: string; tgCopied: string;
+  tgPick: string; tgCopied: string; emailPick: string;
 };
 
 const CORE_STEPS = 3; // uçuş + transfer + giriş her zaman dahil (çıkarılamaz)
@@ -150,6 +150,13 @@ export function RouteGallery({ routes, addons, labels }: { routes: Route[]; addo
     try { void navigator.clipboard?.writeText(msg); } catch { /* yok say */ }
     setTgCopied(true);
     window.open(telegramLink(), "_blank", "noopener");
+  }
+
+  function sendViaEmail() {
+    const msg = buildMessage();
+    if (msg == null || !active) return;
+    // mailto: konu = paket adı, gövde = kişiselleştirilmiş özet.
+    window.location.href = `mailto:${siteConfig.email}?subject=${encodeURIComponent(active.name)}&body=${encodeURIComponent(msg)}`;
   }
 
   return (
@@ -393,6 +400,14 @@ export function RouteGallery({ routes, addons, labels }: { routes: Route[]; addo
                   {labels.tgPick}
                 </button>
               ) : null}
+              <button
+                type="button"
+                onClick={sendViaEmail}
+                className="mt-2.5 inline-flex w-full items-center justify-center gap-2 rounded-full border px-5 py-3 text-sm font-semibold transition hover:brightness-110"
+                style={{ borderColor: "rgb(var(--border))", backgroundColor: "rgb(var(--muted) / 0.5)", color: "rgb(var(--foreground))" }}
+              >
+                {labels.emailPick}
+              </button>
               {tgCopied ? (
                 <p className="mt-2 text-center text-[12px] font-semibold" style={{ color: "#229ED9" }}>{labels.tgCopied}</p>
               ) : null}

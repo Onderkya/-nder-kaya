@@ -165,6 +165,9 @@ export default async function EducationPage({ params }: { params: Promise<{ loca
                   {cv("telegram")}
                 </a>
               ) : null}
+              <a href={`mailto:${site.email}`} className="inline-flex items-center gap-2 rounded-full border border-white/40 px-6 py-3 text-sm font-semibold text-white transition hover:bg-white/10">
+                {cv("emailWrite")}
+              </a>
             </div>
           </div>
         </Reveal>

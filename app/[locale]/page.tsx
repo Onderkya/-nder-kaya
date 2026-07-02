@@ -89,6 +89,8 @@ export default async function HomePage({
         : null,
       // Telegram alternatifi — kanalı müşteri seçer (t.me mesaj önyazmayı desteklemez).
       tg: site.telegramConfigured ? `https://t.me/${site.telegram}` : null,
+      // E-posta: konu + gövde önyazılı mailto.
+      em: `mailto:${site.email}?subject=${encodeURIComponent(h.name)}&body=${encodeURIComponent(hd("waMsg", { name: h.name }))}`,
     }))
     // Görseli gizlenmiş otel kartı listeden düşer (existsSync ile aynı davranış).
     .filter((h): h is typeof h & { img: string } => h.img !== null);
@@ -189,7 +191,7 @@ export default async function HomePage({
             <h2 className="h-section mt-5" style={{ color: "rgb(var(--foreground))" }}>{t("hotelsTitle")}</h2>
           </Reveal>
           <Reveal className="mt-12">
-            <HotelCards hotels={hotels} labels={{ cta: t("hotelsCta"), bestFor: hd("bestFor"), why: hd("why"), note: hd("note"), waAsk: hd("waAsk"), tgAsk: hd("tgAsk") }} />
+            <HotelCards hotels={hotels} labels={{ cta: t("hotelsCta"), bestFor: hd("bestFor"), why: hd("why"), note: hd("note"), waAsk: hd("waAsk"), tgAsk: hd("tgAsk"), emailAsk: hd("emailAsk") }} />
           </Reveal>
           <p className="mt-7 text-center text-xs" style={{ color: "rgb(var(--muted-foreground))" }}>
             {t("hotelsNote")}

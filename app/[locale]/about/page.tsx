@@ -247,6 +247,8 @@ export default async function AboutPage({ params }: { params: Promise<{ locale: 
         waHref={site.whatsappConfigured ? `https://wa.me/${site.whatsapp}` : undefined}
         tgLabel={site.telegramConfigured ? cv("telegram") : undefined}
         tgHref={site.telegramConfigured ? `https://t.me/${site.telegram}` : undefined}
+        emailLabel={cv("emailWrite")}
+        emailHref={`mailto:${site.email}`}
       />
     </>
   );
