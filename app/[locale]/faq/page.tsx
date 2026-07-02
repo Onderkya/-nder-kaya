@@ -36,11 +36,9 @@ export default async function FaqPage({ params }: { params: Promise<{ locale: st
   const orders = await getSectionOrders();
 
   const extras = await getFaqExtrasFor(locale);
+  // 16 sabit soru (q1-q16) + admin'den eklenen ekstralar.
   const items = [
-    { q: t("q1"), a: t("a1") },
-    { q: t("q2"), a: t("a2") },
-    { q: t("q3"), a: t("a3") },
-    { q: t("q4"), a: t("a4") },
+    ...Array.from({ length: 16 }, (_, i) => ({ q: t(`q${i + 1}`), a: t(`a${i + 1}`) })),
     ...extras,
   ];
 
