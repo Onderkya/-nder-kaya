@@ -13,6 +13,8 @@ export type JourneyStep = {
   /** Varsa arka plan videosu (poster = img); yalnız aktif adım oynar. */
   video?: string;
   points?: string[];
+  /** "Bu adımda biz …" — danışmanlık değerini somutlaştıran kısa not. */
+  weDo?: string;
 };
 
 const seg = (p: number, a: number, b: number) => Math.min(1, Math.max(0, (p - a) / (b - a)));
@@ -22,7 +24,7 @@ const seg = (p: number, a: number, b: number) => Math.min(1, Math.max(0, (p - a)
  * içerik kartı (numara + başlık + maddeler) kayarak girer. Ana sayfadaki
  * ActivitiesDive ile aynı scroll-sürücü mekanik (rAF + seg).
  */
-export function StudyJourney({ eyebrow, steps }: { eyebrow: string; steps: JourneyStep[] }) {
+export function StudyJourney({ eyebrow, steps, weDoLabel }: { eyebrow: string; steps: JourneyStep[]; weDoLabel?: string }) {
   const rootRef = useRef<HTMLElement>(null);
   const videoEls = useRef<Array<HTMLVideoElement | null>>([]);
 
@@ -114,7 +116,7 @@ export function StudyJourney({ eyebrow, steps }: { eyebrow: string; steps: Journ
         <div className="container-wide absolute inset-0 z-10 flex items-center">
           <div className="relative w-full max-w-xl">
             <p className="eyebrow mb-5 text-white/80">{eyebrow}</p>
-            <div className="relative min-h-[22rem]">
+            <div className="relative min-h-[27rem]">
               {steps.map((st, k) => (
                 <div key={k} className="sj-card absolute inset-0 text-white" style={{ opacity: k === 0 ? 1 : 0 }}>
                   <span className="serif-italic block text-5xl sm:text-6xl" style={{ color: "rgb(var(--gold))" }}>{st.n}</span>
@@ -132,6 +134,12 @@ export function StudyJourney({ eyebrow, steps }: { eyebrow: string; steps: Journ
                         </li>
                       ))}
                     </ul>
+                  ) : null}
+                  {st.weDo && weDoLabel ? (
+                    <p className="mt-5 max-w-md rounded-2xl border px-4 py-3 text-[14px] leading-relaxed text-white/90" style={{ borderColor: "rgb(255 255 255 / 0.22)", backgroundColor: "rgb(255 255 255 / 0.08)" }}>
+                      <span className="mb-1 block text-[11px] font-bold uppercase tracking-widest" style={{ color: "rgb(var(--gold))" }}>{weDoLabel}</span>
+                      {st.weDo}
+                    </p>
                   ) : null}
                 </div>
               ))}

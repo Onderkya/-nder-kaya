@@ -62,11 +62,14 @@ export default async function EducationPage({ params }: { params: Promise<{ loca
       /* Immersive iniş: 4 adım */
       <StudyJourney
         eyebrow={x("edu_journeyEyebrow")}
+        weDoLabel={x("edu_weDo")}
         steps={[
-          { n: "01", title: x("edu_s1Title"), place: x("edu_s1Place"), text: x("edu_s1Text"), img: campus ?? undefined, video: pickAssetVisible(A, H, "education.step1.video", "/media/campus-aerial.mp4") ?? undefined, points: [x("edu_s1a"), x("edu_s1b")] },
-          { n: "02", title: x("edu_s2Title"), place: x("edu_s2Place"), text: x("edu_s2Text"), img: pickAssetVisible(A, H, "education.step2.image", "/images/campus.jpg") ?? undefined, video: pickAssetVisible(A, H, "education.step2.video", "/media/office-consult.mp4") ?? undefined, points: [x("edu_s2a"), x("edu_s2b")] },
-          { n: "03", title: x("edu_s3Title"), place: x("edu_s3Place"), text: x("edu_s3Text"), img: pickAssetVisible(A, H, "education.step3.image", "/images/kaleici-inside.jpg") ?? undefined, video: pickAssetVisible(A, H, "education.step3.video", "/media/edu-street.mp4") ?? undefined, points: [x("edu_s3a"), x("edu_s3b")] },
-          { n: "04", title: x("edu_s4Title"), place: x("edu_s4Place"), text: x("edu_s4Text"), img: pickAssetVisible(A, H, "education.step4.image", "/images/dorm.jpg") ?? undefined, points: [x("edu_s4a"), x("edu_s4b")] },
+          { n: "01", title: x("edu_s1Title"), place: x("edu_s1Place"), text: x("edu_s1Text"), img: campus ?? undefined, video: pickAssetVisible(A, H, "education.step1.video", "/media/campus-aerial.mp4") ?? undefined, points: [x("edu_s1a"), x("edu_s1b")], weDo: x("edu_s1We") },
+          { n: "02", title: x("edu_s2Title"), place: x("edu_s2Place"), text: x("edu_s2Text"), img: pickAssetVisible(A, H, "education.step2.image", "/images/campus.jpg") ?? undefined, video: pickAssetVisible(A, H, "education.step2.video", "/media/office-consult.mp4") ?? undefined, points: [x("edu_s2a"), x("edu_s2b")], weDo: x("edu_s2We") },
+          { n: "03", title: x("edu_s5Title"), place: x("edu_s5Place"), text: x("edu_s5Text"), img: pickAssetVisible(A, H, "education.step5.image", "/images/turkish-flag-sky.jpg") ?? undefined, points: [x("edu_s5a"), x("edu_s5b")], weDo: x("edu_s5We") },
+          { n: "04", title: x("edu_s3Title"), place: x("edu_s3Place"), text: x("edu_s3Text"), img: pickAssetVisible(A, H, "education.step3.image", "/images/kaleici-inside.jpg") ?? undefined, video: pickAssetVisible(A, H, "education.step3.video", "/media/edu-street.mp4") ?? undefined, points: [x("edu_s3a"), x("edu_s3b")], weDo: x("edu_s3We") },
+          { n: "05", title: x("edu_s4Title"), place: x("edu_s4Place"), text: x("edu_s4Text"), img: pickAssetVisible(A, H, "education.step4.image", "/images/dorm.jpg") ?? undefined, points: [x("edu_s4a"), x("edu_s4b")], weDo: x("edu_s4We") },
+          { n: "06", title: x("edu_s6Title"), place: x("edu_s6Place"), text: x("edu_s6Text"), img: pickAssetVisible(A, H, "education.step6.image", "/images/kaleici-harbor.jpg") ?? undefined, points: [x("edu_s6a"), x("edu_s6b")], weDo: x("edu_s6We") },
         ]}
       />
     )],
