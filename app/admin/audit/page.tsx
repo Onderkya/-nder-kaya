@@ -50,7 +50,6 @@ export default async function AuditPage() {
   return (
     <div className="space-y-6">
       <PageHeader
-        eyebrow="Yönetim Paneli"
         title="Denetim Kaydı"
         description="Son 100 hassas yönetim işlemi (en yeni üstte). Kim, ne zaman, neyi değiştirdi. Yalnızca görüntüleme amaçlıdır."
       />

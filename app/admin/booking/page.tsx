@@ -90,7 +90,6 @@ export default async function BookingPage() {
   return (
     <div className="space-y-6">
       <PageHeader
-        eyebrow="Gelen Kutusu"
         title="Rezervasyon"
         description="Ders tiplerini (süre/fiyat) ve uygun zaman slotlarını yönetin. Boş slotlar dersler sayfasında müşterilere gösterilir."
       />

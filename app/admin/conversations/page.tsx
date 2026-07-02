@@ -44,7 +44,6 @@ export default async function ConversationsPage({
   return (
     <div className="space-y-6">
       <PageHeader
-        eyebrow="Gelen Kutusu"
         title="Sohbetler"
         description="Bot (Telegram/WhatsApp) konuşmalarını görüntüleyin. Soldan bir konuşma seçip mesaj geçmişini okuyabilirsiniz."
       />
@@ -79,7 +78,11 @@ export default async function ConversationsPage({
           {/* Detay */}
           <Card>
             {!selected ? (
-              <p className="adm-muted py-10 text-center text-sm">Soldan bir konuşma seçin.</p>
+              <EmptyState
+                icon="chat"
+                title="Bir konuşma seçin"
+                description="Soldaki listeden bir konuşmaya tıklayın; mesaj geçmişi burada açılır."
+              />
             ) : (
               <div>
                 <div className="mb-4 flex items-center justify-between gap-3 border-b pb-3" style={{ borderColor: "rgb(var(--border))" }}>

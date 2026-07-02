@@ -17,6 +17,14 @@ const STATUS_TONE: Record<LeadStatus, "neutral" | "success" | "warn" | "danger">
   ARCHIVED: "neutral",
 };
 
+const STATUS_LABEL: Record<LeadStatus, string> = {
+  NEW: "Yeni",
+  CONTACTED: "İletişime geçildi",
+  CONFIRMED: "Onaylandı",
+  DONE: "Tamamlandı",
+  ARCHIVED: "Arşiv",
+};
+
 async function updateStatus(formData: FormData) {
   "use server";
   await requireAdmin();
@@ -34,9 +42,8 @@ export default async function LeadsPage() {
   return (
     <div className="space-y-6">
       <PageHeader
-        eyebrow="Gelen Kutusu"
         title="Talepler"
-        description="Müşterilerin iletişim formu ve bottan gelen mesajları. Her talebin durumunu buradan güncelleyebilirsin."
+        description="İletişim formundan ve bottan gelen mesajlar. Her talebin durumunu buradan güncelleyebilirsin."
       />
 
       {leads.length === 0 ? (
@@ -53,7 +60,7 @@ export default async function LeadsPage() {
               <Card key={l.id}>
                 <div className="mb-2 flex items-start justify-between gap-3">
                   <p className="font-semibold" style={{ color: "rgb(var(--foreground))" }}>{l.name}</p>
-                  <Badge tone={STATUS_TONE[l.status]}>{l.status}</Badge>
+                  <Badge tone={STATUS_TONE[l.status]}>{STATUS_LABEL[l.status]}</Badge>
                 </div>
                 <dl className="space-y-1.5 text-[13.5px]">
                   <div className="flex gap-2">
@@ -82,7 +89,7 @@ export default async function LeadsPage() {
                   <input type="hidden" name="id" value={l.id} />
                   <select name="status" defaultValue={l.status} className="adm-select flex-1">
                     {statuses.map((s) => (
-                      <option key={s} value={s}>{s}</option>
+                      <option key={s} value={s}>{STATUS_LABEL[s]}</option>
                     ))}
                   </select>
                   <button className="adm-btn adm-btn-primary adm-btn-sm">Kaydet</button>
@@ -116,7 +123,7 @@ export default async function LeadsPage() {
                     <td className="px-5 py-3" style={{ color: "rgb(var(--foreground))" }}>{l.service || "-"}</td>
                     <td className="adm-muted max-w-xs whitespace-pre-wrap px-5 py-3">{l.message}</td>
                     <td className="px-5 py-3">
-                      <div className="mb-2"><Badge tone={STATUS_TONE[l.status]}>{l.status}</Badge></div>
+                      <div className="mb-2"><Badge tone={STATUS_TONE[l.status]}>{STATUS_LABEL[l.status]}</Badge></div>
                       <form action={updateStatus} className="flex items-center gap-2">
                         <input type="hidden" name="id" value={l.id} />
                         <select name="status" defaultValue={l.status} className="adm-select">
