@@ -9,7 +9,7 @@ import { ConversionBand } from "@/components/conversion-band";
 import { getPublicSettings } from "@/lib/settings";
 import { getManagedPage } from "@/lib/cms";
 import { BlockRenderer } from "@/components/cms/block-renderer";
-import { getAssetMap, pickAsset } from "@/lib/assets";
+import { getAssetMap, getHiddenAssetSet, pickAssetVisible } from "@/lib/assets";
 import { getFaqExtrasFor } from "@/lib/faq";
 import { getHiddenSections, sectionVisible, getSectionOrders, applySectionOrder } from "@/lib/sections";
 
@@ -31,6 +31,7 @@ export default async function FaqPage({ params }: { params: Promise<{ locale: st
   const c = await getTranslations("common");
   const site = await getPublicSettings();
   const A = await getAssetMap();
+  const H = await getHiddenAssetSet();
   const hidden = await getHiddenSections();
   const orders = await getSectionOrders();
 
@@ -76,7 +77,7 @@ export default async function FaqPage({ params }: { params: Promise<{ locale: st
           })),
         }}
       />
-      <CinematicHero eyebrow={x("faq_eyebrow")} title={t("title")} image={pickAsset(A, "faq.hero.image", "/images/kemer.jpg")} video={pickAsset(A, "faq.hero.video", "/media/vid-kemer.mp4")} />
+      <CinematicHero eyebrow={x("faq_eyebrow")} title={t("title")} image={pickAssetVisible(A, H, "faq.hero.image", "/images/kemer.jpg") ?? undefined} video={pickAssetVisible(A, H, "faq.hero.video", "/media/vid-kemer.mp4") ?? undefined} />
 
       {/* SIRAYA BAĞLI BÖLÜMLER (registry sırası; kayıt yoksa birebir aynı) */}
       {orderedIds.filter((id) => sectionVisible(hidden, id)).map((id) => (

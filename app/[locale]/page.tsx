@@ -20,7 +20,7 @@ import { IconArrow, IconCheck } from "@/components/icons";
 import { getPublicSettings } from "@/lib/settings";
 import { getManagedPage } from "@/lib/cms";
 import { BlockRenderer } from "@/components/cms/block-renderer";
-import { getAssetMap, pickAsset } from "@/lib/assets";
+import { getAssetMap, getHiddenAssetSet, pickAssetVisible } from "@/lib/assets";
 import { resolveGallery } from "@/lib/gallery";
 import { getHiddenSections, sectionVisible, getSectionOrders, applySectionOrder } from "@/lib/sections";
 
@@ -34,6 +34,7 @@ export default async function HomePage({
   const cmsPage = await getManagedPage("home", locale);
   if (cmsPage) return <BlockRenderer page={cmsPage} locale={locale} />;
   const A = await getAssetMap();
+  const H = await getHiddenAssetSet();
   const hidden = await getHiddenSections();
   const orders = await getSectionOrders();
   const site = await getPublicSettings();
@@ -77,12 +78,14 @@ export default async function HomePage({
     .filter((h) => has(path.join("hotels", h.file)))
     .map((h) => ({
       name: h.name,
-      img: pickAsset(A, h.slot, `/images/hotels/${h.file}`),
+      img: pickAssetVisible(A, H, h.slot, `/images/hotels/${h.file}`),
       location: hd(`${h.key}_loc`),
       best: hd(`${h.key}_best`),
       why: hd(`${h.key}_why`),
       note: hd(`${h.key}_note`),
-    }));
+    }))
+    // Görseli gizlenmiş otel kartı listeden düşer (existsSync ile aynı davranış).
+    .filter((h): h is typeof h & { img: string } => h.img !== null);
 
   const reasons = [
     { n: "I", title: t("why1Title"), text: t("why1Text") },
@@ -134,17 +137,22 @@ export default async function HomePage({
 
   // Fermuar deneyimi (home.zipper): admin override varsa dinamik liste, yoksa
   // koddaki satır içi varsayılan (pickAsset ile — bugünkü çıktı birebir).
-  const zipperItems = await resolveGallery("home.zipper", locale, [
-    { video: pickAsset(A, "home.zipper.scuba.video", "/media/act-scuba2.mp4"), img: pickAsset(A, "home.zipper.scuba.image", "/images/kaputas-deep.jpg"), name: t("actScuba"), sub: "Akdeniz'in altı" },
-    { video: pickAsset(A, "home.zipper.kaputas.video", "/media/kaputas-drone.mp4"), img: pickAsset(A, "home.zipper.kaputas.image", "/images/kaputas.jpg"), name: "Kaputaş Plajı", sub: "Kaş" },
-    { video: pickAsset(A, "home.zipper.kas.video", "/media/vid-kas.mp4"), img: pickAsset(A, "home.zipper.kas.image", "/images/sunset.jpg"), name: "Kaş", sub: "Gün batımı" },
-    { video: pickAsset(A, "home.zipper.suluada.video", "/media/vid-suluada.mp4"), img: pickAsset(A, "home.zipper.suluada.image", "/images/suluada.jpg"), name: "Suluada", sub: "Adrasan" },
-    { video: pickAsset(A, "home.zipper.olympos.video", "/media/vid-olympos.mp4"), img: pickAsset(A, "home.zipper.olympos.image", "/images/olympos.jpg"), name: "Olympos", sub: "Çıralı" },
-    { video: pickAsset(A, "home.zipper.kemer.video", "/media/vid-kemer.mp4"), img: pickAsset(A, "home.zipper.kemer.image", "/images/kemer.jpg"), name: "Kemer", sub: "Marina" },
-    { video: pickAsset(A, "home.zipper.alanyaCastle.video", "/media/vid-alanya-castle.mp4"), img: pickAsset(A, "home.zipper.alanyaCastle.image", "/images/alanya.jpg"), name: "Alanya Kalesi", sub: "Kızıl Kule" },
-    { video: pickAsset(A, "home.zipper.kleopatra.video", "/media/vid-alanya-kleopatra.mp4"), img: pickAsset(A, "home.zipper.kleopatra.image", "/images/alanya.jpg"), name: "Kleopatra", sub: "Alanya sahili" },
-    { video: pickAsset(A, "home.zipper.legends.video", "/media/lol-aqua.mp4"), img: pickAsset(A, "home.zipper.legends.image", "/images/coaster.jpg"), name: "Land of Legends", sub: "Aqua park · Belek" },
-  ]);
+  // Görüntü slotu gizliyse öğe varsayılan listeden düşer; yalnız video slotu
+  // gizliyse video atlanır (poster görsel kalır). pickAssetVisible ile.
+  const zipperDefaults = [
+    { video: pickAssetVisible(A, H, "home.zipper.scuba.video", "/media/act-scuba2.mp4"), img: pickAssetVisible(A, H, "home.zipper.scuba.image", "/images/kaputas-deep.jpg"), name: t("actScuba"), sub: "Akdeniz'in altı" },
+    { video: pickAssetVisible(A, H, "home.zipper.kaputas.video", "/media/kaputas-drone.mp4"), img: pickAssetVisible(A, H, "home.zipper.kaputas.image", "/images/kaputas.jpg"), name: "Kaputaş Plajı", sub: "Kaş" },
+    { video: pickAssetVisible(A, H, "home.zipper.kas.video", "/media/vid-kas.mp4"), img: pickAssetVisible(A, H, "home.zipper.kas.image", "/images/sunset.jpg"), name: "Kaş", sub: "Gün batımı" },
+    { video: pickAssetVisible(A, H, "home.zipper.suluada.video", "/media/vid-suluada.mp4"), img: pickAssetVisible(A, H, "home.zipper.suluada.image", "/images/suluada.jpg"), name: "Suluada", sub: "Adrasan" },
+    { video: pickAssetVisible(A, H, "home.zipper.olympos.video", "/media/vid-olympos.mp4"), img: pickAssetVisible(A, H, "home.zipper.olympos.image", "/images/olympos.jpg"), name: "Olympos", sub: "Çıralı" },
+    { video: pickAssetVisible(A, H, "home.zipper.kemer.video", "/media/vid-kemer.mp4"), img: pickAssetVisible(A, H, "home.zipper.kemer.image", "/images/kemer.jpg"), name: "Kemer", sub: "Marina" },
+    { video: pickAssetVisible(A, H, "home.zipper.alanyaCastle.video", "/media/vid-alanya-castle.mp4"), img: pickAssetVisible(A, H, "home.zipper.alanyaCastle.image", "/images/alanya.jpg"), name: "Alanya Kalesi", sub: "Kızıl Kule" },
+    { video: pickAssetVisible(A, H, "home.zipper.kleopatra.video", "/media/vid-alanya-kleopatra.mp4"), img: pickAssetVisible(A, H, "home.zipper.kleopatra.image", "/images/alanya.jpg"), name: "Kleopatra", sub: "Alanya sahili" },
+    { video: pickAssetVisible(A, H, "home.zipper.legends.video", "/media/lol-aqua.mp4"), img: pickAssetVisible(A, H, "home.zipper.legends.image", "/images/coaster.jpg"), name: "Land of Legends", sub: "Aqua park · Belek" },
+  ]
+    .filter((it): it is typeof it & { img: string } => it.img !== null)
+    .map(({ video, ...rest }) => ({ ...rest, ...(video !== null ? { video } : {}) }));
+  const zipperItems = await resolveGallery("home.zipper", locale, zipperDefaults);
 
   // Sıraya bağlanan registry bölümleri — koddaki mevcut sırayla, JSX içeriği aynen.
   const sectionBlocks: [string, ReactNode][] = [
@@ -192,13 +200,15 @@ export default async function HomePage({
       <section className="relative overflow-hidden text-white" style={{ backgroundColor: "#07212b" }}>
         <div className="grid lg:grid-cols-2">
           <div className="relative min-h-[340px] lg:min-h-full">
+            {(() => { const src = pickAssetVisible(A, H, "home.whyBand.image", "/images/sunset.jpg"); return src ? (
             <Image
-              src={pickAsset(A, "home.whyBand.image", "/images/sunset.jpg")}
+              src={src}
               alt="Kaş'ta Akdeniz gün batımı, Antalya"
               fill
               sizes="(max-width: 1024px) 100vw, 50vw"
               className="object-cover"
             />
+            ) : null; })()}
             <div className="absolute inset-0" style={{ background: "linear-gradient(90deg, transparent 40%, #07212b 100%)" }} />
           </div>
 
@@ -277,7 +287,14 @@ export default async function HomePage({
           <div className="grid items-center gap-10 lg:grid-cols-12 lg:gap-16">
             <Reveal className="lg:col-span-5">
               <figure className="relative aspect-[4/3] overflow-hidden rounded-[2rem] shadow-xl">
-                <AutoVideo className="absolute inset-0 h-full w-full object-cover" src={pickAsset(A, "home.study.video", "/media/turkish-flag-boat.mp4")} poster={pickAsset(A, "home.study.poster", "/images/turkish-flag.jpg")} />
+                {(() => {
+                  const vid = pickAssetVisible(A, H, "home.study.video", "/media/turkish-flag-boat.mp4");
+                  const poster = pickAssetVisible(A, H, "home.study.poster", "/images/turkish-flag.jpg");
+                  // Video gizliyse poster statik görsel olur; poster da gizliyse hiçbiri.
+                  if (vid) return <AutoVideo className="absolute inset-0 h-full w-full object-cover" src={vid} poster={poster ?? undefined} />;
+                  if (poster) return <Image src={poster} alt="" fill sizes="(max-width: 1024px) 100vw, 40vw" className="object-cover" />;
+                  return null;
+                })()}
                 <div className="absolute inset-0" style={{ background: "linear-gradient(180deg, transparent 55%, rgba(4,18,24,0.45) 100%)" }} />
               </figure>
             </Reveal>
@@ -400,9 +417,9 @@ export default async function HomePage({
         soundLabel={t("soundWave")}
         diffLabel={t("heroDiff")}
         proof={[t("heroProof1"), t("heroProof2"), t("heroProof3"), t("heroProof4")]}
-        aerialVideo={pickAsset(A, "home.hero.aerialVideo", "/media/kaputas-drone.mp4")}
-        poster={pickAsset(A, "home.hero.poster", "/images/kaputas.jpg")}
-        diveFishVideo={pickAsset(A, "home.diveFish.video", "/media/dive-fish.mp4")}
+        aerialVideo={pickAssetVisible(A, H, "home.hero.aerialVideo", "/media/kaputas-drone.mp4") ?? undefined}
+        poster={pickAssetVisible(A, H, "home.hero.poster", "/images/kaputas.jpg") ?? undefined}
+        diveFishVideo={pickAssetVisible(A, H, "home.diveFish.video", "/media/dive-fish.mp4") ?? undefined}
       />
 
       {/* ============ 2–9.5 · SIRAYA BAĞLI BÖLÜMLER (registry sırası; kayıt yoksa birebir aynı) ============ */}
@@ -413,13 +430,15 @@ export default async function HomePage({
       {/* ============ 10 · SON CTA ============ */}
       <section className="relative">
         <Reveal className="relative flex min-h-[460px] items-center justify-center overflow-hidden px-6 py-24 text-center text-white sm:min-h-[540px]">
+          {(() => { const src = pickAssetVisible(A, H, "home.finalCta.image", "/images/lagoon.jpg"); return src ? (
           <Image
-            src={pickAsset(A, "home.finalCta.image", "/images/lagoon.jpg")}
+            src={src}
             alt="Ölüdeniz Mavi Lagün — turkuaz deniz ve yamaç paraşütü"
             fill
             sizes="100vw"
             className="object-cover"
           />
+          ) : null; })()}
           <div className="absolute inset-0" style={{ background: "linear-gradient(180deg, rgb(4 18 24 / 0.55), rgb(4 18 24 / 0.78))" }} />
           <div className="relative z-10 mx-auto max-w-2xl">
             <p className="eyebrow justify-center text-white/80">{meta("siteName")}</p>

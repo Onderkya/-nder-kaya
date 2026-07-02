@@ -8,7 +8,8 @@ export type JourneyStep = {
   title: string;
   text: string;
   place: string;
-  img: string;
+  /** Arka plan görseli. Gizlenirse (undefined) degrade taban kalır. */
+  img?: string;
   /** Varsa arka plan videosu (poster = img); yalnız aktif adım oynar. */
   video?: string;
   points?: string[];
@@ -101,9 +102,9 @@ export function StudyJourney({ eyebrow, steps }: { eyebrow: string; steps: Journ
                   preload="none"
                   aria-hidden
                 />
-              ) : (
+              ) : st.img ? (
                 <Image src={st.img} alt={st.title} fill sizes="100vw" className="object-cover" />
-              )}
+              ) : null}
             </div>
             <div className="absolute inset-0" style={{ background: "linear-gradient(105deg, rgba(4,18,26,0.86) 0%, rgba(4,18,26,0.55) 45%, rgba(4,18,26,0.25) 100%)" }} />
           </div>

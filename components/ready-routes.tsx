@@ -3,7 +3,7 @@ import { Reveal } from "@/components/reveal";
 import { IconCheck } from "@/components/icons";
 import { RouteGallery } from "@/components/route-gallery";
 import { getPublicSettings } from "@/lib/settings";
-import { getAssetMap, pickAsset } from "@/lib/assets";
+import { getAssetMap, pickAssetVisible, getHiddenAssetSet } from "@/lib/assets";
 import { getTourCfgs, pickL10n, tourOrder } from "@/lib/tours";
 import { DEFAULT_STEPS, DEFAULT_INCLUDED } from "@/lib/tour-defaults";
 import { faIconData } from "@/components/fa-icon";
@@ -31,6 +31,7 @@ export async function ReadyRoutes() {
   const hd = await getTranslations("hotelsd");
   const locale = await getLocale();
   const A = await getAssetMap();
+  const H = await getHiddenAssetSet();
 
   // Özel turlarda kullanılan ortak baş adımlar (uçuş/transfer) — kodlu turların
   // adımları artık tek kaynaktan (DEFAULT_STEPS) gelir.
@@ -44,27 +45,27 @@ export async function ReadyRoutes() {
   const baseRoutes = [
     {
       key: "r1", name: r("r1_name"), tag: r("r1_tag"), best: r("r1_best"), aud: r("aud_classic"),
-      days: 3, stars: 5, hotel: "Lara Barut Collection", loc: hd("larabarut_loc"), img: pickAsset(A, "route.r1.image", "/images/hotels/lara-barut.jpg"),
+      days: 3, stars: 5, hotel: "Lara Barut Collection", loc: hd("larabarut_loc"), img: pickAssetVisible(A, H, "route.r1.image", "/images/hotels/lara-barut.jpg"),
       steps: stepsOf("r1"),
     },
     {
       key: "r2", name: r("r2_name"), tag: r("r2_tag"), best: r("r2_best"), aud: r("aud_classic"),
-      days: 5, stars: 5, hotel: "Cullinan Belek", loc: hd("cullinan_loc"), img: pickAsset(A, "route.r2.image", "/images/hotels/cullinan-belek.jpg"),
+      days: 5, stars: 5, hotel: "Cullinan Belek", loc: hd("cullinan_loc"), img: pickAssetVisible(A, H, "route.r2.image", "/images/hotels/cullinan-belek.jpg"),
       steps: stepsOf("r2"),
     },
     {
       key: "r3", name: r("r3_name"), tag: r("r3_tag"), best: r("r3_best"), aud: r("aud_honeymoon"),
-      days: 5, stars: 5, hotel: "NG Phaselis Bay", loc: hd("ngphaselis_loc"), img: pickAsset(A, "route.r3.image", "/images/hotels/ng-phaselis-bay.jpg"),
+      days: 5, stars: 5, hotel: "NG Phaselis Bay", loc: hd("ngphaselis_loc"), img: pickAssetVisible(A, H, "route.r3.image", "/images/hotels/ng-phaselis-bay.jpg"),
       steps: stepsOf("r3"),
     },
     {
       key: "r4", name: r("r4_name"), tag: r("r4_tag"), best: r("r4_best"), aud: r("aud_family"),
-      days: 7, stars: 5, hotel: "Land of Legends Kingdom", loc: hd("legends_loc"), img: pickAsset(A, "route.r4.image", "/images/hotels/land-of-legends-kingdom.jpg"),
+      days: 7, stars: 5, hotel: "Land of Legends Kingdom", loc: hd("legends_loc"), img: pickAssetVisible(A, H, "route.r4.image", "/images/hotels/land-of-legends-kingdom.jpg"),
       steps: stepsOf("r4"),
     },
     {
       key: "r5", name: r("r5_name"), tag: r("r5_tag"), best: r("r5_best"), aud: r("aud_luxury"),
-      days: 7, stars: 5, hotel: "Maxx Royal Kemer", loc: hd("maxxkemer_loc"), img: pickAsset(A, "route.r5.image", "/images/hotels/maxx-royal-kemer.jpg"),
+      days: 7, stars: 5, hotel: "Maxx Royal Kemer", loc: hd("maxxkemer_loc"), img: pickAssetVisible(A, H, "route.r5.image", "/images/hotels/maxx-royal-kemer.jpg"),
       steps: stepsOf("r5"),
     },
   ];
@@ -80,7 +81,8 @@ export async function ReadyRoutes() {
   const mergedBase = baseRoutes
     .map((rt) => {
       const c = cfgOf.get(rt.key);
-      if (!c) return rt;
+      // cfg yoksa: img slotu gizliyse (null) undefined'a normalize (degrade kalır), aksi hâlde birebir.
+      if (!c) return { ...rt, img: rt.img || undefined };
       // Kodlu turda adım override'ı: cfg.steps varsa adımlar oradan gelir
       // (active===false atlanır; L10n pickL10n; icon yoksa "landmark"); yoksa DEFAULT_STEPS.
       const steps = c.steps?.length
@@ -96,7 +98,8 @@ export async function ReadyRoutes() {
         stars: c.stars ?? rt.stars,
         hotel: c.hotel?.trim() || rt.hotel,
         loc: c.loc?.trim() || rt.loc,
-        img: c.img?.trim() || rt.img,
+        // Slot gizliyse (rt.img null) ve cfg override yoksa görsel çizilmez (degrade kalır).
+        img: c.img?.trim() || rt.img || undefined,
         steps,
       };
     })

@@ -25,7 +25,8 @@ export function CinematicHero({
   eyebrow?: string;
   title: string;
   intro?: string;
-  image: string;
+  /** Taban poster. Gizlenirse (undefined) taban görsel çizilmez; videolar yine biner. */
+  image?: string;
   video?: string;
   videos?: string[];
   flag?: boolean;
@@ -89,8 +90,8 @@ export function CinematicHero({
       style={{ minHeight: height }}
     >
       <div ref={mediaRef} className="cine-media absolute inset-0 will-change-transform" style={{ transform: "scale(1.1)" }}>
-        {/* Taban poster — anında boyanır, fallback */}
-        <Image src={image} alt={title} fill priority sizes="100vw" className="object-cover" />
+        {/* Taban poster — anında boyanır, fallback (gizliyse çizilmez) */}
+        {image ? <Image src={image} alt={title} fill priority sizes="100vw" className="object-cover" /> : null}
         {/* Videolar — aktif olan yumuşak biner */}
         {clips.map((src, i) => (
           <video

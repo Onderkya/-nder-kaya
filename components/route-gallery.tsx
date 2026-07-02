@@ -12,7 +12,7 @@ type Step = { icon: TourIconData; day: number; t: string; d: string; dl: string 
 type Inclusion = { icon: TourIconData; label: string };
 type Route = {
   key: string; name: string; tag: string; best: string; aud: string;
-  days: number; stars: number; hotel: string; loc: string; img: string;
+  days: number; stars: number; hotel: string; loc: string; img?: string;
   steps: Step[]; inclusions: Inclusion[]; wa: string | null;
   hotelWhy: string; hotelNote: string; mapQ: string;
 };
@@ -167,7 +167,7 @@ export function RouteGallery({ routes, addons, labels }: { routes: Route[]; addo
               className="route-card group relative w-[80vw] max-w-[360px] shrink-0 overflow-hidden rounded-[2rem] text-left ring-1 ring-black/5 sm:w-[360px]"
             >
               <div className="route-img relative aspect-[5/7] overflow-hidden">
-                <Image src={rt.img} alt={`${rt.name} — ${rt.hotel}`} fill sizes="(max-width:640px) 84vw, 360px" className="object-cover" />
+                {rt.img ? <Image src={rt.img} alt={`${rt.name} — ${rt.hotel}`} fill sizes="(max-width:640px) 84vw, 360px" className="object-cover" /> : null}
                 <div className="absolute inset-0" style={{ background: "linear-gradient(180deg, rgba(4,18,24,0.15) 0%, transparent 24%, rgba(4,18,24,0.5) 50%, rgba(4,18,24,0.96) 100%)" }} />
                 <span className="absolute left-4 top-4 rounded-full px-3 py-1.5 text-[10.5px] font-bold uppercase tracking-wide text-white shadow-lg" style={{ backgroundImage: "linear-gradient(135deg, rgb(var(--accent2)), rgb(var(--accent)))" }}>{rt.aud}</span>
                 <div className="glass absolute right-4 top-4 flex items-center gap-1 rounded-full border px-2.5 py-1 text-white" style={{ borderColor: "rgb(255 255 255 / 0.3)", backgroundColor: "rgb(4 28 40 / 0.45)" }}>
@@ -212,7 +212,7 @@ export function RouteGallery({ routes, addons, labels }: { routes: Route[]; addo
           >
             {/* Görsel başlık */}
             <div className="relative aspect-[16/10] overflow-hidden sm:aspect-[16/8]">
-              <Image src={active.img} alt={`${active.name} — ${active.hotel}`} fill sizes="(max-width:768px) 100vw, 672px" className="object-cover" />
+              {active.img ? <Image src={active.img} alt={`${active.name} — ${active.hotel}`} fill sizes="(max-width:768px) 100vw, 672px" className="object-cover" /> : null}
               <div className="absolute inset-0" style={{ background: "linear-gradient(180deg, rgba(4,18,24,0.25) 0%, transparent 35%, rgba(4,18,24,0.6) 70%, rgba(4,18,24,0.95) 100%)" }} />
               <button type="button" onClick={() => setOpenKey(null)} aria-label={labels.close} className="glass absolute right-4 top-4 grid h-10 w-10 place-items-center rounded-full border text-white transition hover:bg-black/40" style={{ borderColor: "rgb(255 255 255 / 0.3)", backgroundColor: "rgb(4 28 40 / 0.5)" }}>
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"><path d="M18 6 6 18M6 6l12 12" /></svg>

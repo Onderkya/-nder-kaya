@@ -11,7 +11,7 @@ import { ReadyRoutes } from "@/components/ready-routes";
 import { IconArrow } from "@/components/icons";
 import { getManagedPage } from "@/lib/cms";
 import { BlockRenderer } from "@/components/cms/block-renderer";
-import { getAssetMap, pickAsset } from "@/lib/assets";
+import { getAssetMap, getHiddenAssetSet, pickAssetVisible } from "@/lib/assets";
 import { resolveGallery } from "@/lib/gallery";
 import { getHiddenSections, sectionVisible, getSectionOrders, applySectionOrder } from "@/lib/sections";
 
@@ -29,6 +29,7 @@ export default async function AntalyaPage({ params }: { params: Promise<{ locale
   const t = await getTranslations("antalya");
   const x = await getTranslations("imm");
   const A = await getAssetMap();
+  const H = await getHiddenAssetSet();
   const hidden = await getHiddenSections();
   const orders = await getSectionOrders();
 
@@ -36,18 +37,23 @@ export default async function AntalyaPage({ params }: { params: Promise<{ locale
 
   // Bölgeler (antalya.regions): admin override varsa dinamik liste, yoksa koddaki
   // satır içi varsayılan (pickAsset ile — bugünkü çıktı birebir).
-  const regionPlaces = await resolveGallery("antalya.regions", locale, [
-    { img: pickAsset(A, "antalya.place.kaputas.image", "/images/kaputas.jpg"), video: pickAsset(A, "antalya.place.kaputas.video", "/media/kaputas-drone.mp4"), name: "Kaputaş", sub: "Kaş" },
-    { img: pickAsset(A, "antalya.place.suluada.image", "/images/suluada.jpg"), video: pickAsset(A, "antalya.place.suluada.video", "/media/vid-suluada.mp4"), name: "Suluada", sub: "Adrasan" },
-    { img: pickAsset(A, "antalya.place.kemer.image", "/images/kemer.jpg"), video: pickAsset(A, "antalya.place.kemer.video", "/media/vid-kemer.mp4"), name: "Kemer", sub: "Marina" },
-    { img: pickAsset(A, "antalya.place.olympos.image", "/images/olympos.jpg"), video: pickAsset(A, "antalya.place.olympos.video", "/media/vid-olympos.mp4"), name: "Olympos", sub: "Çıralı" },
-    { img: pickAsset(A, "antalya.place.alanya.image", "/images/alanya.jpg"), video: pickAsset(A, "antalya.place.alanya.video", "/media/vid-alanya-castle.mp4"), name: "Alanya", sub: "Kızıl Kule" },
-    { img: pickAsset(A, "antalya.place.beachpark.image", "/images/beachpark.jpg"), name: "Beach Park", sub: "Konyaaltı" },
-    { img: pickAsset(A, "antalya.place.lara.image", "/images/lara.jpg"), name: "Lara", sub: "Falezler" },
-    { img: pickAsset(A, "antalya.place.kaleici.image", "/images/kaleici-harbor.jpg"), video: pickAsset(A, "antalya.place.kaleici.video", "/media/vid-kaleici.mp4"), name: "Kaleiçi", sub: "Yat Limanı" },
-    { img: pickAsset(A, "antalya.place.side.image", "/images/side.jpg"), name: "Side", sub: "Antik kent" },
-    { img: pickAsset(A, "antalya.place.duden.image", "/images/duden.jpg"), video: pickAsset(A, "antalya.place.duden.video", "/media/vid-duden.mp4"), name: "Düden", sub: "Şelale" },
-  ]);
+  // Görüntü slotu gizliyse bölge varsayılan listeden düşer; yalnız video slotu
+  // gizliyse video atlanır (poster görsel kalır). pickAssetVisible ile.
+  const regionDefaults = [
+    { img: pickAssetVisible(A, H, "antalya.place.kaputas.image", "/images/kaputas.jpg"), video: pickAssetVisible(A, H, "antalya.place.kaputas.video", "/media/kaputas-drone.mp4"), name: "Kaputaş", sub: "Kaş" },
+    { img: pickAssetVisible(A, H, "antalya.place.suluada.image", "/images/suluada.jpg"), video: pickAssetVisible(A, H, "antalya.place.suluada.video", "/media/vid-suluada.mp4"), name: "Suluada", sub: "Adrasan" },
+    { img: pickAssetVisible(A, H, "antalya.place.kemer.image", "/images/kemer.jpg"), video: pickAssetVisible(A, H, "antalya.place.kemer.video", "/media/vid-kemer.mp4"), name: "Kemer", sub: "Marina" },
+    { img: pickAssetVisible(A, H, "antalya.place.olympos.image", "/images/olympos.jpg"), video: pickAssetVisible(A, H, "antalya.place.olympos.video", "/media/vid-olympos.mp4"), name: "Olympos", sub: "Çıralı" },
+    { img: pickAssetVisible(A, H, "antalya.place.alanya.image", "/images/alanya.jpg"), video: pickAssetVisible(A, H, "antalya.place.alanya.video", "/media/vid-alanya-castle.mp4"), name: "Alanya", sub: "Kızıl Kule" },
+    { img: pickAssetVisible(A, H, "antalya.place.beachpark.image", "/images/beachpark.jpg"), video: null, name: "Beach Park", sub: "Konyaaltı" },
+    { img: pickAssetVisible(A, H, "antalya.place.lara.image", "/images/lara.jpg"), video: null, name: "Lara", sub: "Falezler" },
+    { img: pickAssetVisible(A, H, "antalya.place.kaleici.image", "/images/kaleici-harbor.jpg"), video: pickAssetVisible(A, H, "antalya.place.kaleici.video", "/media/vid-kaleici.mp4"), name: "Kaleiçi", sub: "Yat Limanı" },
+    { img: pickAssetVisible(A, H, "antalya.place.side.image", "/images/side.jpg"), video: null, name: "Side", sub: "Antik kent" },
+    { img: pickAssetVisible(A, H, "antalya.place.duden.image", "/images/duden.jpg"), video: pickAssetVisible(A, H, "antalya.place.duden.video", "/media/vid-duden.mp4"), name: "Düden", sub: "Şelale" },
+  ]
+    .filter((it): it is typeof it & { img: string } => it.img !== null)
+    .map(({ video, ...rest }) => ({ ...rest, ...(video !== null ? { video } : {}) }));
+  const regionPlaces = await resolveGallery("antalya.regions", locale, regionDefaults);
 
   // Sıraya bağlanan registry bölümleri — koddaki mevcut sırayla, JSX içeriği aynen.
   const sectionBlocks: [string, ReactNode][] = [
@@ -104,13 +110,13 @@ export default async function AntalyaPage({ params }: { params: Promise<{ locale
         eyebrow={x("ant_introEyebrow")}
         title={t("title")}
         intro={t("intro")}
-        image={pickAsset(A, "antalya.hero.image", "/images/kaputas.jpg")}
+        image={pickAssetVisible(A, H, "antalya.hero.image", "/images/kaputas.jpg") ?? undefined}
         videos={[
-          pickAsset(A, "antalya.hero.video1", "/media/kaputas-drone.mp4"),
-          pickAsset(A, "antalya.hero.video2", "/media/vid-suluada.mp4"),
-          pickAsset(A, "antalya.hero.video3", "/media/vid-kemer.mp4"),
-          pickAsset(A, "antalya.hero.video4", "/media/vid-kas.mp4"),
-        ]}
+          pickAssetVisible(A, H, "antalya.hero.video1", "/media/kaputas-drone.mp4"),
+          pickAssetVisible(A, H, "antalya.hero.video2", "/media/vid-suluada.mp4"),
+          pickAssetVisible(A, H, "antalya.hero.video3", "/media/vid-kemer.mp4"),
+          pickAssetVisible(A, H, "antalya.hero.video4", "/media/vid-kas.mp4"),
+        ].filter((v): v is string => v !== null)}
       />
 
       {/* SIRAYA BAĞLI BÖLÜMLER (registry sırası; kayıt yoksa birebir aynı) */}
@@ -121,7 +127,9 @@ export default async function AntalyaPage({ params }: { params: Promise<{ locale
       {/* CTA */}
       <section className="container-wide pb-24 pt-4">
         <Reveal className="relative flex min-h-[380px] items-center justify-center overflow-hidden rounded-[2rem] px-6 py-20 text-center text-white">
-          <Image src={pickAsset(A, "antalya.cta.image", "/images/kaputas.jpg")} alt="Kaputaş Plajı, Kaş — turkuaz Akdeniz" fill sizes="(max-width:1280px) 100vw, 1200px" className="object-cover" />
+          {(() => { const src = pickAssetVisible(A, H, "antalya.cta.image", "/images/kaputas.jpg"); return src ? (
+          <Image src={src} alt="Kaputaş Plajı, Kaş — turkuaz Akdeniz" fill sizes="(max-width:1280px) 100vw, 1200px" className="object-cover" />
+          ) : null; })()}
           <div className="absolute inset-0" style={{ background: "linear-gradient(180deg, rgb(4 18 24 / 0.35), rgb(4 18 24 / 0.7))" }} />
           <div className="relative z-10 mx-auto max-w-2xl">
             <h2 className="h-section text-balance">{x("ant_ctaTitle")}</h2>

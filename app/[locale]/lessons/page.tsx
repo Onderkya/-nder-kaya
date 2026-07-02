@@ -13,7 +13,7 @@ import { MobilePlanCta } from "@/components/mobile-plan-cta";
 import { prisma } from "@/lib/db";
 import { getManagedPage } from "@/lib/cms";
 import { BlockRenderer } from "@/components/cms/block-renderer";
-import { getAssetMap, pickAsset } from "@/lib/assets";
+import { getAssetMap, getHiddenAssetSet, pickAssetVisible } from "@/lib/assets";
 import { getHiddenSections, sectionVisible, getSectionOrders, applySectionOrder } from "@/lib/sections";
 import { BookingWidget } from "./booking-widget";
 
@@ -35,12 +35,14 @@ export default async function LessonsPage({ params }: { params: Promise<{ locale
   const cv = await getTranslations("convert");
   const v = await getTranslations("voices");
   const A = await getAssetMap();
+  const H = await getHiddenAssetSet();
 
+  // video null ise (slot gizli) o adımın video öğesi çizilmez (kart/kaplama kalır).
   const steps = [
-    { n: "01", title: x("les_p1Title"), text: x("les_p1Text"), video: pickAsset(A, "lessons.step1.video", "/media/les-spell.mp4"), pet: false },
-    { n: "02", title: x("les_p2Title"), text: x("les_p2Text"), video: pickAsset(A, "lessons.step2.video", "/media/les-teacher.mp4"), pet: false },
-    { n: "03", title: x("les_p3Title"), text: x("les_p3Text"), video: pickAsset(A, "lessons.step3.video", "/media/les-online.mp4"), pet: true },
-    { n: "04", title: x("les_p4Title"), text: x("les_p4Text"), video: pickAsset(A, "lessons.step4.video", "/media/les-online.mp4"), pet: false },
+    { n: "01", title: x("les_p1Title"), text: x("les_p1Text"), video: pickAssetVisible(A, H, "lessons.step1.video", "/media/les-spell.mp4"), pet: false },
+    { n: "02", title: x("les_p2Title"), text: x("les_p2Text"), video: pickAssetVisible(A, H, "lessons.step2.video", "/media/les-teacher.mp4"), pet: false },
+    { n: "03", title: x("les_p3Title"), text: x("les_p3Text"), video: pickAssetVisible(A, H, "lessons.step3.video", "/media/les-online.mp4"), pet: true },
+    { n: "04", title: x("les_p4Title"), text: x("les_p4Text"), video: pickAssetVisible(A, H, "lessons.step4.video", "/media/les-online.mp4"), pet: false },
   ];
 
   const durations = [
@@ -93,7 +95,7 @@ export default async function LessonsPage({ params }: { params: Promise<{ locale
             <Reveal key={st.n} delay={i * 90} className="process-step h-full">
               <div className="card-lift flex h-full flex-col overflow-hidden rounded-3xl border" style={{ borderColor: st.pet ? "rgb(var(--primary) / 0.45)" : "rgb(var(--border))", backgroundColor: "rgb(var(--card))", ...(st.pet ? { boxShadow: "0 18px 40px -20px rgb(var(--primary) / 0.55)" } : {}) }}>
                 <div className="relative aspect-[16/11] overflow-hidden">
-                  <AutoVideo className="absolute inset-0 h-full w-full object-cover" src={st.video} />
+                  {st.video ? <AutoVideo className="absolute inset-0 h-full w-full object-cover" src={st.video} /> : null}
                   <div className="absolute inset-0" style={{ background: "linear-gradient(to top, rgba(6,26,34,0.6), transparent 55%)" }} />
                   <div className="process-num absolute bottom-3 left-3">{st.n}</div>
                   {st.pet && (
@@ -123,7 +125,9 @@ export default async function LessonsPage({ params }: { params: Promise<{ locale
         <Reveal>
         <div className="grid items-center gap-10 rounded-[2rem] border p-8 sm:p-10 lg:grid-cols-[auto,1fr] lg:gap-14" style={{ borderColor: "rgb(var(--border))", backgroundColor: "rgb(var(--card))" }}>
           <div className="relative mx-auto h-40 w-40 shrink-0 overflow-hidden rounded-3xl shadow-xl sm:h-48 sm:w-48">
-            <video className="absolute inset-0 h-full w-full object-cover" src={pickAsset(A, "lessons.teacher.video", "/media/les-teacher.mp4")} autoPlay muted loop playsInline preload="none" aria-hidden />
+            {(() => { const src = pickAssetVisible(A, H, "lessons.teacher.video", "/media/les-teacher.mp4"); return src ? (
+            <video className="absolute inset-0 h-full w-full object-cover" src={src} autoPlay muted loop playsInline preload="none" aria-hidden />
+            ) : null; })()}
             <div className="absolute inset-0" style={{ background: "linear-gradient(160deg, transparent 55%, rgb(4 18 24 / 0.4))" }} />
           </div>
           <div>
@@ -252,13 +256,13 @@ export default async function LessonsPage({ params }: { params: Promise<{ locale
         eyebrow={x("les_processEyebrow")}
         title={t("title")}
         intro={t("intro")}
-        image={pickAsset(A, "lessons.hero.image", "/images/lessons-meaning.jpg")}
+        image={pickAssetVisible(A, H, "lessons.hero.image", "/images/lessons-meaning.jpg") ?? undefined}
         videos={[
-          pickAsset(A, "lessons.hero.video1", "/media/les-notebook.mp4"),
-          pickAsset(A, "lessons.hero.video2", "/media/les-teacher.mp4"),
-          pickAsset(A, "lessons.hero.video3", "/media/les-online.mp4"),
-          pickAsset(A, "lessons.hero.video4", "/media/les-spell.mp4"),
-        ]}
+          pickAssetVisible(A, H, "lessons.hero.video1", "/media/les-notebook.mp4"),
+          pickAssetVisible(A, H, "lessons.hero.video2", "/media/les-teacher.mp4"),
+          pickAssetVisible(A, H, "lessons.hero.video3", "/media/les-online.mp4"),
+          pickAssetVisible(A, H, "lessons.hero.video4", "/media/les-spell.mp4"),
+        ].filter((v): v is string => v !== null)}
         flag
       />
 

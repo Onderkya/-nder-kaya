@@ -14,7 +14,7 @@ import { JsonLd } from "@/components/json-ld";
 import { getPublicSettings } from "@/lib/settings";
 import { getManagedPage } from "@/lib/cms";
 import { BlockRenderer } from "@/components/cms/block-renderer";
-import { getAssetMap, pickAsset } from "@/lib/assets";
+import { getAssetMap, getHiddenAssetSet, pickAssetVisible } from "@/lib/assets";
 import { getHiddenSections, sectionVisible, getSectionOrders, applySectionOrder } from "@/lib/sections";
 
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
@@ -42,6 +42,7 @@ export default async function AboutPage({ params }: { params: Promise<{ locale: 
   const sv = await getTranslations("services");
   const site = await getPublicSettings();
   const A = await getAssetMap();
+  const H = await getHiddenAssetSet();
   const hidden = await getHiddenSections();
   const orders = await getSectionOrders();
 
@@ -227,7 +228,7 @@ export default async function AboutPage({ params }: { params: Promise<{ locale: 
     <>
       <JsonLd data={ld} />
 
-      <CinematicHero eyebrow={x("ab_eyebrow")} title={t("title")} image={pickAsset(A, "about.hero.image", "/images/kaleici-harbor.jpg")} video={pickAsset(A, "about.hero.video", "/media/vid-kaleici.mp4")} />
+      <CinematicHero eyebrow={x("ab_eyebrow")} title={t("title")} image={pickAssetVisible(A, H, "about.hero.image", "/images/kaleici-harbor.jpg") ?? undefined} video={pickAssetVisible(A, H, "about.hero.video", "/media/vid-kaleici.mp4") ?? undefined} />
 
       {/* SIRAYA BAĞLI BÖLÜMLER (registry sırası; kayıt yoksa birebir aynı) */}
       {orderedIds.filter((id) => sectionVisible(hidden, id)).map((id) => (

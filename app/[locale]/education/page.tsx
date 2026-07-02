@@ -15,7 +15,7 @@ import { IconArrow } from "@/components/icons";
 import { getPublicSettings } from "@/lib/settings";
 import { getManagedPage } from "@/lib/cms";
 import { BlockRenderer } from "@/components/cms/block-renderer";
-import { getAssetMap, pickAsset } from "@/lib/assets";
+import { getAssetMap, getHiddenAssetSet, pickAssetVisible } from "@/lib/assets";
 import { getHiddenSections, sectionVisible, getSectionOrders, applySectionOrder } from "@/lib/sections";
 
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
@@ -36,6 +36,7 @@ export default async function EducationPage({ params }: { params: Promise<{ loca
   const cv = await getTranslations("convert");
   const site = await getPublicSettings();
   const A = await getAssetMap();
+  const H = await getHiddenAssetSet();
 
   const deliverables = [sh("f1"), sh("f2"), sh("f3"), sh("f4")];
 
@@ -43,8 +44,9 @@ export default async function EducationPage({ params }: { params: Promise<{ loca
   // NOT: akdeniz-campus.jpg bir kurul/komite toplantısı fotosuydu (bizi yansıtmıyordu) →
   // artık kullanılmıyor; gerçek Akdeniz Üniversitesi kampüsü (campus.jpg) kullanılıyor.
   // Admin override varsa o kazanır; yoksa mevcut existsSync mantığı korunur.
-  const campus = pickAsset(
+  const campus = pickAssetVisible(
     A,
+    H,
     "education.campus.image",
     existsSync(path.join(process.cwd(), "public", "images", "akdeniz-campus-wide.jpg"))
       ? "/images/akdeniz-campus-wide.jpg"
@@ -61,10 +63,10 @@ export default async function EducationPage({ params }: { params: Promise<{ loca
       <StudyJourney
         eyebrow={x("edu_journeyEyebrow")}
         steps={[
-          { n: "01", title: x("edu_s1Title"), place: x("edu_s1Place"), text: x("edu_s1Text"), img: campus, video: pickAsset(A, "education.step1.video", "/media/campus-aerial.mp4"), points: [x("edu_s1a"), x("edu_s1b")] },
-          { n: "02", title: x("edu_s2Title"), place: x("edu_s2Place"), text: x("edu_s2Text"), img: pickAsset(A, "education.step2.image", "/images/campus.jpg"), video: pickAsset(A, "education.step2.video", "/media/office-consult.mp4"), points: [x("edu_s2a"), x("edu_s2b")] },
-          { n: "03", title: x("edu_s3Title"), place: x("edu_s3Place"), text: x("edu_s3Text"), img: pickAsset(A, "education.step3.image", "/images/kaleici-inside.jpg"), video: pickAsset(A, "education.step3.video", "/media/edu-street.mp4"), points: [x("edu_s3a"), x("edu_s3b")] },
-          { n: "04", title: x("edu_s4Title"), place: x("edu_s4Place"), text: x("edu_s4Text"), img: pickAsset(A, "education.step4.image", "/images/dorm.jpg"), points: [x("edu_s4a"), x("edu_s4b")] },
+          { n: "01", title: x("edu_s1Title"), place: x("edu_s1Place"), text: x("edu_s1Text"), img: campus ?? undefined, video: pickAssetVisible(A, H, "education.step1.video", "/media/campus-aerial.mp4") ?? undefined, points: [x("edu_s1a"), x("edu_s1b")] },
+          { n: "02", title: x("edu_s2Title"), place: x("edu_s2Place"), text: x("edu_s2Text"), img: pickAssetVisible(A, H, "education.step2.image", "/images/campus.jpg") ?? undefined, video: pickAssetVisible(A, H, "education.step2.video", "/media/office-consult.mp4") ?? undefined, points: [x("edu_s2a"), x("edu_s2b")] },
+          { n: "03", title: x("edu_s3Title"), place: x("edu_s3Place"), text: x("edu_s3Text"), img: pickAssetVisible(A, H, "education.step3.image", "/images/kaleici-inside.jpg") ?? undefined, video: pickAssetVisible(A, H, "education.step3.video", "/media/edu-street.mp4") ?? undefined, points: [x("edu_s3a"), x("edu_s3b")] },
+          { n: "04", title: x("edu_s4Title"), place: x("edu_s4Place"), text: x("edu_s4Text"), img: pickAssetVisible(A, H, "education.step4.image", "/images/dorm.jpg") ?? undefined, points: [x("edu_s4a"), x("edu_s4b")] },
         ]}
       />
     )],
@@ -131,7 +133,7 @@ export default async function EducationPage({ params }: { params: Promise<{ loca
         eyebrow={x("edu_journeyEyebrow")}
         title={t("title")}
         intro={t("intro")}
-        image={pickAsset(A, "education.hero.image", "/images/turkish-flag-sky.jpg")}
+        image={pickAssetVisible(A, H, "education.hero.image", "/images/turkish-flag-sky.jpg") ?? undefined}
         emblem
       />
 
@@ -143,7 +145,7 @@ export default async function EducationPage({ params }: { params: Promise<{ loca
       {/* CTA */}
       <section className="container-wide pb-24">
         <Reveal className="relative flex min-h-[360px] items-center justify-center overflow-hidden rounded-[2rem] px-6 py-20 text-center text-white">
-          <Image src={campus} alt="Akdeniz Üniversitesi kampüsü, Antalya" fill sizes="(max-width:1280px) 100vw, 1200px" className="object-cover" />
+          {campus ? <Image src={campus} alt="Akdeniz Üniversitesi kampüsü, Antalya" fill sizes="(max-width:1280px) 100vw, 1200px" className="object-cover" /> : null}
           <div className="absolute inset-0" style={{ background: "linear-gradient(180deg, rgb(4 18 24 / 0.55), rgb(4 18 24 / 0.82))" }} />
           <div className="relative z-10 mx-auto max-w-2xl">
             <h2 className="h-section text-balance">{sh("title")}</h2>

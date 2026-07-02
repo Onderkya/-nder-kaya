@@ -8,7 +8,7 @@ import { Reveal } from "@/components/reveal";
 import { getPublicSettings } from "@/lib/settings";
 import { getManagedPage } from "@/lib/cms";
 import { BlockRenderer } from "@/components/cms/block-renderer";
-import { getAssetMap, pickAsset } from "@/lib/assets";
+import { getAssetMap, getHiddenAssetSet, pickAssetVisible } from "@/lib/assets";
 import { getHiddenSections, sectionVisible, getSectionOrders, applySectionOrder } from "@/lib/sections";
 
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
@@ -28,6 +28,7 @@ export default async function ContactPage({ params }: { params: Promise<{ locale
   const tr = await getTranslations("trust");
   const site = await getPublicSettings();
   const A = await getAssetMap();
+  const H = await getHiddenAssetSet();
   const hidden = await getHiddenSections();
   const orders = await getSectionOrders();
 
@@ -128,7 +129,7 @@ export default async function ContactPage({ params }: { params: Promise<{ locale
 
   return (
     <>
-      <CinematicHero eyebrow={t("orReach")} title={t("title")} intro={t("subtitle")} image={pickAsset(A, "contact.hero.image", "/images/sunset.jpg")} video={pickAsset(A, "contact.hero.video", "/media/vid-kas.mp4")} />
+      <CinematicHero eyebrow={t("orReach")} title={t("title")} intro={t("subtitle")} image={pickAssetVisible(A, H, "contact.hero.image", "/images/sunset.jpg") ?? undefined} video={pickAssetVisible(A, H, "contact.hero.video", "/media/vid-kas.mp4") ?? undefined} />
 
       {/* SIRAYA BAĞLI BÖLÜMLER (registry sırası; kayıt yoksa birebir aynı) */}
       {orderedIds.filter((id) => sectionVisible(hidden, id)).map((id) => (
