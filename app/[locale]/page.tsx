@@ -83,6 +83,10 @@ export default async function HomePage({
       best: hd(`${h.key}_best`),
       why: hd(`${h.key}_why`),
       note: hd(`${h.key}_note`),
+      // Önceden doldurulmuş WhatsApp mesajı — müşterinin yazma yükü sıfır.
+      wa: site.whatsappConfigured
+        ? `https://wa.me/${site.whatsapp}?text=${encodeURIComponent(hd("waMsg", { name: h.name }))}`
+        : null,
     }))
     // Görseli gizlenmiş otel kartı listeden düşer (existsSync ile aynı davranış).
     .filter((h): h is typeof h & { img: string } => h.img !== null);
@@ -183,7 +187,7 @@ export default async function HomePage({
             <h2 className="h-section mt-5" style={{ color: "rgb(var(--foreground))" }}>{t("hotelsTitle")}</h2>
           </Reveal>
           <Reveal className="mt-12">
-            <HotelCards hotels={hotels} labels={{ cta: t("hotelsCta"), bestFor: hd("bestFor"), why: hd("why"), note: hd("note") }} />
+            <HotelCards hotels={hotels} labels={{ cta: t("hotelsCta"), bestFor: hd("bestFor"), why: hd("why"), note: hd("note"), waAsk: hd("waAsk") }} />
           </Reveal>
           <p className="mt-7 text-center text-xs" style={{ color: "rgb(var(--muted-foreground))" }}>
             {t("hotelsNote")}

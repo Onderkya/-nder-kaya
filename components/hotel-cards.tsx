@@ -9,9 +9,11 @@ export type HotelCard = {
   best: string;
   why: string;
   note: string;
+  /** Önceden doldurulmuş wa.me linki; WhatsApp ayarlı değilse null/undefined. */
+  wa?: string | null;
 };
 
-type Labels = { cta: string; bestFor: string; why: string; note: string };
+type Labels = { cta: string; bestFor: string; why: string; note: string; waAsk?: string };
 
 /** 3D görünümlü konum pini — katmanlı gradient + iç parlama + yumuşak gölge. */
 export function Pin3D() {
@@ -86,9 +88,22 @@ export function HotelCards({ hotels, labels }: { hotels: HotelCard[]; labels: La
               <span aria-hidden="true">ⓘ</span>
               <span><span className="font-semibold">{labels.note}:</span> {h.note}</span>
             </p>
-            <Link href="/contact" className="btn-accent mt-auto w-full justify-center shadow-lg shadow-black/10">
-              {labels.cta} <IconArrow />
-            </Link>
+            <div className="mt-auto">
+              <Link href="/contact" className="btn-accent w-full justify-center shadow-lg shadow-black/10">
+                {labels.cta} <IconArrow />
+              </Link>
+              {h.wa && labels.waAsk ? (
+                <a
+                  href={h.wa}
+                  target="_blank"
+                  rel="noopener"
+                  className="mt-2.5 inline-flex w-full items-center justify-center gap-2 rounded-full border px-5 py-2.5 text-sm font-semibold transition hover:brightness-110"
+                  style={{ borderColor: "rgb(37 211 102 / 0.55)", backgroundColor: "rgb(37 211 102 / 0.10)", color: "#1da851" }}
+                >
+                  {labels.waAsk}
+                </a>
+              ) : null}
+            </div>
           </div>
         </article>
       ))}
