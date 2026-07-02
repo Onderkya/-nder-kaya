@@ -4,10 +4,12 @@ import { useRef, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { saveTour } from "@/lib/tour-actions";
 import { Icon } from "./icons";
-import type { TourCfg, TourStepCfg } from "@/lib/tours";
+import { IconPicker, IconButton } from "./icon-picker";
+import type { TourCfg, TourStepCfg, L10n } from "@/lib/tours";
 
 type LangOpt = { code: string; flag: string; name: string };
 type MediaItem = { url: string; alt: string | null };
+type IncludedCfg = { icon: string; label: L10n; active?: boolean };
 
 /** Kodlu turun dil bazlı varsayılanları (placeholder olarak gösterilir). */
 export type TourDefaults = {
@@ -22,8 +24,9 @@ export type TourDefaults = {
 
 /**
  * TUR EDİTÖRÜ — bir turun HER ŞEYİ tek ekranda: foto, isim/rozet (dil sekmeli),
- * gün/yıldız, otel/konum, aktif-pasif; özel turlarda gün-gün plan + otel tanıtımı.
- * Kodlu turlarda boş bırakılan alan = varsayılan (placeholder'da görünür).
+ * gün/yıldız, otel/konum, aktif-pasif; gün-gün plan (adım satırları, kodlu+özel),
+ * "Pakete dahil" listesi ve otel tanıtımı. Her adım/madde: ikon (FA seçici) +
+ * dil bazlı başlık/açıklama + aktif/pasif + sürükle-sırala.
  */
 export function TourEditor({
   initial,
@@ -43,25 +46,40 @@ export function TourEditor({
   const [lang, setLang] = useState(langs[0]?.code ?? "tr");
   const [pending, start] = useTransition();
   const [saved, setSaved] = useState(false);
-  const [pickerOpen, setPickerOpen] = useState(false);
+  const [imgPickerOpen, setImgPickerOpen] = useState(false);
   const isCustom = !!cfg.custom;
 
   const setL10n = (field: "name" | "aud" | "hotelWhy" | "hotelNote", val: string) =>
     setCfg((p) => ({ ...p, [field]: { ...(p[field] ?? {}), [lang]: val } }));
 
-  const setStep = (i: number, part: "day" | "t" | "d", val: string) =>
-    setCfg((p) => {
-      const steps = [...(p.steps ?? [])];
-      const s = { ...steps[i] };
-      if (part === "day") s.day = Math.max(1, Number(val) || 1);
-      else s[part] = { ...(s[part] ?? {}), [lang]: val };
-      steps[i] = s;
-      return { ...p, steps };
-    });
-
+  // ── Adım satırları (steps) ────────────────────────────────────────────────
+  const steps = cfg.steps ?? [];
+  const setSteps = (next: TourStepCfg[]) => setCfg((p) => ({ ...p, steps: next }));
+  const updateStep = (i: number, patch: Partial<TourStepCfg>) =>
+    setSteps(steps.map((s, x) => (x === i ? { ...s, ...patch } : s)));
   const addStep = () =>
-    setCfg((p) => ({ ...p, steps: [...(p.steps ?? []), { day: (p.steps?.length ?? 0) + 2, t: {}, d: {} } as TourStepCfg] }));
-  const removeStep = (i: number) => setCfg((p) => ({ ...p, steps: (p.steps ?? []).filter((_, x) => x !== i) }));
+    setSteps([...steps, { day: (steps[steps.length - 1]?.day ?? 1) + 1, icon: "landmark", active: true, t: {}, d: {} }]);
+  const removeStep = (i: number) => setSteps(steps.filter((_, x) => x !== i));
+  const moveStep = (i: number, j: number) => {
+    if (j < 0 || j >= steps.length) return;
+    const next = [...steps];
+    [next[i], next[j]] = [next[j], next[i]];
+    setSteps(next);
+  };
+
+  // ── "Pakete dahil" satırları (included) ───────────────────────────────────
+  const included = cfg.included ?? [];
+  const setIncluded = (next: IncludedCfg[]) => setCfg((p) => ({ ...p, included: next }));
+  const updateInc = (i: number, patch: Partial<IncludedCfg>) =>
+    setIncluded(included.map((s, x) => (x === i ? { ...s, ...patch } : s)));
+  const addInc = () => setIncluded([...included, { icon: "check", active: true, label: {} }]);
+  const removeInc = (i: number) => setIncluded(included.filter((_, x) => x !== i));
+  const moveInc = (i: number, j: number) => {
+    if (j < 0 || j >= included.length) return;
+    const next = [...included];
+    [next[i], next[j]] = [next[j], next[i]];
+    setIncluded(next);
+  };
 
   const save = () =>
     start(async () => {
@@ -101,7 +119,7 @@ export function TourEditor({
             {cfg.img?.trim() && defaults ? <span className="adm-badge adm-badge-warn absolute right-2 top-2">değişti</span> : null}
           </div>
           <div className="flex items-center gap-2 p-3">
-            <button type="button" onClick={() => setPickerOpen(true)} className="adm-btn adm-btn-primary adm-btn-sm flex-1">Fotoğrafı değiştir</button>
+            <button type="button" onClick={() => setImgPickerOpen(true)} className="adm-btn adm-btn-primary adm-btn-sm flex-1">Fotoğrafı değiştir</button>
             {cfg.img?.trim() && defaults ? (
               <button type="button" onClick={() => setCfg((p) => ({ ...p, img: "" }))} className="adm-btn adm-btn-ghost adm-btn-sm">Sıfırla</button>
             ) : null}
@@ -147,55 +165,229 @@ export function TourEditor({
         </div>
       </div>
 
-      {/* Özel turlarda plan + otel tanıtımı */}
-      {isCustom ? (
-        <>
-          <div className="adm-card adm-card-pad">
-            <div className="mb-4 flex items-center gap-3">
-              <span className="h-7 w-1.5 rounded-full" style={{ background: "rgb(var(--gold))" }} />
-              <h3 className="adm-section-title">Gün gün plan</h3>
-            </div>
-            <p className="adm-help mb-4 mt-0">Uçuş + transfer + otele giriş otomatik eklenir; buraya 2. günden itibaren durakları yaz. ({lang.toUpperCase()} dilini düzenliyorsun.)</p>
-            <div className="space-y-3">
-              {(cfg.steps ?? []).map((s, i) => (
-                <div key={i} className="grid gap-2 rounded-xl border p-3 sm:grid-cols-[90px,1fr,auto]" style={{ borderColor: "rgb(var(--border))" }}>
-                  <div>
-                    <label className="adm-label">Gün</label>
-                    <input type="number" min={1} value={s.day} onChange={(e) => setStep(i, "day", e.target.value)} className="adm-input" />
-                  </div>
-                  <div className="space-y-2">
-                    <input value={s.t?.[lang] ?? ""} onChange={(e) => setStep(i, "t", e.target.value)} placeholder="Durak başlığı (örn. Kekova tekne turu)" className="adm-input" />
-                    <input value={s.d?.[lang] ?? ""} onChange={(e) => setStep(i, "d", e.target.value)} placeholder="Kısa açıklama" className="adm-input" />
-                  </div>
-                  <div className="flex items-end">
-                    <button type="button" onClick={() => removeStep(i)} className="adm-btn adm-btn-danger adm-btn-sm">Sil</button>
-                  </div>
+      {/* Gün gün plan — adım satırları (kodlu + özel) */}
+      <div className="adm-card adm-card-pad">
+        <div className="mb-3 flex items-center gap-3">
+          <span className="h-7 w-1.5 rounded-full" style={{ background: "rgb(var(--gold))" }} />
+          <h3 className="adm-section-title">Gün gün plan</h3>
+        </div>
+        {isCustom ? (
+          <p className="adm-help mb-4 mt-0">Uçuş + transfer + otele giriş sitede otomatik başa eklenir; buraya duraklarını yaz. ({lang.toUpperCase()} düzenleniyor.)</p>
+        ) : (
+          <p className="adm-help mb-4 mt-0">
+            Adımlar site çevirilerinden dolduruldu. <b>Kaydedersen bu tur artık buradan yönetilir</b> — Site İçeriği çevirileri bu turda devre dışı kalır. ({lang.toUpperCase()} düzenleniyor.)
+          </p>
+        )}
+
+        <div className="space-y-2">
+          {steps.map((s, i) => (
+            <EditableRow
+              key={i}
+              index={i}
+              count={steps.length}
+              icon={s.icon ?? "landmark"}
+              title={s.t?.[lang] ?? ""}
+              active={s.active !== false}
+              summary={s.t?.[lang] || `Gün ${s.day} durağı`}
+              onMove={(dir) => moveStep(i, i + dir)}
+              onReorder={(from, to) => setSteps(reorder(steps, from, to))}
+              onIcon={(name) => updateStep(i, { icon: name })}
+              onActive={(v) => updateStep(i, { active: v })}
+              onRemove={() => removeStep(i)}
+            >
+              <div className="grid gap-2 sm:grid-cols-[90px,1fr]">
+                <div>
+                  <label className="adm-label">Gün</label>
+                  <input type="number" min={1} value={s.day} onChange={(e) => updateStep(i, { day: Math.max(1, Number(e.target.value) || 1) })} className="adm-input" />
                 </div>
-              ))}
-            </div>
-            <button type="button" onClick={addStep} className="adm-btn adm-btn-ghost mt-3"><Icon name="plus" size={16} /> Durak ekle</button>
-          </div>
+                <div className="space-y-2">
+                  <input value={s.t?.[lang] ?? ""} onChange={(e) => updateStep(i, { t: { ...(s.t ?? {}), [lang]: e.target.value } })} placeholder="Durak başlığı (örn. Kekova tekne turu)" className="adm-input" />
+                  <input value={s.d?.[lang] ?? ""} onChange={(e) => updateStep(i, { d: { ...(s.d ?? {}), [lang]: e.target.value } })} placeholder="Kısa açıklama" className="adm-input" />
+                </div>
+              </div>
+            </EditableRow>
+          ))}
+        </div>
+        <button type="button" onClick={addStep} className="adm-btn adm-btn-ghost mt-3"><Icon name="plus" size={16} /> Adım ekle</button>
+      </div>
 
-          <div className="adm-card adm-card-pad space-y-4">
-            <div className="flex items-center gap-3">
-              <span className="h-7 w-1.5 rounded-full" style={{ background: "rgb(var(--gold))" }} />
-              <h3 className="adm-section-title">Otel tanıtımı (detay penceresi)</h3>
-            </div>
-            <div>
-              <label className="adm-label">Neden bu otel ({lang.toUpperCase()})</label>
-              <textarea value={cfg.hotelWhy?.[lang] ?? ""} onChange={(e) => setL10n("hotelWhy", e.target.value)} className="adm-textarea" placeholder="Bu oteli neden öneriyoruz…" />
-            </div>
-            <div>
-              <label className="adm-label">Dürüst not ({lang.toUpperCase()})</label>
-              <textarea value={cfg.hotelNote?.[lang] ?? ""} onChange={(e) => setL10n("hotelNote", e.target.value)} className="adm-textarea" placeholder="Bilinmesi gereken küçük not (opsiyonel)…" />
-            </div>
-          </div>
-        </>
-      ) : (
-        <p className="adm-help">Bu kodlu bir tur: gün-gün plan metinleri <b>Ana Sayfa &amp; Bölümler → Antalya Danışmanlık</b> sekmesindeki rota bölümlerinden düzenlenir.</p>
-      )}
+      {/* Pakete dahil */}
+      <div className="adm-card adm-card-pad">
+        <div className="mb-3 flex items-center gap-3">
+          <span className="h-7 w-1.5 rounded-full" style={{ background: "rgb(var(--gold))" }} />
+          <h3 className="adm-section-title">Pakete dahil</h3>
+        </div>
+        <p className="adm-help mb-4 mt-0">Kartın “her şey dahil” satırları. ({lang.toUpperCase()} düzenleniyor.)</p>
+        <div className="space-y-2">
+          {included.map((inc, i) => (
+            <EditableRow
+              key={i}
+              index={i}
+              count={included.length}
+              icon={inc.icon ?? "check"}
+              title={inc.label?.[lang] ?? ""}
+              active={inc.active !== false}
+              summary={inc.label?.[lang] || "Dahil madde"}
+              onMove={(dir) => moveInc(i, i + dir)}
+              onReorder={(from, to) => setIncluded(reorder(included, from, to))}
+              onIcon={(name) => updateInc(i, { icon: name })}
+              onActive={(v) => updateInc(i, { active: v })}
+              onRemove={() => removeInc(i)}
+            >
+              <div>
+                <label className="adm-label">Metin ({lang.toUpperCase()})</label>
+                <input value={inc.label?.[lang] ?? ""} onChange={(e) => updateInc(i, { label: { ...(inc.label ?? {}), [lang]: e.target.value } })} placeholder="Örn. Yurt içi uçuş" className="adm-input" />
+              </div>
+            </EditableRow>
+          ))}
+        </div>
+        <button type="button" onClick={addInc} className="adm-btn adm-btn-ghost mt-3"><Icon name="plus" size={16} /> Madde ekle</button>
+      </div>
 
-      {pickerOpen ? <ImagePicker media={media} onClose={() => setPickerOpen(false)} onPick={(url) => { setCfg((p) => ({ ...p, img: url })); setPickerOpen(false); }} /> : null}
+      {/* Otel tanıtımı — yalnız özel turlarda düzenlenir (kodluda hotelsd'den gelir) */}
+      {isCustom ? (
+        <div className="adm-card adm-card-pad space-y-4">
+          <div className="flex items-center gap-3">
+            <span className="h-7 w-1.5 rounded-full" style={{ background: "rgb(var(--gold))" }} />
+            <h3 className="adm-section-title">Otel tanıtımı (detay penceresi)</h3>
+          </div>
+          <div>
+            <label className="adm-label">Neden bu otel ({lang.toUpperCase()})</label>
+            <textarea value={cfg.hotelWhy?.[lang] ?? ""} onChange={(e) => setL10n("hotelWhy", e.target.value)} className="adm-textarea" placeholder="Bu oteli neden öneriyoruz…" />
+          </div>
+          <div>
+            <label className="adm-label">Dürüst not ({lang.toUpperCase()})</label>
+            <textarea value={cfg.hotelNote?.[lang] ?? ""} onChange={(e) => setL10n("hotelNote", e.target.value)} className="adm-textarea" placeholder="Bilinmesi gereken küçük not (opsiyonel)…" />
+          </div>
+        </div>
+      ) : null}
+
+      {imgPickerOpen ? <ImagePicker media={media} onClose={() => setImgPickerOpen(false)} onPick={(url) => { setCfg((p) => ({ ...p, img: url })); setImgPickerOpen(false); }} /> : null}
+    </div>
+  );
+}
+
+/** Bir diziyi drag-drop ile yeniden sıralar (from → to). */
+function reorder<T>(arr: T[], from: number, to: number): T[] {
+  if (from === to || from < 0 || to < 0 || from >= arr.length || to >= arr.length) return arr;
+  const next = [...arr];
+  const [moved] = next.splice(from, 1);
+  next.splice(to, 0, moved);
+  return next;
+}
+
+/**
+ * DÜZENLENEBİLİR SATIR — 3 yerde (adım/dahil) ortak kalıp. Kapalıyken: sürükle
+ * tutamacı + ↑↓ + ikon butonu (seçici açar) + özet + aktif switch + sil. Aç/kapa
+ * ile alanları (children) gösterir. Sürükle-bırak HTML5 (blok yeniden sıralama).
+ */
+function EditableRow({
+  index,
+  count,
+  icon,
+  title,
+  active,
+  summary,
+  children,
+  onMove,
+  onReorder,
+  onIcon,
+  onActive,
+  onRemove,
+}: {
+  index: number;
+  count: number;
+  icon: string;
+  title: string;
+  active: boolean;
+  summary: string;
+  children: React.ReactNode;
+  onMove: (dir: -1 | 1) => void;
+  onReorder: (from: number, to: number) => void;
+  onIcon: (name: string) => void;
+  onActive: (v: boolean) => void;
+  onRemove: () => void;
+}) {
+  const [open, setOpen] = useState(false);
+  const [pickerOpen, setPickerOpen] = useState(false);
+  const [dragOver, setDragOver] = useState(false);
+
+  return (
+    <div
+      className="rounded-xl border"
+      style={{
+        borderColor: dragOver ? "rgb(var(--primary))" : "rgb(var(--border))",
+        opacity: active ? 1 : 0.55,
+      }}
+      onDragOver={(e) => {
+        e.preventDefault();
+        setDragOver(true);
+      }}
+      onDragLeave={() => setDragOver(false)}
+      onDrop={(e) => {
+        e.preventDefault();
+        setDragOver(false);
+        const from = Number(e.dataTransfer.getData("text/plain"));
+        if (!Number.isNaN(from)) onReorder(from, index);
+      }}
+    >
+      <div className="flex items-center gap-2 p-2.5">
+        {/* Sürükle tutamacı */}
+        <span
+          draggable
+          onDragStart={(e) => e.dataTransfer.setData("text/plain", String(index))}
+          className="grid h-8 w-6 flex-shrink-0 cursor-grab place-items-center rounded"
+          style={{ color: "rgb(var(--muted-foreground))" }}
+          title="Sürükleyerek sırala"
+          aria-label="Sürükle"
+        >
+          <Icon name="grip" size={16} />
+        </span>
+        {/* ↑↓ yedek */}
+        <div className="flex flex-shrink-0 flex-col">
+          <button type="button" onClick={() => onMove(-1)} disabled={index === 0} className="grid h-4 w-5 place-items-center disabled:opacity-30" style={{ color: "rgb(var(--muted-foreground))" }} aria-label="Yukarı">
+            <Icon name="chevron" size={12} style={{ transform: "rotate(180deg)" }} />
+          </button>
+          <button type="button" onClick={() => onMove(1)} disabled={index === count - 1} className="grid h-4 w-5 place-items-center disabled:opacity-30" style={{ color: "rgb(var(--muted-foreground))" }} aria-label="Aşağı">
+            <Icon name="chevron" size={12} />
+          </button>
+        </div>
+        {/* İkon */}
+        <IconButton name={icon} onOpen={() => setPickerOpen(true)} />
+        {/* Özet — tıklayınca aç/kapa */}
+        <button type="button" onClick={() => setOpen((o) => !o)} className="min-w-0 flex-1 text-left">
+          <span className="block truncate text-[14px] font-medium" style={{ color: title ? "rgb(var(--foreground))" : "rgb(var(--muted-foreground))" }}>
+            {summary}
+          </span>
+        </button>
+        {/* Aktif switch */}
+        <label className="adm-switch flex-shrink-0" title={active ? "Aktif" : "Pasif"}>
+          <input type="checkbox" checked={active} onChange={(e) => onActive(e.target.checked)} />
+          <span className="adm-switch-track" />
+        </label>
+        {/* Aç/kapa oku */}
+        <button type="button" onClick={() => setOpen((o) => !o)} className="grid h-8 w-7 flex-shrink-0 place-items-center" style={{ color: "rgb(var(--muted-foreground))" }} aria-label={open ? "Kapat" : "Aç"}>
+          <Icon name="chevron" size={16} style={{ transform: open ? "rotate(180deg)" : "none" }} />
+        </button>
+      </div>
+
+      {open ? (
+        <div className="space-y-3 border-t p-3" style={{ borderColor: "rgb(var(--border))" }}>
+          {children}
+          <button type="button" onClick={onRemove} className="adm-btn adm-btn-danger adm-btn-sm">Sil</button>
+        </div>
+      ) : null}
+
+      {pickerOpen ? (
+        <IconPicker
+          value={icon}
+          onPick={(name) => {
+            onIcon(name);
+            setPickerOpen(false);
+          }}
+          onClose={() => setPickerOpen(false)}
+        />
+      ) : null}
     </div>
   );
 }

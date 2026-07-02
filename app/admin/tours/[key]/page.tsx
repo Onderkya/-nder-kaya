@@ -4,7 +4,8 @@ import { prisma } from "@/lib/db";
 import { requireAdmin } from "@/lib/auth";
 import { getMergedMessages, flatten } from "@/lib/messages";
 import { getAssetMap } from "@/lib/assets";
-import { getTourCfgs, CODED_TOURS, pickL10n, type TourCfg } from "@/lib/tours";
+import { getTourCfgs, CODED_TOURS, pickL10n, type TourCfg, type TourStepCfg, type L10n } from "@/lib/tours";
+import { DEFAULT_STEPS, DEFAULT_INCLUDED } from "@/lib/tour-defaults";
 import { routing, localeNames, localeFlags } from "@/i18n/routing";
 import { PageHeader } from "@/components/admin/ui";
 import { TourEditor, type TourDefaults } from "@/components/admin/tour-editor";
@@ -30,8 +31,19 @@ export default async function TourEditPage({ params }: { params: Promise<{ key: 
 
   if (!isNew && !coded && !existing) notFound();
 
+  // Tüm locale'lerin düzleştirilmiş mesajları (prefill + placeholder için).
+  const flatByLocale: Record<string, Record<string, string>> = {};
+  for (const l of routing.locales) flatByLocale[l] = flatten((await getMergedMessages(l)) as never);
+
+  // Bir i18n anahtarını 4 dilde toplayıp L10n döndürür.
+  const l10nOf = (i18nKey: string): L10n =>
+    Object.fromEntries(routing.locales.map((l) => [l, flatByLocale[l][i18nKey] ?? ""]));
+
   // Kodlu turun dil bazlı varsayılanları (placeholder'lar için).
   let defaults: TourDefaults | null = null;
+  // Kodlu tur prefill: DEFAULT_STEPS + çeviriler → editöre hazır L10n adımları.
+  let prefillSteps: TourStepCfg[] | null = null;
+  let prefillIncluded: { icon: string; label: L10n; active?: boolean }[] | null = null;
   if (coded) {
     const name: Record<string, string> = {};
     const aud: Record<string, string> = {};
@@ -40,17 +52,38 @@ export default async function TourEditPage({ params }: { params: Promise<{ key: 
     const assets = await getAssetMap();
     img = assets[`route.${key}.image`] || img;
     for (const l of routing.locales) {
-      const flat = flatten((await getMergedMessages(l)) as never);
-      name[l] = flat[`routes.${key}_name`] ?? "";
-      aud[l] = flat[`routes.${coded.audKey}`] ?? "";
-      if (l === "tr") loc = flat[`hotelsd.${coded.hotelKey}_loc`] ?? "";
+      name[l] = flatByLocale[l][`routes.${key}_name`] ?? "";
+      aud[l] = flatByLocale[l][`routes.${coded.audKey}`] ?? "";
+      if (l === "tr") loc = flatByLocale[l][`hotelsd.${coded.hotelKey}_loc`] ?? "";
     }
     defaults = { name, aud, days: coded.days, stars: coded.stars, hotel: coded.hotel, loc, img };
+
+    prefillSteps = (DEFAULT_STEPS[key] ?? []).map((s) => ({
+      day: s.day,
+      icon: s.icon,
+      active: true,
+      t: l10nOf(`routes.${s.tKey}`),
+      d: l10nOf(`routes.${s.dKey}`),
+    }));
+    prefillIncluded = DEFAULT_INCLUDED.map((i) => ({
+      icon: i.icon,
+      active: true,
+      label: l10nOf(`routes.${i.labelKey}`),
+    }));
   }
 
   const initial: TourCfg = isNew
     ? { key: `c${Date.now().toString(36)}`, custom: true, active: true, steps: [] }
     : existing ?? { key, active: true };
+
+  // Kodlu tur: cfg'de adım yoksa prefill'i taban al (editör bunları gösterir/kaydeder).
+  if (coded) {
+    if (!initial.steps?.length && prefillSteps) initial.steps = prefillSteps;
+    if (!initial.included?.length && prefillIncluded) initial.included = prefillIncluded;
+  } else if (!initial.included?.length && prefillIncluded === null) {
+    // Özel turlar için de "Pakete dahil" varsayılan listesini prefill et (i18n metinleriyle).
+    initial.included = DEFAULT_INCLUDED.map((i) => ({ icon: i.icon, active: true, label: l10nOf(`routes.${i.labelKey}`) }));
+  }
 
   const media = await prisma.media
     .findMany({ orderBy: { createdAt: "desc" }, take: 60, select: { url: true, alt: true } })

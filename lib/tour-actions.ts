@@ -4,7 +4,73 @@ import { revalidatePath } from "next/cache";
 import { prisma } from "./db";
 import { requireAdmin } from "./auth";
 import { audit } from "./audit";
-import { TOURS_KEY, CODED_TOURS, tourOrder, type TourCfg } from "./tours";
+import { TOURS_KEY, CODED_TOURS, tourOrder, type TourCfg, type TourStepCfg, type L10n } from "./tours";
+
+/** Dil bazlı metni temizle: yalnız string değerleri tut, kırp; boş anahtarları at. */
+function cleanL10n(v: unknown): L10n {
+  const out: L10n = {};
+  if (v && typeof v === "object" && !Array.isArray(v)) {
+    for (const [k, val] of Object.entries(v as Record<string, unknown>)) {
+      if (typeof val === "string") {
+        const t = val.trim();
+        if (t) out[k] = t;
+      }
+    }
+  }
+  return out;
+}
+
+/** Adım dizisini doğrula: gün int≥1, icon string, active boolean, metinler L10n. */
+function cleanSteps(v: unknown): TourStepCfg[] | undefined {
+  if (!Array.isArray(v)) return undefined;
+  return v.map((raw) => {
+    const s = (raw ?? {}) as Record<string, unknown>;
+    const step: TourStepCfg = {
+      day: Math.max(1, Math.floor(Number(s.day)) || 1),
+      t: cleanL10n(s.t),
+      d: cleanL10n(s.d),
+    };
+    if (typeof s.icon === "string" && s.icon.trim()) step.icon = s.icon.trim();
+    if (typeof s.active === "boolean") step.active = s.active;
+    return step;
+  });
+}
+
+/** "Pakete dahil" dizisini doğrula: icon string, label L10n, active boolean. */
+function cleanIncluded(v: unknown): TourCfg["included"] | undefined {
+  if (!Array.isArray(v)) return undefined;
+  return v.map((raw) => {
+    const s = (raw ?? {}) as Record<string, unknown>;
+    const item: NonNullable<TourCfg["included"]>[number] = {
+      icon: typeof s.icon === "string" && s.icon.trim() ? s.icon.trim() : "check",
+      label: cleanL10n(s.label),
+    };
+    if (typeof s.active === "boolean") item.active = s.active;
+    return item;
+  });
+}
+
+/** Editörden gelen ham cfg'yi bilinen alanlara indirger + doğrular (geriye uyumlu). */
+function sanitizeCfg(raw: TourCfg): TourCfg {
+  const out: TourCfg = { key: raw.key };
+  if (typeof raw.custom === "boolean") out.custom = raw.custom;
+  if (typeof raw.active === "boolean") out.active = raw.active;
+  if (typeof raw.order === "number") out.order = raw.order;
+  if (typeof raw.img === "string") out.img = raw.img.trim();
+  if (raw.name) out.name = cleanL10n(raw.name);
+  if (raw.aud) out.aud = cleanL10n(raw.aud);
+  if (raw.days != null) out.days = Math.max(1, Math.floor(Number(raw.days)) || 1);
+  if (raw.stars != null) out.stars = Math.min(5, Math.max(1, Math.floor(Number(raw.stars)) || 5));
+  if (typeof raw.hotel === "string") out.hotel = raw.hotel.trim();
+  if (typeof raw.loc === "string") out.loc = raw.loc.trim();
+  if (raw.hotelWhy) out.hotelWhy = cleanL10n(raw.hotelWhy);
+  if (raw.hotelNote) out.hotelNote = cleanL10n(raw.hotelNote);
+  const steps = cleanSteps(raw.steps);
+  if (steps) out.steps = steps;
+  const included = cleanIncluded(raw.included);
+  if (included) out.included = included;
+  return out;
+}
 
 async function loadCfgs(): Promise<TourCfg[]> {
   try {
@@ -33,12 +99,18 @@ export async function saveTour(json: string): Promise<void> {
     return;
   }
   if (!cfg?.key || typeof cfg.key !== "string") return;
+  const clean = sanitizeCfg(cfg);
   const cfgs = await loadCfgs();
-  const i = cfgs.findIndex((c) => c.key === cfg.key);
-  if (i >= 0) cfgs[i] = cfg;
-  else cfgs.push(cfg);
+  const i = cfgs.findIndex((c) => c.key === clean.key);
+  if (i >= 0) cfgs[i] = clean;
+  else cfgs.push(clean);
   await saveCfgs(cfgs);
-  await audit(session.email, i >= 0 ? "update" : "create", "Tour", cfg.key, cfg.custom ? "özel tur" : "kodlu tur override");
+  const detail = [
+    clean.custom ? "özel tur" : "kodlu tur override",
+    clean.steps ? `${clean.steps.length} adım` : null,
+    clean.included ? `${clean.included.length} dahil` : null,
+  ].filter(Boolean).join(", ");
+  await audit(session.email, i >= 0 ? "update" : "create", "Tour", clean.key, detail);
 }
 
 /** Aktif/pasif. */
