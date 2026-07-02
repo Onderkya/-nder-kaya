@@ -101,7 +101,8 @@ export function ContactForm({ labels }: { labels: Labels }) {
       </div>
       <div>
         <label className="mb-1 block text-sm font-medium">{labels.message}</label>
-        <textarea name="message" required rows={5} className={inputClass} style={inputStyle} value={message} onChange={(e) => setMessage(e.target.value)} />
+        {/* data-lenis-prevent: Lenis tekerleği yakalamasın, uzun mesaj kutunun içinde kaysın */}
+        <textarea name="message" required rows={5} data-lenis-prevent className={`${inputClass} overflow-y-auto`} style={inputStyle} value={message} onChange={(e) => setMessage(e.target.value)} />
       </div>
       {status === "error" && (
         <p className="text-sm font-medium text-red-500">{labels.error}</p>
