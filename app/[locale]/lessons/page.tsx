@@ -9,6 +9,7 @@ import { JsonLd } from "@/components/json-ld";
 import { IconClock, IconArrow } from "@/components/icons";
 import { Reveal } from "@/components/reveal";
 import { GuestVoices } from "@/components/guest-voices";
+import { LevelPath } from "@/components/level-path";
 import { MobilePlanCta } from "@/components/mobile-plan-cta";
 import { prisma } from "@/lib/db";
 import { getManagedPage } from "@/lib/cms";
@@ -145,6 +146,24 @@ export default async function LessonsPage({ params }: { params: Promise<{ locale
         </div>
         </Reveal>
       </section>
+    )],
+    ["lessons.levelPath", (
+      /* 0'dan C2'ye yol — öğretmenin bizzat yürüdüğü çizgi (kanıt anlatısı) */
+      <LevelPath
+        eyebrow={x("lvl_eyebrow")}
+        title={x("lvl_title")}
+        note={x("lvl_note")}
+        daily={x("lvl_daily")}
+        nowLabel={x("lvl_now")}
+        levels={[
+          { code: "A1", text: x("lvl_a1") },
+          { code: "A2", text: x("lvl_a2") },
+          { code: "B1", text: x("lvl_b1") },
+          { code: "B2", text: x("lvl_b2") },
+          { code: "C1", text: x("lvl_c1") },
+          { code: "C2", text: x("lvl_c2"), now: true },
+        ]}
+      />
     )],
     ["lessons.lived", (
       /* Bunu biz de yaşadık — güven bandı */

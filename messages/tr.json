@@ -132,7 +132,18 @@
     "lived_badge": "Bunu biz de yaşadık",
     "lived_title": "Verdiğimiz her danışmanlığı önce kendimiz başardık",
     "lived_text": "Burslu okuduk, Türkçeyi öğrettik ve Antalya'da yaşıyoruz. PetLingo uygulamasını da biz geliştirdik. Teoriden değil; bizzat yürüdüğümüz yoldan anlatıyoruz — ekibimiz bu işi gerçekten biliyor.",
-    "lived_cta": "Yolculuğuna başla"
+    "lived_cta": "Yolculuğuna başla",
+    "lvl_eyebrow": "Yol haritan",
+    "lvl_title": "Sıfırdan C2'ye — öğretmeninin bizzat yürüdüğü yol",
+    "lvl_note": "Öğretmenimiz bu çizginin tamamını sıfırdan yürüdü: Kazakistan'dan geldi, bugün C2 seviyesinde. Nereden başlarsan başla, yolun her adımını bilen biriyle ilerlersin.",
+    "lvl_daily": "Her seviyede PetLingo ile günlük pratik yanında.",
+    "lvl_now": "Öğretmenimizin seviyesi",
+    "lvl_a1": "İlk selamlaşma; kendini tanıtırsın.",
+    "lvl_a2": "Pazarda, takside, restoranda derdini anlatırsın.",
+    "lvl_b1": "Günlük hayatı rahat yürütür, başından geçeni anlatırsın.",
+    "lvl_b2": "Diziyi altyazısız izler, tartışmaya katılırsın.",
+    "lvl_c1": "Üniversite dersini takip eder, resmi işlerini kendin halledersin.",
+    "lvl_c2": "Anadili gibi konuşursun."
   },
   "meta": {
     "siteName": "Antalya Bridge",

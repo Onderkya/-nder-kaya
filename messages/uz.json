@@ -132,7 +132,18 @@
     "lived_badge": "Buni biz ham boshdan kechirdik",
     "lived_title": "Taklif qiladigan har bir xizmatni avval o'zimiz amalga oshirdik",
     "lived_text": "Biz grant bilan o'qidik, turk tilini o'rgatdik va Antalyada yashaymiz. PetLingo ilovasini ham o'zimiz yaratdik. Nazariyadan emas — bu yo'lni o'zimiz bosib o'tganmiz va jamoamiz buni chinakam biladi.",
-    "lived_cta": "Yo'lingni boshla"
+    "lived_cta": "Yo'lingni boshla",
+    "lvl_eyebrow": "Yo'l xaritangiz",
+    "lvl_title": "Noldan C2 gacha — o'qituvchingiz o'zi bosib o'tgan yo'l",
+    "lvl_note": "O'qituvchimiz bu yo'lning hammasini noldan bosib o'tdi: Qozog'istondan keldi, bugun C2 darajasida. Qaysi darajadan boshlamang, yo'lning har bir qadamini biladigan inson bilan olg'a borasiz.",
+    "lvl_daily": "Har darajada PetLingo bilan kundalik mashq yoningizda.",
+    "lvl_now": "O'qituvchimizning darajasi",
+    "lvl_a1": "Birinchi salomlashuv; o'zingizni tanishtirasiz.",
+    "lvl_a2": "Bozorda, taksida, restoranda fikringizni yetkazasiz.",
+    "lvl_b1": "Kundalik hayotni bemalol boshqarib, boshingizdan o'tganni aytib berasiz.",
+    "lvl_b2": "Serialni subtitrsiz ko'rib, munozaraga qo'shilasiz.",
+    "lvl_c1": "Universitet darsini tushunib, rasmiy ishlaringizni o'zingiz hal qilasiz.",
+    "lvl_c2": "Ona tilidek gapirasiz."
   },
   "meta": {
     "siteName": "Antalya Bridge",

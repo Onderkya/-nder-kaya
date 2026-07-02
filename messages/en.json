@@ -132,7 +132,18 @@
     "lived_badge": "We've lived this too",
     "lived_title": "We achieved every service we offer ourselves first",
     "lived_text": "We studied on scholarships, taught Turkish and live in Antalya. We also built the PetLingo app ourselves. We don't guide from theory — we walked this path ourselves, and our team truly knows it.",
-    "lived_cta": "Start your journey"
+    "lived_cta": "Start your journey",
+    "lvl_eyebrow": "Your roadmap",
+    "lvl_title": "From zero to C2 — the road your teacher walked herself",
+    "lvl_note": "Our teacher walked this entire line from zero: she came from Kazakhstan and is at C2 today. Wherever you start, you move forward with someone who knows every step of the road.",
+    "lvl_daily": "At every level, daily practice with PetLingo is by your side.",
+    "lvl_now": "Our teacher's level",
+    "lvl_a1": "First greetings; you introduce yourself.",
+    "lvl_a2": "You get by at the market, in a taxi, at a restaurant.",
+    "lvl_b1": "You handle daily life with ease and tell what happened to you.",
+    "lvl_b2": "You watch series without subtitles and join discussions.",
+    "lvl_c1": "You follow university lectures and handle official matters yourself.",
+    "lvl_c2": "You speak like a native."
   },
   "meta": {
     "siteName": "Antalya Bridge",
