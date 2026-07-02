@@ -34,14 +34,20 @@ export function TourEditor({
   langs,
   media,
   isNew = false,
+  prefillSteps = null,
+  prefillIncluded = null,
 }: {
   initial: TourCfg;
   defaults: TourDefaults | null;
   langs: LangOpt[];
   media: MediaItem[];
   isNew?: boolean;
+  /** Kodlu tur için çevirilerden dolan öneri adımları (yalnız gösterim; kaydedilmez). */
+  prefillSteps?: TourStepCfg[] | null;
+  prefillIncluded?: IncludedCfg[] | null;
 }) {
   const router = useRouter();
+  // cfg ADIM/DAHİL için prefill'i İÇERMEZ — override sahipliğini olduğu gibi taşır.
   const [cfg, setCfg] = useState<TourCfg>(initial);
   const [lang, setLang] = useState(langs[0]?.code ?? "tr");
   const [pending, start] = useTransition();
@@ -49,12 +55,26 @@ export function TourEditor({
   const [imgPickerOpen, setImgPickerOpen] = useState(false);
   const isCustom = !!cfg.custom;
 
+  // Yüklenen cfg zaten override taşıyor muydu? (case a — dokunulmasa bile kaydedilir)
+  const hadStepsOverride = !!initial.steps?.length;
+  const hadIncOverride = !!initial.included?.length;
+  // Kullanıcı bu oturumda adım/dahil arayüzüne dokundu mu? (case b)
+  const [stepsDirty, setStepsDirty] = useState(false);
+  const [incDirty, setIncDirty] = useState(false);
+
   const setL10n = (field: "name" | "aud" | "hotelWhy" | "hotelNote", val: string) =>
     setCfg((p) => ({ ...p, [field]: { ...(p[field] ?? {}), [lang]: val } }));
 
   // ── Adım satırları (steps) ────────────────────────────────────────────────
-  const steps = cfg.steps ?? [];
-  const setSteps = (next: TourStepCfg[]) => setCfg((p) => ({ ...p, steps: next }));
+  // Görünüm: sahip (override vardı) ya da dokunuldu → cfg.steps; aksi halde prefill.
+  const ownsSteps = hadStepsOverride || stepsDirty;
+  const steps = ownsSteps ? (cfg.steps ?? []) : (prefillSteps ?? []);
+  // TÜM mutasyon yolları bu setter'dan geçer → dirty burada işaretlenir.
+  // İlk mutasyonda henüz cfg.steps boşsa görünen prefill'i tabana alırız.
+  const setSteps = (next: TourStepCfg[]) => {
+    setStepsDirty(true);
+    setCfg((p) => ({ ...p, steps: next }));
+  };
   const updateStep = (i: number, patch: Partial<TourStepCfg>) =>
     setSteps(steps.map((s, x) => (x === i ? { ...s, ...patch } : s)));
   const addStep = () =>
@@ -68,8 +88,13 @@ export function TourEditor({
   };
 
   // ── "Pakete dahil" satırları (included) ───────────────────────────────────
-  const included = cfg.included ?? [];
-  const setIncluded = (next: IncludedCfg[]) => setCfg((p) => ({ ...p, included: next }));
+  const ownsInc = hadIncOverride || incDirty;
+  const included = ownsInc ? (cfg.included ?? []) : (prefillIncluded ?? []);
+  // TÜM mutasyon yolları bu setter'dan geçer → dirty burada işaretlenir.
+  const setIncluded = (next: IncludedCfg[]) => {
+    setIncDirty(true);
+    setCfg((p) => ({ ...p, included: next }));
+  };
   const updateInc = (i: number, patch: Partial<IncludedCfg>) =>
     setIncluded(included.map((s, x) => (x === i ? { ...s, ...patch } : s)));
   const addInc = () => setIncluded([...included, { icon: "check", active: true, label: {} }]);
@@ -83,7 +108,12 @@ export function TourEditor({
 
   const save = () =>
     start(async () => {
-      await saveTour(JSON.stringify(cfg));
+      // Dokunulmayan VE önceden override'ı olmayan adım/dahil alanlarını payload'dan
+      // çıkar — böylece prefill (çeviri anlık görüntüsü) override olarak yazılmaz.
+      const payload: TourCfg = { ...cfg };
+      if (!ownsSteps) delete payload.steps;
+      if (!ownsInc) delete payload.included;
+      await saveTour(JSON.stringify(payload));
       setSaved(true);
       router.refresh();
       if (isNew) router.push("/admin/tours");
@@ -175,7 +205,7 @@ export function TourEditor({
           <p className="adm-help mb-4 mt-0">Uçuş + transfer + otele giriş sitede otomatik başa eklenir; buraya duraklarını yaz. ({lang.toUpperCase()} düzenleniyor.)</p>
         ) : (
           <p className="adm-help mb-4 mt-0">
-            Adımlar site çevirilerinden dolduruldu. <b>Kaydedersen bu tur artık buradan yönetilir</b> — Site İçeriği çevirileri bu turda devre dışı kalır. ({lang.toUpperCase()} düzenleniyor.)
+            Adımlar site çevirilerinden dolduruldu. <b>Bu adımları değiştirip kaydedersen metinler ŞU ANKİ halleriyle bu turda sabitlenir</b>; Site İçeriği çevirileri bu turda artık uygulanmaz. Değiştirmezsen çeviriler kaynak olmaya devam eder. ({lang.toUpperCase()} düzenleniyor.)
           </p>
         )}
 

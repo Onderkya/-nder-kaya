@@ -76,13 +76,13 @@ export default async function TourEditPage({ params }: { params: Promise<{ key: 
     ? { key: `c${Date.now().toString(36)}`, custom: true, active: true, steps: [] }
     : existing ?? { key, active: true };
 
-  // Kodlu tur: cfg'de adım yoksa prefill'i taban al (editör bunları gösterir/kaydeder).
-  if (coded) {
-    if (!initial.steps?.length && prefillSteps) initial.steps = prefillSteps;
-    if (!initial.included?.length && prefillIncluded) initial.included = prefillIncluded;
-  } else if (!initial.included?.length && prefillIncluded === null) {
-    // Özel turlar için de "Pakete dahil" varsayılan listesini prefill et (i18n metinleriyle).
-    initial.included = DEFAULT_INCLUDED.map((i) => ({ icon: i.icon, active: true, label: l10nOf(`routes.${i.labelKey}`) }));
+  // ÖNEMLİ: prefill'i initial.steps/included İÇİNE yazmıyoruz — override sahipliği
+  // olduğu gibi kalsın (dokunulmayan kodlu tur kaydedilince çeviri anlık görüntüsü
+  // override olarak yazılmasın diye). Prefill editöre AYRI prop olarak geçer; editör
+  // yalnız gösterim için kullanır, kullanıcı dokunmadıkça kaydetmez.
+  // Özel turlar için "Pakete dahil" öneri listesi (kodlu değilse prefill yoktu).
+  if (!coded && prefillIncluded === null) {
+    prefillIncluded = DEFAULT_INCLUDED.map((i) => ({ icon: i.icon, active: true, label: l10nOf(`routes.${i.labelKey}`) }));
   }
 
   const media = await prisma.media
@@ -97,7 +97,7 @@ export default async function TourEditPage({ params }: { params: Promise<{ key: 
       <PageHeader eyebrow="Sitem · Turlar" title={title} description={coded ? "Kodlu tur — boş bıraktığın alanlar varsayılan değerle görünür." : "Özel tur — tüm alanlar sana ait."}>
         <Link href="/admin/tours" className="adm-btn adm-btn-ghost adm-btn-sm">← Turlara dön</Link>
       </PageHeader>
-      <TourEditor initial={initial} defaults={defaults} langs={langs} media={media} isNew={isNew} />
+      <TourEditor initial={initial} defaults={defaults} langs={langs} media={media} isNew={isNew} prefillSteps={prefillSteps} prefillIncluded={prefillIncluded} />
     </div>
   );
 }

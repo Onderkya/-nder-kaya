@@ -8,6 +8,10 @@ import { getIconCatalog } from "@/lib/icon-catalog";
  * düz `{ name, viewBox, paths, terms }[]` JSON iner. Katalog modül kapsamında
  * önbelleğe alınır; yanıt uzun süre önbelleklenebilir (statik veri).
  */
+// Rota, auth (requireAdmin → cookies) için dinamik; ancak yanıt tarayıcıda
+// önbelleklenebilir çünkü katalog build başına statiktir. force-dynamic ile
+// max-age tutarsız değil: force-dynamic yeniden-çalıştırmayı (auth) zorlar,
+// Cache-Control ise tarayıcı tarafı önbelleği (statik veri) kasıtlı açar.
 export const dynamic = "force-dynamic";
 
 export async function GET() {
