@@ -162,3 +162,22 @@ Kullanıcı isteği: Hazır Rotalar'da **her şey** değiştirilebilir olmalı.
   && docker compose up -d --build`).
 - Güvenlik: sunucu root şifresi sohbete girildi → kullanıcı deploy sonrası
   `passwd` ile değiştirmeli.
+
+## Ek 1 (2026-07-02, kullanıcı onaylı): Dinamik medya galerileri
+
+Kullanıcı isteği: Site Editörü'nde medyalar yalnız değiştirilebilir değil,
+**eklenebilir/çıkarılabilir/aktif-pasif yapılabilir/sıralanabilir** olmalı — tüm sayfalarda.
+
+- **İki sınıf medya:** Tekil slotlar (hero arka planı, bölüm içi tek görsel) mevcut
+  Değiştir/Sıfırla davranışında kalır (silmek tasarımda delik açar; bölüm gizleme zaten var).
+  **Galeri bölümleri** (tekrarlanan birimi "medya + başlık" olan bölümler: Fermuar kartları,
+  Antalya incileri ve envanterde çıkacak benzerleri) dinamik listeye döner.
+- **Veri:** `Setting` `gallery:<bölümId>` = JSON öğe listesi `{src, type, poster?,
+  title?/desc? (L10n), active?, order?}`. Varsayılan = koddaki mevcut liste (başlıklar
+  çeviri anahtarından). Kayıt yoksa site birebir aynı (yerleşik değişmez).
+- **Editör:** galeri bölümünün kartında tur editörü satır kalıbı: sürükle+↑↓, aktif/pasif
+  switch, Değiştir (yükle/kütüphane/URL), Sil, "Medya ekle", dil sekmeli başlık/açıklama.
+  **Dirty-tracking şart** (Faz 4 dersi): dokunulmadan kaydetmek override yazmaz.
+- **Aksiyon:** `saveGallery(bölümId, items)` — requireAdmin + audit +
+  `revalidatePath("/", "layout")`.
+- Oteller ve turlar galeri DEĞİLDİR (kendi editörleri var); misafir sözleri medyasızdır.
