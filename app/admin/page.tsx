@@ -4,6 +4,8 @@ import { getPublicSettings } from "@/lib/settings";
 import { formatAmount } from "@/lib/money";
 import { PageHeader, Card, StatCard, EmptyState } from "@/components/admin/ui";
 import { Icon, type IconName } from "@/components/admin/icons";
+import { DashboardAiCard } from "@/components/admin/dashboard-ai-card";
+import { assistantAvailable } from "@/lib/ai/assistant";
 
 export const dynamic = "force-dynamic";
 
@@ -23,6 +25,8 @@ const ENTITY_ICON: Record<string, IconName> = { Sale: "wallet", Invoice: "invoic
 export default async function AdminDashboard() {
   const now = new Date();
   const monthStart = new Date(now.getFullYear(), now.getMonth(), 1);
+
+  const aiAvailable = await assistantAvailable().catch(() => false);
 
   let newLeads = 0, pendingInvoices = 0, upcomingBookings = 0;
   let salesAgg: { currency: string; _sum: { finalAmount: number | null }; _count: number }[] = [];
@@ -96,6 +100,9 @@ export default async function AdminDashboard() {
         <StatCard label="Yaklaşan rezervasyon" value={upcomingBookings} hint="onaylı" icon="calendar" />
         <StatCard label="Bekleyen fatura" value={pendingInvoices} hint="ödeme bekliyor" icon="invoice" tone={pendingInvoices > 0 ? "warn" : "neutral"} />
       </div>
+
+      {/* 2.5 — AI asistan kartı */}
+      <DashboardAiCard available={aiAvailable} />
 
       {/* 3 — Hızlı işlemler */}
       <div>
