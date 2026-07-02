@@ -128,7 +128,7 @@ export default async function LeadsPage() {
                         <input type="hidden" name="id" value={l.id} />
                         <select name="status" defaultValue={l.status} className="adm-select">
                           {statuses.map((s) => (
-                            <option key={s} value={s}>{s}</option>
+                            <option key={s} value={s}>{STATUS_LABEL[s]}</option>
                           ))}
                         </select>
                         <button className="adm-btn adm-btn-primary adm-btn-sm">Kaydet</button>
