@@ -46,9 +46,9 @@ export default async function AboutPage({ params }: { params: Promise<{ locale: 
   const hidden = await getHiddenSections();
   const orders = await getSectionOrders();
 
-  // Gerçek çift fotoğrafı gelince otomatik devreye girer; yoksa markaya uygun
-  // zarif yer tutucu (sahte/stok çift fotoğrafı KULLANILMAZ).
-  // Admin override varsa o kazanır; yoksa mevcut existsSync mantığı (fallback null → yer tutucu).
+  // Temsili (telifsiz) çift fotoğrafı kullanılır ve figcaption'da "temsili görsel"
+  // ibaresiyle işaretlenir — kullanıcı kararı (2026-07, spec: kanit-katmani).
+  // Admin override varsa o kazanır; dosya yoksa zarif yer tutucu (🇰🇿 ♥ 🇹🇷) korunur.
   const coupleOverride = A["about.founders.image"];
   const couple = coupleOverride && coupleOverride.trim()
     ? coupleOverride
@@ -124,7 +124,10 @@ export default async function AboutPage({ params }: { params: Promise<{ locale: 
                 <>
                   <Image src={couple} alt={cv("coupleCaption")} fill sizes="(max-width:1024px) 100vw, 40vw" className="object-cover" />
                   <div className="img-scrim-soft absolute inset-0" />
-                  <figcaption className="absolute bottom-5 left-6 right-6 text-[13px] font-medium text-white/90">{cv("coupleCaption")}</figcaption>
+                  <figcaption className="absolute bottom-5 left-6 right-6 text-[13px] font-medium text-white/90">
+                    {cv("coupleCaption")}
+                    <span className="mt-1 block text-[11px] font-normal text-white/60">{cv("coupleRep")}</span>
+                  </figcaption>
                 </>
               ) : (
                 <div className="flex h-full w-full flex-col items-center justify-center p-8 text-center" style={{ backgroundImage: "linear-gradient(150deg, rgb(var(--lagoon) / 0.20), rgb(var(--primary) / 0.16) 55%, rgb(var(--accent) / 0.14))" }}>
